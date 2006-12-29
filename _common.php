@@ -81,6 +81,10 @@ $__autoload['netSocket']		= dirname(__FILE__).'/net/class.net.socket.php';
 $__autoload['netHttp']		= dirname(__FILE__).'/net.http/class.net.http.php';
 $__autoload['HttpClient']	= dirname(__FILE__).'/net.http/class.net.http.php';
 
+# NNTP Client
+$__autoload['netNntp']		= dirname(__FILE__).'/net.nntp/class.net.nntp.php';
+$__autoload['nntpMessage']	= dirname(__FILE__).'/net.nntp/class.nntp.message.php';
+
 # Incutio XML/RPC Server
 $__autoload['IXR_Value']				= dirname(__FILE__).'/ext/incutio.ixr_library.php';
 $__autoload['IXR_Message']			= dirname(__FILE__).'/ext/incutio.ixr_library.php';
