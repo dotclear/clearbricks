@@ -43,8 +43,14 @@ $__autoload['imageTools']	= dirname(__FILE__).'/image/class.image.tools.php';
 # Send Mail Utilities
 $__autoload['mail']			= dirname(__FILE__).'/mail/class.mail.php';
 
+# Mail Convert and Rewrap
+$__autoload['mailConvert']	= dirname(__FILE__).'/mail.convert/class.mail.convert.php';
+
 # Send Mail Through Sockets
 $__autoload['socketMail']	= dirname(__FILE__).'/mail/class.socket.mail.php';
+
+# Mime Message Parser
+$__autoload['mimeMessage']	= dirname(__FILE__).'/mail.mime/class.mime.message.php';
 
 # HTML Pager
 $__autoload['pager']		= dirname(__FILE__).'/pager/class.pager.php';
