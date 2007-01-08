@@ -213,11 +213,6 @@ class files
 		}
 	}
 	
-	public static function makeDirP($f)
-	{
-		
-	}
-	
 	public static function putContent($f, $f_content)
 	{
 		if (!is_writable($f)) {
