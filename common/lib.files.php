@@ -181,11 +181,41 @@ class files
 		}
 	}
 	
-	public static function makeDir($f)
+	public static function makeDir($f,$r=false)
 	{
+		if (empty($f)) {
+			return;
+		}
+		
+		if (DIRECTORY_SEPARATOR == '\\') {
+			$f = str_replace('/','\\');
+		}
+		
+		if (is_dir($f)) {
+			return;
+		}
+		
+		if ($r)
+		{
+			$dirs = explode(DIRECTORY_SEPARATOR,$f);
+			$dir = '';
+			foreach ($dirs as $d)
+			{
+				$dir .= $d.DIRECTORY_SEPARATOR;
+				if ($d != '' && !is_dir($dir)) {
+					return self::makeDir($dir);
+				}
+			}
+		}
+		
 		if (@mkdir($f,fileperms(dirname($f))) === false) {
 			throw new Exception(__('Unable to create directory.'));
 		}
+	}
+	
+	public static function makeDirP($f)
+	{
+		
 	}
 	
 	public static function putContent($f, $f_content)
