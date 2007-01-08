@@ -203,13 +203,15 @@ class files
 			{
 				$dir .= $d.DIRECTORY_SEPARATOR;
 				if ($d != '' && !is_dir($dir)) {
-					return self::makeDir($dir);
+					self::makeDir($dir);
 				}
 			}
 		}
-		
-		if (@mkdir($f,fileperms(dirname($f))) === false) {
-			throw new Exception(__('Unable to create directory.'));
+		else
+		{
+			if (@mkdir($f,fileperms(dirname($f))) === false) {
+				throw new Exception(__('Unable to create directory.'));
+			}
 		}
 	}
 	
