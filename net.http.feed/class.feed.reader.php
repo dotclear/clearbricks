@@ -42,7 +42,7 @@ class feedReader extends netHttp
 	protected $validators = null;				///< <b>array</b>	HTTP Cache validators
 	
 	protected $cache_dir = null;				///< <b>string</b>	Cache temporary directory
-	protected $cache_file_prefix = 'cbfeed_';	///< <b>string</b>	Cache file prefix
+	protected $cache_file_prefix = 'cbfeed';	///< <b>string</b>	Cache file prefix
 	protected $cache_ttl = '-30 minutes';		///< <b>string</b>	Cache TTL
 	
 	public function __construct()
@@ -162,6 +162,15 @@ class feedReader extends netHttp
 	protected function withCache($url)
 	{
 		$cached_file = $this->cache_dir.'/'.$this->cache_file_prefix.md5($url);
+		$url_md5 = md5($url);
+		$cached_file = sprintf('%s/%s/%s/%s/%s.php',
+			$this->cache_dir,
+			$this->cache_file_prefix,
+			substr($url_md5,0,2),
+			substr($url_md5,2,2),
+			$url_md5
+		);
+		
 		$may_use_cached = false;
 		
 		if (@file_exists($cached_file))
@@ -194,6 +203,12 @@ class feedReader extends netHttp
 			case '200':
 				if ($feed = new feedParser($this->getContent()))
 				{
+					try {
+						files::makeDir(dirname($cached_file),true);
+					} catch (Exception $e) {
+						return $feed;
+					}
+					
 					if (($fp = @fopen($cached_file, 'wb')))
 					{
 						fwrite($fp, serialize($feed));
