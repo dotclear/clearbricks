@@ -130,7 +130,14 @@ class template
 			return false;
 		}
 		
-		$dest_file = $this->cache_dir.'dctpl_'.md5($tpl_file).'.php';
+		$file_md5 = md5($tpl_file);
+		$dest_file = sprintf('%s/%s/%s/%s/%s.php',
+			$this->cache_dir,
+			'cbtpl',
+			substr($file_md5,0,2),
+			substr($file_md5,2,2),
+			$file_md5
+		);
 		
 		$create_file = false;
 		
@@ -144,6 +151,8 @@ class template
 		
 		if ($create_file)
 		{
+			files::makeDir(dirname($dest_file),true);
+			
 			if (($fp = @fopen($dest_file,'wb')) === false) {
 				throw new Exception('Unable to create cache file');
 			}
