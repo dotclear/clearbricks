@@ -23,6 +23,8 @@
 @defgroup CLEARBRICKS Clearbricks classes
 */
 
+define('CLEARBRICKS_VERSION','0.8');
+
 # Autoload
 $__autoload = array(
 	'crypt'			=> dirname(__FILE__).'/lib.crypt.php',
