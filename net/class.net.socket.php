@@ -207,7 +207,7 @@ class netSocket
 	}
 }
 
-class netSocketIterator extends NoRewindIterator
+class netSocketIterator implements Iterator
 {
 	protected $_handle;
 	protected $_index;
@@ -223,6 +223,10 @@ class netSocketIterator extends NoRewindIterator
 	
 	/* Iterator methods
 	--------------------------------------------------- */
+	public function rewind() {
+		# Nothing
+	}
+	
 	public function valid() {
 		return !feof($this->_handle);
 	}
