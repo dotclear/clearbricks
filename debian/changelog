@@ -1,6 +1,19 @@
-libclearbricks (0.8-r12) unstable; urgency=low
+libclearbricks (0.8-2) unstable; urgency=low ; svnrev=12
+
+  * SVN Revision 10 - olivier, on Tue, 09 Jan 2007 13:53:03 +0100
+    Added default HTTP Status Messages in http::head()
+
+  * SVN Revision 11 - olivier, on Tue, 09 Jan 2007 16:46:09 +0100
+    Added clearbricks version number.
+
+  * SVN Revision 12 - olivier, on Wed, 10 Jan 2007 00:17:53 +0100
+    Fixed PHP 5.0 compatibilty issue \o/
+
+ -- Olivier Meunier <olivier@clearbricks.org>  Wed, 10 Jan 2007 16:24:31 +0100
+
+libclearbricks (0.8-1) unstable; urgency=low ; svnrev=9
 
   First upstream release
 
- -- olivier <olivier@clearbricks.org>  Tue, 09 Jan 2007 16:50:12 +0100
+ -- Olivier Meunier <olivier@clearbricks.org>  Tue, 09 Jan 2007 16:50:12 +0100
 

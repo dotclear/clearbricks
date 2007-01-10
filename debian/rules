@@ -9,6 +9,9 @@ configure-stamp:
 	# Add here commands to configure the package.
 
 	touch configure-stamp
+	
+	# We create the changelog
+	debian/mkdcl.php
 
 build: build-stamp
 
