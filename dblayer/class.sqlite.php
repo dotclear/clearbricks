@@ -32,6 +32,10 @@ class sqliteConnection extends dbLayer implements i_dbLayer
 	
 	public function db_connect($host,$user,$password,$database)
 	{
+		if (!function_exists('sqlite_open')) {
+			throw new Exception('PHP SQLite functions are not available');
+		}
+		
 		if (($link = @sqlite_open($database)) === false) {
 			throw new Exception('Unable to connect to database');
 		}
@@ -43,6 +47,10 @@ class sqliteConnection extends dbLayer implements i_dbLayer
 	
 	public function db_pconnect($host,$user,$password,$database)
 	{
+		if (!function_exists('sqlite_popen')) {
+			throw new Exception('PHP SQLite functions are not available');
+		}
+		
 		if (($link = @sqlite_popen($database)) === false) {
 			throw new Exception('Unable to connect to database');
 		}

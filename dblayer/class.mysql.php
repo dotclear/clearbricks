@@ -32,6 +32,10 @@ class mysqlConnection extends dbLayer implements i_dbLayer
 	
 	public function db_connect($host,$user,$password,$database)
 	{
+		if (!function_exists('mysql_connect')) {
+			throw new Exception('PHP MySQL functions are not available');
+		}
+		
 		if (($link = @mysql_connect($host,$user,$password)) === false) {
 			throw new Exception('Unable to connect to database');
 		}
@@ -43,6 +47,10 @@ class mysqlConnection extends dbLayer implements i_dbLayer
 	
 	public function db_pconnect($host,$user,$password,$database)
 	{
+		if (!function_exists('mysql_pconnect')) {
+			throw new Exception('PHP MySQL functions are not available');
+		}
+		
 		if (($link = @mysql_pconnect($host,$user,$password)) === false) {
 			throw new Exception('Unable to connect to database');
 		}
