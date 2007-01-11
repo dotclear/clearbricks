@@ -54,6 +54,10 @@ class pgsqlConnection extends dbLayer implements i_dbLayer
 	
 	public function db_connect($host,$user,$password,$database)
 	{
+		if (!function_exists('pg_connect')) {
+			throw new Exception('PHP PostgreSQL functions are not available');
+		}
+		
 		$str = $this->get_connection_string($host,$user,$password,$database);
 		
 		if (($link = @pg_connect($str)) === false) {
@@ -65,6 +69,10 @@ class pgsqlConnection extends dbLayer implements i_dbLayer
 	
 	public function db_pconnect($host,$user,$password,$database)
 	{
+		if (!function_exists('pg_pconnect')) {
+			throw new Exception('PHP PostgreSQL functions are not available');
+		}
+		
 		$str = $this->get_connection_string($host,$user,$password,$database);
 		
 		if (($link = @pg_pconnect($str)) === false) {
