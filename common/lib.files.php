@@ -188,7 +188,7 @@ class files
 		}
 		
 		if (DIRECTORY_SEPARATOR == '\\') {
-			$f = str_replace('/','\\');
+			$f = str_replace('/','\\',$f);
 		}
 		
 		if (is_dir($f)) {
