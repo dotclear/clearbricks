@@ -197,11 +197,17 @@ class files
 		
 		if ($r)
 		{
-			$dirs = explode(DIRECTORY_SEPARATOR,$f);
-			$dir = '';
+			$dir = path::real($f,false);
+			$dirs = array();
+			
+			while (!is_dir($dir)) {
+				array_unshift($dirs,basename($dir));
+				$dir = dirname($dir);
+			}
+			
 			foreach ($dirs as $d)
 			{
-				$dir .= $d.DIRECTORY_SEPARATOR;
+				$dir .= DIRECTORY_SEPARATOR.$d;
 				if ($d != '' && !is_dir($dir)) {
 					self::makeDir($dir);
 				}
