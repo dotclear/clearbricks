@@ -27,6 +27,7 @@ config:
 dist: config dist-tgz dist-zip
 
 deb:
+	cp ./README debian/README
 	dpkg-buildpackage -rfakeroot
 
 dist-tgz:
