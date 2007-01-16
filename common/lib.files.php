@@ -173,10 +173,11 @@ class files
 	public static function touch($f)
 	{
 		if (is_writable($f)) {
-			$c = implode('',file($f));
-			if ($fp = @fopen($f,'ab')) {
-				fwrite($fp,$c,strlen($c));
-				fclose($fp);
+			if (function_exists('touch')) {
+				@touch($f);
+			} else {
+				# Very bad hack
+				@file_put_contents($f,file_get_contents($f));
 			}
 		}
 	}
