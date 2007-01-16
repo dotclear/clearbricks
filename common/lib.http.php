@@ -418,6 +418,7 @@ class http
 		
 		foreach ($input as $k => $v) { 
 			if (!in_array($k,$no_unset) && isset($GLOBALS[$k]) ) {
+				$GLOBALS[$k] = NULL;
 				unset($GLOBALS[$k]);
 			}
 		}
