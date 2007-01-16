@@ -11,7 +11,7 @@ configure-stamp:
 	touch configure-stamp
 	
 	# We create the changelog
-	debian/mkdcl.php
+	test -d .svn && debian/mkdcl.php || echo "no changelog change"
 
 build: build-stamp
 
