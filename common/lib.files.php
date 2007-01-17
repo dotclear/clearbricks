@@ -216,9 +216,10 @@ class files
 		}
 		else
 		{
-			if (@mkdir($f,fileperms(dirname($f))) === false) {
+			if (@mkdir($f) === false) {
 				throw new Exception(__('Unable to create directory.'));
 			}
+			chmod($f,fileperms(dirname($f)));
 		}
 	}
 	
