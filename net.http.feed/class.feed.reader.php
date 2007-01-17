@@ -213,6 +213,7 @@ class feedReader extends netHttp
 					{
 						fwrite($fp, serialize($feed));
 						fclose($fp);
+						chmod($cached_file,fileperms(dirname($cached_file)));
 					}
 					return $feed;
 				}
