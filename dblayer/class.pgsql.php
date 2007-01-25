@@ -35,9 +35,20 @@ class pgsqlConnection extends dbLayer implements i_dbLayer
 	private function get_connection_string($host,$user,$password,$database)
 	{
 		$str = '';
+		$port = false;
 		
-		if ($host) {
+		if ($host)
+		{
+			if (strpos($host,':') !== false) {
+				$bits = explode(':',$host);
+				$host = array_shift($bits);
+				$port = abs((integer) array_shift($bits));
+			}
 			$str .= "host = '".addslashes($host)."' ";
+			
+			if ($port) {
+				$str .= 'port = '.$port.' ';
+			}
 		}
 		if ($user) {
 			$str .= "user = '".addslashes($user)."' ";
