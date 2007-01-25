@@ -325,7 +325,7 @@ class text
 				$a = ord($c);
 				
 				if ($a < 32 || $a == 61 || $a > 126) {
-					$c = sprintf('=%X',$a);
+					$c = sprintf('=%02X',$a);
 				}
 				
 				$l .= $c;
