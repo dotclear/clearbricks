@@ -85,6 +85,7 @@ class netHttp extends netSocket
 	
 	# Response vars
 	protected $status;					///<	<b>integer</b>		HTTP Status code
+	protected $status_string;			///< <b>string</b>		HTTP Status string
 	protected $headers = array();			///<	<b>array</b>		Response headers
 	protected $content = '';				///<	<b>string</b>		Response body
 	
@@ -233,7 +234,7 @@ class netHttp extends netSocket
 				}
 				$http_version = $m[1]; # not used
 				$this->status = $m[2];
-				$status_string = $m[3]; # not used
+				$this->status_string = $m[3]; # not used
 				$this->debug($line);
 				continue;
 			}
