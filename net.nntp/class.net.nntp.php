@@ -291,7 +291,7 @@ class netNntp extends netSocket
 			}
 			return $res;
 		}
-		elseif ($r['status'] == self::NOT_IMPLEMENTED)
+		else
 		{
 			# newnews is not implemented, use xhdr instead
 			# First, we need to join the group
