@@ -37,6 +37,7 @@ class netNntp extends netSocket
 	const MORE_AUTH_INFO = 381;
 	const AUTH_REQUIRED = 480;
 	const AUTH_REJECTED = 482;
+	const NOT_IMPLEMENTED = 500;
 	const NO_PERMISSION = 502;
 	
 	protected $host;
@@ -270,33 +271,57 @@ class netNntp extends netSocket
 	
 	public function getNewArticles($ts,$group)
 	{
-		# First, we need to join the group
-		$g = $this->joinGroup($group);
+		$ts = $ts + dt::getTimeOffset('UTC',$ts);
 		
-		if ($g['count'] > 1000) {
-			$g['start_id'] = $g['end_id']-1000;
-		}
 		
-		# Then, xhdr on all group messages
-		$rsp = $this->write('xhdr date '.$g['start_id'].'-');
+		# First try with newnews
+		$rsp = $this->write('newnews '.$group.' '.dt::str('%y%m%d %H%M%S',$ts).' GMT');
 		$r = $this->parseResponse($rsp->current());
 		
-		if ($r['status'] == self::ARTICLE_HEAD)
+		if ($r['status'] == self::NEW_ARTICLES)
 		{
-			$ts = $ts + dt::getTimeOffset('UTC',$ts);
-			
 			$res = array();
+			$rsp->current(); # we don't want first matched article
 			foreach ($rsp as $buf)
 			{
 				if (self::eot($buf)) {
 					break;
 				}
-				$buf = preg_split('/\s/',$buf,2);
-				if (strtotime($buf[1]) > $ts) {
-					$res[] = $buf[0];
-				}
+				$res[] = trim($buf);
 			}
 			return $res;
+		}
+		elseif ($r['status'] == self::NOT_IMPLEMENTED)
+		{
+			# newnews is not implemented, use xhdr instead
+			# First, we need to join the group
+			$g = $this->joinGroup($group);
+			
+			if ($g['count'] > 1000) {
+				$g['start_id'] = $g['end_id']-1000;
+			}
+			
+			# Then, xhdr on all group messages
+			$rsp = $this->write('xhdr date '.$g['start_id'].'-');
+			$r = $this->parseResponse($rsp->current());
+			
+			if ($r['status'] == self::ARTICLE_HEAD)
+			{
+				$ts = $ts + dt::getTimeOffset('UTC',$ts);
+				
+				$res = array();
+				foreach ($rsp as $buf)
+				{
+					if (self::eot($buf)) {
+						break;
+					}
+					$buf = preg_split('/\s/',$buf,2);
+					if (strtotime($buf[1]) > $ts) {
+						$res[] = $buf[0];
+					}
+				}
+				return $res;
+			}
 		}
 		
 		throw new Exception($r['message'].' - ('.$r['status'].')');
