@@ -22,6 +22,8 @@
 
 class dt
 {
+	public static $display_timezone;
+
 	public static function str($p,$ts=NULL)
 	{
 		if ($ts === NULL) { $ts = time(); }
@@ -30,8 +32,17 @@ class dt
 		$p = preg_replace('/(?<!%)%(a|A)/','{{'.$hash.'__$1%w__}}',$p);
 		$p = preg_replace('/(?<!%)%(b|B)/','{{'.$hash.'__$1%m__}}',$p);
 		
-		$res = strftime($p,$ts);
-		
+		if ( self::$display_timezone ) {
+			$old_tz = date('T', time());
+
+			self::setTZ(self::$display_timezone);
+			$res = strftime($p,$ts);
+
+			self::setTZ($old_tz);
+		} else {
+			$res = strftime($p,$ts);
+		}
+
 		$res = preg_replace_callback('/{{'.$hash.'__(a|A|b|B)([0-9]{1,2})__}}/',array('self','_callback'),$res);
 		
 		return $res;
