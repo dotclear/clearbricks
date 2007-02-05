@@ -85,7 +85,7 @@ $__autoload['HttpClient']	= dirname(__FILE__).'/net.http/class.net.http.php';
 $__autoload['netNntp']		= dirname(__FILE__).'/net.nntp/class.net.nntp.php';
 $__autoload['nntpMessage']	= dirname(__FILE__).'/net.nntp/class.nntp.message.php';
 
-# Incutio XML/RPC Server
+# XML-RPC Client and Server
 $__autoload['IXR_Value']				= dirname(__FILE__).'/ext/incutio.ixr_library.php';
 $__autoload['IXR_Message']			= dirname(__FILE__).'/ext/incutio.ixr_library.php';
 $__autoload['IXR_Server']			= dirname(__FILE__).'/ext/incutio.ixr_library.php';
@@ -96,4 +96,14 @@ $__autoload['IXR_Date']				= dirname(__FILE__).'/ext/incutio.ixr_library.php';
 $__autoload['IXR_Base64']			= dirname(__FILE__).'/ext/incutio.ixr_library.php';
 $__autoload['IXR_IntrospectionServer']	= dirname(__FILE__).'/ext/incutio.ixr_library.php';
 $__autoload['IXR_ClientMulticall']	= dirname(__FILE__).'/ext/incutio.ixr_library.php';
+
+$__autoload['xmlrpcValue']				= dirname(__FILE__).'/net.xmlrpc/class.net.xmlrpc.php';
+$__autoload['xmlrpcMessage']				= dirname(__FILE__).'/net.xmlrpc/class.net.xmlrpc.php';
+$__autoload['xmlrpcRequest']				= dirname(__FILE__).'/net.xmlrpc/class.net.xmlrpc.php';
+$__autoload['xmlrpcDate']				= dirname(__FILE__).'/net.xmlrpc/class.net.xmlrpc.php';
+$__autoload['xmlrpcBase64']				= dirname(__FILE__).'/net.xmlrpc/class.net.xmlrpc.php';
+$__autoload['xmlrpcClient']				= dirname(__FILE__).'/net.xmlrpc/class.net.xmlrpc.php';
+$__autoload['xmlrpcClientMulticall']		= dirname(__FILE__).'/net.xmlrpc/class.net.xmlrpc.php';
+$__autoload['xmlrpcServer']				= dirname(__FILE__).'/net.xmlrpc/class.net.xmlrpc.php';
+$__autoload['xmlrpcIntrospectionServer']	= dirname(__FILE__).'/net.xmlrpc/class.net.xmlrpc.php';
 ?>
