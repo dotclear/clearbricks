@@ -22,9 +22,7 @@
 
 class dt
 {
-	public static $display_timezone;
-
-	public static function str($p,$ts=NULL)
+	public static function str($p,$ts=null,$tz=null)
 	{
 		if ($ts === NULL) { $ts = time(); }
 		
@@ -32,25 +30,25 @@ class dt
 		$p = preg_replace('/(?<!%)%(a|A)/','{{'.$hash.'__$1%w__}}',$p);
 		$p = preg_replace('/(?<!%)%(b|B)/','{{'.$hash.'__$1%m__}}',$p);
 		
-		if ( self::$display_timezone ) {
-			$old_tz = date('T', time());
-
-			self::setTZ(self::$display_timezone);
-			$res = strftime($p,$ts);
-
-			self::setTZ($old_tz);
-		} else {
-			$res = strftime($p,$ts);
+		if ($tz) {
+			$T = date('T');
+			self::setTZ($tz);
 		}
-
+		
+		$res = strftime($p,$ts);
+		
+		if ($tz) {
+			self::setTZ($T);
+		}
+		
 		$res = preg_replace_callback('/{{'.$hash.'__(a|A|b|B)([0-9]{1,2})__}}/',array('self','_callback'),$res);
 		
 		return $res;
 	}
 	
-	public static function dt2str($p,$dt)
+	public static function dt2str($p,$dt,$tz=null)
 	{
-		return dt::str($p,strtotime($dt));
+		return dt::str($p,strtotime($dt),$tz);
 	}
 	
 	public static function iso8601($ts,$tz='UTC')
@@ -69,11 +67,6 @@ class dt
 		return strftime('%a, %d %b %Y %H:%M:%S +'.$o,$ts);
 	}
 	
-	public static function toUTC($ts)
-	{
-		return $ts + self::getTimeOffset('UTC',$ts);
-	}
-	
 	public static function setTZ($tz)
 	{
 		if (function_exists('date_default_timezone_set')) {
@@ -84,24 +77,6 @@ class dt
 		if (!ini_get('safe_mode')) {
 			putenv('TZ='.$tz);
 		}
-	}
-	
-	private static function _callback($args)
-	{
-		$b = array(1=>'_Jan',2=>'_Feb',3=>'_Mar',4=>'_Apr',5=>'_May',6=>'_Jun',
-		7=>'_Jul',8=>'_Aug',9=>'_Sep',10=>'_Oct',11=>'_Nov',12=>'_Dec');
-		
-		$B = array(1=>'January',2=>'February',3=>'March',4=>'April',
-		5=>'May',6=>'June',7=>'July',8=>'August',9=>'September',
-		10=>'October',11=>'November',12=>'December');
-		
-		$a = array(1=>'_Mon',2=>'_Tue',3=>'_Wed',4=>'_Thu',5=>'_Fri',
-		6=>'_Sat',0=>'_Sun');
-		
-		$A = array(1=>'Monday',2=>'Tuesday',3=>'Wednesday',4=>'Thursday',
-		5=>'Friday',6=>'Saturday',0=>'Sunday');
-		
-		return __(${$args[1]}[(integer) $args[2]]);
 	}
 	
 	public static function getTimeOffset($utc_tz,$ts=false)
@@ -119,6 +94,20 @@ class dt
 		self::setTZ($server_tz);
 		
 		return $cur_offset-$server_offset;
+	}
+	
+	public static function toUTC($ts)
+	{
+		return $ts + self::getTimeOffset('UTC',$ts);
+	}
+	
+	public static function addTimeZone($tz,$ts=false)
+	{
+		if (!$ts) {
+			$ts = time();
+		}
+		
+		return $ts + self::getTimeOffset($tz,$ts);
 	}
 	
 	public static function getZones($flip=false,$groups=false)
@@ -152,6 +141,24 @@ class dt
 		}
 		
 		return $res;
+	}
+	
+	private static function _callback($args)
+	{
+		$b = array(1=>'_Jan',2=>'_Feb',3=>'_Mar',4=>'_Apr',5=>'_May',6=>'_Jun',
+		7=>'_Jul',8=>'_Aug',9=>'_Sep',10=>'_Oct',11=>'_Nov',12=>'_Dec');
+		
+		$B = array(1=>'January',2=>'February',3=>'March',4=>'April',
+		5=>'May',6=>'June',7=>'July',8=>'August',9=>'September',
+		10=>'October',11=>'November',12=>'December');
+		
+		$a = array(1=>'_Mon',2=>'_Tue',3=>'_Wed',4=>'_Thu',5=>'_Fri',
+		6=>'_Sat',0=>'_Sun');
+		
+		$A = array(1=>'Monday',2=>'Tuesday',3=>'Wednesday',4=>'Thursday',
+		5=>'Friday',6=>'Saturday',0=>'Sunday');
+		
+		return __(${$args[1]}[(integer) $args[2]]);
 	}
 }
 ?>
