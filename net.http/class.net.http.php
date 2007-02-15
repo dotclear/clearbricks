@@ -315,9 +315,8 @@ class netHttp extends netSocket
 		{
 			if (++$this->redirect_count >= $this->max_redirects)
 			{
-				throw new Exception('Number of redirects exceeded maximum ('.$this->max_redirects.')');
 				$this->redirect_count = 0;
-				return false;
+				throw new Exception('Number of redirects exceeded maximum ('.$this->max_redirects.')');
 			}
 			
 			$location = isset($this->headers['location']) ? $this->headers['location'] : '';
@@ -337,6 +336,7 @@ class netHttp extends netSocket
 					return $this->get($r_path);
 				}
 			}
+			$this->redirect_count = 0;
 		}
 		return true;
 	}
