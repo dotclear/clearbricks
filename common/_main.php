@@ -49,4 +49,7 @@ function __autoload($name)
 
 # We only need l10n __() function
 require_once dirname(__FILE__).'/lib.l10n.php';
+
+# We set default timezone to avoid warning
+dt::setTZ('UTC');
 ?>
