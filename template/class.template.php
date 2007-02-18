@@ -39,6 +39,12 @@ class template
 	
 	protected $compile_stack = array();
 	
+	# Inclusion variables
+	private static $superglobals = array('GLOBALS','_SERVER','_GET','_POST','_COOKIE','_FILES','_ENV','_REQUEST','_SESSION');
+	private static $_k;
+	private static $_n;
+	private static $_r;
+	
 	public function __construct($cache_dir,$self_name)
 	{
 		$this->setCacheDir($cache_dir);
@@ -179,24 +185,20 @@ class template
 	
 	public function getData($________)
 	{
-		$___sg = array('GLOBALS','_SERVER','_GET','_POST','_COOKIE','_FILES','_ENV','_REQUEST','_SESSION');
-		$___keys = array_keys($GLOBALS);
+		self::$_k = array_keys($GLOBALS);
 		
-		foreach ($___keys as $___n) {
-			if (!in_array($___n,$___sg)) {
-				global $$___n;
+		foreach (self::$_k as self::$_n) {
+			if (!in_array(self::$_n,self::$superglobals)) {
+				global ${self::$_n};
 			}
 		}
-		unset($___sg);
-		unset($___keys);
-		unset($___n);
 		
 		ob_start();
 		include $this->getFile($________);
-		$res = ob_get_contents();
+		self::$_r = ob_get_contents();
 		ob_end_clean();
 		
-		return $res;
+		return self::$_r;
 	}
 	
 	protected function compileFile($file)
