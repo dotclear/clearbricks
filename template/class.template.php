@@ -179,10 +179,17 @@ class template
 	
 	public function getData($________)
 	{
-		foreach ($GLOBALS as $k => $v) {
-			$$k =& $GLOBALS[$k];
-			global $$k;
+		$___sg = array('GLOBALS','_SERVER','_GET','_POST','_COOKIE','_FILES','_ENV','_REQUEST','_SESSION');
+		$___keys = array_keys($GLOBALS);
+		
+		foreach ($___keys as $___n) {
+			if (!in_array($___n,$___sg)) {
+				global $$___n;
+			}
 		}
+		unset($___sg);
+		unset($___keys);
+		unset($___n);
 		
 		ob_start();
 		include $this->getFile($________);
