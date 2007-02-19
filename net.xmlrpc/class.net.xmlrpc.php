@@ -529,6 +529,8 @@ class xmlrpcServer
 	protected $message;
 	protected $capabilities;
 	
+	public $strict_check = false;
+	
 	public function __construct($callbacks=false,$data=false,$encoding='UTF-8')
 	{
 		$this->encoding = $encoding;
@@ -556,24 +558,27 @@ class xmlrpcServer
 					throw new Exception('No Host Specified',400);
 				}
 				
-				# Check USER_AGENT
-				if (!isset($_SERVER['HTTP_USER_AGENT'])) {
-					throw new Exception('No User Agent Specified',400);
-				}
-				
-				# Check CONTENT_TYPE
-				if (!isset($_SERVER['CONTENT_TYPE']) || $_SERVER['CONTENT_TYPE'] != 'text/xml') {
-					throw new Exception('Invalid Content-Type',400);
-				}
-				
 				global $HTTP_RAW_POST_DATA;
 				if (!$HTTP_RAW_POST_DATA) {
 					throw new Exception('No Message',400);
 				}
 				
-				# Check CONTENT_LENGTH
-				if (!isset($_SERVER['CONTENT_LENGTH']) || $_SERVER['CONTENT_LENGTH'] != strlen($HTTP_RAW_POST_DATA)) {
-					throw new Exception('Invalid Content-Lenth',400);
+				if ($strict_check)
+				{
+					# Check USER_AGENT
+					if (!isset($_SERVER['HTTP_USER_AGENT'])) {
+						throw new Exception('No User Agent Specified',400);
+					}
+					
+					# Check CONTENT_TYPE
+					if (!isset($_SERVER['CONTENT_TYPE']) || strpos($_SERVER['CONTENT_TYPE'],'text/xml') !== 0) {
+						throw new Exception('Invalid Content-Type',400);
+					}
+					
+					# Check CONTENT_LENGTH
+					if (!isset($_SERVER['CONTENT_LENGTH']) || $_SERVER['CONTENT_LENGTH'] != strlen($HTTP_RAW_POST_DATA)) {
+						throw new Exception('Invalid Content-Lenth',400);
+					}
 				}
 				
 				$data = $HTTP_RAW_POST_DATA;
