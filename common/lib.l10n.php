@@ -143,18 +143,14 @@ class l10n
 		}
 	}
 	
-	public static function getHtmlFile($dir,$file,$lang)
+	public static function getFilePath($dir,$file,$lang)
 	{
 		$f = $dir.'/'.$lang.'/'.$file;
 		if (!file_exists($f)) {
 			$f = $dir.'/en/'.$file;
 		}
 		
-		if (!file_exists($f)) {
-			return '<p>No file.</p>';
-		} else {
-			return implode('',file($f));
-		}
+		return file_exists($f) ? $f : false;
 	}
 	
 	public static function getISOcodes($flip=false)
