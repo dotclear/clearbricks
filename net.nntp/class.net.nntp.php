@@ -385,7 +385,7 @@ class netNntp extends netSocket
 		$headers['Content-Transfer-Encoding'] = 'quoted-printable';
 		
 		$content = mailConvert::rewrap($content);
-		$content = preg_replace('/^\.(\r?\n)/msu','..$1',$content);
+		$content = preg_replace('/^\./msu','..$1',$content);
 		$content = text::QPEncode($content);
 		
 		$data = array();
