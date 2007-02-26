@@ -270,7 +270,7 @@ class htmlFilter
 	);
 	
 	private $tags = array(
-	'a'			=> array('accesskey','charset','coords','dir','href',
+	'a'			=> array('accesskey','charset','class','coords','dir','href',
 				'hreflang','id','lang','name','onblur','onclick',
 				'ondblclick','onfocus','onkeydown','onkeypress','onkeyup',
 				'onmousedown','onmousemove','onmouseout','onmouseover',
