@@ -279,7 +279,7 @@ class netHttp extends netSocket
 		$this->outputClose();
 		
 		# If data is compressed, uncompress it
-		if ($this->getHeader('content-encoding')) {
+		if ($this->getHeader('content-encoding') && $this->use_gzip) {
 			$this->debug('Content is gzip encoded, unzipping it');
 			# See http://www.php.net/manual/en/function.gzencode.php
 			$this->content = gzinflate(substr($this->content, 10));
