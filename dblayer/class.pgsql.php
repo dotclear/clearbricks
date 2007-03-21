@@ -183,42 +183,6 @@ class pgsqlConnection extends dbLayer implements i_dbLayer
 		}
 	}
 	
-	public function db_get_tables($handle)
-	{
-		$sql = "
-		SELECT table_name
-		FROM information_schema.tables
-		WHERE table_schema='public'
-		AND table_type='BASE TABLE'
-		ORDER BY table_name
-		";
-		
-		$c = $this->db_query($handle,$sql);
-		
-		$res = array();
-		while (($f = $this->db_fetch_assoc($c)) !== false) {
-			$res[] = $f['table_name'];
-		}
-		return $res;
-	}
-	
-	public function db_get_columns($handle,$table)
-	{
-		$sql = "
-		SELECT column_name AS name, udt_name AS type
-		FROM information_schema.columns
-		WHERE table_name = '".$this->db_escape_string($table)."'
-		";
-		
-		$c = $this->db_query($handle,$sql);
-		
-		$res = array();
-		while (($f = $this->db_fetch_assoc($c)) !== false) {
-			$res[$f['name']] = $f['type'];
-		}
-		return $res;
-	}
-	
 	public function db_last_error($handle)
 	{
 		if (is_resource($handle)) {

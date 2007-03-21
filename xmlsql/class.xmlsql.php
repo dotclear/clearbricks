@@ -36,7 +36,9 @@ class xmlsql
 		$this->con =& $con;
 		$this->xml = $xml;
 		
-		$this->tables = $this->con->getTables();
+		$schema = dbSchema::init($this->con);
+		$this->tables = $schema->getTables();
+		unset($schema);
 	}
 	
 	public function replace($str,$rep)

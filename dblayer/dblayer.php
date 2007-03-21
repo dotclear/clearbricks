@@ -159,25 +159,6 @@ interface i_dbLayer
 	function db_changes($handle,$res);
 	
 	/**
-	This method should return an array of all tables in database for the current
-	connection.
-	
-	@param	handle	<b>resource</b>	Resource link
-	@return	<b>array</b>
-	*/
-	function db_get_tables($handle);
-	
-	/**
-	This method should return an associative array of columns in given table
-	<var>$table</var> with column names in keys an types in values.
-	
-	@param	handle	<b>resource</b>	Resource link
-	@param	table	<b>string</b>		Table name
-	@return	<b>array</b>
-	*/
-	function db_get_columns($handle,$table);
-	
-	/**
 	This method should return the last error string for the current connection.
 	
 	@param	handle	<b>resource</b>	Resource link
@@ -253,6 +234,7 @@ class dbLayer
 		}
 		
 		$this->__version = $this->db_version($this->__link);
+		$this->__database = $database;
 	}
 	
 	/**
@@ -281,6 +263,16 @@ class dbLayer
 	public function version()
 	{
 		return $this->__version;
+	}
+	
+	/**
+	Returns current database name
+	
+	@return	<b>string</b>
+	*/
+	public function database()
+	{
+		return $this->__database;
 	}
 	
 	/**
@@ -368,27 +360,6 @@ class dbLayer
 	*/
 	public function vacuum($table)
 	{
-	}
-	
-	/**
-	Returns an array of all table names.
-	
-	@return	<b>array</b>
-	*/
-	public function getTables()
-	{
-		return $this->db_get_tables($this->__link);
-	}
-	
-	/**
-	Return an array of columns (name and type) of a given table.
-	
-	@param	table	<b>string</b>		Table name
-	@return	<b>array</b>
-	*/
-	public function getColumns($table)
-	{
-		return $this->db_get_columns($this->__link,$table);
 	}
 	
 	/**
