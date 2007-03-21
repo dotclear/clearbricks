@@ -155,49 +155,6 @@ class sqliteConnection extends dbLayer implements i_dbLayer
 		}
 	}
 	
-	public function db_get_tables($handle)
-	{
-		$sql = 'SHOW TABLES';
-		
-		$res = array();
-		$sql = "
-		Select * from
-		( select 'main' as TABLE_CATALOG , 'sqlite' as TABLE_SCHEMA ,
-		tbl_name as TABLE_NAME , case when type = 'table'
-		then 'BASE TABLE' when type = 'view' then 'VIEW'
-		end as TABLE_TYPE, sql as TABLE_SOURCE from sqlite_master
-		where type in('table','view')
-		and tbl_name not like 'INFORMATION_SCHEMA_%'
-		union select 'main' as TABLE_CATALOG , 'sqlite' as TABLE_SCHEMA,
-		tbl_name as TABLE_NAME , case when type = 'table'
-		then 'TEMPORARY TABLE' when type = 'view'
-		then 'TEMPORARY VIEW' end as TABLE_TYPE, sql as
-		TABLE_SOURCE from sqlite_temp_master where type in('table','view')
-		and tbl_name not like 'INFORMATION_SCHEMA_%' )
-		BT order by TABLE_TYPE , TABLE_NAME
-		";
-		
-		$c = $this->db_query($handle,$sql);
-		
-		$res = array();
-		while (($f = $this->db_fetch_assoc($c)) !== false) {
-			//$res[] = current($f);
-			$res[] = $f['TABLE_NAME'];
-		}
-		return $res;
-		
-	}
-	
-	public function db_get_columns($handle,$table)
-	{
-		if (is_resource($handle))
-		{
-			$cols = @sqlite_fetch_column_types($table,$handle);
-			return $cols !== false ? $cols : array();
-		}
-		return array();
-	}
-	
 	public function db_last_error($handle)
 	{
 		if (is_resource($handle))

@@ -162,30 +162,6 @@ class mysqlConnection extends dbLayer implements i_dbLayer
 		}
 	}
 	
-	public function db_get_tables($handle)
-	{
-		$sql = 'SHOW TABLES';
-		$c = $this->db_query($handle,$sql);
-		
-		$res = array();
-		while (($f = $this->db_fetch_assoc($c)) !== false) {
-			$res[] = current($f);
-		}
-		return $res;
-	}
-	
-	public function db_get_columns($handle,$table)
-	{
-		$sql = 'SHOW COLUMNS FROM '.$this->escapeSystem($table);
-		$c = $this->db_query($handle,$sql);
-		
-		$res = array();
-		while (($f = $this->db_fetch_assoc($c)) !== false) {
-			$res[$f['Field']] = $f['Type'];
-		}
-		return $res;
-	}
-	
 	public function db_last_error($handle)
 	{
 		if (is_resource($handle))
