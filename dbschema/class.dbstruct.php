@@ -344,6 +344,11 @@ class dbStruct
 		
 		# Flush execution stack
 		$schema->flushStack();
+		
+		return
+		count($table_create) + count($key_create) + count($index_create) +
+		count($reference_create) + count($field_create) + count($field_update) +
+		count($key_update) + count($index_update) + count($reference_update);
 	}
 	
 	public function getTables()
