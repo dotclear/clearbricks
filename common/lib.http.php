@@ -22,6 +22,8 @@
 
 class http
 {
+	public static $https_scheme_on_443 = false;
+	
 	/**
 	@function getHost
 	
@@ -31,7 +33,12 @@ class http
 	{
 		$server_name = explode(':',$_SERVER['HTTP_HOST']);
 		$server_name = $server_name[0];
-		if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on')
+		if (self::$https_scheme_on_443 && $_SERVER['SERVER_PORT'] == '443')
+		{
+			$scheme = 'https';
+			$port = '';
+		}
+		elseif (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on')
 		{
 			$scheme = 'https';
 			$port = ($_SERVER['SERVER_PORT'] != '443') ? ':'.$_SERVER['SERVER_PORT'] : '';
