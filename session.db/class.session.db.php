@@ -28,12 +28,13 @@ class sessionDB
 	private $cookie_path;
 	private $ttl = '-120 minutes';
 	
-	public function __construct(&$con,$table,$cookie_name,$cookie_path='/')
+	public function __construct(&$con,$table,$cookie_name,$cookie_path='/',$cookie_secure=false)
 	{
 		$this->con =& $con;
 		$this->table = $table;
 		$this->cookie_name = $cookie_name;
 		$this->cookie_path = $cookie_path;
+		$this->cookie_secure = $cookie_secure;
 		
 		if(function_exists('ini_set'))
 		{
@@ -42,6 +43,7 @@ class sessionDB
 			@ini_set('url_rewriter.tags','');
 			@ini_set('session.use_trans_sid','0');
 			@ini_set('session.cookie_path',$this->cookie_path);
+			@ini_set('session.cookie_secure',$this->cookie_secure);
 		}
 	}
 	
@@ -76,7 +78,7 @@ class sessionDB
 		$_SESSION = array();
 		session_unset();
 		session_destroy();
-		setcookie(session_name(),'',0,$this->cookie_path);
+		setcookie(session_name(),false,-600,$this->cookie_path,$this->cookie_secure);
 	}
 	
 	
