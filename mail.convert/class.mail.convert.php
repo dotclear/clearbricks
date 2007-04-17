@@ -55,6 +55,7 @@ class mailConvert
 		
 		if ($with_signature && preg_match('/^(-- \r?\n.+?)\Z/msu',$str,$m))
 		{
+			$m[1] = preg_replace('/^-- \r?\n/msu','',$m[1]);
 			$signature = '<pre class="signature">'.$this->htmlParseBlock($m[1]).'</pre>';
 			$str = preg_replace('/^-- \r?\n(.+?)\Z/msu','',$str);
 			$str = rtrim($str);
