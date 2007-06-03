@@ -31,7 +31,7 @@ class dt
 		$p = preg_replace('/(?<!%)%(b|B)/','{{'.$hash.'__$1%m__}}',$p);
 		
 		if ($tz) {
-			$T = date('T');
+			$T = self::getTZ();
 			self::setTZ($tz);
 		}
 		
@@ -78,6 +78,15 @@ class dt
 			putenv('TZ='.$tz);
 		}
 	}
+
+	public static function getTZ()
+	{
+		if (function_exists('date_default_timezone_get')) {
+			return date_default_timezone_get();
+		}
+
+		return date('T');
+	}
 	
 	public static function getTimeOffset($utc_tz,$ts=false)
 	{
@@ -85,7 +94,7 @@ class dt
 			$ts = time();
 		}
 		
-		$server_tz = date('T',$ts);
+		$server_tz = self::getTZ();
 		$server_offset = date('Z',$ts);
 		
 		self::setTZ($utc_tz);
