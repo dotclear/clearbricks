@@ -28,12 +28,12 @@ class sessionDB
 	private $cookie_path;
 	private $ttl = '-120 minutes';
 	
-	public function __construct(&$con,$table,$cookie_name,$cookie_path='/',$cookie_domain='',$cookie_secure=false)
+	public function __construct(&$con,$table,$cookie_name,$cookie_path=null,$cookie_domain=null,$cookie_secure=false)
 	{
 		$this->con =& $con;
 		$this->table = $table;
 		$this->cookie_name = $cookie_name;
-		$this->cookie_path = $cookie_path;
+		$this->cookie_path = is_null($cookie_path) ? '/' : $cookie_path;
 		$this->cookie_domain = $cookie_domain;
 		$this->cookie_secure = $cookie_secure;
 		
