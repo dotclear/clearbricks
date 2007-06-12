@@ -563,7 +563,7 @@ class xmlrpcServer
 					throw new Exception('No Message',400);
 				}
 				
-				if ($strict_check)
+				if ($this->strict_check)
 				{
 					# Check USER_AGENT
 					if (!isset($_SERVER['HTTP_USER_AGENT'])) {
