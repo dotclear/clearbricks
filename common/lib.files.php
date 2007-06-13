@@ -225,7 +225,7 @@ class files
 	
 	public static function putContent($f, $f_content)
 	{
-		if (!is_writable($f)) {
+		if (file_exists($f) && !is_writable($f)) {	
 			throw new Exception(__('File is not writable.'));
 		}
 		
