@@ -210,7 +210,10 @@ class filemanager
 		$s = $this->root.'/'.path::clean($s);
 		$d = $this->root.'/'.path::clean($d);
 		
-		$s = path::real($s);
+		if (($s = path::real($s)) === false) {
+			throw new Exception(__('Source file does not exist.'));
+		}
+		
 		$dest_dir = path::real(dirname($d));
 		
 		if (!$this->inJail($s)) {
