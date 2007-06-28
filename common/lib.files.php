@@ -134,6 +134,7 @@ class files
 			'vivo'	=> 'video/vnd.vivo',
 			'qt'		=> 'video/quicktime',
 			'mov'	=> 'video/quicktime',
+			'flv'	=> 'video/x-flv',
 			'avi'	=> 'video/x-msvideo'
 		);
 	}
