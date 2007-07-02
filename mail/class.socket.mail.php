@@ -100,10 +100,19 @@ class socketMail
 	private static function getFrom($headers)
 	{
 		$f = '';
-		if (preg_match('/^from:(?:[ <]+)(.*?)(?:$|>)/msi',$headers,$m)) {
+		
+		if (preg_match('/^from: (.+?)$/msi',$headers,$m)) {
 			$f = trim($m[1]);
-		} else {
+		}
+		
+		if (preg_match('/(?:<)(.+?)(?:$|>)/si',$f,$m)) {
+			$f = trim($m[1]);
+		} elseif (preg_match('/^(.+?)\(/si',$f,$m)) {
+			$f = trim($m[1]);
+		} elseif (!text::isEmail($f)) {
 			$f = trim(ini_get('sendmail_from'));
+		} else {
+			$f = '';
 		}
 		
 		if (!$f) {
