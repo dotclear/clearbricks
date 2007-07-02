@@ -142,7 +142,7 @@ class svnInfo
 {
 	public static function getCurrentRevision()
 	{
-		$info = `svn info`;
+		$info = `export LANG=C; svn info`;
 		if (preg_match('/^Revision: (\d+)/ms',$info,$m)) {
 			return (integer) $m[1];
 		} else {
@@ -152,7 +152,7 @@ class svnInfo
 	
 	public static function getChangeLog($fromrev,$torev)
 	{
-		$log = `svn log -r $fromrev:$torev`;
+		$log = `export LANG=C;svn log -r $fromrev:$torev`;
 		$log = explode("\n",$log);
 		
 		# Remove two last lines
