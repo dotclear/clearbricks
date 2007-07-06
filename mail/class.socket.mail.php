@@ -111,8 +111,6 @@ class socketMail
 			$f = trim($m[1]);
 		} elseif (!text::isEmail($f)) {
 			$f = trim(ini_get('sendmail_from'));
-		} else {
-			$f = '';
 		}
 		
 		if (!$f) {
