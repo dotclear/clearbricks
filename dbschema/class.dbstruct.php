@@ -68,7 +68,7 @@ class dbStruct
 			
 			foreach ($cols as $c_name => $col) {
 				$type = $schema->dbt2udt($col['type'],$col['len'],$col['default']);
-				$t->field($c_name,$type,$col['len'],$col['null'],$col['default']);
+				$t->field($c_name,$type,$col['len'],$col['null'],$col['default'],true);
 			}
 			
 			# Get keys
@@ -337,7 +337,6 @@ class dbStruct
 		foreach ($reference_update as $tname => $ref)
 		{
 			foreach ($ref as $rname => $r) {
-				//$schema->alterReference($name,$newname,$c_table,$name,$c_cols,$p_table,$p_cols,$update,$delete);
 				$schema->alterReference($rname,$r['name'],$tname,$r['c_cols'],$r['p_table'],$r['p_cols'],$r['update'],$r['delete']);
 			}
 		}
@@ -522,11 +521,17 @@ class dbStructTable
 		return false;
 	}
 	
-	public function field($name,$type,$len,$null=true,$default=false)
+	public function field($name,$type,$len,$null=true,$default=false,$to_null=false)
 	{
 		$type = strtolower($type);
-		if (!in_array($type,$this->allowed_types)) {
-			throw new Exception('Invalid data type '.$type.' in schema');
+		
+		if (!in_array($type,$this->allowed_types))
+		{
+			if ($to_null) {
+				$type = null;
+			} else {
+				throw new Exception('Invalid data type '.$type.' in schema');
+			}
 		}
 		
 		$this->fields[$name] = array(
