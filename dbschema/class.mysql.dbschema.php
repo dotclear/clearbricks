@@ -40,8 +40,9 @@ class mysqlSchema extends dbSchema implements i_dbSchema
 				}
 				return 'timestamp';
 			case 'integer':
+			case 'mediumint':
 				if ($len == 11) { $len = 0; }
-				break;
+				return 'integer';
 			case 'bigint':
 				if ($len == 20) { $len = 0; }
 				break;
