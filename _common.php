@@ -38,6 +38,9 @@ $__autoload['feedReader']	= dirname(__FILE__).'/net.http.feed/class.feed.reader.
 # HTML Filter
 $__autoload['htmlFilter']	= dirname(__FILE__).'/html.filter/class.html.filter.php';
 
+# HTML Validator
+$__autoload['htmlValidator']	= dirname(__FILE__).'/html.validator/class.html.validator.php';
+
 # Image Manipulation Tools
 $__autoload['imageMeta']		= dirname(__FILE__).'/image/class.image.meta.php';
 $__autoload['imageTools']	= dirname(__FILE__).'/image/class.image.tools.php';
