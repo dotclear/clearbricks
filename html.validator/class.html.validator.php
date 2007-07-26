@@ -20,6 +20,11 @@
 #
 # ***** END LICENSE BLOCK *****
 
+/**
+@ingroup CLEARBRICKS
+@brief HTML markup validation class
+*/
+
 class htmlValidator extends netHttp
 {
 	protected $host = 'www.htmlhelp.com';
