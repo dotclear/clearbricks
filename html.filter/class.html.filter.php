@@ -101,7 +101,7 @@ class htmlFilter
 				'wrap' => 80
 			);
 			
-			$str = '<div>'.$str.'</div>'; // Fixes a big issue
+			$str = '<p>tt</p>'.$str; // Fixes a big issue
 			
 			$tidy = new tidy;
 			$tidy->parseString($str, $config, 'utf8');
@@ -109,8 +109,7 @@ class htmlFilter
 			
 			$str = (string) $tidy;
 			
-			$str = preg_replace('#^<div>#','',$str);
-			$str = preg_replace('#</div>$#','',$str);
+			$str = preg_replace('#^<p>tt</p>\s?#','',$str);
 		}
 		else
 		{
