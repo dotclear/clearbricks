@@ -101,11 +101,16 @@ class htmlFilter
 				'wrap' => 80
 			);
 			
+			$str = '<div>'.$str.'</div>'; // Fixes a big issue
+			
 			$tidy = new tidy;
 			$tidy->parseString($str, $config, 'utf8');
 			$tidy->cleanRepair();
 			
 			$str = (string) $tidy;
+			
+			$str = preg_replace('#^<div>#','',$str);
+			$str = preg_replace('#</div>$#','',$str);
 		}
 		else
 		{
