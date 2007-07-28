@@ -23,6 +23,7 @@
 class html
 {
 	public static $url_root;
+	public static $absolute_regs = array();
 	
 	/**
 	@function escapeHTML
@@ -148,7 +149,13 @@ class html
 		self::$url_root = $root;
 		$attr = 'action|background|cite|classid|codebase|data|href|longdesc|profile|src|usemap';
 		
-		return preg_replace_callback('/((?:'.$attr.')=")(.*?)(")/msu',array('self','absoluteURLHandler'),$str);
+		$str = preg_replace_callback('/((?:'.$attr.')=")(.*?)(")/msu',array('self','absoluteURLHandler'),$str);
+		
+		foreach (self::$absolute_regs as $r) {
+			$str = preg_replace_callback($r,array('self','absoluteURLHandler'),$str);
+		}
+		
+		return $str;
 	}
 	
 	private static function absoluteURLHandler($m)
