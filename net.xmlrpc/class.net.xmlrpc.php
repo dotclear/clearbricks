@@ -560,7 +560,10 @@ class xmlrpcServer
 				
 				global $HTTP_RAW_POST_DATA;
 				if (!$HTTP_RAW_POST_DATA) {
-					throw new Exception('No Message',400);
+					$HTTP_RAW_POST_DATA = @file_get_contents('php://input');
+					if (!$HTTP_RAW_POST_DATA) {
+						throw new Exception('No Message',400);
+					}
 				}
 				
 				if ($this->strict_check)
