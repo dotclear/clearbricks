@@ -33,6 +33,11 @@ class dbStruct
 		$this->prefix = $prefix;
 	}
 	
+	public function driver()
+	{
+		return $this->con->driver();
+	}
+	
 	public function table($name)
 	{
 		$this->tables[$name] = new dbStructTable($name);
@@ -139,7 +144,7 @@ class dbStruct
 		{
 			if (!$this->tableExists($tname))
 			{
-				# Table does not exists, create table
+				# Table does not exist, create table
 				$table_create[$tname] = $t->getFields();
 				
 				# Add keys, indexes and references
@@ -169,7 +174,7 @@ class dbStruct
 				{
 					if (!$this->tables[$tname]->fieldExists($fname))
 					{
-						# Field doest not exists, create it
+						# Field doest not exist, create it
 						$field_create[$tname][$fname] = $f;
 						$got_work = true;
 					}
@@ -196,7 +201,7 @@ class dbStruct
 					$db_kname = $this->tables[$tname]->keyExists($kname,$k['type'],$k['cols']);
 					if (!$db_kname)
 					{
-						# Key does not exists, create it
+						# Key does not exist, create it
 						$key_create[$tname][$kname] = $k;
 						$got_work = true;
 					}
@@ -219,7 +224,7 @@ class dbStruct
 					
 					if (!$db_iname)
 					{
-						# Index does not exists, create it
+						# Index does not exist, create it
 						$index_create[$tname][$iname] = $i;
 						$got_work = true;
 					}
@@ -243,7 +248,7 @@ class dbStruct
 					
 					if (!$db_rname)
 					{
-						# Reference does not exists, create it
+						# Reference does not exist, create it
 						$reference_create[$tname][$rname] = $r;
 						$got_work = true;
 					}
@@ -625,8 +630,8 @@ class dbStructTable
 	protected function checkCols($cols)
 	{
 		foreach ($cols as $v) {
-			if (!isset($this->fields[$v])) {
-				throw new Exception(sprintf('Field %s does not exists in table %s',$v,$this->name));
+			if (!preg_match('/^\(.*?\)$/',$v) && !isset($this->fields[$v])) {
+				throw new Exception(sprintf('Field %s does not exist in table %s',$v,$this->name));
 			}
 		}
 	}
