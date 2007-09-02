@@ -140,7 +140,7 @@ class text
 	Cuts a string on spaces.
 	
 	@param	string	str		String to cut
-	@param	integer	l		Lenght to keep
+	@param	integer	l		Length to keep
 	@return	string
 	*/
 	public static function cutString($str,$l)
@@ -150,13 +150,13 @@ class text
 		$res = '';
 		$L = 0;
 		
-		if (strlen($s[0]) >= $l) {
-			return substr($s[0],0,$l);
+		if (mb_strlen($s[0]) >= $l) {
+			return mb_substr($s[0],0,$l);
 		}
 		
 		foreach ($s as $v)
 		{
-			$L = $L+strlen($v);
+			$L = $L+mb_strlen($v);
 			
 			if ($L > $l) {
 				break;
