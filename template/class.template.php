@@ -40,10 +40,10 @@ class template
 	protected $compile_stack = array();
 	
 	# Inclusion variables
-	private static $superglobals = array('GLOBALS','_SERVER','_GET','_POST','_COOKIE','_FILES','_ENV','_REQUEST','_SESSION');
-	private static $_k;
-	private static $_n;
-	private static $_r;
+	protected static $superglobals = array('GLOBALS','_SERVER','_GET','_POST','_COOKIE','_FILES','_ENV','_REQUEST','_SESSION');
+	protected static $_k;
+	protected static $_n;
+	protected static $_r;
 	
 	public function __construct($cache_dir,$self_name)
 	{
