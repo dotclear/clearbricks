@@ -24,6 +24,7 @@ require dirname(__FILE__).'/common/_main.php';
 
 # Database Abstraction Layer
 $__autoload['dbLayer']		= dirname(__FILE__).'/dblayer/dblayer.php';
+$__autoload['dbRecord']		= dirname(__FILE__).'/dblayer/dblayer.php';
 $__autoload['dbStruct']		= dirname(__FILE__).'/dbschema/class.dbstruct.php';
 $__autoload['dbSchema']		= dirname(__FILE__).'/dbschema/class.dbschema.php';
 
