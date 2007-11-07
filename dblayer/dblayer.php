@@ -23,8 +23,6 @@
 /// @defgroup CB_DBLAYER Clearbricks Database Abstraction Layer
 /// @ingroup CLEARBRICKS
 
-require dirname(__FILE__).'/class.cursor.php';
-
 /**
 @ingroup CB_DBLAYER
 @brief Clearbricks Database Abstraction Layer interface
@@ -83,15 +81,6 @@ interface i_dbLayer
 	@return	<b>resource</b>
 	*/
 	function db_query($handle,$query);
-	
-	/**
-	This method should run an SQL query and return a resource result.
-	
-	@param	handle	<b>resource</b>	Resource link
-	@param	query	<b>string</b>		SQL query string
-	@return	<b>resource</b>
-	*/
-	function db_exec($handle,$query);
 	
 	/**
 	This method should return the number of fields in a result.
@@ -183,7 +172,7 @@ interface i_dbLayer
 Base class for database abstraction. Each driver extends this class and
 implements i_dbLayer interface.
 */
-class dbLayer
+abstract class dbLayer
 {
 	protected $__driver = null;		///< <b>string</b>		Driver name
 	protected $__version = null;		///< <b>string</b>		Database version
@@ -286,17 +275,24 @@ class dbLayer
 	}
 	
 	/**
-	Executes a query and return a recordset. Recordset could be either static
-	(default beahvior) or dynamic (useful for large results).
-	$query could be a string or an array of params for a previously prepared
-	query.
+	Executes a query and return a dbRecordset object.
+	$sql could be a string or a prepared statement. In this last case,
+	<var>$params</var> is supplied.
 	
-	@param	sql		<b>string</b>		SQL query
-	@return	<b>record</b>
+	@param	sql		<b>mixed</b>		SQL query or dbStatement instance
+	@param	params	<b>array</b>		Data array
+	@return	<b>dbRecordset</b>
 	*/
-	public function select($sql)
+	public function query($sql,$params=array())
 	{
-		$result = $this->db_query($this->__link,$sql);
+		if ($sql instanceof dbStatement) {
+			if (!is_array($params)) {
+				throw new Exception('Invalid statement parameters');
+			}
+			$result = $sql->execute($params);
+		} else {
+			$result = $this->db_query($this->__link,$sql);
+		}
 		
 		$this->__last_result =& $result;
 		
@@ -311,22 +307,7 @@ class dbLayer
 			$info['info']['type'][] = $this->db_field_type($result,$i);
 		}
 		
-		return new record($result,$info);
-	}
-	
-	/**
-	Executes a query and return true if query succeded.
-	
-	@param	sql		<b>string</b>		SQL query
-	@return	<b>boolean</b>
-	*/
-	public function execute($sql)
-	{
-		$result = $this->db_exec($this->__link,$sql);
-		
-		$this->__last_result =& $result;
-		
-		return true;
+		return new dbRecordset($result,$info);
 	}
 	
 	/**
@@ -512,36 +493,95 @@ class dbLayer
 	}
 	
 	/**
-	Returns a new instance of cursor class on <var>$table</var> for the current
+	Returns a new instance of dbStatement class for prepared query
+	<var>$query</var>.
+	
+	@param	query	<b>string</b>		Query to prepare
+	@return	<b>dbStatement</b>
+	*/
+	public function prepare($query)
+	{
+		return new dbStatement($this,$query);
+	}
+	
+	/**
+	Returns a new instance of dbCursor class on <var>$table</var> for the current
 	connection.
 	
 	@param	table	<b>string</b>		Cursor table
-	@return	<b>cursor</b>
+	@return	<b>dbCursor</b>
 	*/
-	public function openCursor($table)
+	public function cursor($table)
 	{
-		return new cursor($this,$table);
+		return new dbCursor($this,$table);
 	}
 }
 
 /**
 @ingroup CB_DBLAYER
-@brief Query Result Record Class
+@brief Query statement class
+
+This class handles prepared queries. It is called by dbLayer::prepare() method.
+*/
+class dbStatement
+{
+	protected $con;			///< <b>dbLayer</b>		dbLayer instance
+	protected $query;			///< <b>string</b>		Query
+	
+	/**
+	Inits query statement.
+	
+	@param	con			<b>dbLayer</b>		dbLayer instance
+	@param	query		<b>string</b>		Query to prepare
+	*/
+	public function __construct(&$con,$query)
+	{
+		$this->con =& $con;
+		$this->query = $query;
+	}
+	
+	/**
+	Execute prepared query with given parameters <b>$params</b>. This method
+	is called by dbLayer::query().
+	
+	@param	params		<b>array</b>		Parameters
+	*/
+	public function execute($params)
+	{
+		$query = $this->query;
+		foreach ($params as $k => $v)
+		{
+			if (is_null($v)) {
+				$v = 'NULL';
+			} elseif (is_string($v)) {
+				$v = "'".$this->con->escape($v)."'";
+			}
+			
+			$query = preg_replace('/:'.preg_quote($k,'/').'/',$v,$query);
+		}
+		
+		return $this->con->db_query($this->con->link(),$query);
+	}
+}
+
+/**
+@ingroup CB_DBLAYER
+@brief Query Results Reccordset Class
 
 This class acts as an iterator over database query result. It does not fetch
 all results on instantiation and thus, depending on database engine, should not
 fill PHP process memory.
 */
-class record
+class dbRecordset implements Iterator
 {
-	protected $__link;				///< <b>resource</b>	Database resource link
-	protected $__result;			///< <b>resource</b>	Query result resource
-	protected $__info;				///< <b>array</b>		Result information array
-	protected $__extend = array();	///< <b>array</b>		List of static functions that extend record
+	protected $link;				///< <b>resource</b>	Database resource link
+	protected $result;				///< <b>resource</b>	Query result resource
+	protected $info;				///< <b>array</b>		Result information array
 	
-	protected $__index = 0;			///< <b>integer</b>		Current result position
-	protected $__row = false;		///< <b>array</b>		Current result row content
-	private $__fetch = false;
+	protected $index = 0;			///< <b>integer</b>		Current result position
+	protected $row = false;			///< <b>array</b>		Current result row content
+	
+	protected $record_class;			///< <b>string</b>		Record class name
 	
 	/**
 	Creates class instance from result link and some informations.
@@ -559,37 +599,135 @@ class record
 	*/
 	public function __construct($result,$info)
 	{
-		$this->__result = $result;
-		$this->__info = $info;
-		$this->__link = $info['con']->link();
-		$this->index(0);
+		$this->result = $result;
+		$this->info = $info;
+		$this->setRecordClass('dbRecord');
 	}
 	
 	/**
-	Converts this record to a staticRecord instance.
+	This method allows to declare a class name for objects returned while
+	fetching results. The class shoul inherit from dbRecord.
+	
+	@param	n		<b>string</b>		Class name
 	*/
-	public function toStatic()
+	public function setRecordClass($n)
 	{
-		return new staticRecord($this->__result,$this->__info);
+		if (class_exists($n,true) && is_subclass_of($n,'dbRecord')) {
+			$this->record_class = $n;
+		} else {
+			$this->record_class = 'dbRecord';
+		}
 	}
 	
 	/**
-	Magic call function. Calls function in $__extend array if exists, passing it
-	self object and arguments.
+	Returns an array of columns, with name as key and type as value.
+	
+	@return	<b>array</b>
 	*/
-	public function __call($f,$args)
+	public function columns()
 	{
-		if (isset($this->__extend[$f]))
-		{
-			array_unshift($args,$this);
-			return call_user_func_array($this->__extend[$f],$args);
+		return $this->info['info']['name'];
+	}
+	
+	/**
+	Returns an array of all rows in record.
+	
+	@return	<b>array</b>
+	*/
+	public function rows()
+	{
+		return $this->getData();
+	}
+	
+	private function getRecord($rows,&$con)
+	{
+		return new $this->record_class($rows,$con);
+	}
+	
+	private function setRow()
+	{
+		if (is_array($this->row)) {
+			return $this->row;
 		}
 		
-		trigger_error('Call to undefined method record::'.$f.'()',E_USER_ERROR);
+		$this->row = $this->info['con']->db_fetch_assoc($this->result);
+		
+		if ($this->row !== false)
+		{
+			foreach ($this->row as $k => $v) {
+				$this->row[] =& $this->row[$k];
+			}
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	private function getData()
+	{
+		$res = array();
+		foreach ($this as $k => $v) {
+			$res[$k] = $v->data();
+		}
+		
+		return $res;
+	}
+	
+	/* Iterator methods
+	--------------------------------------------------- */
+	/// @cond
+	public function rewind() {
+		# Nothing
+	}
+	
+	public function valid() {
+		return $this->index < $this->info['rows'];
+	}
+	
+	public function next() {
+		$this->index++;
+		$this->row = false;
+	}
+	
+	public function key() {
+		return $this->index;
+	}
+	
+	public function current() {
+		$this->setRow();
+		return $this->getRecord($this->row,$this->info['con']);
+	}
+	/// @endcond
+}
+
+/**
+@ingroup CB_DBLAYER
+@brief Row Query Result Record Class
+*/
+class dbRecord
+{
+	protected $__row;				///< <b>array</b>		Data result row
+	protected $__con;				///< <b>dbLayer</b>		dbLayer instance
+	
+	/**
+	Creates record instance for given row and dbLayer.
+	
+	@param	row		<b>array</b>		Data result row
+	@param	con		<b>dbLayer</b>		dbLayer instance
+	*/
+	public function __construct($row,&$con)
+	{
+		$this->__row = $row;
+		$this->__con =& $con;
 	}
 	
 	/**
 	Magic get method. Alias for field().
+	
+	@param	n		<b>string</b>		Field name
+	@return	<b>string</b>
 	*/
 	public function __get($n)
 	{
@@ -598,6 +736,9 @@ class record
 	
 	/**
 	Alias for field().
+	
+	@param	n		<b>string</b>		Field name
+	@return	<b>string</b>
 	*/
 	public function f($n)
 	{
@@ -616,371 +757,201 @@ class record
 	}
 	
 	/**
-	Returns true if a field exists.
-	
-	@param	n		<b>string</b>		Field name
-	@return	<b>string</b>
-	*/
-	public function exists($n)
-	{
-		return isset($this->__row[$n]);
-	}
-	
-	/**
-	Extends this instance capabilities by adding all public static methods of
-	<var>$class</var> to current instance. Class methods should take at least
-	this record as first parameter.
-	@see __call()
-	
-	@param	class	<b>string</b>		Class name
-	*/
-	public function extend($class)
-	{
-		if (!class_exists($class)) {
-			return;
-		}
-		
-		$c = new ReflectionClass($class);
-		foreach ($c->getMethods() as $m) {
-			if ($m->isStatic() && $m->isPublic()) {
-				$this->__extend[$m->name] = array($class,$m->name);
-			}
-		}
-	}
-	
-	private function setRow()
-	{
-		$this->__row = $this->__info['con']->db_fetch_assoc($this->__result);
-		
-		if ($this->__row !== false)
-		{
-			foreach ($this->__row as $k => $v) {
-				$this->__row[] =& $this->__row[$k];
-			}
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	
-	/**
-	Returns the current index position (O is first) or move to <var>$row</var> if
-	specified.
-	
-	@param	row		<b>integer</b>		Row number to move
-	@return	<b>integer</b>
-	*/
-	public function index($row=null)
-	{
-		if ($row === null) {
-			return $this->__index === null ? 0 : $this->__index;
-		}
-		
-		if ($row < 0 || $row+1 > $this->__info['rows']) {
-			return false;
-		}
-		
-		if ($this->__info['con']->db_result_seek($this->__result,(integer) $row))
-		{
-			$this->__index = $row;
-			$this->setRow();
-			$this->__info['con']->db_result_seek($this->__result,(integer) $row);
-			return true;
-		}
-		return false;
-	}
-	
-	/**
-	This method moves index to one position and return true until index is not
-	the last one. You can use it to loop over record. Example:
-	@code
-	<?php
-	while ($rs->fetch()) {
-		echo $rs->field1;
-	}
-	?>
-	@endcode
-	
-	@return	<b>boolean</b>
-	*/
-	public function fetch()
-	{
-		if (!$this->__fetch) {
-			$this->__fetch = true;
-			$i = -1;
-		} else {
-			$i = $this->__index;
-		}
-		
-		if (!$this->index($i+1)) {
-			$this->__fetch = false;
-			$this->__index = 0;
-			return false;
-		}
-		
-		return true;
-	}
-	
-	/**
-	Moves index to first position.
-	
-	@return	<b>boolean</b>
-	*/
-	public function moveStart()
-	{
-		return $this->index(0);
-	}
-	
-	/**
-	Moves index to last position.
-	
-	@return	<b>boolean</b>
-	*/
-	public function moveEnd()
-	{
-		return $this->index($this->__info['rows']-1);
-	}
-	
-	/**
-	Moves index to next position.
-	
-	@return	<b>boolean</b>
-	*/
-	public function moveNext()
-	{
-		return $this->index($this->__index+1);
-	}
-	
-	/**
-	Moves index to previous position.
-	
-	@return	<b>boolean</b>
-	*/
-	public function movePrev()
-	{
-		return $this->index($this->__index-1);
-	}
-	
-	/**
-	Returns true if index is at last position.
-	
-	@return	<b>boolean</b>
-	*/
-	public function isEnd()
-	{
-		return $this->__index+1 == $this->count();
-	}
-	
-	/**
-	Returns true if index is at first position.
-	
-	@return	<b>boolean</b>
-	*/
-	public function isStart()
-	{
-		return $this->__index <= 0;
-	}
-	
-	/**
-	Returns true if record contains no result.
-	
-	@return	<b>boolean</b>
-	*/
-	public function isEmpty()
-	{
-		return $this->count() == 0;
-	}
-	
-	/**
-	Returns number of rows in record.
-	
-	@return	<b>integer</b>
-	*/
-	public function count()
-	{
-		return $this->__info['rows'];
-	}
-	
-	/**
-	Returns an array of columns, with name as key and type as value.
+	Returns the raw data array.
 	
 	@return	<b>array</b>
 	*/
-	public function columns()
+	public function data()
 	{
-		return $this->__info['info']['name'];
-	}
-	
-	/**
-	Returns an array of all rows in record.
-	
-	@return	<b>array</b>
-	*/
-	public function rows()
-	{
-		return $this->getData();
-	}
-	
-	/**
-	Returns an array of all rows in record. This method is called by rows().
-	
-	@return	<b>array</b>
-	*/
-	protected function getData()
-	{
-		$res = array();
-		
-		if ($this->count() == 0) {
-			return $res;
-		}
-		
-		$this->__info['con']->db_result_seek($this->__result,0);
-		while (($r = $this->__info['con']->db_fetch_assoc($this->__result)) !== false) {
-			foreach ($r as $k => $v) {
-				$r[] =& $r[$k];
-			}
-			$res[] = $r;
-		}
-		$this->__info['con']->db_result_seek($this->__result,$this->__index);
-		
-		return $res;
+		return $this->__row;
 	}
 }
 
 /**
 @ingroup CB_DBLAYER
-@brief Query Result Static Record Class
-
-Unlike record class, this one contains all results in an associative array.
+@brief Database INSERT/UPDATE helper
 */
-class staticRecord extends record
+class dbCursor
 {
-	public $__data = array();	///< <b>array</b>	Data array
-	private $__sortfield;
-	private $__sortsign;
-	
-	public function __construct($result,$info)
-	{
-		if (is_array($result))
-		{
-			$this->__info = $info;
-			$this->__data = $result;
-		}
-		else
-		{
-			parent::__construct($result,$info);
-			$this->__data = parent::getData();
-		}
-		
-		unset($this->__link);
-		unset($this->__result);
-	}
+	protected $__con;				///< <b>dbLayer</b>		dbLayer instance
+	protected $__data = array();		///< <b>array</b>		Data to insert
+	protected $__table;				///< <b>string</b>		Table name
+	protected $__stmt;				///< <b>dbStatement</b>	dbStatement instance
+	protected $__stmt_query;			///< <b>string</b>		Full query for statement
 	
 	/**
-	Returns a new instance of object from an associative array.
+	Creates class instance from dbLayer instance and table name.
 	
-	@param	data		<b>array</b>		Data array
-	@return	<b>staticRecord</b>
+	@param	con		<b>dbLayer</b>		dbLayer instance
+	@param	table	<b>string</b>		Table name
 	*/
-	public static function newFromArray($data)
+	public function __construct(&$con,$table)
 	{
-		if (!is_array($data)) {
-			$data = array();
-		}
-		
-		$data = array_values($data);
-		
-		if (empty($data) || !is_array($data[0])) {
-			$cols = 0;
-		} else {
-			$cols = count($data[0]);
-		}
-		
-		$info = array(
-			'con' => null,
-			'info' => null,
-			'cols' => $cols,
-			'rows' => count($data)
-		);
-		
-		return new self($data,$info);
-	}
-	
-	public function field($n)
-	{
-		return $this->__data[$this->__index][$n];
-	}
-	
-	public function index($row=null)
-	{
-		if ($row === null) {
-			return $this->__index;
-		}
-		
-		if ($row < 0 || $row+1 > $this->__info['rows']) {
-			return false;
-		}
-		
-		$this->__index = $row;
-		return true;
-	}
-	
-	public function rows()
-	{
-		return $this->__data;
+		$this->__con =& $con;
+		$this->__table = $table;
 	}
 	
 	/**
-	Changes value of a given field in the current row.
+	Sets field value.
 	
-	@param	n	<b>string</b>		Field name
-	@param	v	<b>mixed</b>		Field value
+	@param	n		<b>string</b>		Field name
+	@param	v		<b>mixed</b>		Field value
 	*/
 	public function set($n,$v)
 	{
-		if ($this->__index === null) {
-			return false;
+		if (!preg_match('/^[a-zA-Z0-9_]+$/',$n)) {
+			throw new Exception('Invalid field name');
 		}
-		
-		$this->__data[$this->__index][$n] = $v;
+		$this->__data[$n] = $v;
 	}
 	
 	/**
-	Sorts values by a field in a given order.
+	Retrieve named <var>$n</var> field value.
 	
-	@param	field	<b>string</b>		Field name
-	@param	order	<b>string</b>		Sort type (asc or desc)
+	@param	n		<b>string</b>		Field name
+	@return	<b>mixed</b>
 	*/
-	public function sort($field,$order='asc')
+	public function get($n)
 	{
-		if (!isset($this->__data[0][$field])) {
-			return false;
+		if (isset($this->__data[$n])) {
+			return $this->__data[$n];
 		}
 		
-		$this->__sortfield = $field;
-		$this->__sortsign = strtolower($order) == 'asc' ? 1 : -1;
-		
-		usort($this->__data,array($this,'sortCallback'));
-		
-		$this->__sortfield = null;
-		$this->__sortsign = null;
+		return null;
 	}
 	
-	private function sortCallback($a,$b)
+	/**
+	Returns true if a field named <var>$n</var> exists.
+	
+	@param	n		<b>string</b>		Field name
+	@return	<b>boolean</b>
+	*/
+	public function exists($n)
 	{
-		$a = $a[$this->__sortfield];
-		$b = $b[$this->__sortfield];
+		return isset($this->__data[$n]);
+	}
+	
+	/**
+	Sets field value. Alias for set().
+	
+	@param	n		<b>string</b>		Field name
+	@param	v		<b>mixed</b>		Field value
+	*/
+	public function __set($n,$v)
+	{
+		$this->set($n,$v);
+	}
+	
+	/**
+	Magic get method. Alias for get().
+	
+	@param	n		<b>string</b>		Field name
+	@return	<b>mixed</b>
+	*/
+	public function __get($n)
+	{
+		return $this->get($n);
+	}
+	
+	/**
+	Sets all fields to null values.
+	*/
+	public function resetData()
+	{
+		foreach ($this->__data as &$v) {
+			$v = null;
+		}
+	}
+	
+	/**
+	Returns insert query for statement.
+	
+	@return	<b>string</b>
+	*/
+	public function getInsert()
+	{
+		$fields = $this->formatFields();
 		
-		# Integer values
-		if ($a == (string) (integer) $a && $b == (string) (integer) $b) {
-			$a = (integer) $a;
-			$b = (integer) $b;
-			return ($a - $b) * $this->__sortsign;
+		return 'INSERT INTO '.$this->__con->escapeSystem($this->__table)." (\n".
+				implode(",\n",array_keys($fields))."\n) VALUES (\n".
+				implode(",\n",array_values($fields))."\n) ";
+	}
+	
+	/**
+	Returns update query for statement.
+	
+	@param	where		<b>string</b>		Where clause
+	@return	<b>string</b>
+	*/
+	public function getUpdate($where)
+	{
+		$data = $this->formatFields();
+		$fields = array();
+		
+		$query = 'UPDATE '.$this->__con->escapeSystem($this->__table)." SET \n";
+		
+		foreach ($data as $k => $v) {
+			$fields[] = $k.' = '.$v."";
 		}
 		
-		return strcmp($a,$b) * $this->__sortsign;
+		$query .= implode(",\n",$fields);
+		$query .= "\n".$where;
+		
+		return $query;
+	}
+	
+	/**
+	Inserts data into table.
+	*/
+	public function insert()
+	{
+		if (!$this->__table) {
+			throw new Exception('No table name.');
+		}
+		
+		$query = $this->getInsert();
+		
+		if (!$this->__stmt || $query != $this->__stmt_query) {
+			$this->__stmt = $this->__con->prepare($query);
+			$this->__stmt_query = $query;
+		}
+		
+		$this->__con->query($this->__stmt,$this->__data);
+		
+		return true;
+	}
+	
+	/**
+	Updates data on table.
+	
+	@param	where		<b>string</b>		Where clause
+	@param	params		<b>array</b>		Where parameters
+	*/
+	public function update($where,$params=array())
+	{
+		if (!$this->__table) {
+			throw new Exception('No table name.');
+		}
+		
+		$query = $this->getUpdate($where);
+		
+		if (!$this->__stmt || $query != $this->__stmt_query) {
+			$this->__stmt = $this->__con->prepare($query);
+			$this->__stmt_query = $query;
+		}
+		
+		$this->__con->query($this->__stmt,array_merge($this->__data,$params));
+		
+		return true;
+	}
+	
+	private function formatFields()
+	{
+		$fields = array();
+		foreach ($this->__data as $k => $v) {
+			$fields[$k] = ':'.$k;
+		}
+		return $fields;
 	}
 }
 ?>
