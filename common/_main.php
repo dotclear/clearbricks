@@ -23,7 +23,7 @@
 @defgroup CLEARBRICKS Clearbricks classes
 */
 
-define('CLEARBRICKS_VERSION','0.8');
+define('CLEARBRICKS_VERSION','1.0a');
 
 # Autoload
 $__autoload = array(
