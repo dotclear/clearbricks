@@ -54,17 +54,18 @@ class dt
 	public static function iso8601($ts,$tz='UTC')
 	{
 		$o = self::getTimeOffset($tz,$ts);
-		$o = sprintf('%02u:%02u',$o/3600,($o%3600)/60);
-		return date('Y-m-d\\TH:i:s',$ts).'+'.$o;
+		$of = sprintf('%02u:%02u',abs($o)/3600,(abs($o)%3600)/60);
+		
+		return date('Y-m-d\\TH:i:s',$ts).($o < 0 ? '-' : '+').$of;
 	}
 	
 	public static function rfc822($ts,$tz='UTC')
 	{
 		# Get offset
 		$o = self::getTimeOffset($tz,$ts);
-		$o = sprintf('%02u%02u',$o/3600,($o%3600)/60);
+		$of = sprintf('%02u:%02u',abs($o)/3600,(abs($o)%3600)/60);
 		
-		return strftime('%a, %d %b %Y %H:%M:%S +'.$o,$ts);
+		return strftime('%a, %d %b %Y %H:%M:%S '.($o < 0 ? '-' : '+').$of,$ts);
 	}
 	
 	public static function setTZ($tz)
