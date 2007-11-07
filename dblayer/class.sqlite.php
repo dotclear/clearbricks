@@ -19,13 +19,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 # ***** END LICENSE BLOCK *****
+/// @cond
 
-/**
-@ingroup CB_DBLAYER
-@brief SQLite Database Driver.
-
-See the dbLayer documentation for common methods.
-*/
 class sqliteConnection extends dbLayer implements i_dbLayer
 {
 	protected $__driver = 'sqlite';
@@ -83,20 +78,6 @@ class sqliteConnection extends dbLayer implements i_dbLayer
 		if (is_resource($handle))
 		{
 			$res = @sqlite_query($query,$handle);
-			if ($res === false) {
-				$e = new Exception($this->db_last_error($handle));
-				$e->sql = $query;
-				throw $e;
-			}
-			return $res;
-		}
-	}
-	
-	public function db_exec($handle,$query)
-	{
-		if (is_resource($handle))
-		{
-			$res = @sqlite_exec($query,$handle);
 			if ($res === false) {
 				$e = new Exception($this->db_last_error($handle));
 				$e->sql = $query;
@@ -193,4 +174,6 @@ class sqliteConnection extends dbLayer implements i_dbLayer
 		return date('Y-m-d H:i:s');
 	}
 }
+
+/// @endcond
 ?>

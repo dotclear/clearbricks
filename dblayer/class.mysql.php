@@ -19,13 +19,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 # ***** END LICENSE BLOCK *****
+/// @cond
 
-/**
-@ingroup CB_DBLAYER
-@brief MySQL Database Driver.
-
-See the dbLayer documentation for common methods.
-*/
 class mysqlConnection extends dbLayer implements i_dbLayer
 {
 	protected $__driver = 'mysql';
@@ -104,11 +99,6 @@ class mysqlConnection extends dbLayer implements i_dbLayer
 			}
 			return $res;
 		}
-	}
-	
-	public function db_exec($handle,$query)
-	{
-		return $this->db_query($handle,$query);
 	}
 	
 	public function db_num_fields($res)
@@ -206,4 +196,6 @@ class mysqlConnection extends dbLayer implements i_dbLayer
 		return '`'.$str.'`';
 	}
 }
+
+/// @endcond
 ?>

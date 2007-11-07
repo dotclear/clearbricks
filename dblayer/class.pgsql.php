@@ -19,15 +19,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 # ***** END LICENSE BLOCK *****
+/// @cond
 
-/**
-@ingroup CB_DBLAYER
-@brief PostgreSQL Database Driver.
-
-See the dbLayer documentation for common methods.
-
-This class adds a method for PostgreSQL only: callFunction().
-*/
 class pgsqlConnection extends dbLayer implements i_dbLayer
 {
 	protected $__driver = 'pgsql';
@@ -126,11 +119,6 @@ class pgsqlConnection extends dbLayer implements i_dbLayer
 		}
 	}
 	
-	public function db_exec($handle,$query)
-	{
-		return $this->db_query($handle,$query);
-	}
-	
 	public function db_num_fields($res)
 	{
 		if (is_resource($res)) {
@@ -217,38 +205,57 @@ class pgsqlConnection extends dbLayer implements i_dbLayer
 		return 'TO_CHAR('.$field.','."'".$this->escape($pattern)."') ";
 	}
 	
-	/**
-	Calls a PostgreSQL function an returns the result as a record. After
-	<var>$name</var>, you can add any parameters you want to append them to
-	the PostgreSQL function. You don't need to escape string in arguments.
-	
-	@param	name		<b>string</b>		Function name
-	@return	<b>record</b>
-	*/
-	public function callFunction($name)
+	public function prepare($query)
 	{
-		$data = func_get_args();
-		array_shift($data);
+		return new pgsqldbStatement($this,$query);
+	}
+}
+
+class pgsqldbStatement extends dbStatement
+{
+	protected $name;
+	protected $subst = array();
+	protected $handle;
+	
+	public function __construct(&$con,$query)
+	{
+		parent::__construct($con,$query);
 		
-		foreach ($data as $k => $v)
-		{
-			if (is_null($v)) {
-				$data[$k] = 'NULL';
-			} elseif (is_string($v)) {
-				$data[$k] = "'".$this->escape($v)."'";
-			} elseif (is_array($v)) {
-				$data[$k] = $v[0];
-			} else {
-				$data[$k] = $v;
+		$this->name = md5(uniqid());
+		$this->handle = $this->con->link();
+		
+		if (preg_match_all('/:([a-zA-Z0-9_]+)/',$this->query,$m)) {
+			foreach ($m[1] as $k => $v) {
+				$this->query = preg_replace('/:'.$v.'/','\$'.($k+1),$this->query);
+				$this->subst[$v] = $k;
 			}
 		}
 		
-		$req =
-		'SELECT '.$name."(\n".
-		implode(",\n",array_values($data)).
-		"\n) ";
 		
-		return $this->select($req);
+		if (@pg_prepare($this->handle,$this->name,$this->query) === false) {
+			throw new Exception($this->con->db_last_error($this->handle));
+		}
+	}
+	
+	public function execute($params)
+	{
+		$p = array();
+		foreach ($params as $k => $v) {
+			if (isset($this->subst[$k])) {
+				$p[$this->subst[$k]] = $v;
+			}
+		}
+		
+		if (is_resource($this->handle))
+		{
+			$res = @pg_execute($this->handle,$this->name,$p);
+			if ($res === false) {
+				throw new Exception($this->con->db_last_error($this->handle));
+			}
+			return $res;
+		}
 	}
 }
+
+/// @endcond
 ?>
