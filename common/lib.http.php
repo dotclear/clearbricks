@@ -25,8 +25,6 @@ class http
 	public static $https_scheme_on_443 = false;
 	
 	/**
-	@function getHost
-	
 	Return current scheme, host and port.
 	*/
 	public static function getHost()
@@ -53,8 +51,6 @@ class http
 	}
 	
 	/**
-	@function getSelfURI
-	
 	Returns current URI with full hostname
 	*/
 	public static function getSelfURI()
@@ -63,11 +59,9 @@ class http
 	}
 	
 	/**
-	@function redirect
-	
 	Performs a conforming HTTP redirect for a relative URL.
 	
-	@param page	string		Relative URL
+	@param page		<b>string</b>		Relative URL
 	*/
 	public static function redirect($page)
 	{
@@ -100,14 +94,12 @@ class http
 	}
 	
 	/**
-	@function concatURL
-	
 	Appends a path to a given URL. If path begins with "/" it will replace the
 	original URL path.
 	
-	@param url	string		URL
-	@param path	string		Path to append
-	@return string
+	@param url		<b>string</b>		URL
+	@param path		<b>string</b>		Path to append
+	@return	<b>string</b>
 	*/
 	public static function concatURL($url,$path)
 	{
@@ -119,12 +111,10 @@ class http
 	}
 	
 	/**
-	@function realIP
-	
 	Returns the real client IP (or tries to do its best)
 	Taken from http://uk.php.net/source.php?url=/include/ip-to-country.inc
 	
-	@return string
+	@return <b>string</b>
 	*/
 	public static function realIP()
 	{
@@ -212,8 +202,8 @@ class http
 	Sends HTTP cache headers (304) according to a list of files and an optionnal
 	list of timestamps.
 	
-	@param files		array		Files on which check mtime
-	@param mod_ts		array		List of timestamps
+	@param files		<b>array</b>		Files on which check mtime
+	@param mod_ts		<b>array</b>		List of timestamps
 	*/
 	public static function cache($files,$mod_ts=array())
 	{
@@ -258,11 +248,9 @@ class http
 	}
 
 	/**
-	@function etag
-	
 	Sends HTTP cache headers (304) according to a list of etags in client request
 	
-	@param p_content	string		Response page content
+	@param p_content	<b>string</b>		Response page content
 	*/
 	public static function etag()
 	{
@@ -291,12 +279,10 @@ class http
 	}
 	
 	/**
-	@function head
-	
 	Sends an HTTP code and message to client
 	
-	@param code	string		HTTP code
-	@param msg	string		Message
+	@param code		<b>string</b>		HTTP code
+	@param msg		<b>string</b>		Message
 	*/
 	public static function head($code,$msg=null)
 	{
@@ -362,8 +348,6 @@ class http
 	}
 	
 	/**
-	@function trimRequest
-	
 	Trims every value in GET, POST, REQUEST and COOKIE vars.
 	Removes magic quotes if magic_quote_gpc is on.
 	*/
@@ -416,8 +400,6 @@ class http
 	}
 	
 	/**
-	@function unsetGlobals
-	
 	If register_globals is on, removes every GET, POST, COOKIE, REQUEST, SERVER,
 	ENV, FILES vars from GLOBALS.
 	*/
