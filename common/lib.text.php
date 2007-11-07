@@ -23,14 +23,12 @@
 class text
 {
 	/**
-	@function isEmail
-	
 	Checks if "email" var is a valid email address.
 	
 	Changed code, from http://www.iamcal.com/publish/articles/php/parsing_email/
 	
-	@param email	string		Email string
-	@return boolean
+	@param email		<b>string</b>		Email string
+	@return	<b>boolean</b>
 	*/
 	public static function isEmail($email)
 	{
@@ -51,13 +49,11 @@ class text
 	}
 	
 	/**
-	@function str2URL
-	
 	Transforms a string to a proper URL.
 	
-	@param str			string		String to transform
-	@param with_slashes		boolean		Keep slashes in URL
-	@return string
+	@param str		<b>string</b>		String to transform
+	@param with_slashes	<b>boolean</b>		Keep slashes in URL
+	@return	<b>string</b>
 	*/
 	public static function str2URL($str,$with_slashes=true)
 	{
@@ -101,14 +97,12 @@ class text
 	}
 	
 	/**
-	@function tidyURL
-	
 	Cleans an URL.
 	
-	@param str			string		URL to tidy
-	@param keep_slashes		boolean		Keep slashes in URL
-	@param keep_spaces		boolean		Keep spaces in URL
-	@return string
+	@param str		<b>string</b>		URL to tidy
+	@param keep_slashes	<b>boolean</b>		Keep slashes in URL
+	@param keep_spaces	<b>boolean</b>		Keep spaces in URL
+	@return	<b>string</b>
 	*/
 	public static function tidyURL($str,$keep_slashes=true,$keep_spaces=false)
 	{
@@ -135,13 +129,11 @@ class text
 	}
 	
 	/**
-	@function cutString
-	
 	Cuts a string on spaces.
 	
-	@param	string	str		String to cut
-	@param	integer	l		Length to keep
-	@return	string
+	@param str		<b>string</b>		String to cut
+	@param l			<b>integer</b>		Length to keep
+	@return	</b>string</b>
 	*/
 	public static function cutString($str,$l)
 	{
@@ -169,12 +161,10 @@ class text
 	}
 	
 	/**
-	@function splitWords
-	
 	Returns an array of words from a given string.
 	
-	@param str	string	Words to split
-	@return array
+	@param str		<b>string</b>		Words to split
+	@return <b>array</b>
 	*/
 	public static function splitWords($str)
 	{
@@ -189,12 +179,10 @@ class text
 	}
 	
 	/**
-	@function detectEncoding
-	
 	Returns the encoding (in lowercase) of given $str.
 	
-	@param str	string	String
-	@return string
+	@param str		<b>string</b>		String
+	@return <b>string</b>
 	*/
 	public static function detectEncoding($str)
 	{
@@ -205,13 +193,11 @@ class text
 	}
 	
 	/**
-	@function toUTF8
-	
 	Return an UTF-8 converted string.
 	
-	@param str		string	String to convert
-	@param encoding	string	Optionnal "from" encoding
-	@return string
+	@param str		<b>string</b>		String to convert
+	@param encoding	<b>string</b>		Optionnal "from" encoding
+	@return <b>string</b>
 	*/
 	public static function toUTF8($str,$encoding=null)
 	{
@@ -227,18 +213,16 @@ class text
 	}
 	
 	/**
-	@function utf8badFind
-	
-	Taken from http://phputf8.sourceforge.net
-	
 	Locates the first bad byte in a UTF-8 string returning it's
 	byte index in the string
 	PCRE Pattern to locate bad bytes in a UTF-8 string
 	Comes from W3 FAQ: Multilingual Forms
 	Note: modified to include full ASCII range including control chars
 	
-	@param str	string	String to search
-	@return mixed
+	Taken from http://phputf8.sourceforge.net
+	
+	@param str		<b>string</b>		String to search
+	@return <b>mixed</b>
 	*/
 	public static function utf8badFind($str)
 	{
@@ -267,15 +251,13 @@ class text
 	}
 	
 	/**
-	@function cleanUTF8
+	Replaces non utf8 bytes in $str by $repl.
 	
 	Taken from http://phputf8.sourceforge.net/
 	
-	Replace non utf8 bytes in $str by $repl.
-	
-	@param str	string	String to clean
-	@param repl	string	Replacement string
-	@return string
+	@param str		<b>string</b>		String to clean
+	@param repl		<b>string</b>		Replacement string
+	@return <b>string</b>
 	*/
 	public static function cleanUTF8($str,$repl='?')
 	{
@@ -287,12 +269,10 @@ class text
 	}
 	
 	/**
-	@function removeBOM
-	
 	Removes BOM from the begining of a string if present.
 	
-	@param str	string	String to clean
-	@return string
+	@param str		<b>string</b>		String to clean
+	@return <b>string</b>
 	*/
 	public static function removeBOM($str)
 	{
@@ -304,12 +284,10 @@ class text
 	}
 	
 	/**
-	@function QPEncode
-	
 	Encodes given str to quoted printable
 	
-	@param str	string	String to encode
-	@return string
+	@param str		<b>string</b>		String to encode
+	@return <b>string</b>
 	*/
 	public static function QPEncode($str)
 	{
