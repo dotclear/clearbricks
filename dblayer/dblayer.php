@@ -948,10 +948,25 @@ class dbCursor
 	private function formatFields()
 	{
 		$fields = array();
-		foreach ($this->__data as $k => $v) {
-			$fields[$k] = ':'.$k;
+		foreach ($this->__data as $k => $v)
+		{
+			if ($v instanceof sqlStatement) {
+				$fields[$k] = $v->s;
+			} else {
+				$fields[$k] = ':'.$k;
+			}
 		}
 		return $fields;
+	}
+}
+
+class sqlStatement
+{
+	public $s;
+	
+	public function __construct($s)
+	{
+		$this->s = $s;
 	}
 }
 ?>
