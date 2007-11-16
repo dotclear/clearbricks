@@ -315,7 +315,7 @@ abstract class dbLayer
 	*/
 	public function begin()
 	{
-		$this->execute('BEGIN');
+		$this->query('BEGIN');
 	}
 	
 	/**
@@ -323,7 +323,7 @@ abstract class dbLayer
 	*/
 	public function commit()
 	{
-		$this->execute('COMMIT');
+		$this->query('COMMIT');
 	}
 	
 	/**
@@ -399,7 +399,7 @@ abstract class dbLayer
 	@param	arg2		<b>mixed</b>		integer or null (null)
 	@return	<b>string</b>
 	*/
-	public function limit($arg1, $arg2=null)
+	public function limit($arg1,$arg2=null)
 	{
 		if (is_array($arg1))
 		{
@@ -960,10 +960,17 @@ class dbCursor
 	}
 }
 
+/**
+@ingroup CB_DBLAYER
+@brief A simple object you can use as value in dbCursor
+*/
 class sqlStatement
 {
-	public $s;
+	public $s;					///< <b>string</b>		SQL statement
 	
+	/**
+	@param	s			<b>string</b>		SQL statement
+	*/
 	public function __construct($s)
 	{
 		$this->s = $s;
