@@ -331,7 +331,7 @@ abstract class dbLayer
 	*/
 	public function rollback()
 	{
-		$this->execute('ROLLBACK');
+		$this->query('ROLLBACK');
 	}
 	
 	/**
