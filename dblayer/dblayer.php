@@ -620,6 +620,26 @@ class dbRecordset implements Iterator
 	}
 	
 	/**
+	Returns true if record contains no result.
+	
+	@return	<b>boolean</b>
+	*/
+	public function isEmpty()
+	{
+		return $this->count() == 0;
+	}
+	
+	/**
+	Returns number of rows in record.
+	
+	@return	<b>integer</b>
+	*/
+	public function count()
+	{
+		return $this->info['rows'];
+	}
+	
+	/**
 	Returns an array of columns, with name as key and type as value.
 	
 	@return	<b>array</b>
