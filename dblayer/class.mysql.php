@@ -175,7 +175,7 @@ class mysqlConnection extends dbLayer implements i_dbLayer
 	
 	public function vacuum($table)
 	{
-		$this->execute('OPTIMIZE TABLE '.$this->escapeSystem($table));
+		$this->query('OPTIMIZE TABLE '.$this->escapeSystem($table));
 	}
 	
 	public function dateFormat($field,$pattern)
