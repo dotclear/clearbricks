@@ -22,11 +22,11 @@
 
 class sessionDB
 {
-	private $con;
-	private $table;
-	private $cookie_name;
-	private $cookie_path;
-	private $ttl = '-120 minutes';
+	protected $con;
+	protected $table;
+	protected $cookie_name;
+	protected $cookie_path;
+	protected $ttl = '-120 minutes';
 	
 	public function __construct(&$con,$table,$cookie_name,$cookie_path=null,$cookie_domain=null,$cookie_secure=false)
 	{
@@ -100,12 +100,12 @@ class sessionDB
 		$strReq = 'SELECT ses_value FROM '.$this->table.' '.
 				'WHERE ses_id = \''.$this->checkID($ses_id).'\' ';
 		
-		$rs = $this->con->select($strReq);
+		$rs = $this->con->query($strReq);
 		
 		if ($rs->isEmpty()) {
 			return '';
 		} else {
-			return $rs->f('ses_value');
+			return $rs->current()->ses_value;
 		}
 	}
 	
@@ -115,9 +115,9 @@ class sessionDB
 				'FROM '.$this->table.' '.
 				"WHERE ses_id = '".$this->checkID($ses_id)."' ";
 		
-		$rs = $this->con->select($strReq);
+		$rs = $this->con->query($strReq);
 		
-		$cur = $this->con->openCursor($this->table);
+		$cur = $this->con->cursor($this->table);
 		$cur->ses_time = (string) time();
 		$cur->ses_value = (string) $data;
 		
@@ -141,7 +141,7 @@ class sessionDB
 		$strReq = 'DELETE FROM '.$this->table.' '.
 				'WHERE ses_id = \''.$this->checkID($ses_id).'\' ';
 		
-		$this->con->execute($strReq);
+		$this->con->query($strReq);
 		
 		$this->_optimize();
 		return true;
@@ -155,7 +155,7 @@ class sessionDB
 				'WHERE ses_time < '.$ses_life.' ';
 		
 		
-		$this->con->execute($strReq);
+		$this->con->query($strReq);
 		
 		if ($this->con->changes() > 0) {
 			$this->_optimize();
