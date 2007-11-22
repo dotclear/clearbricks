@@ -186,7 +186,7 @@ class pgsqlConnection extends dbLayer implements i_dbLayer
 	
 	public function vacuum($table)
 	{
-		$this->execute('VACUUM FULL '.$this->escapeSystem($table));
+		$this->query('VACUUM FULL '.$this->escapeSystem($table));
 	}
 	
 	public function dateFormat($field,$pattern)
