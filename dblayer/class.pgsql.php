@@ -245,6 +245,7 @@ class pgsqldbStatement extends dbStatement
 				$p[$this->subst[$k]] = $v;
 			}
 		}
+		ksort($p);
 		
 		if (is_resource($this->handle))
 		{
