@@ -206,7 +206,7 @@ class dbLayer
 	public static function init($driver,$host,$database,$user='',$password='',$persistent=false)
 	{
 		if (file_exists(dirname(__FILE__).'/class.'.$driver.'.php')) {
-			require dirname(__FILE__).'/class.'.$driver.'.php';
+			require_once dirname(__FILE__).'/class.'.$driver.'.php';
 			$driver_class = $driver.'Connection';
 		} else {
 			trigger_error('Unable to load DB layer for '.$driver,E_USER_ERROR);
