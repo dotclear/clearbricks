@@ -777,6 +777,17 @@ class dbRecord
 	}
 	
 	/**
+	Returns true if a field exists.
+	
+	@param	n		<b>string</b>		Field name
+	@return	<b>string</b>
+	*/
+	public function exists($n)
+	{
+		return isset($this->__row[$n]);
+	}
+	
+	/**
 	Returns the raw data array.
 	
 	@return	<b>array</b>
