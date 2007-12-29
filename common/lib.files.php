@@ -22,6 +22,80 @@
 
 class files
 {
+	/**
+	 * List of supported Mime Types
+	 */
+	private static $mimeType	= array(
+			'odt'	=> 'application/vnd.oasis.opendocument.text',
+			'odp'	=> 'application/vnd.oasis.opendocument.presentation',
+			'ods'	=> 'application/vnd.oasis.opendocument.spreadsheet',
+			
+			'sxw'	=> 'application/vnd.sun.xml.writer',
+			'sxc'	=> 'application/vnd.sun.xml.calc',
+			'sxi'	=> 'application/vnd.sun.xml.impress',
+			
+			'ppt' 	=> 'application/mspowerpoint',
+			'doc'	=> 'application/msword',
+			'xls'	=> 'application/msexcel',			
+			'rtf'	=> 'application/rtf',
+			
+			'pdf'	=> 'application/pdf',
+			'ps'	=> 'application/postscript',
+			'ai'	=> 'application/postscript',
+			'eps'	=> 'application/postscript',
+			
+			'bin'	=> 'application/octet-stream',
+			'exe'	=> 'application/octet-stream',
+			
+			'deb'	=> 'application/x-debian-package',
+			'gz'	=> 'application/x-gzip',
+			'jar'	=> 'application/x-java-archive',
+			'rar'	=> 'application/rar',
+			'rpm'	=> 'application/x-redhat-package-manager',
+			'tar'	=> 'application/x-tar',
+			'tgz'	=> 'application/x-gtar',
+			'zip'	=> 'application/zip',
+			
+			'aiff'	=> 'audio/x-aiff',
+			'ua'	=> 'audio/basic',
+			'mp3'	=> 'audio/mpeg3',
+			'mid'	=> 'audio/x-midi',
+			'midi'	=> 'audio/x-midi',
+			'ogg'	=> 'application/ogg',
+			'wav'	=> 'audio/x-wav',
+			
+			'swf'	=> 'application/x-shockwave-flash',
+			'swfl'	=> 'application/x-shockwave-flash',
+			
+			'bmp'	=> 'image/bmp',
+			'gif'	=> 'image/gif',
+			'jpeg'	=> 'image/jpeg',
+			'jpg'	=> 'image/jpeg',
+			'jpe'	=> 'image/jpeg',
+			'png'	=> 'image/png',
+			'tiff'	=> 'image/tiff',
+			'tif'	=> 'image/tiff',
+			'xbm'	=> 'image/x-xbitmap',
+			
+			'css'	=> 'text/css',
+			'js'	=> 'text/javascript',
+			'html'	=> 'text/html',
+			'htm'	=> 'text/html',
+			'txt'	=> 'text/plain',
+			'rtf'	=> 'text/richtext',
+			'rtx'	=> 'text/richtext',
+			
+			'mpg'	=> 'video/mpeg',
+			'mpeg'	=> 'video/mpeg',
+			'mpe'	=> 'video/mpeg',
+			'viv'	=> 'video/vnd.vivo',
+			'vivo'	=> 'video/vnd.vivo',
+			'qt'	=> 'video/quicktime',
+			'mov'	=> 'video/quicktime',
+			'flv'	=> 'video/x-flv',
+			'avi'	=> 'video/x-msvideo'
+		);
+	
 	public static function scandir($d,$order=0)
 	{
 		$res = array();
@@ -67,76 +141,12 @@ class files
 	
 	public static function mimeTypes()
 	{
-		return array(
-			'odt'	=> 'application/vnd.oasis.opendocument.text',
-			'odp'	=> 'application/vnd.oasis.opendocument.presentation',
-			'ods'	=> 'application/vnd.oasis.opendocument.spreadsheet',
-			
-			'sxw'	=> 'application/vnd.sun.xml.writer',
-			'sxc'	=> 'application/vnd.sun.xml.calc',
-			'sxi'	=> 'application/vnd.sun.xml.impress',
-			
-			'ppt' 	=> 'application/mspowerpoint',
-			'doc'	=> 'application/msword',
-			'xls'	=> 'application/msexcel',			
-			'rtf'	=> 'application/rtf',
-			
-			'pdf'	=> 'application/pdf',
-			'ps'		=> 'application/postscript',
-			'ai'		=> 'application/postscript',
-			'eps'	=> 'application/postscript',
-			
-			'bin'	=> 'application/octet-stream',
-			'exe'	=> 'application/octet-stream',
-			
-			'deb'	=> 'application/x-debian-package',
-			'gz'		=> 'application/x-gzip',
-			'jar'	=> 'application/x-java-archive',
-			'rar'	=> 'application/rar',
-			'rpm'	=> 'application/x-redhat-package-manager',
-			'tar'	=> 'application/x-tar',
-			'tgz'	=> 'application/x-gtar',
-			'zip'	=> 'application/zip',
-			
-			'aiff'	=> 'audio/x-aiff',
-			'ua'		=> 'audio/basic',
-			'mp3'	=> 'audio/mpeg3',
-			'mid'	=> 'audio/x-midi',
-			'midi'	=> 'audio/x-midi',
-			'ogg'	=> 'application/ogg',
-			'wav'	=> 'audio/x-wav',
-			
-			'swf'	=> 'application/x-shockwave-flash',
-			'swfl'	=> 'application/x-shockwave-flash',
-			
-			'bmp'	=> 'image/bmp',
-			'gif'	=> 'image/gif',
-			'jpeg'	=> 'image/jpeg',
-			'jpg'	=> 'image/jpeg',
-			'jpe'	=> 'image/jpeg',
-			'png'	=> 'image/png',
-			'tiff'	=> 'image/tiff',
-			'tif'	=> 'image/tiff',
-			'xbm'	=> 'image/x-xbitmap',
-			
-			'css'	=> 'text/css',
-			'js'		=> 'text/javascript',
-			'html'	=> 'text/html',
-			'htm'	=> 'text/html',
-			'txt'	=> 'text/plain',
-			'rtf'	=> 'text/richtext',
-			'rtx'	=> 'text/richtext',
-			
-			'mpg'	=> 'video/mpeg',
-			'mpeg'	=> 'video/mpeg',
-			'mpe'	=> 'video/mpeg',
-			'viv'	=> 'video/vnd.vivo',
-			'vivo'	=> 'video/vnd.vivo',
-			'qt'		=> 'video/quicktime',
-			'mov'	=> 'video/quicktime',
-			'flv'	=> 'video/x-flv',
-			'avi'	=> 'video/x-msvideo'
-		);
+		return self::$mimeType;
+	}
+	
+	public static function registerMimeTypes(array $tab)
+	{
+		self::$mimeType	= array_merge(self::$mimeType, $tab);
 	}
 	
 	public static function isDeletable($f)
