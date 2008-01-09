@@ -38,12 +38,24 @@ $__autoload = array(
 	'text'			=> dirname(__FILE__).'/lib.text.php'
 );
 
-function __autoload($name)
+# autoload for clearbricks
+function cb_autoload($name)
 {
 	global $__autoload;
 	
 	if (isset($__autoload[$name])) {
 		require_once $__autoload[$name];
+	}
+}
+
+# if php version >= 5.1.2, we can benefit from spl_autoload_register, 
+# so other libraries can define their own independent autoload too
+if (function_exists("spl_autoload_register")) {
+	spl_autoload_register("cb_autoload");
+} else {
+	# otherwise we define a classic autoload function for older php...
+	function __autoload($name) {
+		cb_autoload($name);
 	}
 }
 
