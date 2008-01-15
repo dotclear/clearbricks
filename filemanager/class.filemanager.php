@@ -139,10 +139,9 @@ class filemanager
 		}
 		closedir($dh);
 		
-		ksort($d_res);
-		ksort($f_res);
-		
 		$this->dir = array('dirs'=>$d_res,'files'=>$f_res);
+		usort($this->dir['dirs'],array($this,'sortHandler'));
+		usort($this->dir['files'],array($this,'sortHandler'));
 	}
 	
 	public function getRootDirs()
@@ -275,6 +274,11 @@ class filemanager
 		if (@rmdir($d) === false) {
 			throw new Exception(__('Directory cannot be removed.'));
 		}
+	}
+	
+	protected function sortHandler($a,$b)
+	{
+		return strcasecmp($a->basename,$b->basename);
 	}
 }
 
