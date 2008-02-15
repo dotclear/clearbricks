@@ -48,14 +48,14 @@ class fileUnzip
 		}
 	}
 	
-	public function getList($stop_on_file=false)
+	public function getList($stop_on_file=false,$exclude=false)
 	{
 		if (!empty($this->compressed_list)) {
 			return $this->compressed_list;
 		}
 		
-		if (!$this->loadFileListByEOF($stop_on_file)) {
-			if(!$this->loadFileListBySignatures($stop_on_file)) {
+		if (!$this->loadFileListByEOF($stop_on_file,$exclude)) {
+			if(!$this->loadFileListBySignatures($stop_on_file,$exclude)) {
 				return false;
 			}
 		}
@@ -63,7 +63,7 @@ class fileUnzip
 		return $this->compressed_list;
 	}
 	
-	public function unzipAll($target,$exclude=false)
+	public function unzipAll($target)
 	{
 		if (empty($this->compressed_list)) {
 			$this->getList();
@@ -72,10 +72,6 @@ class fileUnzip
 		foreach ($this->compressed_list as $k => $v)
 		{
 			if (substr($k,-1) == '/') {
-				continue;
-			}
-			
-			if ($exclude && preg_match($exclude,$k)) {
 				continue;
 			}
 			
@@ -223,7 +219,7 @@ class fileUnzip
 		}
 	}
 	
-	private function loadFileListByEOF($stop_on_file=false)
+	private function loadFileListByEOF($stop_on_file=false,$exclude=false)
 	{
 		$fp = $this->fp();
 		
@@ -313,6 +309,10 @@ class fileUnzip
 				
 				foreach ($dir_list as $k => $v)
 				{
+					if ($exclude && preg_match($exclude,$k)) {
+						continue;
+					}
+					
 					$i = $this->getFileHeaderInformation($v['relative_offset']);
 					
 					$this->compressed_list[$k]['file_name']            = $k;
@@ -336,7 +336,7 @@ class fileUnzip
 		return false;
 	}
 	
-	private function loadFileListBySignatures($stop_on_file=false)
+	private function loadFileListBySignatures($stop_on_file=false,$exclude=false)
 	{
 		$fp = $this->fp();
 		fseek($fp,0);
@@ -353,6 +353,11 @@ class fileUnzip
 				break;
 			}
 			$filename = $details['file_name'];
+			
+			if ($exclude && preg_match($exclude,$filename)) {
+				continue;
+			}
+			
 			$this->compressed_list[$filename] = $details;
 			$return = true;
 			
