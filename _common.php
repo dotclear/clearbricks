@@ -100,7 +100,7 @@ $__autoload['IXR_Error']				= dirname(__FILE__).'/ext/incutio.ixr_library.php';
 $__autoload['IXR_Date']				= dirname(__FILE__).'/ext/incutio.ixr_library.php';
 $__autoload['IXR_Base64']			= dirname(__FILE__).'/ext/incutio.ixr_library.php';
 $__autoload['IXR_IntrospectionServer']	= dirname(__FILE__).'/ext/incutio.ixr_library.php';
-$__autoload['IXR_ClientMulticall']	= dirname(__FILE__).'/ext/incutio.ixr_library.php';
+$__autoload['IXR_ClientMulticall']		= dirname(__FILE__).'/ext/incutio.ixr_library.php';
 
 $__autoload['xmlrpcValue']				= dirname(__FILE__).'/net.xmlrpc/class.net.xmlrpc.php';
 $__autoload['xmlrpcMessage']				= dirname(__FILE__).'/net.xmlrpc/class.net.xmlrpc.php';
@@ -111,4 +111,7 @@ $__autoload['xmlrpcClient']				= dirname(__FILE__).'/net.xmlrpc/class.net.xmlrpc
 $__autoload['xmlrpcClientMulticall']		= dirname(__FILE__).'/net.xmlrpc/class.net.xmlrpc.php';
 $__autoload['xmlrpcServer']				= dirname(__FILE__).'/net.xmlrpc/class.net.xmlrpc.php';
 $__autoload['xmlrpcIntrospectionServer']	= dirname(__FILE__).'/net.xmlrpc/class.net.xmlrpc.php';
+
+# Zip tools
+$__autoload['fileUnzip']		= dirname(__FILE__).'/zip/class.unzip.php';
 ?>
