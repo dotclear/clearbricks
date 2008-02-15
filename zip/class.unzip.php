@@ -65,8 +65,6 @@ class fileUnzip
 	
 	public function unzipAll($target,$exclude=false)
 	{
-		$target .= '/'.preg_replace('/\.([^.]+)$/','',basename($this->file_name));
-		
 		if (empty($this->compressed_list)) {
 			$this->getList();
 		}
