@@ -117,22 +117,34 @@ class fileUnzip
 		);
 	}
 	
-	public function getFilesList($extended=false)
+	public function getFilesList()
 	{
-		if (!$extended)
-		{
-			$res = array();
-			foreach ($this->compressed_list as $k => $v) {
-				$res[$k] = array(
-					'lastmod_datetime'  => $v['lastmod_datetime'],
-					'compressed_size'   => $v['compressed_size'],
-					'uncompressed_size' => $v['uncompressed_size']
-				);
-			}
-			return $res;
+		if (empty($this->compressed_list)) {
+			$this->getList();
 		}
 		
-		return $this->compressed_list;
+		$res = array();
+		foreach ($this->compressed_list as $k => $v) {
+			if (substr($k,-1) != '/') {
+				$res[] = $k;
+			}
+		}
+		return $res;
+	}
+	
+	public function getDirsList()
+	{
+		if (empty($this->compressed_list)) {
+			$this->getList();
+		}
+		
+		$res = array();
+		foreach ($this->compressed_list as $k => $v) {
+			if (substr($k,-1) == '/') {
+				$res[] = substr($k,0,-1);
+			}
+		}
+		return $res;
 	}
 	
 	private function fp()
