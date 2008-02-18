@@ -279,7 +279,7 @@ class fileUnzip
 					$dir['external_attributes1'] = unpack("v",fread($fp, 2)); # external file attributes-byte2
 					$dir['external_attributes2'] = unpack("v",fread($fp, 2)); # external file attributes
 					$dir['relative_offset']      = unpack("V",fread($fp, 4)); # relative offset of local header
-					$dir['file_name']            = fread($fp, $file_name_len[1]);                                # filename
+					$dir['file_name']            = $this->cleanFileName(fread($fp, $file_name_len[1]));          # filename
 					$dir['extra_field']          = $extra_field_len[1] ? fread($fp, $extra_field_len[1]) : '';   # extra field
 					$dir['file_comment']         = $file_comment_len[1] ? fread($fp, $file_comment_len[1]) : ''; # file comment			
 					
@@ -394,7 +394,7 @@ class fileUnzip
 			$file_name_len                 = unpack("v",fread($fp, 2)); # filename length
 			$extra_field_len               = unpack("v",fread($fp, 2)); # extra field length
 			
-			$file['file_name']             = fread($fp,$file_name_len[1]); # filename
+			$file['file_name']             = $this->cleanFileName(fread($fp,$file_name_len[1])); # filename
 			$file['extra_field']           = $extra_field_len[1] ? fread($fp, $extra_field_len[1]) : ''; # extra field
 			$file['contents_start_offset'] = ftell($fp);
 			
@@ -422,7 +422,7 @@ class fileUnzip
 		return false;
 	}
 	
-	function getTimeStamp($date,$time)
+	private function getTimeStamp($date,$time)
 	{
 		$BINlastmod_date = str_pad(decbin($date), 16, '0', STR_PAD_LEFT);
 		$BINlastmod_time = str_pad(decbin($time), 16, '0', STR_PAD_LEFT);
@@ -434,6 +434,13 @@ class fileUnzip
 		$lastmod_timeS   = bindec(substr($BINlastmod_time,  11, 5));
 		
 		return mktime($lastmod_timeH, $lastmod_timeM, $lastmod_timeS, $lastmod_dateM, $lastmod_dateD, $lastmod_dateY);
+	}
+	
+	private function cleanFileName($n)
+	{
+		$n = str_replace('../','',$n);
+		$n = preg_replace('#^/+#','',$n);
+		return $n;
 	}
 }
 ?>
