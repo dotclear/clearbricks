@@ -48,14 +48,14 @@ class fileUnzip
 		}
 	}
 	
-	public function getList($stop_on_file=false)
+	public function getList($stop_on_file=false,$exclude=false)
 	{
 		if (!empty($this->compressed_list)) {
 			return $this->compressed_list;
 		}
 		
-		if (!$this->loadFileListByEOF($stop_on_file)) {
-			if(!$this->loadFileListBySignatures($stop_on_file)) {
+		if (!$this->loadFileListByEOF($stop_on_file,$exclude)) {
+			if(!$this->loadFileListBySignatures($stop_on_file,$exclude)) {
 				return false;
 			}
 		}
@@ -63,10 +63,8 @@ class fileUnzip
 		return $this->compressed_list;
 	}
 	
-	public function unzipAll($target,$exclude=false)
+	public function unzipAll($target)
 	{
-		$target .= '/'.preg_replace('/\.([^.]+)$/','',basename($this->file_name));
-		
 		if (empty($this->compressed_list)) {
 			$this->getList();
 		}
@@ -74,10 +72,6 @@ class fileUnzip
 		foreach ($this->compressed_list as $k => $v)
 		{
 			if (substr($k,-1) == '/') {
-				continue;
-			}
-			
-			if ($exclude && preg_match($exclude,$k)) {
 				continue;
 			}
 			
@@ -117,22 +111,34 @@ class fileUnzip
 		);
 	}
 	
-	public function getFilesList($extended=false)
+	public function getFilesList()
 	{
-		if (!$extended)
-		{
-			$res = array();
-			foreach ($this->compressed_list as $k => $v) {
-				$res[$k] = array(
-					'lastmod_datetime'  => $v['lastmod_datetime'],
-					'compressed_size'   => $v['compressed_size'],
-					'uncompressed_size' => $v['uncompressed_size']
-				);
-			}
-			return $res;
+		if (empty($this->compressed_list)) {
+			$this->getList();
 		}
 		
-		return $this->compressed_list;
+		$res = array();
+		foreach ($this->compressed_list as $k => $v) {
+			if (substr($k,-1) != '/') {
+				$res[] = $k;
+			}
+		}
+		return $res;
+	}
+	
+	public function getDirsList()
+	{
+		if (empty($this->compressed_list)) {
+			$this->getList();
+		}
+		
+		$res = array();
+		foreach ($this->compressed_list as $k => $v) {
+			if (substr($k,-1) == '/') {
+				$res[] = substr($k,0,-1);
+			}
+		}
+		return $res;
 	}
 	
 	private function fp()
@@ -213,7 +219,7 @@ class fileUnzip
 		}
 	}
 	
-	private function loadFileListByEOF($stop_on_file=false)
+	private function loadFileListByEOF($stop_on_file=false,$exclude=false)
 	{
 		$fp = $this->fp();
 		
@@ -273,7 +279,7 @@ class fileUnzip
 					$dir['external_attributes1'] = unpack("v",fread($fp, 2)); # external file attributes-byte2
 					$dir['external_attributes2'] = unpack("v",fread($fp, 2)); # external file attributes
 					$dir['relative_offset']      = unpack("V",fread($fp, 4)); # relative offset of local header
-					$dir['file_name']            = fread($fp, $file_name_len[1]);                                # filename
+					$dir['file_name']            = $this->cleanFileName(fread($fp, $file_name_len[1]));          # filename
 					$dir['extra_field']          = $extra_field_len[1] ? fread($fp, $extra_field_len[1]) : '';   # extra field
 					$dir['file_comment']         = $file_comment_len[1] ? fread($fp, $file_comment_len[1]) : ''; # file comment			
 					
@@ -303,6 +309,10 @@ class fileUnzip
 				
 				foreach ($dir_list as $k => $v)
 				{
+					if ($exclude && preg_match($exclude,$k)) {
+						continue;
+					}
+					
 					$i = $this->getFileHeaderInformation($v['relative_offset']);
 					
 					$this->compressed_list[$k]['file_name']            = $k;
@@ -326,7 +336,7 @@ class fileUnzip
 		return false;
 	}
 	
-	private function loadFileListBySignatures($stop_on_file=false)
+	private function loadFileListBySignatures($stop_on_file=false,$exclude=false)
 	{
 		$fp = $this->fp();
 		fseek($fp,0);
@@ -343,6 +353,11 @@ class fileUnzip
 				break;
 			}
 			$filename = $details['file_name'];
+			
+			if ($exclude && preg_match($exclude,$filename)) {
+				continue;
+			}
+			
 			$this->compressed_list[$filename] = $details;
 			$return = true;
 			
@@ -379,7 +394,7 @@ class fileUnzip
 			$file_name_len                 = unpack("v",fread($fp, 2)); # filename length
 			$extra_field_len               = unpack("v",fread($fp, 2)); # extra field length
 			
-			$file['file_name']             = fread($fp,$file_name_len[1]); # filename
+			$file['file_name']             = $this->cleanFileName(fread($fp,$file_name_len[1])); # filename
 			$file['extra_field']           = $extra_field_len[1] ? fread($fp, $extra_field_len[1]) : ''; # extra field
 			$file['contents_start_offset'] = ftell($fp);
 			
@@ -407,7 +422,7 @@ class fileUnzip
 		return false;
 	}
 	
-	function getTimeStamp($date,$time)
+	private function getTimeStamp($date,$time)
 	{
 		$BINlastmod_date = str_pad(decbin($date), 16, '0', STR_PAD_LEFT);
 		$BINlastmod_time = str_pad(decbin($time), 16, '0', STR_PAD_LEFT);
@@ -419,6 +434,13 @@ class fileUnzip
 		$lastmod_timeS   = bindec(substr($BINlastmod_time,  11, 5));
 		
 		return mktime($lastmod_timeH, $lastmod_timeM, $lastmod_timeS, $lastmod_dateM, $lastmod_dateD, $lastmod_dateY);
+	}
+	
+	private function cleanFileName($n)
+	{
+		$n = str_replace('../','',$n);
+		$n = preg_replace('#^/+#','',$n);
+		return $n;
 	}
 }
 ?>
