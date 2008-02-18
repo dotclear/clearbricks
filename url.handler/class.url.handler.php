@@ -178,7 +178,7 @@ class urlHandler
 				if (!isset($t[1])) {
 					$T[$t[0]] = null;
 				} else {
-					$T[$t[0]] = $t[1];
+					$T[$t[0]] = urldecode($t[1]);
 				}
 			}
 			
