@@ -1,3 +1,81 @@
+libclearbricks (0.8-14) unstable; urgency=low ; svnrev=107
+
+  * SVN Revision 63 - mik, on Fri, 06 Jul 2007 13:19:43 +0200
+    last version
+
+  * SVN Revision 64 - olivier, on Fri, 13 Jul 2007 12:07:00 +0200
+    May have fixed some bugs in UDBS synchronize process.
+
+  * SVN Revision 65 - olivier, on Thu, 26 Jul 2007 10:08:11 +0200
+    HTML validator class
+
+  * SVN Revision 66 - olivier, on Thu, 26 Jul 2007 10:17:29 +0200
+    HTML validator documentation update
+
+  * SVN Revision 67 - olivier, on Fri, 27 Jul 2007 16:36:30 +0200
+    Fixed a serious bug with tidy in HTML Filter
+
+  * SVN Revision 68 - olivier, on Fri, 27 Jul 2007 16:40:40 +0200
+    Better way to fix tidy issue in HTML Filter
+
+  * SVN Revision 69 - olivier, on Sat, 28 Jul 2007 10:32:28 +0200
+    You can now add some patterns for html::absoluteURLHandler()
+
+  * SVN Revision 70 - olivier, on Mon, 30 Jul 2007 11:22:32 +0200
+    Try to read php://input if HTTP_RAW_POST_DATA is empty in net.xmlrpc.
+
+  * SVN Revision 71 - olivier, on Tue, 21 Aug 2007 10:00:58 +0200
+    Allow some specific index to exist in DB and Schema. Typo fixes in comments and messages.
+
+  * SVN Revision 72 - biou, on Sun, 02 Sep 2007 11:58:16 +0200
+    text::cutString now works in utf-8
+    (possible problems with trackbacks)
+    thx sasha for detecting the bug
+
+  * SVN Revision 73 - olivier, on Thu, 20 Sep 2007 15:22:36 +0200
+    Changed some properties scope
+
+  * SVN Revision 76 - olivier, on Wed, 07 Nov 2007 15:06:38 +0100
+    Fixed a bug with timezone offset in ISO8601 and RFC822 dates
+
+  * SVN Revision 89 - olivier, on Sat, 01 Dec 2007 12:01:23 +0100
+    Changed require by require_once in dbLayer::init
+
+  * SVN Revision 92 - olivier, on Tue, 11 Dec 2007 22:53:56 +0100
+    Fixed realIP() code.
+
+  * SVN Revision 94 - biou, on Sat, 29 Dec 2007 11:41:47 +0100
+    ability to register new mime types
+
+  * SVN Revision 95 - biou, on Wed, 09 Jan 2008 11:10:26 +0100
+    autoload upgraded to use spl_autoload_register (with backward compat)
+
+  * SVN Revision 96 - olivier, on Tue, 15 Jan 2008 16:11:37 +0100
+    Changed the way we sort items in filemanager
+
+  * SVN Revision 98 - olivier, on Fri, 15 Feb 2008 15:43:35 +0100
+    Added unzip class
+
+  * SVN Revision 100 - olivier, on Fri, 15 Feb 2008 22:31:39 +0100
+    Changed getFilesList() and added getDirsList() in fileUnzip class.
+
+  * SVN Revision 101 - olivier, on Fri, 15 Feb 2008 22:50:25 +0100
+    Don't append zip file basename to target in unzipAll (fileUnzip)
+
+  * SVN Revision 102 - olivier, on Fri, 15 Feb 2008 23:12:12 +0100
+    Moved exclude condition from unzipAll() to getList() in fileUnzip.
+
+  * SVN Revision 103 - olivier, on Sat, 16 Feb 2008 00:40:16 +0100
+    Removed files::makePackage and files::installPackage.
+
+  * SVN Revision 104 - olivier, on Mon, 18 Feb 2008 14:00:42 +0100
+    Fix in urlHandler class
+
+  * SVN Revision 106 - olivier, on Mon, 18 Feb 2008 15:58:57 +0100
+    Added cleanFileName() in fileUnzip class.
+
+ -- Olivier Meunier <olivier@clearbricks.org>  Tue, 19 Feb 2008 10:24:09 +0100
+
 libclearbricks (0.8-13) unstable; urgency=low ; svnrev=62
 
   * SVN Revision 61 - mik, on Mon, 02 Jul 2007 11:10:18 +0200
