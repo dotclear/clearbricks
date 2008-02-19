@@ -1,3 +1,10 @@
+libclearbricks (0.8-17) unstable; urgency=low ; svnrev=108
+
+  * SVN Revision 108 - olivier, on Tue, 19 Feb 2008 10:25:56 +0100
+    New debian changelog
+
+ -- Olivier Meunier <olivier@clearbricks.org>  Tue, 19 Feb 2008 12:47:49 +0100
+
 libclearbricks (0.8-14) unstable; urgency=low ; svnrev=107
 
   * SVN Revision 63 - mik, on Fri, 06 Jul 2007 13:19:43 +0200
