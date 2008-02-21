@@ -26,6 +26,7 @@
 class imageTools
 {
 	public $res;
+	public $memory_limit = null;
 	
 	public function __construct()
 	{
@@ -33,6 +34,17 @@ class imageTools
 			throw new Exception('GD is not installed');
 		}
 		$this->res = null;
+	}
+	
+	public function close()
+	{
+		if (is_resource($this->res)) {
+			imagedestroy($this->res);
+		}
+		
+		if ($this->memory_limit) {
+			ini_set('memory_limit',$this->memory_limit);
+		}
 	}
 	
 	public function loadImage($f)
@@ -43,10 +55,15 @@ class imageTools
 		
 		if (($info = @getimagesize($f)) !== false)
 		{
+			$this->memoryAllocate($info[0],$info[1]);
+			
 			switch ($info[2])
 			{
 				case 3 :
 					$this->res = @imagecreatefrompng($f);
+					if (is_resource($this->res)) {
+						@imagealphablending($this->res);
+					}
 					break;
 				case 2 :
 					$this->res = @imagecreatefromjpeg($f);
@@ -70,6 +87,29 @@ class imageTools
 	public function getH()
 	{
 		return imagesy($this->res);
+	}
+	
+	public function memoryAllocate($w,$h)
+	{
+		$mem_used = @memory_get_usage();
+		$mem_limit = @ini_get('memory_limit');
+		if ($mem_used || $mem_limit)
+		{
+			$mem_limit = files::str2bytes($mem_limit);
+			$mem_avail = $mem_limit-$mem_used-(512*1024);
+			$mem_needed = $w*$h*5;
+			
+			if ($mem_needed > $mem_avail)
+			{
+				if (@ini_set('memory_limit',$mem_limit+$mem_needed+$mem_used) === false) {
+					throw new Exception(__('Not enough memory to open image.'));
+				}
+				
+				if (!$this->memory_limit) {
+					$this->memory_limit = $mem_limit;
+				}
+			}
+		}
 	}
 	
 	function output($type='png',$file=null,$qual=90)
@@ -202,10 +242,13 @@ class imageTools
 			}
 		}
 		
-		$img2=imagecreatetruecolor($_w,$_h);
-		imagecopyresampled($img2,$this->res,0,0,$decalW,$decalH,$_w,$_h,$cropW,$cropH);
+		$this->memoryAllocate($_w,$_h);
+		$dest = imagecreatetruecolor($_w,$_h);
+		$fill = imagecolorallocate($dest,128,128,128);
+		imagefill($dest,0,0,$fill);
+		imagecopyresampled($dest,$this->res,0,0,$decalW,$decalH,$_w,$_h,$cropW,$cropH);
 		imagedestroy($this->res);
-		$this->res=$img2;
+		$this->res = $dest;
 		return true;
 	}
 }
