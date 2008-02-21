@@ -44,7 +44,7 @@ class fileUnzip
 	public function close()
 	{
 		if ($this->fp) {
-			fclose($fp);
+			fclose($this->fp);
 		}
 	}
 	
@@ -139,6 +139,27 @@ class fileUnzip
 			}
 		}
 		return $res;
+	}
+	
+	public function getRootDir()
+	{
+		if (empty($this->compressed_list)) {
+			$this->getList();
+		}
+		
+		$files = $this->getFilesList();
+		$dirs = $this->getDirsList();
+		
+		$root_files = 0;
+		$root_dirs = 0;
+		foreach ($files as $v) { if (strpos($v,'/') === false) { $root_files++; }}
+		foreach ($dirs as $v)  { if (strpos($v,'/') === false) { $root_dirs++;  }}
+		
+		if ($root_files == 0 && $root_dirs == 1) {
+			return $dirs[0];
+		} else {
+			return false;
+		}
 	}
 	
 	private function fp()
