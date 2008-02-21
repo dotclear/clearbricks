@@ -162,6 +162,24 @@ class fileUnzip
 		}
 	}
 	
+	public function isEmpty()
+	{
+		if (empty($this->compressed_list)) {
+			$this->getList();
+		}
+		
+		return count($this->compressed_list) == 0;
+	}
+	
+	public function hasFile($f)
+	{
+		if (empty($this->compressed_list)) {
+			$this->getList();
+		}
+		
+		return isset($this->compressed_list[$f]);
+	}
+	
 	private function fp()
 	{
 		if ($this->fp === null) {
