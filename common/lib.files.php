@@ -435,6 +435,7 @@ class files
 	
 	public static function tidyFileName($n)
 	{
+		$n = text::deaccent($n);
 		$n = preg_replace('/^[.]/u','',$n);
 		return preg_replace('/[^A-Za-z0-9._-]/u','_',$n);
 	}

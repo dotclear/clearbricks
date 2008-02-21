@@ -49,13 +49,12 @@ class text
 	}
 	
 	/**
-	Transforms a string to a proper URL.
+	Converts accented (and some other) characters from a string.
 	
-	@param str		<b>string</b>		String to transform
-	@param with_slashes	<b>boolean</b>		Keep slashes in URL
+	@param str		<b>string</b>		String to deaccent
 	@return	<b>string</b>
 	*/
-	public static function str2URL($str,$with_slashes=true)
+	public static function deaccent($str)
 	{
 		$pattern['A'] = '\x{00C0}-\x{00C5}';
 		$pattern['AE'] = '\x{00C6}';
@@ -91,6 +90,19 @@ class text
 			$str = preg_replace('/['.$p.']/u',$r,$str);
 		}
 		
+		return $str;
+	}
+	
+	/**
+	Transforms a string to a proper URL.
+	
+	@param str		<b>string</b>		String to transform
+	@param with_slashes	<b>boolean</b>		Keep slashes in URL
+	@return	<b>string</b>
+	*/
+	public static function str2URL($str,$with_slashes=true)
+	{
+		$str = self::deaccent($str);
 		$str = preg_replace('/[^A-Za-z0-9_\s\'\:\/[\]-]/','',$str);
 		
 		return self::tidyURL($str,$with_slashes);
