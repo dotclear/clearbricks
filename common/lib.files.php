@@ -144,9 +144,9 @@ class files
 		return self::$mimeType;
 	}
 	
-	public static function registerMimeTypes(array $tab)
+	public static function registerMimeTypes($tab)
 	{
-		self::$mimeType	= array_merge(self::$mimeType, $tab);
+		self::$mimeType = array_merge(self::$mimeType, $tab);
 	}
 	
 	public static function isDeletable($f)
