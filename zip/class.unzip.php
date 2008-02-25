@@ -31,6 +31,8 @@ class fileUnzip
 	protected $dir_sig_e = "\x50\x4b\x05\x06"; # end of central dir signature
 	protected $fp = null;
 	
+	protected $memory_limit = null;
+	
 	public function __construct($file_name)
 	{
 		$this->file_name = $file_name;
@@ -45,6 +47,10 @@ class fileUnzip
 	{
 		if ($this->fp) {
 			fclose($this->fp);
+		}
+		
+		if ($this->memory_limit) {
+			ini_set('memory_limit',$this->memory_limit);
 		}
 	}
 	
@@ -71,7 +77,7 @@ class fileUnzip
 		
 		foreach ($this->compressed_list as $k => $v)
 		{
-			if (substr($k,-1) == '/') {
+			if ($v['is_dir']) {
 				continue;
 			}
 			
@@ -90,7 +96,7 @@ class fileUnzip
 		}
 		$details =& $this->compressed_list[$file_name];
 		
-		if (substr($file_name,-1) == '/') {
+		if ($details['is_dir']) {
 			throw new Exception(sprintf(__('Trying to unzip a folder name %s'),$file_name));
 		}
 		
@@ -103,6 +109,8 @@ class fileUnzip
 		}
 		
 		fseek($this->fp(),$details['contents_start_offset']);
+		
+		$this->memoryAllocate($details['compressed_size']);
 		return $this->uncompress(
 			fread($this->fp(), $details['compressed_size']),
 			$details['compression_method'],
@@ -119,7 +127,7 @@ class fileUnzip
 		
 		$res = array();
 		foreach ($this->compressed_list as $k => $v) {
-			if (substr($k,-1) != '/') {
+			if (!$v['is_dir']) {
 				$res[] = $k;
 			}
 		}
@@ -134,7 +142,7 @@ class fileUnzip
 		
 		$res = array();
 		foreach ($this->compressed_list as $k => $v) {
-			if (substr($k,-1) == '/') {
+			if ($v['is_dir']) {
 				$res[] = substr($k,0,-1);
 			}
 		}
@@ -180,7 +188,7 @@ class fileUnzip
 		return isset($this->compressed_list[$f]);
 	}
 	
-	private function fp()
+	protected function fp()
 	{
 		if ($this->fp === null) {
 			$this->fp = @fopen($this->file_name,'rb');
@@ -193,7 +201,7 @@ class fileUnzip
 		return $this->fp;
 	}
 	
-	private function putContent($content,$target=false)
+	protected function putContent($content,$target=false)
 	{
 		if ($target) {
 			$r = @file_put_contents($target,$content);
@@ -206,7 +214,7 @@ class fileUnzip
 		return $content;
 	}
 	
-	private function testTargetDir($dir)
+	protected function testTargetDir($dir)
 	{
 		if (is_dir($dir) && !is_writable($dir)) {
 			throw new Exception(__('Unable to write in target directory, permission denied.'));
@@ -217,12 +225,13 @@ class fileUnzip
 		}
 	}
 	
-	private function uncompress($content,$mode,$size,$target=false)
+	protected function uncompress($content,$mode,$size,$target=false)
 	{
 		switch ($mode)
 		{
 			case 0:
 				# Not compressed
+				$this->memoryAllocate($size);
 				return $this->putContent($content,$target);
 			case 1:
 				throw new Exception('Shrunk mode is not supported.');
@@ -240,6 +249,7 @@ class fileUnzip
 				if (!function_exists('gzinflate')) {
 					throw new Exception('Gzip functions are not available.');
 				}
+				$this->memoryAllocate($size);
 				return $this->putContent(gzinflate($content,$size),$target);
 			case 9:
 				throw new Exception('Enhanced Deflating is not supported.');
@@ -250,6 +260,7 @@ class fileUnzip
 				if (!function_exists('bzdecompress')) {
 					throw new Exception('Bzip2 functions are not available.');
 				}
+				$this->memoryAllocate($size);
 				return $this->putContent(bzdecompress($content),$target,$chmod);
 			case 18:
 				throw new Exception('IBM TERSE is not supported.');
@@ -258,7 +269,7 @@ class fileUnzip
 		}
 	}
 	
-	private function loadFileListByEOF($stop_on_file=false,$exclude=false)
+	protected function loadFileListByEOF($stop_on_file=false,$exclude=false)
 	{
 		$fp = $this->fp();
 		
@@ -355,6 +366,7 @@ class fileUnzip
 					$i = $this->getFileHeaderInformation($v['relative_offset']);
 					
 					$this->compressed_list[$k]['file_name']            = $k;
+					$this->compressed_list[$k]['is_dir']               = $v['external_attributes1'] == 16;
 					$this->compressed_list[$k]['compression_method']   = $v['compression_method'];
 					$this->compressed_list[$k]['version_needed']       = $v['version_needed'];
 					$this->compressed_list[$k]['lastmod_datetime']     = $v['lastmod_datetime'];
@@ -375,7 +387,7 @@ class fileUnzip
 		return false;
 	}
 	
-	private function loadFileListBySignatures($stop_on_file=false,$exclude=false)
+	protected function loadFileListBySignatures($stop_on_file=false,$exclude=false)
 	{
 		$fp = $this->fp();
 		fseek($fp,0);
@@ -408,7 +420,7 @@ class fileUnzip
 		return $return;
 	}
 	
-	private function getFileHeaderInformation($start_offset=false)
+	protected function getFileHeaderInformation($start_offset=false)
 	{
 		$fp = $this->fp();
 		
@@ -443,6 +455,7 @@ class fileUnzip
 			# Mount file table
 			$i = array(
 				'file_name'            => $file['file_name'],
+				'is_dir'               => substr($file['file_name'],-1,1) == '/',
 				'compression_method'   => $file['compression_method'][1],
 				'version_needed'       => $file['version_needed'][1],
 				'lastmod_datetime'     => $this->getTimeStamp($file['lastmod_date'][1],$file['lastmod_time'][1]),
@@ -461,7 +474,7 @@ class fileUnzip
 		return false;
 	}
 	
-	private function getTimeStamp($date,$time)
+	protected function getTimeStamp($date,$time)
 	{
 		$BINlastmod_date = str_pad(decbin($date), 16, '0', STR_PAD_LEFT);
 		$BINlastmod_time = str_pad(decbin($time), 16, '0', STR_PAD_LEFT);
@@ -475,11 +488,34 @@ class fileUnzip
 		return mktime($lastmod_timeH, $lastmod_timeM, $lastmod_timeS, $lastmod_dateM, $lastmod_dateD, $lastmod_dateY);
 	}
 	
-	private function cleanFileName($n)
+	protected function cleanFileName($n)
 	{
 		$n = str_replace('../','',$n);
 		$n = preg_replace('#^/+#','',$n);
 		return $n;
+	}
+	
+	protected function memoryAllocate($size)
+	{
+		$mem_used = @memory_get_usage();
+		$mem_limit = @ini_get('memory_limit');
+		if ($mem_used && $mem_limit)
+		{
+			$mem_limit = files::str2bytes($mem_limit);
+			$mem_avail = $mem_limit-$mem_used-(512*1024);
+			$mem_needed = $size;
+			
+			if ($mem_needed > $mem_avail)
+			{
+				if (@ini_set('memory_limit',$mem_limit+$mem_needed+$mem_used) === false) {
+					throw new Exception(__('Not enough memory to open file.'));
+				}
+				
+				if (!$this->memory_limit) {
+					$this->memory_limit = $mem_limit;
+				}
+			}
+		}
 	}
 }
 ?>
