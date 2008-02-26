@@ -1,3 +1,31 @@
+libclearbricks (0.8-18) unstable; urgency=low ; svnrev=120
+
+  * SVN Revision 109 - olivier, on Tue, 19 Feb 2008 12:50:10 +0100
+    New debian changelog
+
+  * SVN Revision 110 - olivier, on Thu, 21 Feb 2008 01:23:59 +0100
+    Fixed a bug and added getRootDir method in fileUnzip
+
+  * SVN Revision 112 - olivier, on Thu, 21 Feb 2008 02:18:58 +0100
+    Added isEmpty and hasFile methods in fileUnzip
+
+  * SVN Revision 114 - olivier, on Thu, 21 Feb 2008 12:03:01 +0100
+    Created text::deaccent and applied this method in text::str2URL and files::tidyFileName
+
+  * SVN Revision 116 - olivier, on Thu, 21 Feb 2008 16:47:25 +0100
+    Try to handle memory usage in imageTools.
+    Add a grey background on alpha channel of PNG images for resize method.
+    Destroy image resource in close method.
+
+  * SVN Revision 118 - olivier, on Sat, 23 Feb 2008 19:16:15 +0100
+    Fix with files::registerMimeTypes
+
+  * SVN Revision 119 - olivier, on Mon, 25 Feb 2008 11:36:41 +0100
+    fileUnzip - Added a better way to recognize directories and tries
+    to increase memory limit if needed.
+
+ -- Olivier Meunier <olivier@clearbricks.org>  Tue, 26 Feb 2008 10:19:58 +0100
+
 libclearbricks (0.8-17) unstable; urgency=low ; svnrev=108
 
   * SVN Revision 108 - olivier, on Tue, 19 Feb 2008 10:25:56 +0100
