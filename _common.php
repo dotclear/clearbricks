@@ -104,4 +104,5 @@ $__autoload['xmlrpcIntrospectionServer']	= dirname(__FILE__).'/net.xmlrpc/class.
 
 # Zip tools
 $__autoload['fileUnzip']		= dirname(__FILE__).'/zip/class.unzip.php';
+$__autoload['fileZip']		= dirname(__FILE__).'/zip/class.zip.php';
 ?>
