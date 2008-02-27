@@ -483,7 +483,7 @@ class fileUnzip
 		$lastmod_dateD   = bindec(substr($BINlastmod_date, 11, 5));
 		$lastmod_timeH   = bindec(substr($BINlastmod_time,   0, 5));
 		$lastmod_timeM   = bindec(substr($BINlastmod_time,   5, 6));
-		$lastmod_timeS   = bindec(substr($BINlastmod_time,  11, 5));
+		$lastmod_timeS   = bindec(substr($BINlastmod_time,  11, 5)) * 2;
 		
 		return mktime($lastmod_timeH, $lastmod_timeM, $lastmod_timeS, $lastmod_dateM, $lastmod_dateD, $lastmod_dateY);
 	}
