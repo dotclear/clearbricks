@@ -231,7 +231,7 @@ class fileUnzip
 		{
 			case 0:
 				# Not compressed
-				$this->memoryAllocate($size);
+				$this->memoryAllocate($size*2);
 				return $this->putContent($content,$target);
 			case 1:
 				throw new Exception('Shrunk mode is not supported.');
@@ -249,7 +249,7 @@ class fileUnzip
 				if (!function_exists('gzinflate')) {
 					throw new Exception('Gzip functions are not available.');
 				}
-				$this->memoryAllocate($size);
+				$this->memoryAllocate($size*2);
 				return $this->putContent(gzinflate($content,$size),$target);
 			case 9:
 				throw new Exception('Enhanced Deflating is not supported.');
@@ -260,7 +260,7 @@ class fileUnzip
 				if (!function_exists('bzdecompress')) {
 					throw new Exception('Bzip2 functions are not available.');
 				}
-				$this->memoryAllocate($size);
+				$this->memoryAllocate($size*2);
 				return $this->putContent(bzdecompress($content),$target,$chmod);
 			case 18:
 				throw new Exception('IBM TERSE is not supported.');
