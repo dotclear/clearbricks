@@ -366,7 +366,7 @@ class fileUnzip
 					$i = $this->getFileHeaderInformation($v['relative_offset']);
 					
 					$this->compressed_list[$k]['file_name']            = $k;
-					$this->compressed_list[$k]['is_dir']               = $v['external_attributes1'] == 16;
+					$this->compressed_list[$k]['is_dir']               = $v['external_attributes1'] == 16 || substr($k,-1,1) == '/';
 					$this->compressed_list[$k]['compression_method']   = $v['compression_method'];
 					$this->compressed_list[$k]['version_needed']       = $v['version_needed'];
 					$this->compressed_list[$k]['lastmod_datetime']     = $v['lastmod_datetime'];
