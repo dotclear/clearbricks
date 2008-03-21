@@ -173,6 +173,7 @@ class filemanager
 			throw new Exception(__('An error occured while writing the file.'));
 		}
 		
+		files::inheritChmod($dest);
 		return path::real($dest);
 	}
 	
@@ -195,6 +196,7 @@ class filemanager
 		
 		fwrite($fp,$bits);
 		fclose($fp);
+		files::inheritChmod($dest);
 		
 		return path::real($dest);
 	}
