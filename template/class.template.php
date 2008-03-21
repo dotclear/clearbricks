@@ -166,7 +166,7 @@ class template
 			$fc = $this->compileFile($tpl_file);
 			fwrite($fp,$fc);
 			fclose($fp);
-			chmod($dest_file,fileperms(dirname($dest_file)));
+			files::inheritChmod($dest_file);
 		}
 		return $dest_file;
 	}
