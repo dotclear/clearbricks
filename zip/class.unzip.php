@@ -208,7 +208,7 @@ class fileUnzip
 			if (!$r) {
 				throw new Exception(__('Unable to write destination file.'));
 			}
-			chmod($target,fileperms(dirname($target)));
+			files::inheritChmod($target);
 			return true;
 		}
 		return $content;
@@ -261,7 +261,7 @@ class fileUnzip
 					throw new Exception('Bzip2 functions are not available.');
 				}
 				$this->memoryAllocate($size*2);
-				return $this->putContent(bzdecompress($content),$target,$chmod);
+				return $this->putContent(bzdecompress($content),$target);
 			case 18:
 				throw new Exception('IBM TERSE is not supported.');
 			default:

@@ -22,10 +22,11 @@
 
 class files
 {
-	/**
-	 * List of supported Mime Types
-	 */
-	private static $mimeType	= array(
+	# Default 
+	public static $dir_mode = null;
+	
+	# Supported MIME types
+	public static $mimeType	= array(
 			'odt'	=> 'application/vnd.oasis.opendocument.text',
 			'odp'	=> 'application/vnd.oasis.opendocument.presentation',
 			'ods'	=> 'application/vnd.oasis.opendocument.spreadsheet',
@@ -40,15 +41,15 @@ class files
 			'rtf'	=> 'application/rtf',
 			
 			'pdf'	=> 'application/pdf',
-			'ps'	=> 'application/postscript',
-			'ai'	=> 'application/postscript',
+			'ps'		=> 'application/postscript',
+			'ai'		=> 'application/postscript',
 			'eps'	=> 'application/postscript',
 			
 			'bin'	=> 'application/octet-stream',
 			'exe'	=> 'application/octet-stream',
 			
 			'deb'	=> 'application/x-debian-package',
-			'gz'	=> 'application/x-gzip',
+			'gz'		=> 'application/x-gzip',
 			'jar'	=> 'application/x-java-archive',
 			'rar'	=> 'application/rar',
 			'rpm'	=> 'application/x-redhat-package-manager',
@@ -57,7 +58,7 @@ class files
 			'zip'	=> 'application/zip',
 			
 			'aiff'	=> 'audio/x-aiff',
-			'ua'	=> 'audio/basic',
+			'ua'		=> 'audio/basic',
 			'mp3'	=> 'audio/mpeg3',
 			'mid'	=> 'audio/x-midi',
 			'midi'	=> 'audio/x-midi',
@@ -78,7 +79,7 @@ class files
 			'xbm'	=> 'image/x-xbitmap',
 			
 			'css'	=> 'text/css',
-			'js'	=> 'text/javascript',
+			'js'		=> 'text/javascript',
 			'html'	=> 'text/html',
 			'htm'	=> 'text/html',
 			'txt'	=> 'text/plain',
@@ -90,7 +91,7 @@ class files
 			'mpe'	=> 'video/mpeg',
 			'viv'	=> 'video/vnd.vivo',
 			'vivo'	=> 'video/vnd.vivo',
-			'qt'	=> 'video/quicktime',
+			'qt'		=> 'video/quicktime',
 			'mov'	=> 'video/quicktime',
 			'flv'	=> 'video/x-flv',
 			'avi'	=> 'video/x-msvideo'
@@ -230,7 +231,20 @@ class files
 			if (@mkdir($f) === false) {
 				throw new Exception(__('Unable to create directory.'));
 			}
-			chmod($f,fileperms(dirname($f)));
+			self::inheritChmod($f);
+		}
+	}
+	
+	public static function inheritChmod($file)
+	{
+		if (!function_exists('fileperms') || !function_exists('chmod')) {
+			return false;
+		}
+		
+		if (self::$dir_mode != null) {
+			return chmod($file,self::$dir_mode);
+		} else {
+			return chmod($file,fileperms(dirname($file)));
 		}
 	}
 	
