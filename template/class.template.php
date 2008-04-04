@@ -127,6 +127,21 @@ class template
 		$this->values[$name] = $callback;
 	}
 	
+	public function blockExists($name)
+	{
+		return isset($this->blocks[$name]);
+	}
+	
+	public function valueExists($name)
+	{
+		return isset($this->values[$name]);
+	}
+	
+	public function tagExists($name)
+	{
+		return $this->blockExists($name) || $this->valueExists($name);
+	}
+	
 	public function getFile($file)
 	{
 		$tpl_file = $this->getFilePath($file);
