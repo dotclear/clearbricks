@@ -62,22 +62,20 @@ class filemanager
 		if (is_array($f))
 		{
 			foreach ($f as $v) {
-				if (($V = path::real($v)) !== false) {
-					$this->exclude_list[] = $V;
-				}
+				$this->exclude_list[] = $v;
 			}
 		}
-		elseif (($F = path::real($f)) !== false)
+		else
 		{
-			$this->exclude_list[] = $F;
+			$this->exclude_list[] = $f;
 		}
 	}
 	
-	private function isExclude($f)
+	protected function isExclude($f)
 	{
 		foreach ($this->exclude_list as $v)
 		{
-			if (strpos($f,$v) === 0) {
+			if (preg_match($v,$f)) {
 				return true;
 			}
 		}
@@ -85,7 +83,7 @@ class filemanager
 		return false;
 	}
 	
-	private function inJail($f)
+	protected function inJail($f)
 	{
 		$f = path::real($f);
 		
@@ -161,6 +159,10 @@ class filemanager
 	{
 		$dest = $this->pwd.'/'.path::clean($dest);
 		
+		if ($this->isExclude($dest)) {
+			throw new Exception(__('Uploading this file is not allowed.'));
+		}
+		
 		if (!$this->inJail(dirname($dest))) {
 			throw new Exception(__('Destination directory is not in jail.'));
 		}
@@ -180,6 +182,10 @@ class filemanager
 	public function uploadBits($name,$bits)
 	{
 		$dest = $this->pwd.'/'.path::clean($name);
+		
+		if ($this->isExclude($dest)) {
+			throw new Exception(__('Uploading this file is not allowed.'));
+		}
 		
 		if (!$this->inJail(dirname($dest))) {
 			throw new Exception(__('Destination directory is not in jail.'));
