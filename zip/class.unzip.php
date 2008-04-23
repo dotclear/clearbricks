@@ -497,7 +497,7 @@ class fileUnzip
 	
 	protected function memoryAllocate($size)
 	{
-		$mem_used = @memory_get_usage();
+		$mem_used = function_exists('memory_get_usage') ? @memory_get_usage() : 4000000;
 		$mem_limit = @ini_get('memory_limit');
 		if ($mem_used && $mem_limit)
 		{
