@@ -25,9 +25,10 @@ class mail
 	public static function sendMail($to,$subject,$message,$headers=null,$p=null)
 	{
 		$f = function_exists('_mail') ? '_mail' : null;
+		$eol = trim(ini_get('sendmail_path')) ? "\n" : "\r\n";
 		
 		if (is_array($headers)) {
-			$headers = implode("\r\n",$headers);
+			$headers = implode($eol,$headers);
 		}
 		
 		if ($f == null)
