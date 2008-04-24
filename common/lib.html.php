@@ -155,6 +155,7 @@ class html
 			$str = preg_replace_callback($r,array('self','absoluteURLHandler'),$str);
 		}
 		
+		self::$url_root = null;
 		return $str;
 	}
 	
@@ -165,7 +166,8 @@ class html
 		$link = $m[1].'%s'.$m[3];
 		$host = preg_replace('|^([a-z]{3,}://)(.*?)/(.*)$|','$1$2',self::$url_root);
 		
-		if (!preg_match('|^[a-z]{3,}://|',$url))
+		$parse = parse_url($m[2]);
+		if (empty($parse['scheme']))
 		{
 			if (strpos($url,'/') === 0) {
 				$url = $host.$url;
