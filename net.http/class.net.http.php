@@ -381,6 +381,13 @@ class netHttp extends netSocket
 			$headers[] = $cookie;
 		}
 		
+		# X-Forwarded-For
+		$xforward= array($_SERVER['REMOTE_ADDR']);
+		if ($this->proxy_host) {
+			$xforward[] = $_SERVER['SERVER_ADDR'];
+		}
+		$headers[] = 'X-Forwarded-For: '.implode(', ',$xforward);
+		
 		# Basic authentication
 		if ($this->username && $this->password) {
 			$headers[] = 'Authorization: BASIC '.base64_encode($this->username.':'.$this->password);
