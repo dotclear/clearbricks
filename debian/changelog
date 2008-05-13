@@ -1,3 +1,60 @@
+libclearbricks (0.8-20) unstable; urgency=low ; svnrev=141
+
+  * SVN Revision 121 - olivier, on Tue, 26 Feb 2008 10:20:48 +0100
+    New debian changelog
+
+  * SVN Revision 122 - olivier, on Wed, 27 Feb 2008 09:13:52 +0100
+    Fixed seconds reading in fileUnzip
+
+  * SVN Revision 124 - olivier, on Wed, 27 Feb 2008 11:22:23 +0100
+    Added fileZip class
+
+  * SVN Revision 126 - olivier, on Wed, 27 Feb 2008 14:03:43 +0100
+    More memory for fileUnzip
+
+  * SVN Revision 128 - olivier, on Sun, 02 Mar 2008 14:10:07 +0100
+    Fixed time offset output for RFC822 dates.
+
+  * SVN Revision 129 - olivier, on Sun, 02 Mar 2008 14:10:56 +0100
+    Tweak in fileUnzip to handle directories in central.
+
+  * SVN Revision 131 - olivier, on Fri, 21 Mar 2008 11:25:28 +0100
+    Changed all chmod($file,fileperms(dirname($file))) calls with new files::inheritChmod() static method.
+    Some minor fixes.
+
+  * SVN Revision 132 - olivier, on Fri, 21 Mar 2008 11:26:33 +0100
+    Added files::inheritChmod() calls in filemanager uploadFile() and uploadBits() methods.
+    Closes #177.
+
+  * SVN Revision 133 - olivier, on Fri, 04 Apr 2008 15:23:51 +0200
+    Added translation support in l10n::getISOcodes()
+
+  * SVN Revision 134 - olivier, on Fri, 04 Apr 2008 17:45:23 +0200
+    Added template::blockExists(), template::valueExists() and template::tagExists() methods.
+
+  * SVN Revision 135 - olivier, on Thu, 17 Apr 2008 17:54:27 +0200
+    filemanager::exclude_list is now a regexp list and handles file upload.
+
+  * SVN Revision 136 - olivier, on Fri, 18 Apr 2008 10:29:17 +0200
+    Reverted to revision 134
+
+  * SVN Revision 137 - olivier, on Fri, 18 Apr 2008 11:41:03 +0200
+    Added fileManager::$exclude_pattern property. This works only for files.
+
+  * SVN Revision 138 - pep, on Wed, 23 Apr 2008 02:10:08 +0200
+    Should fix problems when sending mail (/r/n or /n header terminator)
+
+  * SVN Revision 139 - olivier, on Wed, 23 Apr 2008 18:07:03 +0200
+    memory_get_usage test.
+
+  * SVN Revision 140 - olivier, on Thu, 24 Apr 2008 11:34:02 +0200
+    Fix a bug in html::absoluteURLs()
+
+  * SVN Revision 141 - olivier, on Wed, 07 May 2008 15:44:15 +0200
+    Added X-Forwarded-For support in netHttp
+
+ -- Olivier Meunier <olivier@clearbricks.org>  Tue, 13 May 2008 14:04:11 +0200
+
 libclearbricks (0.8-18) unstable; urgency=low ; svnrev=120
 
   * SVN Revision 109 - olivier, on Tue, 19 Feb 2008 12:50:10 +0100
