@@ -97,7 +97,7 @@ class imageTools
 		{
 			$mem_limit = files::str2bytes($mem_limit);
 			$mem_avail = $mem_limit-$mem_used-(512*1024);
-			$mem_needed = $w*$h*5;
+			$mem_needed = $w*$h*8;
 			
 			if ($mem_needed > $mem_avail)
 			{
