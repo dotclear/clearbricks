@@ -298,6 +298,9 @@ class filemanager
 	
 	protected function sortHandler($a,$b)
 	{
+		if ($a->parent && !$b->parent || !$a->parent && $b->parent) {
+			return ($a->parent) ? -1 : 1;
+		}
 		return strcasecmp($a->basename,$b->basename);
 	}
 }
