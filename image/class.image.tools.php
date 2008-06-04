@@ -242,6 +242,13 @@ class imageTools
 			}
 		}
 		
+		if ($_w < 1) {
+			$_w = 1;
+		}
+		if ($_h < 1) {
+			$_h = 1;
+		}
+		
 		$this->memoryAllocate($_w,$_h);
 		$dest = imagecreatetruecolor($_w,$_h);
 		$fill = imagecolorallocate($dest,128,128,128);
