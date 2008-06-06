@@ -161,7 +161,6 @@ class feedReader extends netHttp
 	*/
 	protected function withCache($url)
 	{
-		$cached_file = $this->cache_dir.'/'.$this->cache_file_prefix.md5($url);
 		$url_md5 = md5($url);
 		$cached_file = sprintf('%s/%s/%s/%s/%s.php',
 			$this->cache_dir,
