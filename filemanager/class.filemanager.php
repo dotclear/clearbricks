@@ -30,7 +30,7 @@ class filemanager
 	
 	public $dir = array('dirs'=>array(),'files'=>array());
 	
-	function __construct($root,$root_url='')
+	public function __construct($root,$root_url='')
 	{
 		$this->root = $this->pwd = path::real($root);
 		$this->root_url = $root_url;
@@ -44,7 +44,7 @@ class filemanager
 		}
 	}
 	
-	function chdir($dir)
+	public function chdir($dir)
 	{
 		$realdir = path::real($this->root.'/'.path::clean($dir));
 		if (!$realdir || !is_dir($realdir)) {
@@ -56,6 +56,20 @@ class filemanager
 		}
 		
 		$this->pwd = $realdir;
+	}
+	
+	public function getPwd()
+	{
+		return $this->pwd;
+	}
+	
+	public function writable()
+	{
+		if (!$this->pwd) {
+			return false;
+		}
+		
+		return is_writable($this->pwd);
 	}
 	
 	public function addExclusion($f)
