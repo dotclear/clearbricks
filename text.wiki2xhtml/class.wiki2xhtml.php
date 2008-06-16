@@ -37,6 +37,9 @@
 
 # History :
 #
+# 3.2.5
+#			=> Changed longdesc by title in images
+#
 # 3.2.4
 #			=> Auto links
 #			=> Code cleanup
@@ -117,7 +120,7 @@
 
 class wiki2xhtml
 {
-	public $__version__ = '3.2.4';
+	public $__version__ = '3.2.5';
 	
 	public $T;
 	public $opt;
@@ -905,7 +908,7 @@ class wiki2xhtml
 		}
 		
 		if (!empty($data[3])) {
-			$attr .= ' longdesc="'.$this->protectAttr($data[3]).'"';
+			$attr .= ' title="'.$this->protectAttr($data[3]).'"';
 		}
 		
 		return NULL;
