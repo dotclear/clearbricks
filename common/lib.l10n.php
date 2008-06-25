@@ -157,7 +157,7 @@ class l10n
 	
 	public static function getISOcodes($flip=false)
 	{
-		if (empty(self::$lang))
+		if (empty(self::$langs))
 		{
 			self::$langs = array(
 			'aa' => 'Afar',
