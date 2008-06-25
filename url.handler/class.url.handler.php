@@ -111,7 +111,7 @@ class urlHandler
 		}
 	}
 	
-	protected function getArgs($part,&$type,&$args)
+	public function getArgs($part,&$type,&$args)
 	{
 		if ($part == '') {
 			$type = null;
@@ -141,7 +141,7 @@ class urlHandler
 		$args = $part;
 	}
 	
-	protected function callHandler($type,$args)
+	public function callHandler($type,$args)
 	{
 		if (!isset($this->types[$type])) {
 			throw new Exception('Unknown URL type');
@@ -155,7 +155,7 @@ class urlHandler
 		call_user_func($handler,$args);
 	}
 	
-	protected function callDefaultHandler($args)
+	public function callDefaultHandler($args)
 	{
 		if (!is_callable($this->default_handler)) {
 			throw new Exception('Unable to call function');
@@ -193,16 +193,6 @@ class urlHandler
 			$r[$k] = $v['url'];
 		}
 		array_multisort($r,SORT_DESC,$this->types);
-	}
-	
-	protected function parseQuery($str,&$arr = array())
-	{
-		if (empty($str)) {
-			return;
-		}
-		foreach (explode('&',$str) as $v) {
-			//echo $v;
-		}
 	}
 }
 ?>
