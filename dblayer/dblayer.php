@@ -570,6 +570,9 @@ class record
 	*/
 	public function toStatic()
 	{
+		if ($this instanceof staticRecord) {
+			return $this;
+		}
 		return new staticRecord($this->__result,$this->__info);
 	}
 	
