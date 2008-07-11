@@ -120,11 +120,11 @@ class dt
 	
 	public static function getZones($flip=false,$groups=false)
 	{
-		try {
-			$tz =  file(dirname(__FILE__).'/tz.dat');
-		} catch (Exception $e) {
+		if (!is_readable($f = dirname(__FILE__).'/tz.dat')) {
 			return array();
 		}
+		
+		$tz =  file(dirname(__FILE__).'/tz.dat');
 		
 		$res = array();
 		
