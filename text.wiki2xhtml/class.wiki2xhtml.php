@@ -32,10 +32,13 @@
 # Nicolas Chachereau
 # Jérôme Lipowicz
 #
-# Version : 3.1d
-# Release date : Monday 2004-06-06
+# Version : 3.2.6
+# Release date : 2008-07-16
 
 # History :
+#
+# 3.2.6
+#			=> Added ``inline html`` support
 #
 # 3.2.5
 #			=> Changed longdesc by title in images
@@ -120,7 +123,7 @@
 
 class wiki2xhtml
 {
-	public $__version__ = '3.2.5';
+	public $__version__ = '3.2.6';
 	
 	public $T;
 	public $opt;
@@ -164,9 +167,10 @@ class wiki2xhtml
 		$this->setOpt('active_acronym',1); 	# Activation des acronymes
 		$this->setOpt('active_ins',1);		# Activation des ins ++..++
 		$this->setOpt('active_del',1);		# Activation des del --..--
+		$this->setOpt('active_inline_html',1);	# Activation du HTML inline ;;...;;
 		$this->setOpt('active_footnotes',1);	# Activation des notes de bas de page
 		$this->setOpt('active_wikiwords',0);	# Activation des mots wiki
-		$this->setOpt('active_macros',1);		# Activation des macros {{{ }}}
+		$this->setOpt('active_macros',1);		# Activation des macros /// ///
 		
 		$this->setOpt('parse_pre',1);			# Parser l'intérieur de blocs <pre> ?
 		
@@ -340,6 +344,7 @@ class wiki2xhtml
 			'anchor' => array('~','~'),
 			'del' => array('--','--'),
 			'ins' => array('++','++'),
+			'inline' => array('``','``'),
 			'note' => array('$$','$$'),
 			'word' => array('¶¶¶','¶¶¶')
 		);
@@ -376,6 +381,9 @@ class wiki2xhtml
 		}
 		if (!$this->getOpt('active_del')) {
 			unset($this->tags['del']);
+		}
+		if (!$this->getOpt('active_inline_html')) {
+			unset($this->tags['inline']);
 		}
 		if (!$this->getOpt('active_footnotes')) {
 			unset($this->tags['note']);
@@ -751,6 +759,10 @@ class wiki2xhtml
 							$tag = '';
 							$res = $this->__parseNote($res);
 							break;
+						case 'inline':
+							$tag = '';
+							$res = $this->__parseInlineHTML($res);
+							break;
 						case 'word':
 							$res = $this->parseWikiWord($res,$tag,$attr,$type);
 							break;
@@ -944,6 +956,11 @@ class wiki2xhtml
 		$id = $this->getOpt('note_prefix').'-'.$i;
 		$this->foot_notes[$id] = $this->__inlineWalk($str);
 		return '<sup>\[<a href="#'.$id.'" id="rev-'.$id.'">'.$i.'</a>\]</sup>';
+	}
+	
+	function __parseInlineHTML($str)
+	{
+		return str_replace(array('&gt;','&lt;'),array('>','<'),$str);
 	}
 	
 	# Obtenir un acronyme
