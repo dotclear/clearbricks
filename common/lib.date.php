@@ -24,7 +24,7 @@ class dt
 {
 	public static function str($p,$ts=null,$tz=null)
 	{
-		if ($ts === NULL) { $ts = time(); }
+		if ($ts === null) { $ts = time(); }
 		
 		$hash = '799b4e471dc78154865706469d23d512';
 		$p = preg_replace('/(?<!%)%(a|A)/','{{'.$hash.'__$1%w__}}',$p);

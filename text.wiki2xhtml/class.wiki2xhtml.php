@@ -428,7 +428,7 @@ class wiki2xhtml
 	--------------------------------------------------- */
 	function __parseBlocks()
 	{
-		$mode = $type = NULL;
+		$mode = $type = null;
 		$res = '';
 		$max = count($this->T);
 		
@@ -455,7 +455,7 @@ class wiki2xhtml
 			# Correction de la syntaxe FR dans tous sauf pre et hr
 			# Sur idée de Christophe Bonijol
 			# Changement de regex (Nicolas Chachereau)
-			if ($this->getOpt('active_fr_syntax') && $type != NULL && $type != 'pre' && $type != 'hr') {
+			if ($this->getOpt('active_fr_syntax') && $type != null && $type != 'pre' && $type != 'hr') {
 				$line = preg_replace('%[ ]+([:?!;\x{00BB}](\s|$))%u','&nbsp;$1',$line);
 				$line = preg_replace('%(\x{00AB})[ ]+%u','$1&nbsp;',$line);
 			}
@@ -470,7 +470,7 @@ class wiki2xhtml
 	{
 		$pre_type = $type;
 		$pre_mode = $mode;
-		$type = $mode = NULL;
+		$type = $mode = null;
 		
 		if (empty($this->T[$i])) {
 			return false;
@@ -481,11 +481,11 @@ class wiki2xhtml
 		# Ligne vide
 		if (empty($line))
 		{
-			$type = NULL;
+			$type = null;
 		}
 		elseif ($this->getOpt('active_empty') && preg_match('/^øøø(.*)$/',$line,$cap))
 		{
-			$type = NULL;
+			$type = null;
 			$line = trim($cap[1]);
 		}
 		# Titre
@@ -499,7 +499,7 @@ class wiki2xhtml
 		elseif ($this->getOpt('active_hr') && preg_match('/^[-]{4}[- ]*$/',$line))
 		{
 			$type = 'hr';
-			$line = NULL;
+			$line = null;
 		}
 		# Blockquote
 		elseif ($this->getOpt('active_quote') && preg_match('/^(&gt;|;:)(.*)$/',$line,$cap))
@@ -534,7 +534,7 @@ class wiki2xhtml
 			
 			if (!$valid) {
 				$type = 'p';
-				$mode = NULL;
+				$mode = null;
 				$line = '<br />'.$line;
 			} else {
 				$line = trim($cap[2]);
@@ -612,7 +612,7 @@ class wiki2xhtml
 		}
 		else
 		{
-			return NULL;
+			return null;
 		}
 	}
 	
@@ -660,7 +660,7 @@ class wiki2xhtml
 	
 	/* Inline
 	--------------------------------------------------- */
-	function __inlineWalk($str,$allow_only=NULL)
+	function __inlineWalk($str,$allow_only=null)
 	{
 		$tree = preg_split($this->tag_pattern,$str,-1,PREG_SPLIT_DELIM_CAPTURE);
 		
@@ -670,7 +670,7 @@ class wiki2xhtml
 			$attr = '';
 			
 			if (in_array($tree[$i],array_values($this->open_tags)) &&
-			($allow_only == NULL || in_array(array_search($tree[$i],$this->open_tags),$allow_only)))
+			($allow_only == null || in_array(array_search($tree[$i],$this->open_tags),$allow_only)))
 			{
 				$tag = array_search($tree[$i],$this->open_tags);
 				$tag_type = 'open';
@@ -828,7 +828,7 @@ class wiki2xhtml
 		{
 			# On ajoute les dimensions de l'image si locale
 			# Idée de Stephanie
-			$img_size = NULL;
+			$img_size = null;
 			if (!ereg('[a-zA-Z]+://', $url)) {
 				if (ereg('^/',$url)) {
 					$path_img = $_SERVER['DOCUMENT_ROOT'] . $url;
@@ -847,7 +847,7 @@ class wiki2xhtml
 			
 			$tag = 'img';
 			$type = 'close';
-			return NULL;
+			return null;
 		}
 		else
 		{
@@ -911,7 +911,7 @@ class wiki2xhtml
 			$attr .= ' title="'.$this->protectAttr($data[3]).'"';
 		}
 		
-		return NULL;
+		return null;
 	}
 	
 	function __parseQ($str,&$attr)
@@ -1221,7 +1221,7 @@ class wiki2xhtml
 	/*
 	function debug()
 	{
-		$mode = $type = NULL;
+		$mode = $type = null;
 		$max = count($this->T);
 		
 		$res =

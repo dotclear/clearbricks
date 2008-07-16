@@ -127,7 +127,7 @@ class imageTools
 				case 'jpeg' :
 				case 'jpg':
 					header('Content-type: image/jpeg');
-					imagejpeg($this->res,NULL,$qual);
+					imagejpeg($this->res,null,$qual);
 					return true;
 				default :
 					return false;
