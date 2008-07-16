@@ -640,7 +640,7 @@ class xmlrpcServer
 	
 	protected function head($code,$msg)
 	{
-		$status_mode = preg_match('/cgi/',php_sapi_name());
+		$status_mode = preg_match('/cgi/',PHP_SAPI);
 		
 		if ($status_mode) {
 			header('Status: '.$code.' '.$msg);

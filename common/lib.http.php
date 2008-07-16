@@ -188,7 +188,7 @@ class http
 		rsort($array_ts);
 		$ts = $array_ts[0];
 		
-		$since = NULL;
+		$since = null;
 		if (!empty($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
 			$since = $_SERVER['HTTP_IF_MODIFIED_SINCE'];
 			$since = preg_replace ('/^(.*)(Mon|Tue|Wed|Thu|Fri|Sat|Sun)(.*)(GMT)(.*)/', '$2$3 GMT', $since);
@@ -260,7 +260,7 @@ class http
 	*/
 	public static function head($code,$msg=null)
 	{
-		$status_mode = preg_match('/cgi/',php_sapi_name());
+		$status_mode = preg_match('/cgi/',PHP_SAPI);
 		
 		if (!$msg)
 		{
@@ -314,7 +314,7 @@ class http
 			header('Status: '.$code.' '.$msg);
 		} else {
 			if (version_compare(phpversion(),'4.3.0','>=')) {
-				header($msg, TRUE, $code);
+				header($msg, true, $code);
 			} else {
 				header('HTTP/1.x '.$code.' '.$msg);
 			}
@@ -400,7 +400,7 @@ class http
 		
 		foreach ($input as $k => $v) { 
 			if (!in_array($k,$no_unset) && isset($GLOBALS[$k]) ) {
-				$GLOBALS[$k] = NULL;
+				$GLOBALS[$k] = null;
 				unset($GLOBALS[$k]);
 			}
 		}
