@@ -53,6 +53,11 @@ class urlHandler
 		}
 	}
 	
+	public function getTypes()
+	{
+		return $this->types;
+	}
+	
 	public function getBase($type)
 	{
 		if (isset($this->types[$type])) {
