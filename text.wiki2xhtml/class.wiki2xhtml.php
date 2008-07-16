@@ -167,7 +167,7 @@ class wiki2xhtml
 		$this->setOpt('active_acronym',1); 	# Activation des acronymes
 		$this->setOpt('active_ins',1);		# Activation des ins ++..++
 		$this->setOpt('active_del',1);		# Activation des del --..--
-		$this->setOpt('active_inline_html',1);	# Activation du HTML inline ;;...;;
+		$this->setOpt('active_inline_html',1);	# Activation du HTML inline ``...``
 		$this->setOpt('active_footnotes',1);	# Activation des notes de bas de page
 		$this->setOpt('active_wikiwords',0);	# Activation des mots wiki
 		$this->setOpt('active_macros',1);		# Activation des macros /// ///
