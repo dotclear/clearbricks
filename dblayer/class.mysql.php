@@ -36,7 +36,7 @@ class mysqlConnection extends dbLayer implements i_dbLayer
 			throw new Exception('PHP MySQL functions are not available');
 		}
 		
-		if (($link = @mysql_connect($host,$user,$password)) === false) {
+		if (($link = @mysql_connect($host,$user,$password,true)) === false) {
 			throw new Exception('Unable to connect to database');
 		}
 		
