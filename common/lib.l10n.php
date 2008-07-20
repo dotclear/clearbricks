@@ -28,6 +28,8 @@ function __($str)
 
 class l10n
 {
+	public static $text_direction;
+	
 	protected static $langs = array();
 	
 	public static function init()
@@ -360,6 +362,18 @@ class l10n
 		}
 		
 		return self::$langs;
+	}
+	
+	public static function getTextDirection($lang)
+	{
+		if (self::$text_direction) {
+			return self::$text_direction;
+		}
+		
+		if (preg_match('/^(ar|dv|fa|ha|he|ps|ur|yi)$/i',$lang)) {
+			return 'rtl';
+		}
+		return 'ltr';
 	}
 }
 ?>
