@@ -128,8 +128,8 @@ class htmlFilter
 		
 		$str = html::decodeEntities($str,true);
 		
+		$this->content = '';
 		xml_parse($this->parser,'<all>'.$str.'</all>');
-		
 		return $this->content;
 	}
 	
