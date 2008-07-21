@@ -390,7 +390,7 @@ class netHttp extends netSocket
 		
 		# Basic authentication
 		if ($this->username && $this->password) {
-			$headers[] = 'Authorization: BASIC '.base64_encode($this->username.':'.$this->password);
+			$headers[] = 'Authorization: Basic '.base64_encode($this->username.':'.$this->password);
 		}
 		
 		# If this is a POST, set the content type and length
