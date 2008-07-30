@@ -198,7 +198,7 @@ class filemanager
 		}
 		
 		if (@move_uploaded_file($tmp,$dest) === false) {
-			throw new Exception(__('An error occured while writing the file.'));
+			throw new Exception(__('An error occurred while writing the file.'));
 		}
 		
 		files::inheritChmod($dest);
@@ -223,7 +223,7 @@ class filemanager
 		
 		$fp = @fopen($dest,'wb');
 		if ($fp === false) {
-			throw new Exception(__('An error occured while writing the file.'));
+			throw new Exception(__('An error occurred while writing the file.'));
 		}
 		
 		fwrite($fp,$bits);
