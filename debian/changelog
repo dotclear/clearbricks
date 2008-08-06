@@ -1,3 +1,49 @@
+libclearbricks (0.8-22) unstable; urgency=low ; svnrev=165
+
+  * SVN Revision 152 - olivier, on Mon, 30 Jun 2008 15:04:18 +0200
+    New debian changelog
+
+  * SVN Revision 153 - olivier, on Thu, 03 Jul 2008 21:12:19 +0200
+    SQLite with PDO and SQLite 3 only.
+
+  * SVN Revision 154 - olivier, on Fri, 11 Jul 2008 14:48:43 +0200
+    Bug fix with TZ file load.
+
+  * SVN Revision 155 - olivier, on Wed, 16 Jul 2008 15:55:11 +0200
+    Minor performances tweaks.
+
+  * SVN Revision 156 - olivier, on Wed, 16 Jul 2008 16:11:17 +0200
+    Added getTypes() in urlHandler.
+
+  * SVN Revision 157 - olivier, on Wed, 16 Jul 2008 18:11:01 +0200
+    Added support for inline HTML in wiki2xhtml
+
+  * SVN Revision 158 - olivier, on Wed, 16 Jul 2008 18:22:00 +0200
+    Description error in wiki2xhtml
+
+  * SVN Revision 159 - olivier, on Thu, 17 Jul 2008 12:51:08 +0200
+    Added ?> in lib.crypt.php
+
+  * SVN Revision 160 - olivier, on Thu, 17 Jul 2008 16:13:25 +0200
+    Always force a new connection for mysql dblayer.
+
+  * SVN Revision 161 - olivier, on Sun, 20 Jul 2008 16:41:36 +0200
+    Added l10n::getTextDirection() method.
+
+  * SVN Revision 162 - olivier, on Sun, 20 Jul 2008 18:35:31 +0200
+    l10n::getISOcodes returns now native langue names.
+
+  * SVN Revision 163 - olivier, on Mon, 21 Jul 2008 15:02:59 +0200
+    Init content in htmlFilter::aply()
+
+  * SVN Revision 164 - olivier, on Mon, 21 Jul 2008 15:16:15 +0200
+    Basic scheme instead of BASIC.
+
+  * SVN Revision 165 - olivier, on Wed, 30 Jul 2008 18:35:08 +0200
+    Typo fix in filemanager.
+
+ -- Olivier Meunier <olivier@clearbricks.org>  Wed, 06 Aug 2008 14:36:17 +0200
+
 libclearbricks (0.8-21) unstable; urgency=low ; svnrev=151
 
   * SVN Revision 142 - olivier, on Tue, 13 May 2008 14:26:02 +0200
