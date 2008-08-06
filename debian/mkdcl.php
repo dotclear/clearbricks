@@ -69,11 +69,14 @@ class debianChangelog
 		}
 		
 		$changelog = '';
-		foreach (svnInfo::getChangeLog($svnrev+1,$currev) as $vch)
+		$changes = svnInfo::getChangeLog($svnrev+1,$currev);
+		foreach ($changes as $k => $v)
 		{
 			$changelog .=
-			'  * SVN Revision '.$vch['rev'].' - '.$vch['author'].', on '.$vch['date']."\n".
-			$vch['changelog']."\n";
+			'  * SVN Revision '.$k.' - '.$v['author'].
+			', on '.date('r',strtotime($v['date']))."\n".
+			'    '.trim(preg_replace('/\n/ms',"\n    ",$v['msg']))."\n\n";
+			
 		} 
 		
 		$res =
@@ -142,61 +145,40 @@ class svnInfo
 {
 	public static function getCurrentRevision()
 	{
-		$info = `export LANG=C; svn info`;
-		if (preg_match('/^Revision: (\d+)/ms',$info,$m)) {
-			return (integer) $m[1];
-		} else {
+		$info = `LANG=C svn info --xml`;
+		
+		$x = @simplexml_load_string($info);
+		if (!$x) {
 			throw new Exception('Unable to get current SVN revision');
 		}
+		
+		$rev = $x->entry->commit['revision'];
+		
+		if (!$rev) {
+			throw new Exception('Last revision number is invalid');
+		}
+		
+		return (integer) $rev;
 	}
 	
 	public static function getChangeLog($fromrev,$torev)
 	{
-		$log = `export LANG=C;svn log -r $fromrev:$torev`;
-		$log = explode("\n",$log);
+		$log = `LANG=C svn log --xml -r $fromrev:$torev`;
 		
-		# Remove two last lines
-		array_pop($log);
-		array_pop($log);
-		
-		$i = -1;
-		$newline = false;
-		$res = array();
-		
-		foreach ($log as $l)
-		{
-			# New log line
-			if ($l == '------------------------------------------------------------------------')
-			{
-				$i++;
-				$newline = true;
-			}
-			elseif ($newline)
-			{
-				$newline = false;
-				$res[$i] = self::getRevInfo($l);
-			}
-			elseif (trim($l) != '')
-			{
-				$res[$i]['changelog'] .= '    '.$l."\n";
-			}
+		$x = @simplexml_load_string($log);
+		if (!$x) {
+			throw new Exception('Unable to open SVN log');
 		}
 		
-		return $res;
-	}
-	
-	private static function getRevInfo($l)
-	{
-		$res = array(
-			'rev' => '',
-			'author' => '',
-			'date' => '',
-			'changelog' => ''
-		);
-		
-		$res['rev'] = substr(trim(strtok($l,'|')),1);
-		$res['author'] = trim(strtok('|'));
-		$res['date'] = date('r',strtotime(trim(strtok('('))));
+		$res = array();
+		foreach ($x->logentry as $change)
+		{
+			$res[(integer) $change['revision']] = array(
+				'author' => (string) $change->author,
+				'date' => (string) $change->date,
+				'msg' => trim((string) $change->msg)
+			);
+		}
 		
 		return $res;
 	}
