@@ -1,7 +1,7 @@
 Source: libclearbricks
 Section: web
 Priority: optional
-Maintainer: Mikael Poussard <mik@gandi.net>
+Maintainer: Olivier Meunier <olivier@dotclear.net>
 Build-Depends: debhelper (>= 4.0.0), php5-cli
 Standards-Version: 3.6.1
 
