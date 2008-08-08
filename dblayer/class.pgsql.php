@@ -104,10 +104,7 @@ class pgsqlConnection extends dbLayer implements i_dbLayer
 	{
 		if (is_resource($handle))
 		{
-			$v = pg_version($handle);
-			if (isset($v['server'])) {
-				return $v['server'];
-			}
+			return pg_parameter_status($handle,'server_version');
 		}
 		return null;
 	}
