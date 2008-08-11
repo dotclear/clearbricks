@@ -232,10 +232,10 @@ class http
 			return;
 		}
 		
-		$etag = md5(implode('',$args));
+		$etag = '"'.md5(implode('',$args)).'"';
 		unset($args);
 		
-		header('ETag: "'.$etag.'"');
+		header('ETag: '.$etag);
 		
 		# Do we have a previously sent content?
 		if (!empty($_SERVER['HTTP_IF_NONE_MATCH']))
