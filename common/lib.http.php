@@ -23,6 +23,7 @@
 class http
 {
 	public static $https_scheme_on_443 = false;
+	public static $cache_max_age = 0;
 	
 	/**
 	@function getHost
@@ -197,7 +198,7 @@ class http
 		
 		# Common headers list
 		$headers[] = 'Last-Modified: '.gmdate('D, d M Y H:i:s',$ts).' GMT';
-		$headers[] = 'Cache-Control: must-revalidate, max-age=0';
+		$headers[] = 'Cache-Control: must-revalidate, max-age='.abs((integer) self::$cache_max_age);
 		$headers[] = 'Pragma:';
 		
 		if ($since >= $ts)
