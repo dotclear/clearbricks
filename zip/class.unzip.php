@@ -205,7 +205,7 @@ class fileUnzip
 	{
 		if ($target) {
 			$r = @file_put_contents($target,$content);
-			if (!$r) {
+			if ($r === false) {
 				throw new Exception(__('Unable to write destination file.'));
 			}
 			files::inheritChmod($target);
