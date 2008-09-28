@@ -64,8 +64,9 @@ class template
 		if (in_array($tpl_file,$this->compile_stack)) { return; }
 		
 		return
-		'<?php echo '.
-		$this->self_name."->getData('".str_replace("'","\'",$src)."'); ?>";
+		'<?php try { '.
+		'echo '.$this->self_name."->getData('".str_replace("'","\'",$src)."'); ".
+		'} catch (Exception $e) {} ?>';
 	}
 	
 	public function setPath()
