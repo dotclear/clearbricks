@@ -394,6 +394,8 @@ class netHttp extends netSocket
 			$headers[] = 'Authorization: Basic '.base64_encode($this->username.':'.$this->password);
 		}
 		
+		$headers = array_merge($headers,$this->more_headers);
+		
 		# If this is a POST, set the content type and length
 		if ($this->postdata) {
 			$content_type = 'Content-Type: application/x-www-form-urlencoded';
@@ -406,7 +408,7 @@ class netHttp extends netSocket
 			$headers[] = $this->postdata;
 		}
 		
-		return array_merge($headers,$this->more_headers);
+		return $headers;
 	}
 	
 	/**
