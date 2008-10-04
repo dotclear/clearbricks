@@ -243,9 +243,9 @@ class files
 		}
 		
 		if (self::$dir_mode != null) {
-			return chmod($file,self::$dir_mode);
+			return @chmod($file,self::$dir_mode);
 		} else {
-			return chmod($file,fileperms(dirname($file)));
+			return @chmod($file,fileperms(dirname($file)));
 		}
 	}
 	
