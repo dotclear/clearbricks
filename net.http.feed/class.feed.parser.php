@@ -141,6 +141,10 @@ class feedParser
 			);
 			
 			$item->pubdate = (string) $i->pubDate;
+			if (!$item->pubdate && !empty($i->children('http://purl.org/dc/elements/1.1/')->date)) {
+				$item->pubdate = (string) $i->children('http://purl.org/dc/elements/1.1/')->date;
+			}
+
 			$item->TS = strtotime($item->pubdate);
 			
 			$this->items[] = $item;
