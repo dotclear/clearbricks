@@ -503,5 +503,10 @@ class sqliteSchema extends dbSchema implements i_dbSchema
 		$this->table_hist[$c_table] = $this->db_get_columns($c_table);
 		$this->db_create_reference($newname,$c_table,$c_cols,$p_table,$p_cols,$update,$delete);
 	}
+	
+	public function db_drop_unique($table,$name)
+	{
+		throw new Exception('SQLite unique index cannot be removed.');
+	}
 }
 ?>
