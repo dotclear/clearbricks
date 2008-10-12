@@ -104,7 +104,7 @@ class feedParser
 			$item->pubdate = (string) $i->children('http://purl.org/dc/elements/1.1/')->date;
 			$item->TS = strtotime($item->pubdate);
 			
-			$item->guid = $item->link;
+			$item->guid = (string) $item->link;
 			if (!empty($i->attributes('http://www.w3.org/1999/02/22-rdf-syntax-ns#')->about)) {
 				$item->guid = (string) $i->attributes('http://www.w3.org/1999/02/22-rdf-syntax-ns#')->about;
 			}
@@ -152,9 +152,9 @@ class feedParser
 			
 			$item->TS = strtotime($item->pubdate);
 			
-			$item->guid = $item->link;
+			$item->guid = (string) $item->link;
 			if (!empty($i->guid)) {
-				$item->guid = $i->guid;
+				$item->guid = (string) $i->guid;
 			}
 			
 			$this->items[] = $item;
