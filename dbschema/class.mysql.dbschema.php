@@ -455,5 +455,13 @@ class mysqlSchema extends dbSchema implements i_dbSchema
 		$this->con->execute($sql);
 		$this->createReference($newname,$c_table,$c_cols,$p_table,$p_cols,$update,$delete);
 	}
+	
+	public function db_drop_unique($table,$name)
+	{
+		$sql =
+		'ALTER TABLE '.$this->con->escapeSystem($table).' '.
+		'DROP INDEX '.$this->con->escapeSystem($name);
+		$this->con->execute($sql);
+	}
 }
 ?>

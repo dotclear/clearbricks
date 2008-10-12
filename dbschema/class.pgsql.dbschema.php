@@ -387,5 +387,11 @@ class pgsqlSchema extends dbSchema implements i_dbSchema
 		
 		$this->createReference($newname,$c_table,$c_cols,$p_table,$p_cols,$update,$delete);
 	}
+	
+	public function db_drop_unique($table,$name)
+	{
+		$sql = 'ALTER TABLE '.$table.' DROP CONSTRAINT '.$name;
+		$this->con->execute($sql);
+	}
 }
 ?>

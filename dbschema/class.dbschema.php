@@ -109,6 +109,8 @@ interface i_dbSchema
 	function db_alter_index($table,$name,$newname,$type,$cols);
 	
 	function db_alter_reference($name,$newname,$c_table,$c_cols,$p_table,$p_cols,$update,$delete);
+	
+	function db_drop_unique($table,$name);
 }
 
 class dbSchema
@@ -294,6 +296,11 @@ class dbSchema
 	public function alterReference($name,$newname,$c_table,$c_cols,$p_table,$p_cols,$update,$delete)
 	{
 		return $this->db_alter_reference($name,$newname,$c_table,$c_cols,$p_table,$p_cols,$update,$delete);
+	}
+	
+	public function dropUnique($table,$name)
+	{
+		return $this->db_drop_unique($table,$name);
 	}
 	
 	public function flushStack()
