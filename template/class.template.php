@@ -161,17 +161,18 @@ class template
 			$file_md5
 		);
 		
-		$create_file = false;
-		
-		if (!file_exists($dest_file)) {
-			$create_file = true;
-		} elseif (!$this->use_cache) {
-			$create_file = true;
-		} elseif (filemtime($tpl_file) > filemtime($dest_file)) {
-			$create_file = true;
+		$stat_f = $stat_d = false;
+		if (file_exists($dest_file)) {
+			$stat_f = stat($tpl_file);
+			$stat_d = stat($dest_file);
 		}
 		
-		if ($create_file)
+		# We create template if:
+		# - dest_file doest not exists
+		# - we don't want cache
+		# - dest_file size == 0
+		# - tpl_file is more recent thant dest_file
+		if (!$stat_d || !$this->use_cache || $stat_d['size'] == 0 || $stat_f['mtime'] > $stat_d['mtime'])
 		{
 			files::makeDir(dirname($dest_file),true);
 			
