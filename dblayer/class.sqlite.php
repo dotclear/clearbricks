@@ -150,7 +150,7 @@ class sqliteConnection extends dbLayer implements i_dbLayer
 	{
 		if ($res instanceof PDOStatement) {
 			$m = $res->getColumnMeta($position);
-			return $m['name'];
+			return preg_replace('/^.+\./','',$m['name']); # we said short_column_names = 1
 		}
 	}
 	
