@@ -161,6 +161,7 @@ class template
 			$file_md5
 		);
 		
+		clearstatcache();
 		$stat_f = $stat_d = false;
 		if (file_exists($dest_file)) {
 			$stat_f = stat($tpl_file);
