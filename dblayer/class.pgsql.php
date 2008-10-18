@@ -193,6 +193,17 @@ class pgsqlConnection extends dbLayer implements i_dbLayer
 		return pg_escape_string($str);
 	}
 	
+	public function db_write_lock($table)
+	{
+		$this->execute('BEGIN');
+		$this->execute('LOCK TABLE '.$this->escapeSystem($table).' IN EXCLUSIVE MODE');
+	}
+	
+	public function db_unlock()
+	{
+		$this->execute('END');
+	}
+	
 	public function vacuum($table)
 	{
 		$this->execute('VACUUM FULL '.$this->escapeSystem($table));

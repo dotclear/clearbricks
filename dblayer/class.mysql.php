@@ -28,6 +28,8 @@ See the dbLayer documentation for common methods.
 */
 class mysqlConnection extends dbLayer implements i_dbLayer
 {
+	public static $weak_locks = false;
+	
 	protected $__driver = 'mysql';
 	
 	public function db_connect($host,$user,$password,$database)
@@ -180,6 +182,29 @@ class mysqlConnection extends dbLayer implements i_dbLayer
 			return mysql_real_escape_string($str,$handle);
 		} else {
 			return mysql_escape_string($str);
+		}
+	}
+	
+	public function db_write_lock($table)
+	{
+		try {
+			$this->execute('LOCK TABLES '.$this->escapeSystem($table).' WRITE');
+		} catch (Exception $e) {
+			# As lock is a privilege in MySQL, we can avoid errors with weak_locks static var
+			if (!self::$weak_locks) {
+				throw $e;
+			}
+		}
+	}
+	
+	public function db_unlock()
+	{
+		try {
+			$this->execute('UNLOCK TABLES');
+		} catch (Exception $e) {
+			if (!self::$weak_locks) {
+				throw $e;
+			}
 		}
 	}
 	
