@@ -174,6 +174,18 @@ interface i_dbLayer
 	@return	<b>string</b>
 	*/
 	function db_escape_string($str,$handle=null);
+	
+	/**
+	This method lock the given table in write access.
+	
+	@param	table	<b>string</b>		Table name
+	*/
+	function db_write_lock($table);
+	
+	/**
+	This method releases an acquiered lock.
+	*/
+	function db_unlock();
 }
 
 /**
@@ -351,6 +363,24 @@ class dbLayer
 	public function rollback()
 	{
 		$this->execute('ROLLBACK');
+	}
+	
+	/**
+	This method lock the given table in write access.
+	
+	@param	table	<b>string</b>		Table name
+	*/
+	public function writeLock($table)
+	{
+		$this->db_write_lock($table);
+	}
+	
+	/**
+	This method releases an acquiered lock.
+	*/
+	public function unlock()
+	{
+		$this->db_unlock();
 	}
 	
 	/**

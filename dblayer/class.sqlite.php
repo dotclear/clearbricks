@@ -229,6 +229,15 @@ class sqliteConnection extends dbLayer implements i_dbLayer
 		}
 	}
 	
+	public function db_write_lock($table)
+	{
+		$this->execute('BEGIN EXCLUSIVE TRANSACTION');
+	}
+	
+	public function db_unlock()
+	{
+		$this->execute('END');
+	}
 	
 	public function vacuum($table)
 	{
