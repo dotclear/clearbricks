@@ -21,19 +21,20 @@
 # ***** END LICENSE BLOCK *****
 
 /**
-@ingroup CLEARBRICKS
-@brief Crypt and password helper functions.
+* Functions to handle passwords (hash, random password generator...)
+*
+* @package Clearbricks
 */
 class crypt
 {
 	/**
-	Returns an HMAC encoded value of <var>$data</var>, using the said <var>$key</var>
-	and <var>$hashfunc</var> as hash method (sha1 or md5 are accepted.)
-	
-	@param	key		<b>string</b>		Hash key
-	@param	data		<b>string</b>		Data
-	@param	hashfunc	<b>string</b>		Hash function (md5 or sha1)
-	@return	<b>string</b>
+	* Returns an HMAC encoded value of <var>$data</var>, using the said <var>$key</var>
+	* and <var>$hashfunc</var> as hash method (sha1 or md5 are accepted.)
+	*
+	* @param	string	$key			Hash key
+	* @param	string	$data		Data
+	* @param	string	$hashfunc		Hash function (md5 or sha1)
+	* @return string
 	*/
 	public static function hmac($key,$data,$hashfunc='sha1')
 	{
@@ -54,9 +55,9 @@ class crypt
 	}
 	
 	/**
-	Returns an 8 characters random password.
-	
-	@return	<b>string</b>
+	* Returns an 8 characters random password.
+	*
+	* @return	string
 	*/
 	public static function createPassword()
 	{
