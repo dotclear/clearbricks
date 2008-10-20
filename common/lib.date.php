@@ -20,8 +20,21 @@
 #
 # ***** END LICENSE BLOCK *****
 
+/**
+* Date/time utilities
+*
+* @package Clearbricks
+*/
 class dt
 {
+	/**
+	* Format a timestamp like PHP strftime function
+	*
+	* @param string	$p		Format pattern
+	* @param integer	$ts		Timestamp
+	* @param string	$tz		Timezone
+	* @return	string
+	*/
 	public static function str($p,$ts=null,$tz=null)
 	{
 		if ($ts === null) { $ts = time(); }
@@ -46,11 +59,26 @@ class dt
 		return $res;
 	}
 	
+	/**
+	* Format a literal date to another literal date
+	*
+	* @param string	$p		Format pattern
+	* @param string	$dt		Date
+	* @param string	$tz		Timezone
+	* @return	string
+	*/
 	public static function dt2str($p,$dt,$tz=null)
 	{
 		return dt::str($p,strtotime($dt),$tz);
 	}
 	
+	/**
+	* Format a timestamp to ISO-8601 format
+	*
+	* @param integer	$ts		Timestamp
+	* @param string	$tz		Timezone
+	* @return	string
+	*/
 	public static function iso8601($ts,$tz='UTC')
 	{
 		$o = self::getTimeOffset($tz,$ts);
@@ -58,6 +86,13 @@ class dt
 		return date('Y-m-d\\TH:i:s',$ts).($o < 0 ? '-' : '+').$of;
 	}
 	
+	/**
+	* Format a timestamp to RFC-822 format
+	*
+	* @param integer	$ts		Timestamp
+	* @param string	$tz		Timezone
+	* @return	string
+	*/
 	public static function rfc822($ts,$tz='UTC')
 	{
 		# Get offset
@@ -66,6 +101,11 @@ class dt
 		return strftime('%a, %d %b %Y %H:%M:%S '.($o < 0 ? '-' : '+').$of,$ts);
 	}
 	
+	/**
+	* Set timezone during script execution
+	*
+	* @param	string	$tz		Timezone
+	*/
 	public static function setTZ($tz)
 	{
 		if (function_exists('date_default_timezone_set')) {
@@ -77,7 +117,12 @@ class dt
 			putenv('TZ='.$tz);
 		}
 	}
-
+	
+	/**
+	* Get current timezone
+	*
+	* @return string
+	*/
 	public static function getTZ()
 	{
 		if (function_exists('date_default_timezone_get')) {
@@ -87,7 +132,14 @@ class dt
 		return date('T');
 	}
 	
-	public static function getTimeOffset($utc_tz,$ts=false)
+	/**
+	* Get time offset for a timezone and an optionnal $ts timestamp
+	*
+	* @param string	$tz		Timezone
+	* @param integer	$ts		Timestamp
+	* @return integer
+	*/
+	public static function getTimeOffset($tz,$ts=false)
 	{
 		if (!$ts) {
 			$ts = time();
@@ -96,7 +148,7 @@ class dt
 		$server_tz = self::getTZ();
 		$server_offset = date('Z',$ts);
 		
-		self::setTZ($utc_tz);
+		self::setTZ($tz);
 		$cur_offset = date('Z',$ts);
 		
 		self::setTZ($server_tz);
@@ -104,11 +156,24 @@ class dt
 		return $cur_offset-$server_offset;
 	}
 	
+	/**
+	* Returns any timestamp from current timezone to UTC timestamp.
+	*
+	* @param integer	$ts		Timestamp
+	* @return integer
+	*/
 	public static function toUTC($ts)
 	{
 		return $ts + self::getTimeOffset('UTC',$ts);
 	}
 	
+	/**
+	* Returns a timestamp with its timezone offset.
+	*
+	* @param string	$tz		Timezone
+	* @param integer	$ts		Timestamp
+	* @return integer
+	*/
 	public static function addTimeZone($tz,$ts=false)
 	{
 		if (!$ts) {
@@ -118,6 +183,13 @@ class dt
 		return $ts + self::getTimeOffset($tz,$ts);
 	}
 	
+	/**
+	* Returns an array of supported timezones, codes are keys and names are values.
+	*
+	* @param boolean	$flip	Names are keys and codes are values
+	* @param boolean	$groups	Return timezones in arrays of continents
+	* @return array
+	*/
 	public static function getZones($flip=false,$groups=false)
 	{
 		if (!is_readable($f = dirname(__FILE__).'/tz.dat')) {

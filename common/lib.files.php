@@ -20,12 +20,17 @@
 #
 # ***** END LICENSE BLOCK *****
 
+/**
+* Files manipulation utilities
+*
+* @package Clearbricks
+*/
 class files
 {
-	# Default 
+	/** @var string Default directories mode */
 	public static $dir_mode = null;
 	
-	# Supported MIME types
+	/** @var array Default MIME types */
 	public static $mimeType	= array(
 			'odt'	=> 'application/vnd.oasis.opendocument.text',
 			'odp'	=> 'application/vnd.oasis.opendocument.presentation',
@@ -98,7 +103,14 @@ class files
 			'avi'	=> 'video/x-msvideo'
 		);
 	
-	public static function scandir($d,$order=0)
+	/**
+	* Returns a directory child files and directories.
+	*
+	* @param string	$d		Path to scan
+	* @param boolean	$order	Order results
+	* @return array
+	*/
+	public static function scandir($d,$order=false)
 	{
 		$res = array();
 		$dh = @opendir($d);
@@ -113,13 +125,19 @@ class files
 		closedir($dh);
 		
 		sort($res);
-		if ($order == 1) {
+		if ($order) {
 			rsort($res);
 		}
 		
 		return $res;
 	}
 	
+	/**
+	* Returns a file extension.
+	*
+	* @param string	$f	File name
+	* @return string
+	*/
 	public static function getExtension($f)
 	{
 		$f = explode('.',basename($f));
@@ -129,6 +147,12 @@ class files
 		return strtolower($f[count($f)-1]);
 	}
 	
+	/**
+	* Returns a file MIME type, based on static var $mimeType
+	*
+	* @param string	$f	File name
+	* @return string
+	*/
 	public static function getMimeType($f)
 	{
 		$ext = self::getExtension($f);
@@ -141,16 +165,33 @@ class files
 		}
 	}
 	
+	/**
+	* Returns all defined MIME types.
+	*
+	* @return array
+	*/
 	public static function mimeTypes()
 	{
 		return self::$mimeType;
 	}
 	
+	/**
+	* Append new MIME types to defined MIME types.
+	*
+	* @param array		$tab		New MIME types.
+	*/
 	public static function registerMimeTypes($tab)
 	{
 		self::$mimeType = array_merge(self::$mimeType, $tab);
 	}
 	
+	/**
+	* Is a file or directory deletable.
+	* Returns true if $f is a file or directory and is deletable.
+	*
+	* @param string	$f	File or directory
+	* @return boolean
+	*/
 	public static function isDeletable($f)
 	{
 		if (is_file($f)) {
@@ -160,7 +201,12 @@ class files
 		}
 	}
 	
-	# Recusive remove (rm -rf)
+	/**
+	* Remove recursively a directory.
+	*
+	* @param string	$dir		Directory patch
+	* @return boolean
+	*/
 	public static function deltree($dir)
 	{
 		$current_dir = opendir($dir);
@@ -183,6 +229,11 @@ class files
 		return @rmdir($dir);
 	}
 	
+	/**
+	* Set file modification time to now.
+	*
+	* @param string	$f		File to change
+	*/
 	public static function touch($f)
 	{
 		if (is_writable($f)) {
@@ -195,6 +246,15 @@ class files
 		}
 	}
 	
+	/**
+	* Directory creation.
+	*
+	* Creates directory $f. If $r is true, attempts to create needed parents
+	* directories.
+	*
+	* @param string	$f		Directory to create
+	* @param boolean	$r		Create parent directories
+	*/
 	public static function makeDir($f,$r=false)
 	{
 		if (empty($f)) {
@@ -236,6 +296,11 @@ class files
 		}
 	}
 	
+	/**
+	* Sets file or directory mode according to its parent.
+	*
+	* @param string	$file		File to change
+	*/
 	public static function inheritChmod($file)
 	{
 		if (!function_exists('fileperms') || !function_exists('chmod')) {
@@ -243,12 +308,18 @@ class files
 		}
 		
 		if (self::$dir_mode != null) {
-			return @chmod($file,self::$dir_mode);
+			return chmod($file,self::$dir_mode);
 		} else {
-			return @chmod($file,fileperms(dirname($file)));
+			return chmod($file,fileperms(dirname($file)));
 		}
 	}
 	
+	/**
+	* Changes file content.
+	*
+	* @param string	$f			File to edit
+	* @param string	$f_content	Content to write
+	*/
 	public static function putContent($f, $f_content)
 	{
 		if (file_exists($f) && !is_writable($f)) {	
@@ -266,6 +337,12 @@ class files
 		return true;
 	}
 	
+	/**
+	* Returns human readable file size.
+	*
+	* @param integer	$size		Bytes
+	* @return string
+	*/
 	public static function size($size)
 	{
 		$kb = 1024;
@@ -290,6 +367,12 @@ class files
 		}
 	}
 	
+	/**
+	* Converts a human readable file size to bytes.
+	*
+	* @param string	$v			Size
+	* @return integer
+	*/
 	public static function str2bytes($v)
 	{
 		$v = trim($v);
@@ -308,6 +391,12 @@ class files
 		return $v;
 	}
 	
+	/**
+	* Returns true if upload status is ok, throws an exception instead.
+	*
+	* @param array		$file		File array as found in $_FILES
+	* @return boolean
+	*/
 	public static function uploadStatus($file)
 	{
 		if (!isset($file['error'])) {
@@ -340,6 +429,14 @@ class files
 	
 	# Packages generation methods
 	#
+	/**
+	* Returns an array of a given directory's content. The array contains
+	* two arrays: dirs and files. Directory's content is fetched recursively.
+	*
+	* @param string		$dirName		Directory name
+	* @param array		$contents		Contents array. Leave it empty
+	* @return array
+	*/
 	public static function getDirList($dirName, &$contents = null)
 	{
 		if (!$contents) {
@@ -385,6 +482,12 @@ class files
 		return $contents;
 	}
 	
+	/**
+	* Removes unwanted characters in a filename
+	*
+	* @param string	$n		Filename
+	* @return string
+	*/
 	public static function tidyFileName($n)
 	{
 		$n = text::deaccent($n);
@@ -393,9 +496,23 @@ class files
 	}
 }
 
-
+/**
+* Path manipulation utilities
+*
+* @package Clearbricks
+*/
 class path
 {
+	/**
+	* Returns the real path of a file.
+	*
+	* If parameter $strict is true, file should exist. Returns false if
+	* file does not exist.
+	*
+	* @param string	$p		Filename
+	* @param boolean	$strict	File should exists
+	* @return string
+	*/
 	public static function real($p,$strict=true)
 	{
 		$os = (DIRECTORY_SEPARATOR == '\\') ? 'win' : 'nix';
@@ -461,6 +578,12 @@ class path
 		return $p;
 	}
 	
+	/**
+	* Returns a clean file path
+	*
+	* @param string	$p		File path
+	* @return string
+	*/
 	public static function clean($p)
 	{
 		$p = str_replace('..','',$p);
@@ -470,6 +593,17 @@ class path
 		return $p;
 	}
 	
+	/**
+	* Path information
+	*
+	* Returns an array of information:
+	* - dirname
+	* - basename
+	* - extension
+	* - base (basename without extension)
+	*
+	* @param string	$f		File path
+	*/
 	public static function info($f)
 	{
 		$p = pathinfo($f);
@@ -483,6 +617,15 @@ class path
 		return $res;
 	}
 	
+	/**
+	* Full path with root
+	*
+	* Returns a path with root concatenation unless path begins with a slash
+	*
+	* @param string	$p		File path
+	* @param string	$root	Root path
+	* @return string
+	*/
 	public static function fullFromRoot($p,$root)
 	{
 		if (substr($p,0,1) == '/') {
