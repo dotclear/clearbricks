@@ -26,8 +26,8 @@ class template
 	
 	public $use_cache = true;
 	
-	private $blocks = array();
-	private $values = array();
+	protected $blocks = array();
+	protected $values = array();
 	
 	protected $remove_php = true;
 	
