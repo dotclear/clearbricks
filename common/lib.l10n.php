@@ -300,7 +300,7 @@ class l10n
 			'rm' => 'rumantsch grischun',
 			'rn' => 'kiRundi',
 			'ro' => 'română',
-			'ru' => 'русский язык',
+			'ru' => 'Русский',
 			'rw' => 'Ikinyarwanda',
 			'sa' => 'संस्कृतम्',
 			'sc' => 'sardu',
