@@ -860,7 +860,7 @@ class xmlrpcIntrospectionServer extends xmlrpcServer
 		$return_type = array_shift($signature);
 		
 		# Check the number of arguments
-		if (count($args) != count($signature)) {
+		if (count($args) > count($signature)) {
 			throw new xmlrpcException('Server error. Wrong number of method parameters',-32602);
 		}
 		
