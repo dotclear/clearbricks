@@ -80,9 +80,20 @@ class sessionDB
 		$_SESSION = array();
 		session_unset();
 		session_destroy();
-		setcookie(session_name(),false,-600,$this->cookie_path,$this->cookie_domain,$this->cookie_secure);
+		call_user_func_array('setcookie',$this->getCookieParameters(false,-600));
 	}
 	
+	public function getCookieParameters($value=null,$expire=0)
+	{
+		return array(
+			session_name(),
+			$value,
+			$expire,
+			$this->cookie_path,
+			$this->cookie_domain,
+			$this->cookie_secure
+		);
+	}
 	
 	public function _open($path,$name)
 	{
