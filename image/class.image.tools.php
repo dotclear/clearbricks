@@ -146,6 +146,7 @@ class imageTools
 					return false;
 			}
 		}
+		return false;
 	}
 	
 	/**
