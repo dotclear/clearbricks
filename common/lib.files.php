@@ -98,6 +98,7 @@ class files
 			'vivo'	=> 'video/vnd.vivo',
 			'qt'		=> 'video/quicktime',
 			'mov'	=> 'video/quicktime',
+			'mp4'	=> 'video/mp4',
 			'm4v'	=> 'video/x-m4v',
 			'flv'	=> 'video/x-flv',
 			'avi'	=> 'video/x-msvideo'
