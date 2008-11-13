@@ -256,7 +256,7 @@ class feedParser
 			$item->description = (string) $i->summary;
 			$item->content = (string) $i->content;
 			$item->subject = $this->nodes2array($i->children('http://purl.org/dc/elements/1.1/')->subject);
-			$item->pubdate = (string) $i->updated;
+			$item->pubdate = !empty($i->published) ? (string) $i->published : (string) $i->updated;
 			$item->TS = strtotime($item->pubdate);
 			
 			$this->items[] = $item;
