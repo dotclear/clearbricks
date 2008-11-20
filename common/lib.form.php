@@ -38,13 +38,13 @@ class form
 	*
 	* @uses formSelectOption
 	*
-	* @param mixed	     $nid			Element ID and name
-	* @param mixed	     $data			Select box data
-	* @param string	$default		Default value in select box
-	* @param string	$class		Element class name
-	* @param string	$tabindex		Element tabindex
-	* @param boolean	$disabled		True if disabled
-	* @param string	$extra_html	Extra HTML attributes
+	* @param string|array	$nid			Element ID and name
+	* @param mixed			$data		Select box data
+	* @param string		$default		Default value in select box
+	* @param string		$class		Element class name
+	* @param string		$tabindex		Element tabindex
+	* @param boolean		$disabled		True if disabled
+	* @param string		$extra_html	Extra HTML attributes
 	*
 	* @return string
 	*/
@@ -97,13 +97,13 @@ class form
 	* Returns HTML code for a radio button. $nid could be a string or an array of
 	* name and ID.
 	*
-	* @param mixed	     $nid			Element ID and name
-	* @param string	$value		Element value
-	* @param boolean	$checked		True if checked
-	* @param string	$class		Element class name
-	* @param string	$tabindex		Element tabindex
-	* @param boolean	$disabled		True if disabled
-	* @param string	$extra_html	Extra HTML attributes
+	* @param string|array	$nid			Element ID and name
+	* @param string		$value		Element value
+	* @param boolean		$checked		True if checked
+	* @param string		$class		Element class name
+	* @param string		$tabindex		Element tabindex
+	* @param boolean		$disabled		True if disabled
+	* @param string		$extra_html	Extra HTML attributes
 	*
 	* @return string
 	*/
@@ -132,13 +132,13 @@ class form
 	* Returns HTML code for a checkbox. $nid could be a string or an array of
 	* name and ID.
 	*
-	* @param mixed	     $nid			Element ID and name
-	* @param string	$value		Element value
-	* @param boolean	$checked		True if checked
-	* @param string	$class		Element class name
-	* @param string	$tabindex		Element tabindex
-	* @param boolean	$disabled		True if disabled
-	* @param string	$extra_html	Extra HTML attributes
+	* @param string|array	$nid			Element ID and name
+	* @param string		$value		Element value
+	* @param boolean		$checked		True if checked
+	* @param string		$class		Element class name
+	* @param string		$tabindex		Element tabindex
+	* @param boolean		$disabled		True if disabled
+	* @param string		$extra_html	Extra HTML attributes
 	*
 	* @return string
 	*/
@@ -167,14 +167,14 @@ class form
 	* Returns HTML code for an input field. $nid could be a string or an array of
 	* name and ID.
 	*
-	* @param mixed	     $nid			Element ID and name
-	* @param integer	$size		Element size
-	* @param integer	$max			Element maxlength
-	* @param string	$default		Element value
-	* @param string	$class		Element class name
-	* @param string	$tabindex		Element tabindex
-	* @param boolean	$disabled		True if disabled
-	* @param string	$extra_html	Extra HTML attributes
+	* @param string|array	$nid			Element ID and name
+	* @param integer		$size		Element size
+	* @param integer		$max			Element maxlength
+	* @param string		$default		Element value
+	* @param string		$class		Element class name
+	* @param string		$tabindex		Element tabindex
+	* @param boolean		$disabled		True if disabled
+	* @param string		$extra_html	Extra HTML attributes
 	*
 	* @return string
 	*/
@@ -204,14 +204,14 @@ class form
 	* Returns HTML code for a password field. $nid could be a string or an array of
 	* name and ID.
 	*
-	* @param mixed	     $nid			Element ID and name
-	* @param integer	$size		Element size
-	* @param integer	$max			Element maxlength
-	* @param string	$default		Element value
-	* @param string	$class		Element class name
-	* @param string	$tabindex		Element tabindex
-	* @param boolean	$disabled		True if disabled
-	* @param string	$extra_html	Extra HTML attributes
+	* @param string|array	$nid			Element ID and name
+	* @param integer		$size		Element size
+	* @param integer		$max			Element maxlength
+	* @param string		$default		Element value
+	* @param string		$class		Element class name
+	* @param string		$tabindex		Element tabindex
+	* @param boolean		$disabled		True if disabled
+	* @param string		$extra_html	Extra HTML attributes
 	*
 	* @return string
 	*/
@@ -241,14 +241,14 @@ class form
 	* Returns HTML code for a textarea. $nid could be a string or an array of
 	* name and ID.
 	*
-	* @param mixed	     $nid			Element ID and name
-	* @param integer	$cols		Number of columns
-	* @param integer	$rows		Number of rows
-	* @param string	$default		Element value
-	* @param string	$class		Element class name
-	* @param string	$tabindex		Element tabindex
-	* @param boolean	$disabled		True if disabled
-	* @param string	$extra_html	Extra HTML attributes
+	* @param string|array	$nid			Element ID and name
+	* @param integer		$cols		Number of columns
+	* @param integer		$rows		Number of rows
+	* @param string		$default		Element value
+	* @param string		$class		Element class name
+	* @param string		$tabindex		Element tabindex
+	* @param boolean		$disabled		True if disabled
+	* @param string		$extra_html	Extra HTML attributes
 	*
 	* @return string
 	*/
@@ -276,8 +276,8 @@ class form
 	* Returns HTML code for an hidden field. $nid could be a string or an array of
 	* name and ID.
 	*
-	* @param mixed	     $nid			Element ID and name
-	* @param string	$value		Element value
+	* @param string|array	$nid			Element ID and name
+	* @param string		$value		Element value
 	*
 	* @return string
 	*/
