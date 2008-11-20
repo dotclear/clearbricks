@@ -1,33 +1,26 @@
 <?php
-# ***** BEGIN LICENSE BLOCK *****
+# -- BEGIN LICENSE BLOCK ----------------------------------
+#
 # This file is part of Clearbricks.
-# Copyright (c) 2006 Olivier Meunier and contributors. All rights
-# reserved.
 #
-# Clearbricks is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-# 
-# Clearbricks is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with Clearbricks; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# Copyright (c) 2003-2008 Olivier Meunier and contributors
+# Licensed under the GPL version 2.0 license.
+# See LICENSE file or
+# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 #
-# ***** END LICENSE BLOCK *****
+# -- END LICENSE BLOCK ------------------------------------
 
 /**
-* Functions to handle passwords (hash, random password generator...)
+* Functions to handle passwords or sensitive data
 *
 * @package Clearbricks
+* @subpackage Common
 */
 class crypt
 {
 	/**
+	* SHA1 or MD5 + HMAC
+	*
 	* Returns an HMAC encoded value of <var>$data</var>, using the said <var>$key</var>
 	* and <var>$hashfunc</var> as hash method (sha1 or md5 are accepted.)
 	*
@@ -55,7 +48,11 @@ class crypt
 	}
 	
 	/**
+	* Password generator
+	*
 	* Returns an 8 characters random password.
+	*
+	* @todo Add a length param
 	*
 	* @return	string
 	*/

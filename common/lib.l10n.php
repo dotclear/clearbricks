@@ -1,43 +1,68 @@
 <?php
-# ***** BEGIN LICENSE BLOCK *****
+# -- BEGIN LICENSE BLOCK ----------------------------------
+#
 # This file is part of Clearbricks.
-# Copyright (c) 2006 Olivier Meunier and contributors. All rights
-# reserved.
 #
-# Clearbricks is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-# 
-# Clearbricks is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with Clearbricks; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# Copyright (c) 2003-2008 Olivier Meunier and contributors
+# Licensed under the GPL version 2.0 license.
+# See LICENSE file or
+# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 #
-# ***** END LICENSE BLOCK *****
+# -- END LICENSE BLOCK ------------------------------------
 
+/**
+* Localization tools
+*
+* @package Clearbricks
+* @subpackage Common
+*/
 
+/**
+* Translated string
+*
+* Returns a translated string of $str. If translation is not found, returns
+* the string.
+*
+* @param string	$str		String to translate
+* @return string
+*/
 function __($str)
 {
 	return (!empty($GLOBALS['__l10n'][$str])) ? $GLOBALS['__l10n'][$str] : $str;
 }
 
+/**
+* Localization utilities
+*/
 class l10n
 {
+	/** @var string	Forced text direction (ltr or rtl). If not given, it will be guessed from current language */
 	public static $text_direction;
 	
+	/** @ignore */
 	protected static $langs = array();
 	
+	/**
+	* L10N initialization
+	*
+	* Create global arrays for L10N stuff. Should be called before any work
+	* with other methods.
+	*/
 	public static function init()
 	{
 		$GLOBALS['__l10n'] = array();
 		$GLOBALS['__l10n_files'] = array();
 	}
 	
+	/**
+	* Add a file
+	*
+	* Adds a l10n file in translation strings. $file should be given without
+	* extension. This method will look for $file.lang.php and $file.po (in this
+	* order) and retrieve the first one found.
+	*
+	* @param string	$file		Filename (without extension)
+	*/
 	public static function set($file)
 	{
 		$lang_file = $file.'.lang';
@@ -64,6 +89,7 @@ class l10n
 		}
 	}
 	
+	/** @ignore */
 	public static function getLangFile($file)
 	{
 		if (!file_exists($file)) {
@@ -96,6 +122,14 @@ class l10n
 		return $res;
 	}
 	
+	/**
+	* Load gettext file
+	*
+	* Returns an array of strings found in a given gettext (.po) file
+	*
+	* @param string	$file		Filename
+	* @return array
+	*/
 	public static function getPoFile($file)
 	{
 		if (!file_exists($file)) {
@@ -147,6 +181,18 @@ class l10n
 		}
 	}
 	
+	/**
+	* L10N file
+	*
+	* Returns a file path for a file, a directory and a language.
+	* If $dir/$lang/$file is not found, it will check if $dir/en/$file
+	* exists and returns the result. Returns false if no file were found.
+	*
+	* @param string	$dir		Directory
+	* @param string	$file	File
+	* @param string	$lang	Language
+	* @return mixed			File path or false
+	*/
 	public static function getFilePath($dir,$file,$lang)
 	{
 		$f = $dir.'/'.$lang.'/'.$file;
@@ -157,6 +203,17 @@ class l10n
 		return file_exists($f) ? $f : false;
 	}
 	
+	/**
+	* ISO Codes
+	*
+	* Returns an array predefined languages ISO codes as you can find on
+	* {@link http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes}
+	* The list as additionnal IETF codes as pt-br.
+	*
+	* @param boolean	$flip			Flip resulting array
+	* @param boolean	$name_with_code	Prefix (code) to names
+	* @return array
+	*/
 	public static function getISOcodes($flip=false,$name_with_code=false)
 	{
 		if (empty(self::$langs))
@@ -369,6 +426,16 @@ class l10n
 		return $langs;
 	}
 	
+	/**
+	* Text direction
+	*
+	* Returns text direction for a given language.
+	* If text direction was forced with {@link $text_direction}, returns this
+	* value.
+	*
+	* @param string	$lang	Language code
+	* @return string
+	*/
 	public static function getTextDirection($lang)
 	{
 		if (self::$text_direction) {

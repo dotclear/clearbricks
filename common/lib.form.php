@@ -1,25 +1,21 @@
 <?php
-# ***** BEGIN LICENSE BLOCK *****
+# -- BEGIN LICENSE BLOCK ----------------------------------
+#
 # This file is part of Clearbricks.
-# Copyright (c) 2006 Olivier Meunier and contributors. All rights
-# reserved.
 #
-# Clearbricks is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-# 
-# Clearbricks is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with Clearbricks; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# Copyright (c) 2003-2008 Olivier Meunier and contributors
+# Licensed under the GPL version 2.0 license.
+# See LICENSE file or
+# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 #
-# ***** END LICENSE BLOCK *****
+# -- END LICENSE BLOCK ------------------------------------
 
+/**
+* HTML Forms creation helpers
+*
+* @package Clearbricks
+* @subpackage Common
+*/
 class form
 {
 	private static function getNameAndId($nid,&$name,&$id)
@@ -32,6 +28,26 @@ class form
 		}
 	}
 	
+	/**
+	* Select Box
+	*
+	* Returns HTML code for a select box. $nid could be a string or an array of
+	* name and ID. $data is an array with option titles keys and values in values
+	* or an array of object of type {@link formSelectOption}. If $data is an array of
+	* arrays, optgroups will be created.
+	*
+	* @uses formSelectOption
+	*
+	* @param mixed	     $nid			Element ID and name
+	* @param mixed	     $data			Select box data
+	* @param string	$default		Default value in select box
+	* @param string	$class		Element class name
+	* @param string	$tabindex		Element tabindex
+	* @param boolean	$disabled		True if disabled
+	* @param string	$extra_html	Extra HTML attributes
+	*
+	* @return string
+	*/
 	public static function combo($nid, $data ,$default='', $class='', $tabindex='',
 	$disabled=false, $extra_html='')
 	{
@@ -75,6 +91,22 @@ class form
 		return $res;
 	}
 	
+	/**
+	* Radio button
+	*
+	* Returns HTML code for a radio button. $nid could be a string or an array of
+	* name and ID.
+	*
+	* @param mixed	     $nid			Element ID and name
+	* @param string	$value		Element value
+	* @param boolean	$checked		True if checked
+	* @param string	$class		Element class name
+	* @param string	$tabindex		Element tabindex
+	* @param boolean	$disabled		True if disabled
+	* @param string	$extra_html	Extra HTML attributes
+	*
+	* @return string
+	*/
 	public static function radio($nid, $value, $checked='', $class='', $tabindex='',
 	$disabled=false, $extra_html='')
 	{
@@ -93,7 +125,23 @@ class form
 		
 		return $res;	
 	}
-
+	
+	/**
+	* Checkbox
+	*
+	* Returns HTML code for a checkbox. $nid could be a string or an array of
+	* name and ID.
+	*
+	* @param mixed	     $nid			Element ID and name
+	* @param string	$value		Element value
+	* @param boolean	$checked		True if checked
+	* @param string	$class		Element class name
+	* @param string	$tabindex		Element tabindex
+	* @param boolean	$disabled		True if disabled
+	* @param string	$extra_html	Extra HTML attributes
+	*
+	* @return string
+	*/
 	public static function checkbox($nid, $value, $checked='', $class='', $tabindex='',
 	$disabled=false, $extra_html='')
 	{
@@ -109,10 +157,27 @@ class form
 		$res .= $extra_html;
 		
 		$res .= ' />'."\n";
-
+		
 		return $res;
 	}
-
+	
+	/**
+	* Input field
+	*
+	* Returns HTML code for an input field. $nid could be a string or an array of
+	* name and ID.
+	*
+	* @param mixed	     $nid			Element ID and name
+	* @param integer	$size		Element size
+	* @param integer	$max			Element maxlength
+	* @param string	$default		Element value
+	* @param string	$class		Element class name
+	* @param string	$tabindex		Element tabindex
+	* @param boolean	$disabled		True if disabled
+	* @param string	$extra_html	Extra HTML attributes
+	*
+	* @return string
+	*/
 	public static function field($nid, $size, $max, $default='', $class='', $tabindex='',
 	$disabled=false, $extra_html='')
 	{
@@ -133,6 +198,23 @@ class form
 		return $res;
 	}
 	
+	/**
+	* Password field
+	*
+	* Returns HTML code for a password field. $nid could be a string or an array of
+	* name and ID.
+	*
+	* @param mixed	     $nid			Element ID and name
+	* @param integer	$size		Element size
+	* @param integer	$max			Element maxlength
+	* @param string	$default		Element value
+	* @param string	$class		Element class name
+	* @param string	$tabindex		Element tabindex
+	* @param boolean	$disabled		True if disabled
+	* @param string	$extra_html	Extra HTML attributes
+	*
+	* @return string
+	*/
 	public static function password($nid, $size, $max, $default='', $class='', $tabindex='',
 	$disabled=false, $extra_html='')
 	{
@@ -153,6 +235,23 @@ class form
 		return $res;
 	}
 	
+	/**
+	* Textarea
+	*
+	* Returns HTML code for a textarea. $nid could be a string or an array of
+	* name and ID.
+	*
+	* @param mixed	     $nid			Element ID and name
+	* @param integer	$cols		Number of columns
+	* @param integer	$rows		Number of rows
+	* @param string	$default		Element value
+	* @param string	$class		Element class name
+	* @param string	$tabindex		Element tabindex
+	* @param boolean	$disabled		True if disabled
+	* @param string	$extra_html	Extra HTML attributes
+	*
+	* @return string
+	*/
 	public static function textArea($nid, $cols, $rows, $default='', $class='',
 	$tabindex='', $disabled=false, $extra_html='')
 	{
@@ -171,6 +270,17 @@ class form
 		return $res;
 	}
 	
+	/**
+	* Hidden field
+	*
+	* Returns HTML code for an hidden field. $nid could be a string or an array of
+	* name and ID.
+	*
+	* @param mixed	     $nid			Element ID and name
+	* @param string	$value		Element value
+	*
+	* @return string
+	*/
 	public static function hidden($nid,$value)
 	{
 		self::getNameAndId($nid,$name,$id);
@@ -183,6 +293,12 @@ class form
 	}
 }
 
+/**
+* HTML Forms creation helpers
+*
+* @package Clearbricks
+* @subpackage Common
+*/
 class formSelectOption
 {
 	public $name;
@@ -192,6 +308,14 @@ class formSelectOption
 	
 	private $option = '<option value="%1$s"%3$s>%2$s</option>';
 	
+	/**
+	* Option constructor
+	*
+	* @param string	$name		Option name
+	* @param string	$value		Option value
+	* @param string	$class_name	Element class name
+	* @param string	$html		Extra HTML attributes
+	*/
 	public function __construct($name,$value,$class_name='',$html='')
 	{
 		$this->name = $name;
@@ -200,6 +324,14 @@ class formSelectOption
 		$this->html = $html;
 	}
 	
+	/**
+	* Option renderer
+	*
+	* Returns option HTML code
+	*
+	* @param boolean	$default	Option is selected
+	* @return string
+	*/
 	public function render($default)
 	{
 		$attr = $this->html;

@@ -1,37 +1,36 @@
 <?php
-# ***** BEGIN LICENSE BLOCK *****
+# -- BEGIN LICENSE BLOCK ----------------------------------
+#
 # This file is part of Clearbricks.
-# Copyright (c) 2006 Olivier Meunier and contributors. All rights
-# reserved.
 #
-# Clearbricks is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-# 
-# Clearbricks is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with Clearbricks; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# Copyright (c) 2003-2008 Olivier Meunier and contributors
+# Licensed under the GPL version 2.0 license.
+# See LICENSE file or
+# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 #
-# ***** END LICENSE BLOCK *****
+# -- END LICENSE BLOCK ------------------------------------
 
+/**
+* HTML utilities
+*
+* @package Clearbricks
+* @subpackage Common
+*/
 class html
 {
+	/** @ignore */
 	public static $url_root;
+	
+	/** @var array 	Array of regular expression for {@link absoluteURLs()} */
 	public static $absolute_regs = array();
 	
 	/**
-	@function escapeHTML
-	
-	Replaces HTML special characters by entities.
-	
-	@param	str	string	String to escape
-	@return	string
+	* HTML escape
+	*
+	* Replaces HTML special characters by entities.
+	*
+	* @param string $str	String to escape
+	* @return	string
 	*/
 	public static function escapeHTML($str)
 	{
@@ -39,13 +38,13 @@ class html
 	}
 	
 	/**
-	@function decodeEntities
-	
-	Returns a string with all entities decoded.
-	
-	@param	str	string	String to protect
-	@param	keep_special string		Keep special characters: &gt; &lt; &amp;
-	@return	string
+	* Decode HTML entities
+	*
+	* Returns a string with all entities decoded.
+	*
+	* @param string	$str			String to protect
+	* @param string	$keep_special	Keep special characters: &gt; &lt; &amp;
+	* @return	string
 	*/
 	public static function decodeEntities($str,$keep_special=false)
 	{
@@ -67,12 +66,12 @@ class html
 	}
 	
 	/**
-	@function clean
-	
-	Removes every tags, comments, cdata from string
-	
-	@param	str	string	String to clean
-	@return	string
+	* Remove markup
+	*
+	* Removes every tags, comments, cdata from string
+	*
+	* @param string	$str		String to clean
+	* @return	string
 	*/
 	public static function clean($str)
 	{
@@ -81,12 +80,12 @@ class html
 	}
 	
 	/**
-	@function escapeJS
-	
-	Returns a protected JavaScript string
-	
-	@param	string	str			String to protect
-	@return	string
+	* Javascript escape
+	*
+	* Returns a protected JavaScript string
+	*
+	* @param string	$str		String to protect
+	* @return	string
 	*/
 	public static function escapeJS($str)
 	{
@@ -97,12 +96,12 @@ class html
 	}
 	
 	/**
-	@function escapeURL
-	
-	Returns an escaped URL string for HTML content
-	
-	@param	str	string	String to escape
-	@return	string
+	* URL escape
+	*
+	* Returns an escaped URL string for HTML content
+	*
+	* @param string	$str		String to escape
+	* @return	string
 	*/
 	public static function escapeURL($str)
 	{
@@ -110,12 +109,12 @@ class html
 	}
 	
 	/**
-	@function sanitizeURL
-	
-	Encode every parts between / in url
-	
-	@param	str	string	String to satinyze
-	@return	string
+	* URL sanitize
+	*
+	* Encode every parts between / in url
+	*
+	* @param string	$str		String to satinyze
+	* @return	string
 	*/
 	public static function sanitizeURL($str)
 	{
@@ -123,12 +122,12 @@ class html
 	}
 	
 	/**
-	@function stripHostURL
-	
-	Removes host part in URL
-	
-	@param	url	string	URL to transform
-	@return	string
+	* Remove host in URL
+	*
+	* Removes host part in URL
+	*
+	* @param string	$str		URL to transform
+	* @return	string
 	*/
 	public static function stripHostURL($url)
 	{
@@ -136,13 +135,13 @@ class html
 	}
 	
 	/**
-	@function absoluteURLs
-	
-	Appends $root URL to URIs attributes in $str.
-	
-	@param	str		string	HTML to transform
-	@param	root		string	Base URL
-	@return	string
+	* Set links to absolute ones
+	*
+	* Appends $root URL to URIs attributes in $str.
+	*
+	* @param string	$str		HTML to transform
+	* @param string	$root	Base URL
+	* @return	string
 	*/
 	public static function absoluteURLs($str,$root)
 	{
