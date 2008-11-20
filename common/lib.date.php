@@ -1,34 +1,30 @@
 <?php
-# ***** BEGIN LICENSE BLOCK *****
+# -- BEGIN LICENSE BLOCK ----------------------------------
+#
 # This file is part of Clearbricks.
-# Copyright (c) 2006 Olivier Meunier and contributors. All rights
-# reserved.
 #
-# Clearbricks is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-# 
-# Clearbricks is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with Clearbricks; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# Copyright (c) 2003-2008 Olivier Meunier and contributors
+# Licensed under the GPL version 2.0 license.
+# See LICENSE file or
+# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 #
-# ***** END LICENSE BLOCK *****
+# -- END LICENSE BLOCK ------------------------------------
 
 /**
 * Date/time utilities
 *
 * @package Clearbricks
+* @subpackage Common
 */
 class dt
 {
 	/**
-	* Format a timestamp like PHP strftime function
+	* Timestamp formating
+	*
+	* Returns a date formated like PHP 
+	* {@link http://www.php.net/manual/en/function.strftime.php strftime}
+	* function.
+	* Special cases %a, %A, %b and %B are handled by {@link l10n} library.
 	*
 	* @param string	$p		Format pattern
 	* @param integer	$ts		Timestamp
@@ -60,7 +56,9 @@ class dt
 	}
 	
 	/**
-	* Format a literal date to another literal date
+	* Date to date
+	*
+	* Format a literal date to another literal date.
 	*
 	* @param string	$p		Format pattern
 	* @param string	$dt		Date
@@ -73,7 +71,9 @@ class dt
 	}
 	
 	/**
-	* Format a timestamp to ISO-8601 format
+	* ISO-8601 formatting
+	*
+	* Returns a timestamp converted to ISO-8601 format.
 	*
 	* @param integer	$ts		Timestamp
 	* @param string	$tz		Timezone
@@ -87,7 +87,9 @@ class dt
 	}
 	
 	/**
-	* Format a timestamp to RFC-822 format
+	* RFC-822 formatting
+	*
+	* Returns a timestamp converted to RFC-822 format.
 	*
 	* @param integer	$ts		Timestamp
 	* @param string	$tz		Timezone
@@ -102,7 +104,9 @@ class dt
 	}
 	
 	/**
-	* Set timezone during script execution
+	* Timezone set
+	*
+	* Set timezone during script execution.
 	*
 	* @param	string	$tz		Timezone
 	*/
@@ -119,7 +123,9 @@ class dt
 	}
 	
 	/**
-	* Get current timezone
+	* Current timezone
+	*
+	* Returns current timezone.
 	*
 	* @return string
 	*/
@@ -133,7 +139,9 @@ class dt
 	}
 	
 	/**
-	* Get time offset for a timezone and an optionnal $ts timestamp
+	* Time offset
+	*
+	* Get time offset for a timezone and an optionnal $ts timestamp.
 	*
 	* @param string	$tz		Timezone
 	* @param integer	$ts		Timestamp
@@ -157,6 +165,8 @@ class dt
 	}
 	
 	/**
+	* UTC conversion
+	*
 	* Returns any timestamp from current timezone to UTC timestamp.
 	*
 	* @param integer	$ts		Timestamp
@@ -168,6 +178,8 @@ class dt
 	}
 	
 	/**
+	* Add timezone
+	*
 	* Returns a timestamp with its timezone offset.
 	*
 	* @param string	$tz		Timezone
@@ -184,7 +196,11 @@ class dt
 	}
 	
 	/**
+	* Timzones
+	*
 	* Returns an array of supported timezones, codes are keys and names are values.
+	*
+	* @todo Store timzones in a static variable at the first time.
 	*
 	* @param boolean	$flip	Names are keys and codes are values
 	* @param boolean	$groups	Return timezones in arrays of continents

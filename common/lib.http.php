@@ -1,34 +1,35 @@
 <?php
-# ***** BEGIN LICENSE BLOCK *****
+# -- BEGIN LICENSE BLOCK ----------------------------------
+#
 # This file is part of Clearbricks.
-# Copyright (c) 2006 Olivier Meunier and contributors. All rights
-# reserved.
 #
-# Clearbricks is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-# 
-# Clearbricks is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with Clearbricks; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# Copyright (c) 2003-2008 Olivier Meunier and contributors
+# Licensed under the GPL version 2.0 license.
+# See LICENSE file or
+# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 #
-# ***** END LICENSE BLOCK *****
+# -- END LICENSE BLOCK ------------------------------------
 
+/**
+* HTTP utilities
+*
+* @package Clearbricks
+* @subpackage Common
+*/
 class http
 {
+	/** @var boolean	Force HTTPS scheme on server port 443 in {@link getHost()} */
 	public static $https_scheme_on_443 = false;
+	
+	/** @var integer	Cache max age for {@link cache()} */
 	public static $cache_max_age = 0;
 	
 	/**
-	@function getHost
-	
-	Return current scheme, host and port.
+	* Self root URI
+	*
+	* Returns current scheme, host and port.
+	*
+	* @return string
 	*/
 	public static function getHost()
 	{
@@ -54,9 +55,11 @@ class http
 	}
 	
 	/**
-	@function getSelfURI
-	
-	Returns current URI with full hostname
+	* Self URI
+	*
+	* Returns current URI with full hostname.
+	*
+	* @return string
 	*/
 	public static function getSelfURI()
 	{
@@ -64,11 +67,11 @@ class http
 	}
 	
 	/**
-	@function redirect
-	
-	Performs a conforming HTTP redirect for a relative URL.
-	
-	@param page	string		Relative URL
+	* Redirect
+	*
+	* Performs a conforming HTTP redirect for a relative URL.
+	*
+	* @param string	$page		Relative URL
 	*/
 	public static function redirect($page)
 	{
@@ -101,14 +104,14 @@ class http
 	}
 	
 	/**
-	@function concatURL
-	
-	Appends a path to a given URL. If path begins with "/" it will replace the
-	original URL path.
-	
-	@param url	string		URL
-	@param path	string		Path to append
-	@return string
+	* Concat URL and path
+	*
+	* Appends a path to a given URL. If path begins with "/" it will replace the
+	* original URL path.
+	*
+	* @param string	$url		URL
+	* @param string	$path	Path to append
+	* @return string
 	*/
 	public static function concatURL($url,$path)
 	{
@@ -120,12 +123,11 @@ class http
 	}
 	
 	/**
-	@function realIP
-	
-	Returns the real client IP (or tries to do its best)
-	Taken from http://uk.php.net/source.php?url=/include/ip-to-country.inc
-	
-	@return string
+	* Real IP
+	*
+	* Returns the real client IP (or tries to do its best).
+	*
+	* @return string
 	*/
 	public static function realIP()
 	{
@@ -133,7 +135,12 @@ class http
 	}
 	
 	/**
-	Returns a "almost" safe client unique ID
+	* Client unique ID
+	*
+	* Returns a "almost" safe client unique ID.
+	*
+	* @param string	$key		HMAC key
+	* @return string
 	*/
 	public static function browserUID($key)
 	{
@@ -147,9 +154,11 @@ class http
 	}
 	
 	/**
-	Returns a two letters language code take from HTTP_ACCEPT_LANGUAGE.
-	
-	@return <b>string</b>
+	* Client language
+	*
+	* Returns a two letters language code take from HTTP_ACCEPT_LANGUAGE.
+	*
+	* @return string
 	*/
 	public static function getAcceptLanguage()
 	{
@@ -165,13 +174,13 @@ class http
 	}
 	
 	/**
-	@function cache
-	
-	Sends HTTP cache headers (304) according to a list of files and an optionnal
-	list of timestamps.
-	
-	@param files		array		Files on which check mtime
-	@param mod_ts		array		List of timestamps
+	* HTTP Cache
+	*
+	* Sends HTTP cache headers (304) according to a list of files and an optionnal.
+	* list of timestamps.
+	*
+	* @param array		$files		Files on which check mtime
+	* @param array		$mod_ts		List of timestamps
 	*/
 	public static function cache($files,$mod_ts=array())
 	{
@@ -216,11 +225,11 @@ class http
 	}
 
 	/**
-	@function etag
-	
-	Sends HTTP cache headers (304) according to a list of etags in client request
-	
-	@param p_content	string		Response page content
+	* HTTP Etag
+	*
+	* Sends HTTP cache headers (304) according to a list of etags in client request.
+	*
+	* @param string	$p_content	Response page content
 	*/
 	public static function etag()
 	{
@@ -249,12 +258,12 @@ class http
 	}
 	
 	/**
-	@function head
-	
-	Sends an HTTP code and message to client
-	
-	@param code	string		HTTP code
-	@param msg	string		Message
+	* HTTP Header
+	*
+	* Sends an HTTP code and message to client.
+	*
+	* @param string	$code		HTTP code
+	* @param string	$msg			Message
 	*/
 	public static function head($code,$msg=null)
 	{
@@ -320,10 +329,10 @@ class http
 	}
 	
 	/**
-	@function trimRequest
-	
-	Trims every value in GET, POST, REQUEST and COOKIE vars.
-	Removes magic quotes if magic_quote_gpc is on.
+	* Trim request
+	*
+	* Trims every value in GET, POST, REQUEST and COOKIE vars.
+	* Removes magic quotes if magic_quote_gpc is on.
 	*/
 	public static function trimRequest()
 	{
@@ -374,10 +383,10 @@ class http
 	}
 	
 	/**
-	@function unsetGlobals
-	
-	If register_globals is on, removes every GET, POST, COOKIE, REQUEST, SERVER,
-	ENV, FILES vars from GLOBALS.
+	* Unset global variables
+	*
+	* If register_globals is on, removes every GET, POST, COOKIE, REQUEST, SERVER,
+	* ENV, FILES vars from GLOBALS.
 	*/
 	public static function unsetGlobals()
 	{

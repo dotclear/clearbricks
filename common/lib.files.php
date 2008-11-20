@@ -1,29 +1,20 @@
 <?php
-# ***** BEGIN LICENSE BLOCK *****
+# -- BEGIN LICENSE BLOCK ----------------------------------
+#
 # This file is part of Clearbricks.
-# Copyright (c) 2006 Olivier Meunier and contributors. All rights
-# reserved.
 #
-# Clearbricks is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-# 
-# Clearbricks is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with Clearbricks; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# Copyright (c) 2003-2008 Olivier Meunier and contributors
+# Licensed under the GPL version 2.0 license.
+# See LICENSE file or
+# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 #
-# ***** END LICENSE BLOCK *****
+# -- END LICENSE BLOCK ------------------------------------
 
 /**
 * Files manipulation utilities
 *
 * @package Clearbricks
+* @subpackage Common
 */
 class files
 {
@@ -105,6 +96,8 @@ class files
 		);
 	
 	/**
+	* Directory scanning
+	*
 	* Returns a directory child files and directories.
 	*
 	* @param string	$d		Path to scan
@@ -134,6 +127,8 @@ class files
 	}
 	
 	/**
+	* File extension
+	*
 	* Returns a file extension.
 	*
 	* @param string	$f	File name
@@ -149,7 +144,9 @@ class files
 	}
 	
 	/**
-	* Returns a file MIME type, based on static var $mimeType
+	* MIME type
+	*
+	* Returns a file MIME type, based on static var {@link $mimeType}
 	*
 	* @param string	$f	File name
 	* @return string
@@ -167,6 +164,8 @@ class files
 	}
 	
 	/**
+	* MIME types
+	*
 	* Returns all defined MIME types.
 	*
 	* @return array
@@ -177,6 +176,8 @@ class files
 	}
 	
 	/**
+	* New MIME types
+	*
 	* Append new MIME types to defined MIME types.
 	*
 	* @param array		$tab		New MIME types.
@@ -188,6 +189,7 @@ class files
 	
 	/**
 	* Is a file or directory deletable.
+	*
 	* Returns true if $f is a file or directory and is deletable.
 	*
 	* @param string	$f	File or directory
@@ -203,6 +205,8 @@ class files
 	}
 	
 	/**
+	* Recursive removal
+	*
 	* Remove recursively a directory.
 	*
 	* @param string	$dir		Directory patch
@@ -231,6 +235,8 @@ class files
 	}
 	
 	/**
+	* Touch file
+	*
 	* Set file modification time to now.
 	*
 	* @param string	$f		File to change
@@ -298,6 +304,8 @@ class files
 	}
 	
 	/**
+	* Mode inheritage
+	*
 	* Sets file or directory mode according to its parent.
 	*
 	* @param string	$file		File to change
@@ -317,6 +325,8 @@ class files
 	
 	/**
 	* Changes file content.
+	*
+	* Writes $f_content into $f file.
 	*
 	* @param string	$f			File to edit
 	* @param string	$f_content	Content to write
@@ -339,7 +349,7 @@ class files
 	}
 	
 	/**
-	* Returns human readable file size.
+	* Human readable file size.
 	*
 	* @param integer	$size		Bytes
 	* @return string
@@ -393,6 +403,8 @@ class files
 	}
 	
 	/**
+	* Upload status
+	*
 	* Returns true if upload status is ok, throws an exception instead.
 	*
 	* @param array		$file		File array as found in $_FILES
@@ -431,6 +443,8 @@ class files
 	# Packages generation methods
 	#
 	/**
+	* Recursive directory scanning
+	*
 	* Returns an array of a given directory's content. The array contains
 	* two arrays: dirs and files. Directory's content is fetched recursively.
 	*
@@ -484,7 +498,9 @@ class files
 	}
 	
 	/**
-	* Removes unwanted characters in a filename
+	* Filename cleanup
+	*
+	* Removes unwanted characters in a filename.
 	*
 	* @param string	$n		Filename
 	* @return string
@@ -501,6 +517,7 @@ class files
 * Path manipulation utilities
 *
 * @package Clearbricks
+* @subpackage Common
 */
 class path
 {

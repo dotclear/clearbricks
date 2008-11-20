@@ -1,36 +1,34 @@
 <?php
-# ***** BEGIN LICENSE BLOCK *****
+# -- BEGIN LICENSE BLOCK ----------------------------------
+#
 # This file is part of Clearbricks.
-# Copyright (c) 2006 Olivier Meunier and contributors. All rights
-# reserved.
 #
-# Clearbricks is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-# 
-# Clearbricks is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with Clearbricks; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# Copyright (c) 2003-2008 Olivier Meunier and contributors
+# Licensed under the GPL version 2.0 license.
+# See LICENSE file or
+# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 #
-# ***** END LICENSE BLOCK *****
+# -- END LICENSE BLOCK ------------------------------------
 
+/**
+* Text utilities
+*
+* @package Clearbricks
+* @subpackage Common
+*/
 class text
 {
 	/**
-	@function isEmail
-	
-	Checks if "email" var is a valid email address.
-	
-	Changed code, from http://www.iamcal.com/publish/articles/php/parsing_email/
-	
-	@param email	string		Email string
-	@return boolean
+	* Check email address
+	*
+	* Returns true if $email is a valid email address.
+	*
+	* @copyright Cal Henderson
+	* @license http://creativecommons.org/licenses/by-sa/2.5/ CC-BY-SA
+	* @link http://www.iamcal.com/publish/articles/php/parsing_email/
+	*
+	* @param string	$email	Email string
+	* @return boolean
 	*/
 	public static function isEmail($email)
 	{
@@ -51,10 +49,13 @@ class text
 	}
 	
 	/**
-	Converts accented (and some other) characters from a string.
-	
-	@param	str		<b>string</b>		String to deaccent
-	@return	string
+	* Accents replacement
+	*
+	* Replaces some occidental accentuated characters by their ASCII
+	* representation.
+	*
+	* @param	string	$str		String to deaccent
+	* @return	string
 	*/
 	public static function deaccent($str)
 	{
@@ -96,13 +97,13 @@ class text
 	}
 	
 	/**
-	@function str2URL
-	
-	Transforms a string to a proper URL.
-	
-	@param str			string		String to transform
-	@param with_slashes		boolean		Keep slashes in URL
-	@return string
+	* String to URL
+	*
+	* Transforms a string to a proper URL.
+	*
+	* @param string	$str			String to transform
+	* @param boolean	$with_slashes	Keep slashes in URL
+	* @return string
 	*/
 	public static function str2URL($str,$with_slashes=true)
 	{
@@ -113,14 +114,12 @@ class text
 	}
 	
 	/**
-	@function tidyURL
-	
-	Cleans an URL.
-	
-	@param str			string		URL to tidy
-	@param keep_slashes		boolean		Keep slashes in URL
-	@param keep_spaces		boolean		Keep spaces in URL
-	@return string
+	* URL cleanup
+	*
+	* @param string	$str			URL to tidy
+	* @param boolean	$keep_slashes	Keep slashes in URL
+	* @param boolean	$keep_spaces	Keep spaces in URL
+	* @return string
 	*/
 	public static function tidyURL($str,$keep_slashes=true,$keep_spaces=false)
 	{
@@ -147,13 +146,13 @@ class text
 	}
 	
 	/**
-	@function cutString
-	
-	Cuts a string on spaces.
-	
-	@param	string	str		String to cut
-	@param	integer	l		Length to keep
-	@return	string
+	* Cut string
+	*
+	* Returns a cuted string on spaced at given length $l.
+	*
+	* @param	string	$str		String to cut
+	* @param	integer	$l		Length to keep
+	* @return	string
 	*/
 	public static function cutString($str,$l)
 	{
@@ -181,12 +180,12 @@ class text
 	}
 	
 	/**
-	@function splitWords
-	
-	Returns an array of words from a given string.
-	
-	@param str	string	Words to split
-	@return array
+	* Split words
+	*
+	* Returns an array of words from a given string.
+	*
+	* @param string	$str		Words to split
+	* @return array
 	*/
 	public static function splitWords($str)
 	{
@@ -201,12 +200,12 @@ class text
 	}
 	
 	/**
-	@function detectEncoding
-	
-	Returns the encoding (in lowercase) of given $str.
-	
-	@param str	string	String
-	@return string
+	* Encoding detection
+	*
+	* Returns the encoding (in lowercase) of given $str.
+	*
+	* @param string	$str		String
+	* @return string
 	*/
 	public static function detectEncoding($str)
 	{
@@ -217,13 +216,14 @@ class text
 	}
 	
 	/**
-	@function toUTF8
-	
-	Return an UTF-8 converted string.
-	
-	@param str		string	String to convert
-	@param encoding	string	Optionnal "from" encoding
-	@return string
+	* UTF8 conversions
+	*
+	* Returns an UTF-8 converted string. If $encoding is not specified, the
+	* function will try to detect encoding.
+	*
+	* @param string	$str		String to convert
+	* @param string	$encoding	Optionnal "from" encoding
+	* @return string
 	*/
 	public static function toUTF8($str,$encoding=null)
 	{
@@ -239,18 +239,20 @@ class text
 	}
 	
 	/**
-	@function utf8badFind
-	
-	Taken from http://phputf8.sourceforge.net
-	
-	Locates the first bad byte in a UTF-8 string returning it's
-	byte index in the string
-	PCRE Pattern to locate bad bytes in a UTF-8 string
-	Comes from W3 FAQ: Multilingual Forms
-	Note: modified to include full ASCII range including control chars
-	
-	@param str	string	String to search
-	@return mixed
+	* Find bad UTF8 tokens
+	*
+	* Locates the first bad byte in a UTF-8 string returning it's
+	* byte index in the string
+	* PCRE Pattern to locate bad bytes in a UTF-8 string
+	* Comes from W3 FAQ: Multilingual Forms
+	* Note: modified to include full ASCII range including control chars
+	*
+	* @copyright Harry Fuecks
+	* @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU LGPL 2.1
+	* @link http://phputf8.sourceforge.net
+	*
+	* @param string	$str		String to search
+	* @return mixed
 	*/
 	public static function utf8badFind($str)
 	{
@@ -279,15 +281,17 @@ class text
 	}
 	
 	/**
-	@function cleanUTF8
-	
-	Taken from http://phputf8.sourceforge.net/
-	
-	Replace non utf8 bytes in $str by $repl.
-	
-	@param str	string	String to clean
-	@param repl	string	Replacement string
-	@return string
+	* UTF8 cleanup
+	*
+	* Replaces non utf8 bytes in $str by $repl.
+	*
+	* @copyright Harry Fuecks
+	* @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU LGPL 2.1
+	* @link http://phputf8.sourceforge.net
+	*
+	* @param string	$str		String to clean
+	* @param string	$repl	Replacement string
+	* @return string
 	*/
 	public static function cleanUTF8($str,$repl='?')
 	{
@@ -299,12 +303,12 @@ class text
 	}
 	
 	/**
-	@function removeBOM
-	
-	Removes BOM from the begining of a string if present.
-	
-	@param str	string	String to clean
-	@return string
+	* BOM removal
+	*
+	* Removes BOM from the begining of a string if present.
+	*
+	* @param string	$str		String to clean
+	* @return string
 	*/
 	public static function removeBOM($str)
 	{
@@ -316,12 +320,12 @@ class text
 	}
 	
 	/**
-	@function QPEncode
-	
-	Encodes given str to quoted printable
-	
-	@param str	string	String to encode
-	@return string
+	* Quoted printable conversion
+	*
+	* Encodes given str to quoted printable
+	*
+	* @param string	$str		String to encode
+	* @return string
 	*/
 	public static function QPEncode($str)
 	{
