@@ -128,7 +128,7 @@ class l10n
 	* Returns an array of strings found in a given gettext (.po) file
 	*
 	* @param string	$file		Filename
-	* @return array
+	* @return array|false
 	*/
 	public static function getPoFile($file)
 	{
@@ -191,7 +191,7 @@ class l10n
 	* @param string	$dir		Directory
 	* @param string	$file	File
 	* @param string	$lang	Language
-	* @return mixed			File path or false
+	* @return string|false		File path or false
 	*/
 	public static function getFilePath($dir,$file,$lang)
 	{

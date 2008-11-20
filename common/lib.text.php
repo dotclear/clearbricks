@@ -252,7 +252,7 @@ class text
 	* @link http://phputf8.sourceforge.net
 	*
 	* @param string	$str		String to search
-	* @return mixed
+	* @return integer|false
 	*/
 	public static function utf8badFind($str)
 	{
