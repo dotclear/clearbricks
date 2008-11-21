@@ -1,35 +1,29 @@
 <?php
-# ***** BEGIN LICENSE BLOCK *****
+# -- BEGIN LICENSE BLOCK ----------------------------------
+#
 # This file is part of Clearbricks.
-# Copyright (c) 2006 Olivier Meunier and contributors. All rights
-# reserved.
 #
-# Clearbricks is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-# 
-# Clearbricks is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with Clearbricks; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# Copyright (c) 2003-2008 Olivier Meunier and contributors
+# Licensed under the GPL version 2.0 license.
+# See LICENSE file or
+# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 #
-# ***** END LICENSE BLOCK *****
+# -- END LICENSE BLOCK ------------------------------------
 
 /**
-@ingroup CB_DBLAYER
-@brief SQLite Database Driver.
-
-See the dbLayer documentation for common methods.
+* SQLite Database Driver
+* 
+* See the {@link dbLayer} documentation for common methods.
+* 
+* @package Clearbricks
+* @subpackage DBLayer
 */
 class sqliteConnection extends dbLayer implements i_dbLayer
 {
+	/** @ignore */
 	protected $__driver = 'sqlite';
 	
+	/** @ignore */
 	public function db_connect($host,$user,$password,$database)
 	{
 		if (!class_exists('PDO') || !in_array('sqlite',PDO::getAvailableDrivers())) {
@@ -42,6 +36,7 @@ class sqliteConnection extends dbLayer implements i_dbLayer
 		return $link;
 	}
 	
+	/** @ignore */
 	public function db_pconnect($host,$user,$password,$database)
 	{
 		if (!class_exists('PDO') || !in_array('sqlite',PDO::getAvailableDrivers())) {
@@ -54,6 +49,7 @@ class sqliteConnection extends dbLayer implements i_dbLayer
 		return $link;
 	}
 	
+	/** @ignore */
 	private function db_post_connect($handle,$database)
 	{
 		if ($handle instanceof PDO) {
@@ -63,6 +59,7 @@ class sqliteConnection extends dbLayer implements i_dbLayer
 		}
 	}
 	
+	/** @ignore */
 	public function db_close($handle)
 	{
 		if ($handle instanceof PDO) {
@@ -71,6 +68,7 @@ class sqliteConnection extends dbLayer implements i_dbLayer
 		}
 	}
 	
+	/** @ignore */
 	public function db_version($handle)
 	{
 		if ($handle instanceof PDO) {
@@ -78,9 +76,8 @@ class sqliteConnection extends dbLayer implements i_dbLayer
 		}
 	}
 	
-	/*
-	There is no other way than get all selected data in a staticRecord
-	*/
+	# There is no other way than get all selected data in a staticRecord
+	/** @ignore */
 	public function select($sql)
 	{
 		$result = $this->db_query($this->__link,$sql);
@@ -114,6 +111,7 @@ class sqliteConnection extends dbLayer implements i_dbLayer
 		return new staticRecord($data,$info);
 	}
 	
+	/** @ignore */
 	public function db_query($handle,$query)
 	{
 		if ($handle instanceof PDO)
@@ -129,11 +127,13 @@ class sqliteConnection extends dbLayer implements i_dbLayer
 		}
 	}
 	
+	/** @ignore */
 	public function db_exec($handle,$query)
 	{
 		return $this->db_query($handle,$query);
 	}
 	
+	/** @ignore */
 	public function db_num_fields($res)
 	{
 		if ($res instanceof PDOStatement) {
@@ -142,10 +142,12 @@ class sqliteConnection extends dbLayer implements i_dbLayer
 		return 0;
 	}
 	
+	/** @ignore */
 	public function db_num_rows($res)
 	{
 	}
 	
+	/** @ignore */
 	public function db_field_name($res,$position)
 	{
 		if ($res instanceof PDOStatement) {
@@ -154,6 +156,7 @@ class sqliteConnection extends dbLayer implements i_dbLayer
 		}
 	}
 	
+	/** @ignore */
 	public function db_field_type($res,$position)
 	{
 		if ($res instanceof PDOStatement) {
@@ -171,14 +174,17 @@ class sqliteConnection extends dbLayer implements i_dbLayer
 		}
 	}
 	
+	/** @ignore */
 	public function db_fetch_assoc($res)
 	{
 	}
 	
+	/** @ignore */
 	public function db_result_seek($res,$row)
 	{
 	}
 	
+	/** @ignore */
 	public function db_changes($handle,$res)
 	{
 		if ($res instanceof PDOStatement) {
@@ -186,6 +192,7 @@ class sqliteConnection extends dbLayer implements i_dbLayer
 		}
 	}
 	
+	/** @ignore */
 	public function db_last_error($handle)
 	{
 		if ($handle instanceof PDO) {
@@ -195,6 +202,7 @@ class sqliteConnection extends dbLayer implements i_dbLayer
 		return false;
 	}
 	
+	/** @ignore */
 	public function db_escape_string($str,$handle=null)
 	{
 		if ($handle instanceof PDO) {
@@ -203,11 +211,13 @@ class sqliteConnection extends dbLayer implements i_dbLayer
 		return $str;
 	}
 	
+	/** @ignore */
 	public function escapeSystem($str)
 	{
 		return "'".$this->escape($str)."'";
 	}
 	
+	/** @ignore */
 	public function begin()
 	{
 		if ($this->__link instanceof PDO) {
@@ -215,6 +225,7 @@ class sqliteConnection extends dbLayer implements i_dbLayer
 		}
 	}
 	
+	/** @ignore */
 	public function commit()
 	{
 		if ($this->__link instanceof PDO) {
@@ -222,6 +233,7 @@ class sqliteConnection extends dbLayer implements i_dbLayer
 		}
 	}
 	
+	/** @ignore */
 	public function rollback()
 	{
 		if ($this->__link instanceof PDO) {
@@ -229,27 +241,32 @@ class sqliteConnection extends dbLayer implements i_dbLayer
 		}
 	}
 	
+	/** @ignore */
 	public function db_write_lock($table)
 	{
 		$this->execute('BEGIN EXCLUSIVE TRANSACTION');
 	}
 	
+	/** @ignore */
 	public function db_unlock()
 	{
 		$this->execute('END');
 	}
 	
+	/** @ignore */
 	public function vacuum($table)
 	{
 		$this->execute('VACUUM '.$this->escapeSystem($table));
 	}
 	
+	/** @ignore */
 	public function dateFormat($field,$pattern)
 	{
 		return "strftime('".$this->escape($pattern)."',".$field.') ';
 	}
 	
-	/// Internal SQLite function that adds NOW() SQL function.
+	# Internal SQLite function that adds NOW() SQL function.
+	/** @ignore */
 	public function now()
 	{
 		return date('Y-m-d H:i:s');

@@ -1,58 +1,116 @@
 <?php
-# ***** BEGIN LICENSE BLOCK *****
+# -- BEGIN LICENSE BLOCK ----------------------------------
+#
 # This file is part of Clearbricks.
-# Copyright (c) 2006 Olivier Meunier and contributors. All rights
-# reserved.
 #
-# Clearbricks is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-# 
-# Clearbricks is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with Clearbricks; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# Copyright (c) 2003-2008 Olivier Meunier and contributors
+# Licensed under the GPL version 2.0 license.
+# See LICENSE file or
+# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 #
-# ***** END LICENSE BLOCK *****
+# -- END LICENSE BLOCK ------------------------------------
 
+/**
+* DBLayer Cursor
+*
+* This class implements facilities to insert or update in a table.
+*
+* @package Clearbricks
+* @subpackage DBLayer
+*/
 class cursor
 {
 	private $__con;
 	private $__data = array();
 	private $__table;
 	
+	/**
+	* Constructor
+	*
+	* Init cursor object on a given table. Note that you can init it with 
+	* {@link dbLayer::openCursor() openCursor()} method of your connection object.
+	*
+	* Example:
+	* <code>
+	* <?php
+	*	$cur = $con->openCursor('table');
+	*	$cur->field1 = 1;
+	*	$cur->field2 = 'foo';
+	*	$cur->insert(); // Insert field ...
+	*
+	*	$cur->update('WHERE field3 = 4'); // ... or update field
+	* ?>
+	* </code>
+	*
+	* @see dbLayer::openCursor()
+	* @param dbLayer	&$con		Connection object
+	* @param string	$table	Table name
+	*/
 	public function __construct(&$con,$table)
 	{
 		$this->__con =& $con;
 		$this->setTable($table);
 	}
 	
+	/**
+	* Set table
+	*
+	* Changes working table and resets data
+	*
+	* @param string	$table	Table name
+	*/
 	public function setTable($table)
 	{
 		$this->__table = $table;
 		$this->__data = array();
 	}
 	
+	/**
+	* Set field
+	*
+	* Set value <var>$v</var> to a field named <var>$n</var>. Value could be
+	* an string, an integer, a float, a null value or an array.
+	*
+	* If value is an array, its first value will be interpreted as a SQL
+	* command. String values will be automatically escaped.
+	*
+	* @see __set()
+	* @param string	$n		Field name
+	* @param mixed		$v		Field value
+	*/
 	public function setField($n,$v)
 	{
 		$this->__data[$n] = $v;
 	}
 	
+	/**
+	* Unset field
+	*
+	* Remove a field from data set.
+	*
+	* @param string	$n		Field name
+	*/
 	public function unsetField($n)
 	{
 		unset($this->__data[$n]);
 	}
 	
+	/**
+	* Field exists
+	*
+	* @return boolean	true if field named <var>$n</var> exists
+	*/
 	public function isField($n)
 	{
 		return isset($this->__data[$n]);
 	}
 	
+	/**
+	* Field value
+	*
+	* @see __get()
+	* @return mixed	value for a field named <var>$n</var>
+	*/
 	public function getField($n)
 	{
 		if (isset($this->__data[$n])) {
@@ -62,16 +120,33 @@ class cursor
 		return null;
 	}
 	
+	/**
+	* Set Field
+	*
+	* Magic alias for {@link setField()}
+	*/
 	public function __set($n,$v)
 	{
 		$this->setField($n,$v);
 	}
 	
+	/**
+	* Field value
+	*
+	* Magic alias for {@link getField()}
+	*
+	* @return mixed	value for a field named <var>$n</var>
+	*/
 	public function __get($n)
 	{
 		return $this->getField($n);
 	}
 	
+	/**
+	* Empty data set
+	*
+	* Removes all data from data set
+	*/
 	public function clean()
 	{
 		$this->__data = array();
@@ -99,6 +174,13 @@ class cursor
 		return $data;
 	}
 	
+	/**
+	* Get insert query
+	*
+	* Returns the generated INSERT query
+	*
+	* @return string
+	*/
 	public function getInsert()
 	{
 		$data = $this->formatFields();
@@ -110,6 +192,14 @@ class cursor
 		return $insReq;
 	}
 	
+	/**
+	* Get update query
+	*
+	* Returns the generated UPDATE query
+	*
+	* @param string	$where		WHERE condition
+	* @return string
+	*/
 	public function getUpdate($where)
 	{
 		$data = $this->formatFields();
@@ -127,6 +217,11 @@ class cursor
 		return $updReq;
 	}
 	
+	/**
+	* Execute insert query
+	*
+	* Executes the generated INSERT query
+	*/
 	public function insert()
 	{
 		if (!$this->__table) {
@@ -140,6 +235,13 @@ class cursor
 		return true;
 	}
 	
+	/**
+	* Execute update query
+	*
+	* Executes the generated UPDATE query
+	*
+	* @param string	$where		WHERE condition
+	*/
 	public function update($where)
 	{
 		if (!$this->__table) {
