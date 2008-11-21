@@ -1,35 +1,28 @@
 <?php
-# ***** BEGIN LICENSE BLOCK *****
+# -- BEGIN LICENSE BLOCK ----------------------------------
+#
 # This file is part of Clearbricks.
-# Copyright (c) 2006 Olivier Meunier and contributors. All rights
-# reserved.
 #
-# Clearbricks is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-# 
-# Clearbricks is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with Clearbricks; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# Copyright (c) 2003-2008 Olivier Meunier and contributors
+# Licensed under the GPL version 2.0 license.
+# See LICENSE file or
+# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 #
-# ***** END LICENSE BLOCK *****
+# -- END LICENSE BLOCK ------------------------------------
 
 /**
-@ingroup CB_DBLAYER
-@brief PostgreSQL Database Driver.
-
-See the dbLayer documentation for common methods.
-
-This class adds a method for PostgreSQL only: callFunction().
+* PostgreSQL Database Driver
+* 
+* See the {@link dbLayer} documentation for common methods.
+* 
+* This class adds a method for PostgreSQL only: {@link callFunction()}.
+*
+* @package Clearbricks
+* @subpackage DBLayer
 */
 class pgsqlConnection extends dbLayer implements i_dbLayer
 {
+	/** @ignore */
 	protected $__driver = 'pgsql';
 	
 	private function get_connection_string($host,$user,$password,$database)
@@ -63,6 +56,7 @@ class pgsqlConnection extends dbLayer implements i_dbLayer
 		return $str;
 	}
 	
+	/** @ignore */
 	public function db_connect($host,$user,$password,$database)
 	{
 		if (!function_exists('pg_connect')) {
@@ -78,6 +72,7 @@ class pgsqlConnection extends dbLayer implements i_dbLayer
 		return $link;
 	}
 	
+	/** @ignore */
 	public function db_pconnect($host,$user,$password,$database)
 	{
 		if (!function_exists('pg_pconnect')) {
@@ -93,6 +88,7 @@ class pgsqlConnection extends dbLayer implements i_dbLayer
 		return $link;
 	}
 	
+	/** @ignore */
 	public function db_close($handle)
 	{
 		if (is_resource($handle)) {
@@ -100,6 +96,7 @@ class pgsqlConnection extends dbLayer implements i_dbLayer
 		}
 	}
 	
+	/** @ignore */
 	public function db_version($handle)
 	{
 		if (is_resource($handle))
@@ -109,6 +106,7 @@ class pgsqlConnection extends dbLayer implements i_dbLayer
 		return null;
 	}
 	
+	/** @ignore */
 	public function db_query($handle,$query)
 	{
 		if (is_resource($handle))
@@ -123,11 +121,13 @@ class pgsqlConnection extends dbLayer implements i_dbLayer
 		}
 	}
 	
+	/** @ignore */
 	public function db_exec($handle,$query)
 	{
 		return $this->db_query($handle,$query);
 	}
 	
+	/** @ignore */
 	public function db_num_fields($res)
 	{
 		if (is_resource($res)) {
@@ -136,6 +136,7 @@ class pgsqlConnection extends dbLayer implements i_dbLayer
 		return 0;
 	}
 	
+	/** @ignore */
 	public function db_num_rows($res)
 	{
 		if (is_resource($res)) {
@@ -144,6 +145,7 @@ class pgsqlConnection extends dbLayer implements i_dbLayer
 		return 0;
 	}
 	
+	/** @ignore */
 	public function db_field_name($res,$position)
 	{
 		if (is_resource($res)) {
@@ -151,6 +153,7 @@ class pgsqlConnection extends dbLayer implements i_dbLayer
 		}
 	}
 	
+	/** @ignore */
 	public function db_field_type($res,$position)
 	{
 		if (is_resource($res)) {
@@ -158,6 +161,7 @@ class pgsqlConnection extends dbLayer implements i_dbLayer
 		}
 	}
 	
+	/** @ignore */
 	public function db_fetch_assoc($res)
 	{
 		if (is_resource($res)) {
@@ -165,6 +169,7 @@ class pgsqlConnection extends dbLayer implements i_dbLayer
 		}
 	}
 	
+	/** @ignore */
 	public function db_result_seek($res,$row)
 	{
 		if (is_resource($res)) {
@@ -173,6 +178,7 @@ class pgsqlConnection extends dbLayer implements i_dbLayer
 		return false;
 	}
 	
+	/** @ignore */
 	public function db_changes($handle,$res)
 	{
 		if (is_resource($handle) && is_resource($res)) {
@@ -180,6 +186,7 @@ class pgsqlConnection extends dbLayer implements i_dbLayer
 		}
 	}
 	
+	/** @ignore */
 	public function db_last_error($handle)
 	{
 		if (is_resource($handle)) {
@@ -188,27 +195,32 @@ class pgsqlConnection extends dbLayer implements i_dbLayer
 		return false;
 	}
 	
+	/** @ignore */
 	public function db_escape_string($str,$handle=null)
 	{
 		return pg_escape_string($str);
 	}
 	
+	/** @ignore */
 	public function db_write_lock($table)
 	{
 		$this->execute('BEGIN');
 		$this->execute('LOCK TABLE '.$this->escapeSystem($table).' IN EXCLUSIVE MODE');
 	}
 	
+	/** @ignore */
 	public function db_unlock()
 	{
 		$this->execute('END');
 	}
 	
+	/** @ignore */
 	public function vacuum($table)
 	{
 		$this->execute('VACUUM FULL '.$this->escapeSystem($table));
 	}
 	
+	/** @ignore */
 	public function dateFormat($field,$pattern)
 	{
 		$rep = array(
@@ -226,12 +238,15 @@ class pgsqlConnection extends dbLayer implements i_dbLayer
 	}
 	
 	/**
-	Calls a PostgreSQL function an returns the result as a record. After
-	<var>$name</var>, you can add any parameters you want to append them to
-	the PostgreSQL function. You don't need to escape string in arguments.
-	
-	@param	name		<b>string</b>		Function name
-	@return	<b>record</b>
+	* Function call
+	*
+	* Calls a PostgreSQL function an returns the result as a {@link record}.
+	* After <var>$name</var>, you can add any parameters you want to append
+	* them to the PostgreSQL function. You don't need to escape string in
+	* arguments.
+	* 
+	* @param string	$name	Function name
+	* @return	record
 	*/
 	public function callFunction($name)
 	{

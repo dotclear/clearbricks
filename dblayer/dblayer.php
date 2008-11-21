@@ -1,219 +1,259 @@
 <?php
-# ***** BEGIN LICENSE BLOCK *****
+# -- BEGIN LICENSE BLOCK ----------------------------------
+#
 # This file is part of Clearbricks.
-# Copyright (c) 2006 Olivier Meunier and contributors. All rights
-# reserved.
 #
-# Clearbricks is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-# 
-# Clearbricks is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with Clearbricks; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# Copyright (c) 2003-2008 Olivier Meunier and contributors
+# Licensed under the GPL version 2.0 license.
+# See LICENSE file or
+# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 #
-# ***** END LICENSE BLOCK *****
+# -- END LICENSE BLOCK ------------------------------------
 
-/// @defgroup CB_DBLAYER Clearbricks Database Abstraction Layer
-/// @ingroup CLEARBRICKS
+/**
+* Clearbricks DBLayer
+*
+* @package Clearbricks
+* @subpackage DBLayer
+*/
 
 require dirname(__FILE__).'/class.cursor.php';
 
 /**
-@ingroup CB_DBLAYER
-@brief Clearbricks Database Abstraction Layer interface
-
-All methods in this interface should be implemented in your database driver.
-
-Database driver is a class that extends dbLayer, implements i_dbLayer and has
-a name of the form (driver name)Connection.
+* Clearbricks Database Abstraction Layer interface
+*
+* All methods in this interface should be implemented in your database driver.
+*
+* Database driver is a class that extends {@link dbLayer}, implements
+* {@link i_dbLayer} and has a name of the form (driver name)Connection.
+*
+* @package Clearbricks
+* @subpackage DBLayer
 */
 interface i_dbLayer
 {
 	/**
-	This method should open a database connection and return a new resource
-	link.
-	
-	@param	host		<b>string</b>		Database server host
-	@param	user		<b>string</b>		Database user name
-	@param	password	<b>string</b>		Database password
-	@param	database	<b>string</b>		Database name
-	@returns	<b>resource</b>
+	* Open connection
+	*
+	* This method should open a database connection and return a new resource
+	* link.
+	*
+	* @param string	$host		Database server host
+	* @param string	$user		Database user name
+	* @param string	$password		Database password
+	* @param string	$database		Database name
+	* @return resource
 	*/
 	function db_connect($host,$user,$password,$database);
 	
 	/**
-	This method should open a persistent database connection and return a new
-	resource link.
-	
-	@param	host		<b>string</b>		Database server host
-	@param	user		<b>string</b>		Database user name
-	@param	password	<b>string</b>		Database password
-	@param	database	<b>string</b>		Database name
-	@returns	<b>resource</b>
+	* Open persistent connection
+	*
+	* This method should open a persistent database connection and return a new
+	* resource link.
+	*
+	* @param string	$host		Database server host
+	* @param string	$user		Database user name
+	* @param string	$password		Database password
+	* @param string	$database		Database name
+	* @return resource
 	*/
 	function db_pconnect($host,$user,$password,$database);
 	
 	/**
-	This method should close resource link.
-	
-	@param	handle	<b>resource</b>	Resource link
+	* Close connection
+	*
+	* This method should close resource link.
+	*
+	* @param resource	$handle		Resource link
 	*/
 	function db_close($handle);
 	
 	/**
-	This method should return database version number.
-	
-	@param	handle	<b>resource</b>	Resource link
-	@returns	<b>string</b>
+	* Database version
+	*
+	* This method should return database version number.
+	*
+	* @param resource	$handle		Resource link
+	* @return string
 	*/
 	function db_version($handle);
 	
 	/**
-	This method should run an SQL query and return a resource result.
-	
-	@param	handle	<b>resource</b>	Resource link
-	@param	query	<b>string</b>		SQL query string
-	@return	<b>resource</b>
+	* Database query
+	*
+	* This method should run an SQL query and return a resource result.
+	*
+	* @param resource	$handle		Resource link
+	* @param string	$query		SQL query string
+	* @return resource
 	*/
 	function db_query($handle,$query);
 	
 	/**
-	This method should run an SQL query and return a resource result.
-	
-	@param	handle	<b>resource</b>	Resource link
-	@param	query	<b>string</b>		SQL query string
-	@return	<b>resource</b>
+	* Database exec query
+	*
+	* This method should run an SQL query and return a resource result.
+	*
+	* @param resource	$handle		Resource link
+	* @param string	$query		SQL query string
+	* @return resource
 	*/
 	function db_exec($handle,$query);
 	
 	/**
-	This method should return the number of fields in a result.
-	
-	@param	res		<b>resource</b>	Resource result
-	@return	<b>integer</b>
+	* Result columns count
+	*
+	* This method should return the number of fields in a result.
+	*
+	* @param resource	$res			Resource result
+	* @return integer
 	*/
 	function db_num_fields($res);
 	
 	/**
-	This method should return the number of rows in a result.
-	
-	@param	res		<b>resource</b>	Resource result
-	@return	<b>integer</b>
+	* Result rows count
+	*
+	* This method should return the number of rows in a result.
+	*
+	* @param resource	$res			Resource result
+	* @return integer
 	*/
 	function db_num_rows($res);
 	
 	/**
-	This method should return the name of the field at the given position
-	<var>$position</var>.
-	
-	@param	res		<b>resource</b>	Resource result
-	@param	position	<b>integer</b>		Field position
-	@return	<b>string</b>
+	* Field name
+	*
+	* This method should return the name of the field at the given position
+	* <var>$position</var>.
+	*
+	* @param resource	$res			Resource result
+	* @param integer	$position		Field position
+	* @return string
 	*/
 	function db_field_name($res,$position);
 	
 	/**
-	This method should return the field type a the given position
-	<var>$position</var>.
-	
-	@param	res		<b>resource</b>	Resource result
-	@param	position	<b>integer</b>		Field position
-	@return	<b>string</b>
+	* Field type
+	*
+	* This method should return the field type a the given position
+	* <var>$position</var>.
+	*
+	* @param resource	$res			Resource result
+	* @param integer	$position		Field position
+	* @return string
 	*/
 	function db_field_type($res,$position);
 	
 	/**
-	This method should fetch one line of result and return an associative array
-	with field name as key and field value as value.
-	
-	@param	res		<b>resource</b>	Resource result
-	@return	<b>array</b>
+	* Fetch result
+	*
+	* This method should fetch one line of result and return an associative array
+	* with field name as key and field value as value.
+	*
+	* @param resource	$res			Resource result
+	* @return array
 	*/
 	function db_fetch_assoc($res);
 	
 	/**
-	This method should move result cursor on given row position <var>$row</var>
-	and return true on success.
-	
-	@param	res		<b>resource</b>	Resource result
-	@param	row		<b>integer</b>		Row position
-	@return	<b>boolean</b>
+	* Move result cursor
+	*
+	* This method should move result cursor on given row position <var>$row</var>
+	* and return true on success.
+	*
+	* @param resource	$res			Resource result
+	* @param integer	$position		Row position
+	* @return boolean
 	*/
 	function db_result_seek($res,$row);
 	
 	/**
-	This method should return number of rows affected by INSERT, UPDATE or
-	DELETE queries.
-	
-	@param	handle	<b>resource</b>	Resource link
-	@param	res		<b>resource</b>	Resource result
-	@return	<b>integer</b>
+	* Affected rows
+	*
+	* This method should return number of rows affected by INSERT, UPDATE or
+	* DELETE queries.
+	*
+	* @param resource	$handle		Resource link
+	* @param resource	$res			Resource result
+	* @return integer
 	*/
 	function db_changes($handle,$res);
 	
 	/**
-	This method should return the last error string for the current connection.
-	
-	@param	handle	<b>resource</b>	Resource link
-	@return	<b>string</b>
+	* Last error
+	*
+	* This method should return the last error string for the current connection.
+	*
+	* @param resource	$handle		Resource link
+	* @return string
 	*/
 	function db_last_error($handle);
 	
 	/**
-	This method should return an escaped string for the current connection.
-	
-	@param	str		<b>string</b>		String to escape
-	@param	handle	<b>resource</b>	Resource link
-	@return	<b>string</b>
+	* Escape string
+	*
+	* This method should return an escaped string for the current connection.
+	*
+	* @param string	$str			String to escape
+	* @param resource	$handle		Resource link
+	* @return string
 	*/
 	function db_escape_string($str,$handle=null);
 	
 	/**
-	This method lock the given table in write access.
-	
-	@param	table	<b>string</b>		Table name
+	* Acquiere Write lock
+	*
+	* This method should lock the given table in write access.
+	*
+	* @param string	$table		Table name
 	*/
 	function db_write_lock($table);
 	
 	/**
-	This method releases an acquiered lock.
+	* Release lock
+	*
+	* This method should releases an acquiered lock.
 	*/
 	function db_unlock();
 }
 
 /**
-@ingroup CB_DBLAYER
-@brief Database Abstraction Layer class
-
-Base class for database abstraction. Each driver extends this class and
-implements i_dbLayer interface.
+* Database Abstraction Layer class
+*
+* Base class for database abstraction. Each driver extends this class and
+* implements {@link i_dbLayer} interface.
+*
+* @package Clearbricks
+* @subpackage DBLayer
 */
 class dbLayer
 {
-	protected $__driver = null;		///< <b>string</b>		Driver name
-	protected $__version = null;		///< <b>string</b>		Database version
+	/** @var string	Driver name */
+	protected $__driver = null;
 	
-	protected $__link;				///< <b>resource</b>	Database resource link
-	protected $__last_result;		///< <b>resource</b>	Last result resource
+	/** @var string	Database version */
+	protected $__version = null;
+	
+	/** @var resource	Database resource link */
+	protected $__link;
+	
+	/** @var resource	Last result resource link */
+	protected $__last_result;
 	
 	/**
-	Static function to use to init database layer. Returns a object extending
-	dbLayer.
-	
-	@param	driver		<b>string</b>		Driver name
-	@param	host			<b>string</b>		Database hostname
-	@param	database		<b>string</b>		Database name
-	@param	user			<b>string</b>		User ID
-	@param	password		<b>string</b>		Password
-	@param	persistent	<b>boolean</b>		Persistent connection (false)
-	@return	<b>object</b>
+	* Start connection
+	*
+	* Static function to use to init database layer. Returns a object extending
+	* dbLayer.
+	*
+	* @param string	$driver		Driver name
+	* @param string	$host		Database hostname
+	* @param string	$database		Database name
+	* @param string	$user		User ID
+	* @param string	$password		Password
+	* @param string	$persistent	Persistent connection
+	* @return object
 	*/
 	public static function init($driver,$host,$database,$user='',$password='',$persistent=false)
 	{
@@ -229,13 +269,11 @@ class dbLayer
 	}
 	
 	/**
-	Inits database connection.
-	
-	@param	host			<b>string</b>		User ID
-	@param	database		<b>string</b>		Password
-	@param	user			<b>string</b>		Server to connect
-	@param	password		<b>string</b>		Database name
-	@param	persistent	<b>boolean</b>		Open a persistent connection
+	* @param string	$host		Database hostname
+	* @param string	$database		Database name
+	* @param string	$user		User ID
+	* @param string	$password		Password
+	* @param string	$persistent	Persistent connection
 	*/
 	public function __construct($host,$database,$user='',$password='',$persistent=false)
 	{
@@ -250,7 +288,7 @@ class dbLayer
 	}
 	
 	/**
-	Closes database connection.
+	* Closes database connection.
 	*/
 	public function close()
 	{
@@ -258,9 +296,9 @@ class dbLayer
 	}
 	
 	/**
-	Returns database driver name
-	
-	@return	<b>string</b>
+	* Returns database driver name
+	*
+	* @return string
 	*/
 	public function driver()
 	{
@@ -268,9 +306,9 @@ class dbLayer
 	}
 	
 	/**
-	Returns database driver version
-	
-	@return	<b>string</b>
+	* Returns database driver version
+	*
+	* @return string
 	*/
 	public function version()
 	{
@@ -278,9 +316,9 @@ class dbLayer
 	}
 	
 	/**
-	Returns current database name
-	
-	@return	<b>string</b>
+	* Returns current database name
+	*
+	* @return string
 	*/
 	public function database()
 	{
@@ -288,9 +326,9 @@ class dbLayer
 	}
 	
 	/**
-	Returns link resource
-	
-	@return	<b>resource</b>
+	* Returns link resource
+	*
+	* @return resource
 	*/
 	public function link()
 	{
@@ -298,13 +336,12 @@ class dbLayer
 	}
 	
 	/**
-	Executes a query and return a recordset. Recordset could be either static
-	(default beahvior) or dynamic (useful for large results).
-	$query could be a string or an array of params for a previously prepared
-	query.
-	
-	@param	sql		<b>string</b>		SQL query
-	@return	<b>record</b>
+	* Run query and get results
+	*
+	* Executes a query and return a {@link record} object.
+	* 
+	* @param string	$sql			SQL query
+	* @return record
 	*/
 	public function select($sql)
 	{
@@ -327,10 +364,12 @@ class dbLayer
 	}
 	
 	/**
-	Executes a query and return true if query succeded.
-	
-	@param	sql		<b>string</b>		SQL query
-	@return	<b>boolean</b>
+	* Run query
+	*
+	* Executes a query and return true if succeed
+	* 
+	* @param string	$sql			SQL query
+	* @return true
 	*/
 	public function execute($sql)
 	{
@@ -342,7 +381,10 @@ class dbLayer
 	}
 	
 	/**
-	Begins a transaction.
+	* Begin transaction
+	*
+	* Begins a transaction. Transaction should be {@link commit() commited}
+	* or {@link rollback() rollbacked}.
 	*/
 	public function begin()
 	{
@@ -350,7 +392,9 @@ class dbLayer
 	}
 	
 	/**
-	Commits a transaction.
+	* Commit transaction
+	*
+	* Commits a previoulsy started transaction.
 	*/
 	public function commit()
 	{
@@ -358,7 +402,9 @@ class dbLayer
 	}
 	
 	/**
-	Rollbacks a transaction.
+	* Rollback transaction
+	*
+	* Rollbacks a previously started transaction.
 	*/
 	public function rollback()
 	{
@@ -366,9 +412,11 @@ class dbLayer
 	}
 	
 	/**
-	This method lock the given table in write access.
-	
-	@param	table	<b>string</b>		Table name
+	* Aquiere write lock
+	*
+	* This method lock the given table in write access.
+	*
+	* @param string	$table		Table name
 	*/
 	public function writeLock($table)
 	{
@@ -376,7 +424,9 @@ class dbLayer
 	}
 	
 	/**
-	This method releases an acquiered lock.
+	* Release lock
+	*
+	* This method releases an acquiered lock.
 	*/
 	public function unlock()
 	{
@@ -384,19 +434,21 @@ class dbLayer
 	}
 	
 	/**
-	Vacuum the table given in argument.
-	
-	@param	table	<b>string</b>		Table name
+	* Vacuum the table given in argument.
+	*
+	* @param string	$table		Table name
 	*/
 	public function vacuum($table)
 	{
 	}
 	
 	/**
-	Returns the number of lines affected by the last DELETE, INSERT or UPDATE
-	query.
-	
-	@return	<b>integer</b>
+	* Changed rows
+	*
+	* Returns the number of lines affected by the last DELETE, INSERT or UPDATE
+	* query.
+	*
+	* @return integer
 	*/
 	public function changes()
 	{
@@ -404,9 +456,11 @@ class dbLayer
 	}
 	
 	/**
-	Returns the last database error or false if no error.
-	
-	@returns <b>string</b>
+	* Last error
+	*
+	* Returns the last database error or false if no error.
+	*
+	* @return string|false
 	*/
 	public function error()
 	{
@@ -420,20 +474,22 @@ class dbLayer
 	}
 
 	/**
-	Returns a query fragment with date formater.
-	
-	The following modifiers are accepted:
-	
-	- %d : Day of the month, numeric
-	- %H : Hour 24 (00..23)
-	- %M : Minute (00..59)
-	- %m : Month numeric (01..12)
-	- %S : Seconds (00..59)
-	- %Y : Year, numeric, four digits
-	
-	@param	field	<b>string</b>		Field name
-	@param	pattern	<b>string</b>		Date format
-	@return	<b>string</b>
+	* Date formatting
+	*
+	* Returns a query fragment with date formater.
+	*
+	* The following modifiers are accepted:
+	*
+	* - %d : Day of the month, numeric
+	* - %H : Hour 24 (00..23)
+	* - %M : Minute (00..59)
+	* - %m : Month numeric (01..12)
+	* - %S : Seconds (00..59)
+	* - %Y : Year, numeric, four digits
+	* 
+	* @param string	$field			Field name
+	* @param string	$pattern			Date format
+	* @return string
 	*/
 	public function dateFormat($field,$pattern)
 	{
@@ -442,11 +498,15 @@ class dbLayer
 	}
 	
 	/**
-	Returns a LIMIT query fragment.
-	
-	@param	arg1		<b>mixed</b>		array or integer with limit intervals
-	@param	arg2		<b>mixed</b>		integer or null (null)
-	@return	<b>string</b>
+	* Query Limit
+	*
+	* Returns a LIMIT query fragment. <var>$arg1</var> could be an array of
+	* offset and limit or an integer which is only limit. If <var>$arg2</var>
+	* is given and <var>$arg1</var> is an integer, it would become limit.
+	*
+	* @param array|integer	$arg1		array or integer with limit intervals
+	* @param array|null		$arg2		integer or null
+	* @return string
 	*/
 	public function limit($arg1, $arg2=null)
 	{
@@ -467,11 +527,13 @@ class dbLayer
 	}
 	
 	/**
-	Returns a IN query fragment where $in could be an array, a string,
-	an integer or null
-	
-	@param	in		<b>mixed</b>		array, string, integer or null
-	@return	<b>string</b>
+	* IN fragment
+	*
+	* Returns a IN query fragment where $in could be an array, a string,
+	* an integer or null
+	*
+	* @param array|string|integer|null		$in		"IN" values
+	* @return string
 	*/
 	public function in($in)
 	{
@@ -501,10 +563,12 @@ class dbLayer
 	}
 	
 	/**
-	Returns SQL concatenation of methods arguments. Theses arguments
-	should be properly escaped when needed.
-	
-	@return	<b>string</b>
+	* Concat strings
+	*
+	* Returns SQL concatenation of methods arguments. Theses arguments
+	* should be properly escaped when needed.
+	*
+	* @return string
 	*/
 	public function concat()
 	{
@@ -513,10 +577,12 @@ class dbLayer
 	}
 	
 	/**
-	Returns SQL protected string or array values.
-	
-	@param	i		<b>mixed</b>		String or array to protect
-	@return	<b>mixed</b>
+	* Escape string
+	*
+	* Returns SQL protected string or array values.
+	*
+	* @param string|array	$i		String or array to protect
+	* @return string|array
 	*/
 	public function escape($i)
 	{
@@ -531,10 +597,12 @@ class dbLayer
 	}
 	
 	/**
-	Returns SQL system protected string.
-	
-	@param	str		<b>string</b>		String to protect
-	@return	<b>string</b>
+	* System escape string
+	*
+	* Returns SQL system protected string.
+	* 
+	* @param string		$str		String to protect
+	* @return string
 	*/
 	public function escapeSystem($str)
 	{
@@ -542,11 +610,13 @@ class dbLayer
 	}
 	
 	/**
-	Returns a new instance of cursor class on <var>$table</var> for the current
-	connection.
-	
-	@param	table	<b>string</b>		Cursor table
-	@return	<b>cursor</b>
+	* Cursor object
+	*
+	* Returns a new instance of {@link cursor} class on <var>$table</var> for
+	* the current connection.
+	*
+	* @param string		$table	Target table
+	* @return cursor
 	*/
 	public function openCursor($table)
 	{
@@ -555,37 +625,51 @@ class dbLayer
 }
 
 /**
-@ingroup CB_DBLAYER
-@brief Query Result Record Class
-
-This class acts as an iterator over database query result. It does not fetch
-all results on instantiation and thus, depending on database engine, should not
-fill PHP process memory.
+* Query Result Record Class
+*
+* This class acts as an iterator over database query result. It does not fetch
+* all results on instantiation and thus, depending on database engine, should not
+* fill PHP process memory.
+*
+* @package Clearbricks
+* @subpackage DBLayer
 */
 class record
 {
-	protected $__link;				///< <b>resource</b>	Database resource link
-	protected $__result;			///< <b>resource</b>	Query result resource
-	protected $__info;				///< <b>array</b>		Result information array
-	protected $__extend = array();	///< <b>array</b>		List of static functions that extend record
+	/** @var resource	Database resource link */
+	protected $__link;
 	
-	protected $__index = 0;			///< <b>integer</b>		Current result position
-	protected $__row = false;		///< <b>array</b>		Current result row content
+	/** @var resource	Query result resource */
+	protected $__result;
+	
+	/** @var array		Result information array */
+	protected $__info;
+	
+	/** @var array		List of static functions that extend record */
+	protected $__extend = array();
+	
+	/** @var integer	Current result position */
+	protected $__index = 0;
+	
+	/** @var array		Current result row content */
+	protected $__row = false;
+	
 	private $__fetch = false;
 	
 	/**
-	Creates class instance from result link and some informations.
-	<var>$info</var> is an array with the following content:
-	
-	- con => database object instance
-	- cols => number of columns
-	- rows => number of rows
-	- info
-	  - name => an array with columns names
-	  - type => an array with columns types
-	
-	@param	result	<b>resource</b>	Resource result
-	@param	info		<b>array</b>		Information array
+	* Constructor
+	*
+	* Creates class instance from result link and some informations.
+	* <var>$info</var> is an array with the following content:
+	*
+	* - con => database object instance
+	* - cols => number of columns
+	* - rows => number of rows
+	* - info[name] => an array with columns names
+	* - info[type] => an array with columns types
+	*
+	* @param resource	$result		Resource result
+	* @param array		$info		Information array
 	*/
 	public function __construct($result,$info)
 	{
@@ -596,7 +680,9 @@ class record
 	}
 	
 	/**
-	Converts this record to a staticRecord instance.
+	* To staticRecord
+	*
+	* Converts this record to a {@link staticRecord} instance.
 	*/
 	public function toStatic()
 	{
@@ -607,8 +693,12 @@ class record
 	}
 	
 	/**
-	Magic call function. Calls function in $__extend array if exists, passing it
-	self object and arguments.
+	* Magic call
+	*
+	* Magic call function. Calls function added by {@link extend()} if exists, passing it
+	* self object and arguments.
+	*
+	* @return mixed
 	*/
 	public function __call($f,$args)
 	{
@@ -622,7 +712,12 @@ class record
 	}
 	
 	/**
-	Magic get method. Alias for field().
+	* Magic get
+	*
+	* Alias for {@link field()}.
+	*
+	* @param string|integer	$n		Field name
+	* @return string
 	*/
 	public function __get($n)
 	{
@@ -630,7 +725,12 @@ class record
 	}
 	
 	/**
-	Alias for field().
+	* Get field
+	*
+	* Alias for {@link field()}.
+	*
+	* @param string|integer	$n		Field name
+	* @return string
 	*/
 	public function f($n)
 	{
@@ -638,10 +738,12 @@ class record
 	}
 	
 	/**
-	Retrieve named <var>$n</var> field value.
-	
-	@param	n		<b>string</b>		Field name
-	@return	<b>string</b>
+	* Get field
+	*
+	* Retrieve field value by its name or column position.
+	*
+	* @param string|integer	$n		Field name
+	* @return string
 	*/
 	public function field($n)
 	{
@@ -649,10 +751,12 @@ class record
 	}
 	
 	/**
-	Returns true if a field exists.
-	
-	@param	n		<b>string</b>		Field name
-	@return	<b>string</b>
+	* Field exists
+	*
+	* Returns true if a field exists.
+	*
+	* @param string		$n		Field name
+	* @return string
 	*/
 	public function exists($n)
 	{
@@ -660,12 +764,15 @@ class record
 	}
 	
 	/**
-	Extends this instance capabilities by adding all public static methods of
-	<var>$class</var> to current instance. Class methods should take at least
-	this record as first parameter.
-	@see __call()
-	
-	@param	class	<b>string</b>		Class name
+	* Extend record
+	*
+	* Extends this instance capabilities by adding all public static methods of
+	* <var>$class</var> to current instance. Class methods should take at least
+	* this record as first parameter.
+	*
+	* @see __call()
+	*
+	* @param string	$class		Class name
 	*/
 	public function extend($class)
 	{
@@ -699,11 +806,11 @@ class record
 	}
 	
 	/**
-	Returns the current index position (O is first) or move to <var>$row</var> if
-	specified.
-	
-	@param	row		<b>integer</b>		Row number to move
-	@return	<b>integer</b>
+	* Returns the current index position (0 is first) or move to <var>$row</var> if
+	* specified.
+	*
+	* @param integer	$row			Row number to move
+	* @return integer
 	*/
 	public function index($row=null)
 	{
@@ -726,17 +833,19 @@ class record
 	}
 	
 	/**
-	This method moves index to one position and return true until index is not
-	the last one. You can use it to loop over record. Example:
-	@code
-	<?php
-	while ($rs->fetch()) {
-		echo $rs->field1;
-	}
-	?>
-	@endcode
-	
-	@return	<b>boolean</b>
+	* One step move index
+	*
+	* This method moves index forward and return true until index is not
+	* the last one. You can use it to loop over record. Example:
+	* <code>
+	* <?php
+	* while ($rs->fetch()) {
+	* 	echo $rs->field1;
+	* }
+	* ?>
+	* </code>
+	*
+	* @return boolean
 	*/
 	public function fetch()
 	{
@@ -757,9 +866,9 @@ class record
 	}
 	
 	/**
-	Moves index to first position.
-	
-	@return	<b>boolean</b>
+	* Moves index to first position.
+	*
+	* @return boolean
 	*/
 	public function moveStart()
 	{
@@ -767,9 +876,9 @@ class record
 	}
 	
 	/**
-	Moves index to last position.
-	
-	@return	<b>boolean</b>
+	* Moves index to last position.
+	*
+	* @return boolean
 	*/
 	public function moveEnd()
 	{
@@ -777,9 +886,9 @@ class record
 	}
 	
 	/**
-	Moves index to next position.
-	
-	@return	<b>boolean</b>
+	* Moves index to next position.
+	*
+	* @return boolean
 	*/
 	public function moveNext()
 	{
@@ -787,9 +896,9 @@ class record
 	}
 	
 	/**
-	Moves index to previous position.
-	
-	@return	<b>boolean</b>
+	* Moves index to previous position.
+	*
+	* @return boolean
 	*/
 	public function movePrev()
 	{
@@ -797,9 +906,7 @@ class record
 	}
 	
 	/**
-	Returns true if index is at last position.
-	
-	@return	<b>boolean</b>
+	* @return boolean	true if index is at last position
 	*/
 	public function isEnd()
 	{
@@ -807,9 +914,7 @@ class record
 	}
 	
 	/**
-	Returns true if index is at first position.
-	
-	@return	<b>boolean</b>
+	* @return boolean	true if index is at first position.
 	*/
 	public function isStart()
 	{
@@ -817,9 +922,7 @@ class record
 	}
 	
 	/**
-	Returns true if record contains no result.
-	
-	@return	<b>boolean</b>
+	* @return boolean	true if record contains no result.
 	*/
 	public function isEmpty()
 	{
@@ -827,9 +930,7 @@ class record
 	}
 	
 	/**
-	Returns number of rows in record.
-	
-	@return	<b>integer</b>
+	* @return integer	number of rows in record
 	*/
 	public function count()
 	{
@@ -837,9 +938,7 @@ class record
 	}
 	
 	/**
-	Returns an array of columns, with name as key and type as value.
-	
-	@return	<b>array</b>
+	* @return array	array of columns, with name as key and type as value.
 	*/
 	public function columns()
 	{
@@ -847,9 +946,7 @@ class record
 	}
 	
 	/**
-	Returns an array of all rows in record.
-	
-	@return	<b>array</b>
+	* @return array	all rows in record.
 	*/
 	public function rows()
 	{
@@ -857,9 +954,11 @@ class record
 	}
 	
 	/**
-	Returns an array of all rows in record. This method is called by rows().
-	
-	@return	<b>array</b>
+	* All data
+	*
+	* Returns an array of all rows in record. This method is called by rows().
+	*
+	* @return array
 	*/
 	protected function getData()
 	{
@@ -883,17 +982,22 @@ class record
 }
 
 /**
-@ingroup CB_DBLAYER
-@brief Query Result Static Record Class
-
-Unlike record class, this one contains all results in an associative array.
+* Query Result Static Record Class
+*
+* Unlike record class, this one contains all results in an associative array.
+*
+* @package Clearbricks
+* @subpackage DBLayer
 */
 class staticRecord extends record
 {
-	public $__data = array();	///< <b>array</b>	Data array
+	/** @var array		Data array */
+	public $__data = array();
+	
 	private $__sortfield;
 	private $__sortsign;
 	
+	/** @ignore */
 	public function __construct($result,$info)
 	{
 		if (is_array($result))
@@ -912,10 +1016,12 @@ class staticRecord extends record
 	}
 	
 	/**
-	Returns a new instance of object from an associative array.
-	
-	@param	data		<b>array</b>		Data array
-	@return	<b>staticRecord</b>
+	* Static record from array
+	*
+	* Returns a new instance of object from an associative array.
+	*
+	* @param array		$data		Data array
+	* @return staticRecord
 	*/
 	public static function newFromArray($data)
 	{
@@ -941,11 +1047,13 @@ class staticRecord extends record
 		return new self($data,$info);
 	}
 	
+	/** @ignore */
 	public function field($n)
 	{
 		return $this->__data[$this->__index][$n];
 	}
 	
+	/** @ignore */
 	public function index($row=null)
 	{
 		if ($row === null) {
@@ -960,16 +1068,17 @@ class staticRecord extends record
 		return true;
 	}
 	
+	/** @ignore */
 	public function rows()
 	{
 		return $this->__data;
 	}
 	
 	/**
-	Changes value of a given field in the current row.
-	
-	@param	n	<b>string</b>		Field name
-	@param	v	<b>mixed</b>		Field value
+	* Changes value of a given field in the current row.
+	*
+	* @param string	$n			Field name
+	* @param string	$v			Field value
 	*/
 	public function set($n,$v)
 	{
@@ -981,10 +1090,10 @@ class staticRecord extends record
 	}
 	
 	/**
-	Sorts values by a field in a given order.
-	
-	@param	field	<b>string</b>		Field name
-	@param	order	<b>string</b>		Sort type (asc or desc)
+	* Sorts values by a field in a given order.
+	* 
+	* @param string	$field		Field name
+	* @param string	$order		Sort type (asc or desc)
 	*/
 	public function sort($field,$order='asc')
 	{
