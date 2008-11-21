@@ -1,27 +1,37 @@
 <?php
-# ***** BEGIN LICENSE BLOCK *****
+# -- BEGIN LICENSE BLOCK ----------------------------------
+#
 # This file is part of Clearbricks.
-# Copyright (c) 2006 Olivier Meunier and contributors. All rights
-# reserved.
 #
-# Clearbricks is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-# 
-# Clearbricks is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with Clearbricks; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# Copyright (c) 2003-2008 Olivier Meunier and contributors
+# Licensed under the GPL version 2.0 license.
+# See LICENSE file or
+# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 #
-# ***** END LICENSE BLOCK *****
+# -- END LICENSE BLOCK ------------------------------------
 
+/**
+* Email utilities
+*
+* @package Clearbricks
+* @subpackage Mail
+*/
 class mail
 {
+	/**
+	* Send email
+	*
+	* Sends email to destination. If a function called _mail() exists it will 
+	* be used instead of PHP mail() function. _mail() function should have the
+	* same signature. Headers could be provided as a string or an array.
+	*
+	* @param string		$to			Email destination
+	* @param string		$subject		Email subject
+	* @param string		$message		Email message
+	* @param string|array	$headers		Email headers
+	* @param string		$p			UNIX mail additionnal parameters
+	* @return boolean					true on success
+	*/
 	public static function sendMail($to,$subject,$message,$headers=null,$p=null)
 	{
 		$f = function_exists('_mail') ? '_mail' : null;
@@ -45,6 +55,14 @@ class mail
 		return true;
 	}
 	
+	/**
+	* Get Host MX
+	*
+	* Returns MX records sorted by weight for a given host.
+	*
+	* @param string	$host		Hostname
+	* @return array
+	*/
 	public static function getMX($host)
 	{
 		if (!getmxrr($host,$mx_h,$mx_w) || count($mx_h) == 0) {
@@ -63,12 +81,12 @@ class mail
 	}
 	
 	/**
-	@function QPHeader
-	
-	Encodes given string as a quoted printable mail header.
-	
-	@param str	string	String to encode
-	@return string
+	* Quoted printable header
+	*
+	* Encodes given string as a quoted printable mail header.
+	*
+	* @param string	$str			String to encode
+	* @return string
 	*/
 	public static function QPHeader($str,$charset='UTF-8')
 	{
@@ -80,12 +98,12 @@ class mail
 	}
 	
 	/**
-	@function B64Header
-	
-	Encodes given string as a base64 mail header.
-	
-	@param str	string	String to encode
-	@return string
+	* B64 header
+	*
+	* Encodes given string as a base64 mail header.
+	*
+	* @param string	$str			String to encode
+	* @return string
 	*/
 	public static function B64Header($str,$charset='UTF-8')
 	{
