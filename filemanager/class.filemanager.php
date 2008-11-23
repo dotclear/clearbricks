@@ -1,35 +1,53 @@
 <?php
-# ***** BEGIN LICENSE BLOCK *****
+# -- BEGIN LICENSE BLOCK ----------------------------------
+#
 # This file is part of Clearbricks.
-# Copyright (c) 2006 Olivier Meunier and contributors. All rights
-# reserved.
 #
-# Clearbricks is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-# 
-# Clearbricks is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with Clearbricks; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# Copyright (c) 2003-2008 Olivier Meunier and contributors
+# Licensed under the GPL version 2.0 license.
+# See LICENSE file or
+# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 #
-# ***** END LICENSE BLOCK *****
+# -- END LICENSE BLOCK ------------------------------------
 
+/**
+* Files manager
+*
+* Files management class
+*
+* @package Clearbricks
+* @subpackage Filemanager
+*/
 class filemanager
 {
+	/** @var string	Files manager root path */
 	public $root;
+	
+	/** @var string	Files manager root URL */
 	public $root_url;
+	
+	/** @var string	Working (current) directory */
 	protected $pwd;
+	
+	/** @var array		Array of regexps defining excluded items */
 	protected $exclude_list = array();
+	
+	/** @var string	Files exclusion regexp pattern */
 	protected $exclude_pattern = '';
 	
+	/** @var array		Current directory content array */
 	public $dir = array('dirs'=>array(),'files'=>array());
 	
+	/**
+	* Constructor
+	*
+	* New filemanage istance. Note that filemanage is a jail in given root
+	* path. You won't be able to access files outside {@link $root} path with
+	* the object's methods.
+	*
+	* @param string	$root		Root path
+	* @param string	$root_url		Root URL
+	*/
 	public function __construct($root,$root_url='')
 	{
 		$this->root = $this->pwd = path::real($root);
@@ -44,6 +62,14 @@ class filemanager
 		}
 	}
 	
+	/**
+	* Change directory
+	*
+	* Changes working directory. $dir is relative to instance {@link $root}
+	* directory.
+	*
+	* @param string	$dir			Directory
+	*/
 	public function chdir($dir)
 	{
 		$realdir = path::real($this->root.'/'.path::clean($dir));
@@ -58,11 +84,23 @@ class filemanager
 		$this->pwd = $realdir;
 	}
 	
+	/**
+	* Get working directory
+	*
+	* Returns working directory path.
+	*
+	* @return string
+	*/
 	public function getPwd()
 	{
 		return $this->pwd;
 	}
 	
+	/**
+	* Current directory is writable
+	*
+	* @return boolean	true if working directory is writable
+	*/
 	public function writable()
 	{
 		if (!$this->pwd) {
@@ -72,6 +110,14 @@ class filemanager
 		return is_writable($this->pwd);
 	}
 	
+	/**
+	* Add exclusion
+	*
+	* Appends an exclusion to exclusions list. $f should be a regexp.
+	*
+	* @see $exclude_list
+	* @param string	$f			Exclusion regexp
+	*/
 	public function addExclusion($f)
 	{
 		if (is_array($f))
@@ -88,6 +134,16 @@ class filemanager
 		}
 	}
 	
+	/**
+	* Path is excluded
+	*
+	* Returns true if path (file or directory) $f is excluded. $f path is
+	* relative to {@link $root} path.
+	*
+	* @see $exclude_list
+	* @param string	$f			Path to match
+	* @return boolean
+	*/
 	protected function isExclude($f)
 	{
 		foreach ($this->exclude_list as $v)
@@ -100,6 +156,16 @@ class filemanager
 		return false;
 	}
 	
+	/**
+	* File is excluded
+	*
+	* Returns true if file $f is excluded. $f path is relative to {@link $root}
+	* path.
+	*
+	* @see $exclude_pattern
+	* @param string	$f			File to match
+	* @return boolean
+	*/
 	protected function isFileExclude($f)
 	{
 		if (!$this->exclude_pattern) {
@@ -109,6 +175,15 @@ class filemanager
 		return preg_match($this->exclude_pattern,$f);
 	}
 	
+	/**
+	* Item in jail
+	*
+	* Returns true if file or directory $f is in jail (ie. not outside the
+	* {@link $root} directory).
+	*
+	* @param string	$f			Path to match
+	* @return boolean
+	*/
 	protected function inJail($f)
 	{
 		$f = path::real($f);
@@ -120,6 +195,14 @@ class filemanager
 		return false;
 	}
 	
+	/**
+	* File in files
+	*
+	* Returns true if file $f is in files array of {@link $dir}.
+	*
+	* @param string	$f			File to match
+	* @return boolean
+	*/
 	public function inFiles($f)
 	{
 		foreach ($this->dir['files'] as $v) {
@@ -130,6 +213,14 @@ class filemanager
 		return false;
 	}
 	
+	/**
+	* Directory list
+	*
+	* Creates list of items in working directory and append it to {@link $dir}
+	*
+	* @uses sortHandler()
+	* @uses fileItem
+	*/
 	public function getDir()
 	{
 		$dir = path::clean($this->pwd);
@@ -168,6 +259,14 @@ class filemanager
 		usort($this->dir['files'],array($this,'sortHandler'));
 	}
 	
+	/**
+	* Root directories
+	*
+	* Returns an array of directory under {@link $root} directory.
+	*
+	* @uses fileItem
+	* @return array
+	*/
 	public function getRootDirs()
 	{
 		$d = files::getDirList($this->root);
@@ -181,6 +280,22 @@ class filemanager
 		return $dir;
 	}
 	
+	/**
+	* Upload file
+	*
+	* Move <var>$tmp</var> file to its final destination <var>$dest</var> and
+	* returns the destination file path.
+	* <var>$dest</var> should be in jail. This method will throw exception
+	* if file cannot be written.
+	*
+	* You should first verify upload status, with {@link files::uploadStatus()}
+	* or PHP native functions.
+	*
+	* @see files::uploadStatus()
+	* @param string	$tmp			Temporary uploaded file path
+	* @param string	$dest		Destination file
+	* @return string				Destination real path
+	*/
 	public function uploadFile($tmp,$dest)
 	{
 		$dest = $this->pwd.'/'.path::clean($dest);
@@ -205,6 +320,18 @@ class filemanager
 		return path::real($dest);
 	}
 	
+	/**
+	* Upload file by bits
+	*
+	* Creates a new file <var>$dest</var> with contents of <var>$bits</var> and
+	* return the destination file path.
+	* <var>$dest</var> should be in jail. This method will throw exception
+	* if file cannot be written.
+	*
+	* @param string	$bits		Destination file content
+	* @param string	$dest		Destination file
+	* @return string				Destination real path
+	*/
 	public function uploadBits($name,$bits)
 	{
 		$dest = $this->pwd.'/'.path::clean($name);
@@ -233,11 +360,27 @@ class filemanager
 		return path::real($dest);
 	}
 	
+	/**
+	* New directory
+	*
+	* Creates a new directory <var>$d</var> relative to working directory.
+	*
+	* @param string	$d			Directory name
+	*/
 	public function makeDir($d)
 	{
 		files::makeDir($this->pwd.'/'.path::clean($d)); 
 	}
 	
+	/**
+	* Move file
+	*
+	* Moves a file <var>$s</var> to a new destination <var>$d</var>. Both
+	* <var>$s</var> and <var>$d</var> are relative to {@link $root}.
+	*
+	* @param string	$s			Source file
+	* @param string	$d			Destination file
+	*/
 	public function moveFile($s,$d)
 	{
 		$s = $this->root.'/'.path::clean($s);
@@ -265,6 +408,14 @@ class filemanager
 		}
 	}
 	
+	/**
+	* Remove item
+	*
+	* Removes a file or directory <var>$f</var> which is relative to working
+	* directory.
+	*
+	* @param string	$f			Path to remove
+	*/
 	public function removeItem($f)
 	{
 		$file = path::real($this->pwd.'/'.path::clean($f));
@@ -276,6 +427,13 @@ class filemanager
 		}
 	}
 	
+	/**
+	* Remove item
+	*
+	* Removes a file <var>$f</var> which is relative to working directory.
+	*
+	* @param string	$f			File to remove
+	*/
 	public function removeFile($f)
 	{
 		$f = path::real($this->pwd.'/'.path::clean($f));
@@ -293,6 +451,13 @@ class filemanager
 		}
 	}
 	
+	/**
+	* Remove item
+	*
+	* Removes a directory <var>$d</var> which is relative to working directory.
+	*
+	* @param string	$d			Directory to remove
+	*/
 	public function removeDir($d)
 	{
 		$d = path::real($this->pwd.'/'.path::clean($d));
@@ -310,6 +475,16 @@ class filemanager
 		}
 	}
 	
+	/**
+	* SortHandler
+	*
+	* This method is called by {@link getDir()} to sort files. Can be overrided
+	* in inherited classes.
+	*
+	* @param fileItem	$a			fileItem object
+	* @param fileItem	$b			fileItem object
+	* @return integer
+	*/
 	protected function sortHandler($a,$b)
 	{
 		if ($a->parent && !$b->parent || !$a->parent && $b->parent) {
@@ -319,29 +494,84 @@ class filemanager
 	}
 }
 
+/**
+* File item
+*
+* File item class used by {@link filemanager}. In this class {@link $file} could
+* be either a file or a directory.
+*
+* @package Clearbricks
+* @subpackage Filemanager
+*/
 class fileItem
 {
+	/** @var string Complete path to file */
 	public $file;
+	
+	/** @var string File basename */
 	public $basename;
+	
+	/** @var string File directory name */
 	public $dir;
+	
+	/** @var string File URL */
 	public $file_url;
+	
+	/** @var string File directory URL */
 	public $dir_url;
+	
+	/** @var string File extension */
 	public $extension;
+	
+	/** @var string File path relative to <var>$root</var> given in constructor */
 	public $relname;
+	
+	/** @var boolean Parent directory (ie. "..") */
 	public $parent = false;
 	
+	
+	/** @var string File MimeType. See {@link files::getMimeType()}.  */
 	public $type;
+	
+	/** @var integer File modification timestamp */
 	public $mtime;
+	
+	/** @var integer File size */
 	public $size;
+	
+	/** @var integer File permissions mode */
 	public $mode;
+	
+	/** @var integer File owner ID */
 	public $uid;
+	
+	/** @var integer File group ID */
 	public $gid;
+	
+	/** @var boolean True if file or directory is writable */
 	public $w;
+	
+	/** @var boolean True if file is a directory */
 	public $d;
+	
+	/** @var boolean True if file file is executable or directory is traversable */
 	public $x;
+	
+	/** @var boolean True if file is a file */
 	public $f;
+	
+	/** @var boolean True if file or directory is deletable */
 	public $del;
 	
+	/**
+	* Constructor
+	*
+	* Creates an instance of fileItem object.
+	*
+	* @param string	$file		Absolute file or directory path
+	* @param string	$root		File root path
+	* @param string	$root_url		File root URL
+	*/
 	public function __construct($file,$root,$root_url='')
 	{
 		$file = path::real($file);
