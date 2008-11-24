@@ -1,33 +1,35 @@
 <?php
-# ***** BEGIN LICENSE BLOCK *****
+# -- BEGIN LICENSE BLOCK ----------------------------------
+#
 # This file is part of Clearbricks.
-# Copyright (c) 2006 Olivier Meunier and contributors. All rights
-# reserved.
 #
-# Clearbricks is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-# 
-# Clearbricks is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with Clearbricks; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# Copyright (c) 2003-2008 Olivier Meunier and contributors
+# Licensed under the GPL version 2.0 license.
+# See LICENSE file or
+# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 #
-# ***** END LICENSE BLOCK *****
+# -- END LICENSE BLOCK ------------------------------------
 
-# Some functions taken from BIG
-# https://dev.media-box.net/big/
-
+/**
+* Image manipulations
+*
+* Class to manipulate images. Some methods are based on
+* {@link https://dev.media-box.net/big/}
+*
+* @package Clearbricks
+* @subpackage Images
+*/
 class imageTools
 {
+	/** @var resource	Image resource */
 	public $res;
+	
+	/** @ignore */
 	public $memory_limit = null;
 	
+	/**
+	* Constructor, no parameters.
+	*/
 	public function __construct()
 	{
 		if (!function_exists('imagegd2')) {
@@ -36,6 +38,11 @@ class imageTools
 		$this->res = null;
 	}
 	
+	/**
+	* Close
+	*
+	* Destroy image resource
+	*/
 	public function close()
 	{
 		if (is_resource($this->res)) {
@@ -47,6 +54,13 @@ class imageTools
 		}
 	}
 	
+	/**
+	* Load image
+	*
+	* Loads an image content in memory and set {@link $res} property.
+	*
+	* @param string	$f		Image file path
+	*/
 	public function loadImage($f)
 	{
 		if (!file_exists($f)) {
@@ -79,16 +93,27 @@ class imageTools
 		}
 	}
 	
+	/**
+	* Image width
+	*
+	* @return integer			Image width
+	*/
 	public function getW()
 	{
 		return imagesx($this->res);
 	}
 	
+	/**
+	* Image height
+	*
+	* @return integer			Image height
+	*/
 	public function getH()
 	{
 		return imagesy($this->res);
 	}
 	
+	/** @ignore */
 	public function memoryAllocate($w,$h)
 	{
 		$mem_used = function_exists('memory_get_usage') ? @memory_get_usage() : 4000000;
@@ -112,7 +137,16 @@ class imageTools
 		}
 	}
 	
-	function output($type='png',$file=null,$qual=90)
+	/**
+	* Image output
+	*
+	* Returns image content in a file or as HTML output (with headers)
+	*
+	* @param string		$type		Image type (png or jpg)
+	* @param string|null	$file		Output file. If null, output will be echoed in STDOUT
+	* @param integer		$qual		JPEG image quality
+	*/
+	public function output($type='png',$file=null,$qual=90)
 	{
 		if (!$file)
 		{
@@ -150,16 +184,14 @@ class imageTools
 	}
 	
 	/**
-	@function resize
-	
-	Resize image ressource
-	
-	@param mixed	WIDTH		Image width (px or percent)
-	@param mixed	HEIGHT		Image height (px or percent)
-	@param string	mode			Crop mode (force, crop, ratio)
-	@param boolean	EXPAND		Allow resize of image
+	* Resize image
+	* 
+	* @param mixed		$WIDTH		Image width (px or percent)
+	* @param mixed		$HEIGHT		Image height (px or percent)
+	* @param string	$mode		Crop mode (force, crop, ratio)
+	* @param boolean	$EXPAND		Allow resize of image
 	*/
-	function resize($WIDTH,$HEIGHT,$MODE='ratio',$EXPAND=false)
+	public function resize($WIDTH,$HEIGHT,$MODE='ratio',$EXPAND=false)
 	{
 		
 		$imgWidth=$this->getW();

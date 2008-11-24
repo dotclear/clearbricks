@@ -1,35 +1,44 @@
 <?php
-# ***** BEGIN LICENSE BLOCK *****
+# -- BEGIN LICENSE BLOCK ----------------------------------
+#
 # This file is part of Clearbricks.
-# Copyright (c) 2006 Olivier Meunier and contributors. All rights
-# reserved.
 #
-# Clearbricks is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-# 
-# Clearbricks is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with Clearbricks; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# Copyright (c) 2003-2008 Olivier Meunier and contributors
+# Licensed under the GPL version 2.0 license.
+# See LICENSE file or
+# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 #
-# ***** END LICENSE BLOCK *****
-#
-# Contributors:
-# - Mathieu Lecarme
+# -- END LICENSE BLOCK ------------------------------------
 
+/**
+* Image metadata
+*
+* This class reads EXIF, IPTC and XMP metadata from a JPEG file.
+* 
+* - Contributor: Mathieu Lecarme.
+*
+* @package Clearbricks
+* @subpackage Images
+*/
 class imageMeta
 {
-	protected $meta = array();
+	/** @var array		Internal XMP array */
 	protected $xmp = array();
+	
+	/** @var array		Internal IPTC array */
 	protected $iptc = array();
+	
+	/** @var array		Internal EXIF array */
 	protected $exif = array();
 	
+	/**
+	* Read metadata
+	*
+	* Returns all image metadata in an array as defined in {@link $properties}.
+	*
+	* @param string	$f		Image file path
+	* @return array
+	*/
 	public static function readMeta($f)
 	{
 		$o = new self;
@@ -37,6 +46,15 @@ class imageMeta
 		return $o->getMeta();
 	}
 	
+	/**
+	* Get metadata
+	*
+	* Returns all image metadata in an array as defined in {@link $properties}.
+	* Should call {@link loadFile()} before.
+	*
+	* @param string	$f		Image file path
+	* @return array
+	*/
 	public function getMeta()
 	{
 		foreach ($this->properties as $k => $v)
@@ -59,6 +77,13 @@ class imageMeta
 		return $this->properties;
 	}
 	
+	/**
+	* Load file
+	*
+	* Loads a file and read its metadata.
+	*
+	* @param string	$f		Image file path
+	*/
 	public function loadFile($f)
 	{
 		if (!is_file($f) || !is_readable($f)) {
@@ -70,6 +95,13 @@ class imageMeta
 		$this->readExif($f);
 	}
 	
+	/**
+	* Read XMP
+	*
+	* Reads XML metadata and assigns values to {@link $xmp}.
+	*
+	* @param string	$f		Image file path
+	*/
 	protected function readXMP($f)
 	{
 		if (($fp = @fopen($f,'rb')) === false) {
@@ -135,14 +167,21 @@ class imageMeta
 		}
 	}
 	
-	protected function readIPTC($file)
+	/**
+	* Read IPTC
+	*
+	* Reads IPTC metadata and assigns values to {@link $iptc}.
+	*
+	* @param string	$f		Image file path
+	*/
+	protected function readIPTC($f)
 	{
 		if (!function_exists('iptcparse')) {
 			return;
 		}
 		
 		$imageinfo = null;
-		@getimagesize($file,$imageinfo);
+		@getimagesize($f,$imageinfo);
 		
 		if (!is_array($imageinfo) || !isset($imageinfo['APP13'])) {
 			return;
@@ -162,6 +201,13 @@ class imageMeta
 		}
 	}
 	
+	/**
+	* Read EXIF
+	*
+	* Reads EXIF metadata and assigns values to {@link $exif}.
+	*
+	* @param string	$f		Image file path
+	*/
 	protected function readEXIF($f)
 	{
 		if (!function_exists('exif_read_data')) {
@@ -184,6 +230,7 @@ class imageMeta
 	
 	/* Properties
 	------------------------------------------------------- */
+	/** @var array		Final properties array */
 	protected $properties = array(
 		'Title' => null,
 		'Description' => null,
@@ -209,6 +256,7 @@ class imageMeta
 	);
 	
 	# XMP
+	/** @ignore */
 	protected $xmp_reg = array(
 		'Title' => array(
 			'%<dc:title>\s*<rdf:Alt>\s*<rdf:li.*?>(.+?)</rdf:li>%msu'
@@ -288,6 +336,7 @@ class imageMeta
 	);
 	
 	# IPTC
+	/** @ignore */
 	protected $iptc_ref = array(
 		'1#090' => 'Iptc.Envelope.CharacterSet',// Character Set used (32 chars max)
 		'2#005' => 'Iptc.ObjectName',           // Title (64 chars max)
@@ -315,6 +364,7 @@ class imageMeta
 		'2#122' => 'Iptc.CaptionWriter'         // Caption Writer/Editor (32 chars max)
 	);
 	
+	/** @ignore */
 	protected $iptc_to_property = array(
 		'Iptc.ObjectName' => 'Title',
 		'Iptc.Caption' => 'Description',
@@ -328,6 +378,7 @@ class imageMeta
 	);
 	
 	# EXIF
+	/** @ignore */
 	protected $exif_to_property = array(
 		//'' => 'Title',
 		'ImageDescription' => 'Description',
