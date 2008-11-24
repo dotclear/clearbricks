@@ -1,28 +1,26 @@
 <?php
-# ***** BEGIN LICENSE BLOCK *****
+# -- BEGIN LICENSE BLOCK ----------------------------------
+#
 # This file is part of Clearbricks.
-# Copyright (c) 2006 Olivier Meunier and contributors. All rights
-# reserved.
 #
-# Clearbricks is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-# 
-# Clearbricks is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with Clearbricks; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# Copyright (c) 2003-2008 Olivier Meunier and contributors
+# Licensed under the GPL version 2.0 license.
+# See LICENSE file or
+# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 #
-# ***** END LICENSE BLOCK *****
-#
-# Theses static functions are taken fomr Ulf Harnhammar's Kses 0.2.2
-# http://sourceforge.net/projects/kses
+# -- END LICENSE BLOCK ------------------------------------
 
+/**
+* HTML code filter
+*
+* This class removes all unwanted tags and attributes from an HTML string.
+*
+* This was inspired by Ulf Harnhammar's Kses:
+* {@link http://sourceforge.net/projects/kses}
+*
+* @package Clearbricks
+* @subpackage HTML
+*/
 class htmlFilter
 {
 	private $parser;
@@ -30,6 +28,11 @@ class htmlFilter
 	
 	private $tag;
 	
+	/**
+	* Constructor
+	*
+	* Creates a new instance of the class.
+	*/
 	public function __construct()
 	{
 		$this->parser = xml_parser_create('UTF-8');
@@ -52,6 +55,18 @@ class htmlFilter
 		);
 	}
 	
+	/**
+	* Append tags
+	*
+	* Appends tags to remove. Each method argument is a tag. Example:
+	*
+	* <code>
+	* <?php
+	* $filter = new htmlFilter();
+	* $filter->removeTags('frame','script');
+	* ?>
+	* </code>
+	*/
 	public function removeTags()
 	{
 		foreach ($this->argsArray(func_get_args()) as $tag) {
@@ -59,6 +74,18 @@ class htmlFilter
 		}
 	}
 	
+	/**
+	* Append attributes
+	*
+	* Appends attributes to remove. Each method argument is an attribute. Example:
+	*
+	* <code>
+	* <?php
+	* $filter = new htmlFilter();
+	* $filter->removeAttributes('onclick','onunload');
+	* ?>
+	* </code>
+	*/
 	public function removeAttributes()
 	{
 		foreach ($this->argsArray(func_get_args()) as $a) {
@@ -66,6 +93,19 @@ class htmlFilter
 		}
 	}
 	
+	/**
+	* Append attributes for tags
+	*
+	* Appends attributes to remove from specific tags. Each method argument is
+	* an array of tags with attributes. Example:
+	*
+	* <code>
+	* <?php
+	* $filter = new htmlFilter();
+	* $filter->removeTagAttributes(array('a' => array('src','title')));
+	* ?>
+	* </code>
+	*/
 	public function removeTagAttributes($tag)
 	{
 		$args = $this->argsArray(func_get_args());
@@ -76,6 +116,13 @@ class htmlFilter
 		}
 	}
 	
+	/**
+	* Known tags
+	*
+	* Creates a list of known tags.
+	*
+	* @param array		$t		Tags array
+	*/
 	public function setTags($t)
 	{
 		if (is_array($t)) {
@@ -83,6 +130,15 @@ class htmlFilter
 		}
 	}
 	
+	/**
+	* Apply filter
+	*
+	* This method applies filter on given <var>$str</var> string. It will first
+	* try to use tidy extension if exists and then apply the filter.
+	*
+	* @param string	$str		String to filter
+	* @return string			Filtered string
+	*/
 	public function apply($str)
 	{
 		if (extension_loaded('tidy') && class_exists('tidy'))
