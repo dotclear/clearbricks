@@ -1,41 +1,42 @@
 <?php
-# ***** BEGIN LICENSE BLOCK *****
+# -- BEGIN LICENSE BLOCK ----------------------------------
+#
 # This file is part of Clearbricks.
-# Copyright (c) 2007 Olivier Meunier and contributors.
-# All rights reserved.
 #
-# Clearbricks is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-# 
-# Clearbricks is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with Clearbricks; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# Copyright (c) 2003-2008 Olivier Meunier and contributors
+# Licensed under the GPL version 2.0 license.
+# See LICENSE file or
+# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 #
-# ***** END LICENSE BLOCK *****
+# -- END LICENSE BLOCK ------------------------------------
 
 /**
-@ingroup CLEARBRICKS
-@brief HTML markup validation class
+* HTML Validator
+*
+* This class will perform an HTML validation upon WDG validator.
+*
+* @package Clearbricks
+* @subpackage HTML
 */
-
 class htmlValidator extends netHttp
 {
+	/** @ignore */
 	protected $host = 'www.htmlhelp.com';
+	
+	/** @ignore */
 	protected $path = '/cgi-bin/validate.cgi';
+	
+	/** @ignore */
 	protected $user_agent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.3a) Gecko/20021207';
+	
+	/** @ignore */
 	protected $timeout = 2;
 	
+	/** @ignore */
 	protected $html_errors = array();		///<	<b>array</b>		Validation errors list
 	
 	/**
-	Constructor, no parameters.
+	* Constructor, no parameters.
 	*/
 	public function __construct()
 	{
@@ -43,10 +44,12 @@ class htmlValidator extends netHttp
 	}
 	
 	/**
-	Returns an HTML document from a <var>$fragment</var>.
-	
-	@param	fragment	<b>string</b>		HTML content
-	@return	<b>string</b>
+	* HTML Document
+	*
+	* Returns an HTML document from a <var>$fragment</var>.
+	*
+	* @param string	$fragment			HTML content
+	* @return string
 	*/
 	public function getDocument($fragment)
 	{
@@ -64,11 +67,13 @@ class htmlValidator extends netHttp
 	}
 	
 	/**
-	Performs HTML validation of <var>$html</var>.
-	
-	@param	html		<b>string</b>		HTML document
-	@param	charset	<b>string</b>		Document charset
-	@return	<b>boolean</b>
+	* HTML validation
+	*
+	* Performs HTML validation of <var>$html</var>.
+	*
+	* @param string	$html			HTML document
+	* @param string	$charset			Document charset
+	* @return boolean
 	*/
 	public function perform($html,$charset='UTF-8')
 	{
@@ -95,9 +100,9 @@ class htmlValidator extends netHttp
 	}
 	
 	/**
-	Returns HTML validation errors list.
-	
-	@return	<b>string</b>
+	* Validation Errors
+	*
+	* @return array	HTML validation errors list
 	*/
 	public function getErrors()
 	{
@@ -105,15 +110,17 @@ class htmlValidator extends netHttp
 	}
 	
 	/**
-	Static validation method of an HTML fragment. Returns an array with the
-	following parameters:
-	
-	- valid (boolean)
-	_ errors (string)
-	
-	@param	fragment	<b>string</b>		HTML content
-	@param	charset	<b>string</b>			Document charset
-	@return	<b>array</b>
+	* Static HTML validation
+	*
+	* Static validation method of an HTML fragment. Returns an array with the
+	* following parameters:
+	*
+	* - valid (boolean)
+	* - errors (string)
+	*
+	* @param string	$fragment			HTML content
+	* @param string	$charset			Document charset
+	* @return array
 	*/
 	public static function validate($fragment,$charset='UTF-8')
 	{
