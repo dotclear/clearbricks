@@ -1,61 +1,61 @@
 <?php
-# ***** BEGIN LICENSE BLOCK *****
+# -- BEGIN LICENSE BLOCK ----------------------------------
+#
 # This file is part of Clearbricks.
-# Copyright (c) 2006 Florent Cotton, Olivier Meunier and contributors.
-# All rights reserved.
 #
-# Clearbricks is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-# 
-# Clearbricks is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with Clearbricks; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# Copyright (c) 2003-2008 Olivier Meunier and contributors
+# Licensed under the GPL version 2.0 license.
+# See LICENSE file or
+# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 #
-# ***** END LICENSE BLOCK *****
+# -- END LICENSE BLOCK ------------------------------------
 
 /**
-@defgroup CB_NET_FEED Clearbricks Feeds Reader
-@ingroup CB_NET
-*/
-
-/**
-@ingroup CB_NET_FEED
-@brief netHttp based feed reader.
-
-Features:
-
-- Reads RSS 1.0 (rdf), RSS 2.0 and Atom feeds.
-- HTTP cache negociation support
-- Cache TTL.
+* Feed Reader
+*
+* Features:
+*
+* - Reads RSS 1.0 (rdf), RSS 2.0 and Atom feeds.
+* - HTTP cache negociation support
+* - Cache TTL.
+*
+* @package Clearbricks
+* @subpackage Feeds
+*
+* @author Florent Cotton
+* @author Olivier Meunier
+*
+* @uses feedParser
 */
 class feedReader extends netHttp
 {
-	protected $user_agent = 'Clearbricks Feed Reader/0.2';
-	protected $timeout = 5;
-	protected $validators = null;				///< <b>array</b>	HTTP Cache validators
+	/** @ignore */							protected $user_agent = 'Clearbricks Feed Reader/0.2';
+	/** @ignore */							protected $timeout = 5;
+	/** @var array HTTP Cache validators */		protected $validators = null;
 	
-	protected $cache_dir = null;				///< <b>string</b>	Cache temporary directory
-	protected $cache_file_prefix = 'cbfeed';	///< <b>string</b>	Cache file prefix
-	protected $cache_ttl = '-30 minutes';		///< <b>string</b>	Cache TTL
+	/** @var string Cache directory path */		protected $cache_dir = null;
+	/** @var string Cache file prefix */		protected $cache_file_prefix = 'cbfeed';
+	/** @var string Cache TTL */				protected $cache_ttl = '-30 minutes';
 	
+	
+	/**
+	* Constructor.
+	*
+	* Does nothing. See {@link parse()} method for URL handling.
+	*/
 	public function __construct()
 	{
 		parent::__construct('');
 	}
 	
 	/**
-	Returns a new feedParser instance for given URL or false if source URL is
-	not a valid feed.
-	
-	@param	url		<b>string</b>		Feed URL
-	@return	<b>feedParser</b>
+	* Parse Feed
+	*
+	* Returns a new feedParser instance for given URL or false if source URL is
+	* not a valid feed.
+	*
+	* @param string	$url			Feed URL
+	* @return feedParser|false
 	*/
 	public function parse($url)
 	{
@@ -79,12 +79,14 @@ class feedReader extends netHttp
 	}
 	
 	/**
-	This static method returns a new feedParser instance for given URL. If a
-	<var>$cache_dir</var> is specified, cache will be activated.
-	
-	@param	url		<b>string</b>		Feed URL
-	@param	cache_dir	<b>string</b>		Cache directory
-	@return	<b>feedParser</b>
+	* Quick Parse
+	*
+	* This static method returns a new {@link feedParser} instance for given URL. If a
+	* <var>$cache_dir</var> is specified, cache will be activated.
+	*
+	* @param string	$url			Feed URL
+	* @param string	$cache_dir	Cache directory
+	* @return feedParser|false
 	*/
 	public static function quickParse($url,$cache_dir=null)
 	{
@@ -97,11 +99,13 @@ class feedReader extends netHttp
 	}
 	
 	/**
-	Returns true and sets <var>cache_dir</var> property if <var>$dir</var> is
-	a writable directory. Otherwise, returns false.
-	
-	@param	dir		<b>string</b>		Cache directory
-	@return	<b>boolean</b>
+	* Set Cache Directory
+	*
+	* Returns true and sets {@link $cache_dir} property if <var>$dir</var> is
+	* a writable directory. Otherwise, returns false.
+	*
+	* @param string	$dir			Cache directory
+	* @return boolean
 	*/
 	public function setCacheDir($dir)
 	{
@@ -117,10 +121,12 @@ class feedReader extends netHttp
 	}
 	
 	/**
-	Sets cache TTL. <var>$str</var> is a interval readable by strtotime
-	(-3 minutes, -2 hours, etc.)
-	
-	@param	str		<b>string</b>		TTL
+	* Set Cache TTL
+	*
+	* Sets cache TTL. <var>$str</var> is a interval readable by strtotime
+	* (-3 minutes, -2 hours, etc.)
+	*
+	* @param string	$str			TTL
 	*/
 	public function setCacheTTL($str)
 	{
@@ -135,10 +141,12 @@ class feedReader extends netHttp
 	}
 	
 	/**
-	Returns feed content for given URL.
-	
-	@param	url		<b>string</b>		Feed URL
-	@return	<b>string</b>
+	* Feed Content
+	*
+	* Returns feed content for given URL.
+	*
+	* @param string	$url			Feed URL
+	* @return string
 	*/
 	protected function getFeed($url)
 	{
@@ -153,11 +161,13 @@ class feedReader extends netHttp
 	}
 	
 	/**
-	Returns feedParser object from cache if present or write it to cache and
-	returns result.
-	
-	@param	url		<b>string</b>		Feed URL
-	@return	<b>feedParser</b>
+	* Cache content
+	*
+	* Returns feedParser object from cache if present or write it to cache and
+	* returns result.
+	*
+	* @param string	$url			Feed URL
+	* @return feedParser
 	*/
 	protected function withCache($url)
 	{
@@ -222,9 +232,11 @@ class feedReader extends netHttp
 	}
 	
 	/**
-	Adds HTTP cache headers to common headers.
-	
-	@copydoc netHttp::buildRequest
+	* Build request
+	*
+	* Adds HTTP cache headers to common headers.
+	* 
+	* {@inheritdoc}
 	*/
 	protected function buildRequest()
 	{

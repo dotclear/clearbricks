@@ -1,51 +1,50 @@
 <?php
-# ***** BEGIN LICENSE BLOCK *****
+# -- BEGIN LICENSE BLOCK ----------------------------------
+#
 # This file is part of Clearbricks.
-# Copyright (c) 2006 Florent Cotton, Olivier Meunier and contributors.
-# All rights reserved.
 #
-# Clearbricks is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-# 
-# Clearbricks is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with Clearbricks; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# Copyright (c) 2003-2008 Olivier Meunier and contributors
+# Licensed under the GPL version 2.0 license.
+# See LICENSE file or
+# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 #
-# ***** END LICENSE BLOCK *****
+# -- END LICENSE BLOCK ------------------------------------
 
 /**
-@ingroup CB_NET_FEED
-@brief Base feed reader class
-
-Base feed reader, works with feedReader
+* Feed parser
+*
+* This class can read RSS 1.0, RSS 2.0, Atom 0.3 and Atom 1.0 feeds. Works with
+* {@link feedReader}
+*
+* @package Clearbricks
+* @subpackage Feeds
+*
+* @author Florent Cotton
+* @author Olivier Meunier
 */
 class feedParser
 {
-	public $feed_type;			///< <b>string</b>	Feed type
+	/** @var string Feed type */					public $feed_type;
 	
-	public $title;				///< <b>string</b>	Feed title
-	public $link;				///< <b>string</b>	Feed link
-	public $description;		///< <b>string</b>	Feed description
-	public $pubdate;			///< <b>string</b>	Feed publication date
-	public $generator;			///< <b>string</b>	Feed generator
+	/** @var string Feed title */					public $title;
+	/** @var string Feed link */					public $link;
+	/** @var string Feed description */			public $description;
+	/** @var string Feed publication date */		public $pubdate;
+	/** @var string Feed generator */				public $generator;
 	
-	public $items = array();		///< <b>array</b>	Feed items
+	/** @var array Feed items */					public $items = array();
 	
-	protected $xml;			///< <b>SimpleXMLElement</b>	Feed XML content
+	/** @var SimpleXMLElement Feed XML content */	protected $xml;
+	
 	
 	/**
-	Constructor. Takes some <var>$data</var> as input. Returns false if data is
-	not a valid XML stream. If everything's fine, feed is parsed and items are
-	in <var>items</var> property.
-	
-	@param	data		<b>string</b>		XML stream
+	* Constructor.
+	*
+	* Takes some <var>$data</var> as input. Returns false if data is
+	* not a valid XML stream. If everything's fine, feed is parsed and items
+	* are in {@link $items} property.
+	*
+	* @param string	$data			XML stream
 	*/
 	public function __construct($data)
 	{
@@ -70,7 +69,7 @@ class feedParser
 	}
 	
 	/**
-	RSS 1.0 parser.
+	* RSS 1.0 parser.
 	*/
 	protected function parseRSSRDF()
 	{
@@ -114,7 +113,7 @@ class feedParser
 	}
 	
 	/**
-	RSS 2.0 parser
+	* RSS 2.0 parser
 	*/
 	protected function parseRSS()
 	{
@@ -162,7 +161,7 @@ class feedParser
 	}
 	
 	/**
-	Atom 0.3 parser
+	* Atom 0.3 parser
 	*/
 	protected function parseAtom03()
 	{
@@ -213,7 +212,7 @@ class feedParser
 	}
 	
 	/**
-	Atom 1.0 parser
+	* Atom 1.0 parser
 	*/
 	protected function parseAtom10()
 	{
@@ -264,7 +263,12 @@ class feedParser
 	}
 	
 	/**
-	Converts a SimpleXMLElement to an array.
+	* SimpleXML to array
+	*
+	* Converts a SimpleXMLElement to an array.
+	*
+	* @param SimpleXMLElement	$node	SimpleXML Node
+	* @return array
 	*/
 	protected function nodes2array(&$nodes)
 	{
@@ -280,9 +284,5 @@ class feedParser
 		
 		return $res;
 	}
-	
-	/**
-	@if 
-	*/
 }
 ?>
