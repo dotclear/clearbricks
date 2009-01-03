@@ -1054,6 +1054,12 @@ class staticRecord extends record
 	}
 	
 	/** @ignore */
+	public function exists($n)
+	{
+		return isset($this->__data[$this->__index][$n]);
+	}
+	
+	/** @ignore */
 	public function index($row=null)
 	{
 		if ($row === null) {
