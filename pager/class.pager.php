@@ -1,25 +1,23 @@
 <?php
-# ***** BEGIN LICENSE BLOCK *****
+# -- BEGIN LICENSE BLOCK ----------------------------------
+#
 # This file is part of Clearbricks.
-# Copyright (c) 2006 Olivier Meunier and contributors. All rights
-# reserved.
 #
-# Clearbricks is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-# 
-# Clearbricks is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with Clearbricks; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# Copyright (c) 2003-2009 Olivier Meunier and contributors
+# Licensed under the GPL version 2.0 license.
+# See LICENSE file or
+# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 #
-# ***** END LICENSE BLOCK *****
+# -- END LICENSE BLOCK ------------------------------------
 
+/**
+* (x)HTML Pager
+*
+* This class implements a pager helper to browse any type of results.
+*
+* @package Clearbricks
+* @subpackage Pager
+*/
 class pager
 {
 	private $env;
@@ -29,24 +27,34 @@ class pager
 	
 	private $nb_pages;
 	private $nb_groups;
-	public $index_start;
-	public $index_end;
 	private $env_group;
 	private $index_group_start;
 	private $index_group_end;
 	
 	private $page_url = null;
-	public $base_url = null;
 	
-	public $var_page = 'page';
+	/** @var integer Start index */	public $index_start;
+	/** @var integer End index */		public $index_end;
 	
-	public $html_cur_page	= '<strong>%s</strong>';
-	public $html_link_sep	= '-';
-	public $html_prev		= '&#171;prev.';
-	public $html_next		= 'next&#187;';
-	public $html_prev_grp	= '...';
-	public $html_next_grp	= '...';
+	/** @var string Base URL */		public $base_url = null;
 	
+	/** @var string GET param name for current page */	public $var_page = 'page';
+	
+	/** @var string Current page HTML */		public $html_cur_page	= '<strong>%s</strong>';
+	/** @var string Link separator */			public $html_link_sep	= '-';
+	/** @var string Previous HTML code */		public $html_prev		= '&#171;prev.';
+	/** @var string Next HTML code */			public $html_next		= 'next&#187;';
+	/** @var string Next group HTML code */		public $html_prev_grp	= '...';
+	/** @var string Previous group HTML code */	public $html_next_grp	= '...';
+	
+	/**
+	* Constructor
+	*
+	* @param integer	$env				Current page index
+	* @param integer	$nb_elements		Total number of elements
+	* @param integer	$nb_per_page		Number of items per page
+	* @param integer	$nb_pages_per_group	Number of pages per group
+	*/
 	public function __construct($env,$nb_elements,$nb_per_page=10,$nb_pages_per_group=10)
 	{
 		$this->env = abs((integer) $env);
@@ -88,6 +96,13 @@ class pager
 		}
 	}
 	
+	/**
+	* Pager Links
+	*
+	* Returns pager links
+	*
+	* @return string
+	*/
 	public function getLinks()
 	{
 		$htmlLinks = '';
@@ -180,6 +195,7 @@ class pager
 		$this->page_url = html::escapeHTML($url);
 	}
 	
+	/** @ignore */
 	public function debug()
 	{
 		return
