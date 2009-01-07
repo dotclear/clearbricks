@@ -1,35 +1,46 @@
 <?php
-# ***** BEGIN LICENSE BLOCK *****
+# -- BEGIN LICENSE BLOCK ----------------------------------
+#
 # This file is part of Clearbricks.
-# Copyright (c) 2006 Olivier Meunier and contributors. All rights
-# reserved.
 #
-# Clearbricks is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-# 
-# Clearbricks is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with Clearbricks; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# Copyright (c) 2003-2009 Olivier Meunier and contributors
+# Licensed under the GPL version 2.0 license.
+# See LICENSE file or
+# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 #
-# ***** END LICENSE BLOCK *****
+# -- END LICENSE BLOCK ------------------------------------
 
+/**
+* REST Server
+*
+* A very simple REST server implementation
+*
+* @package Clearbricks
+* @subpackage Rest
+*/
 class restServer
 {
-	public $rsp;
-	public $functions = array();
+	/** @var xmlTag Server response */		public $rsp;
+	/** @var array Server's functions */	public $functions = array();
 	
+	/**
+	* Constructor
+	*/
 	public function __construct()
 	{
 		$this->rsp = new xmlTag('rsp');
 	}
 	
+	/**
+	* Add Function
+	*
+	* This adds a new function to the server. <var>$callback</var> should be
+	* a valid PHP callback. Callback function takes two arguments: GET and
+	* POST values.
+	*
+	* @param string	$name		Function name
+	* @param callback	$callback		Callback function
+	*/
 	public function addFunction($name, $callback)
 	{
 		if (is_callable($callback)) {
@@ -37,6 +48,16 @@ class restServer
 		}
 	}
 	
+	/**
+	* Call Function
+	*
+	* This method calls callback named <var>$name</var>.
+	*
+	* @param string	$name		Function name
+	* @param array		$get			GET values
+	* @param array		$post		POST values
+	* @return mixed
+	*/
 	protected function callFunction($name,$get,$post)
 	{
 		if (isset($this->functions[$name])) {
@@ -44,6 +65,13 @@ class restServer
 		}
 	}
 	
+	/**
+	* Main server
+	*
+	* This method creates the main server.
+	*
+	* @param string	$encoding		Server charset
+	*/
 	public function serve($encoding='UTF-8')
 	{
 		$get = array();
@@ -94,12 +122,27 @@ class restServer
 	}
 }
 
+/**
+* XML Tree
+*
+* @package Clearbricks
+* @subpackage XML
+*/
 class xmlTag
 {
 	private $_name;
 	private $_attr = array();
 	private $_nodes = array();
 	
+	/**
+	* Constructor
+	*
+	* Creates the root XML tag named <var>$name</var>. If content is given,
+	* it will be appended to root tag with {@link insertNode()}
+	*
+	* @param string	$name		Tag name
+	* @param mixed		$content		Tag content
+	*/
 	public function __construct($name=null, $content=null)
 	{
 		$this->_name = $name;
@@ -109,11 +152,28 @@ class xmlTag
 		}
 	}
 	
+	/**
+	* Add Attribute
+	*
+	* Magic __set method to add an attribute.
+	*
+	* @param string	$name		Attribute name
+	* @param string	$value		Attribute value
+	* @see insertAttr()
+	*/
 	public function __set($name, $value)
 	{
 		$this->insertAttr($name, $value);
 	}
 	
+	/**
+	* Add a tag
+	*
+	* This magic __call method appends a tag to XML tree.
+	*
+	* @param string	$name		Tag name
+	* @param array		$args		Function arguments, the first one would be tag content
+	*/
 	public function __call($name, $args)
 	{
 		if (!preg_match('#^[a-z_]#',$name)) {
@@ -127,16 +187,40 @@ class xmlTag
 		$this->insertNode(new self($name,$args[0]));
 	}
 	
+	/**
+	* Add CDTA
+	*
+	* Appends CDATA to current tag.
+	*
+	* @param string	$value		Tag CDATA content
+	*/
 	public function CDATA($value)
 	{
 		$this->insertNode($value);
 	}
 	
+	/**
+	* Add Attribute
+	*
+	* This method adds an attribute to current tag.
+	*
+	* @param string	$name		Attribute name
+	* @param string	$value		Attribute value
+	* @see insertAttr()
+	*/
 	public function insertAttr($name, $value)
 	{
 		$this->_attr[$name] = $value;
 	}
 	
+	/**
+	* Insert Node
+	*
+	* This method adds a new XML node. Node could be a instance of xmlTag, an
+	* array of valid values, a boolean or a string.
+	*
+	* @param xmlTag|array|boolean|string	$node	Node value
+	*/
 	public function insertNode($node=null)
 	{
 		if ($node instanceof self)
@@ -161,6 +245,15 @@ class xmlTag
 		}
 	}
 	
+	/**
+	* XML Result
+	*
+	* Returns a string with XML content.
+	*
+	* @param boolean	$prolog		Append prolog to result
+	* @param string	$encoding		Result charset
+	* @return string
+	*/
 	public function toXML($prolog=false,$encoding='UTF-8')
 	{
 		if ($this->_name && count($this->_nodes) > 0) {
