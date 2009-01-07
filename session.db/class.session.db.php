@@ -1,25 +1,23 @@
 <?php
-# ***** BEGIN LICENSE BLOCK *****
+## -- BEGIN LICENSE BLOCK ----------------------------------
+#
 # This file is part of Clearbricks.
-# Copyright (c) 2006 Olivier Meunier and contributors. All rights
-# reserved.
 #
-# Clearbricks is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-# 
-# Clearbricks is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with Clearbricks; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# Copyright (c) 2003-2009 Olivier Meunier and contributors
+# Licensed under the GPL version 2.0 license.
+# See LICENSE file or
+# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 #
-# ***** END LICENSE BLOCK *****
+# -- END LICENSE BLOCK ------------------------------------
 
+/**
+* Database Session Handler
+*
+* This class allows you to handle session data in database.
+*
+* @package Clearbricks
+* @subpackage Session
+*/
 class sessionDB
 {
 	private $con;
@@ -28,6 +26,18 @@ class sessionDB
 	private $cookie_path;
 	private $ttl = '-120 minutes';
 	
+	/**
+	* Constructor
+	*
+	* This method creates an instance of sessionDB class.
+	*
+	* @param dbLayer	&$con		dbLayer inherited database instance
+	* @param string	$table		Table name
+	* @param string	$cookie_name	Session cookie name
+	* @param string	$cookie_path	Session cookie path
+	* @param string	$cookie_domain	Session cookie domaine
+	* @param boolean	$cookie_secure	Session cookie is available only through SSL if true
+	*/
 	public function __construct(&$con,$table,$cookie_name,$cookie_path=null,$cookie_domain=null,$cookie_secure=false)
 	{
 		$this->con =& $con;
@@ -49,6 +59,11 @@ class sessionDB
 		}
 	}
 	
+	/**
+	* Destructor
+	*
+	* This method calls session_write_close PHP function.
+	*/
 	public function __destruct()
 	{
 		if (isset($_SESSION)) {
@@ -56,6 +71,9 @@ class sessionDB
 		}
 	}
 	
+	/**
+	* Session Start
+	*/
 	public function start()
 	{
 		session_set_save_handler(
@@ -75,6 +93,11 @@ class sessionDB
 		session_start();
 	}
 	
+	/**
+	* Session Destroy
+	*
+	* This method destroies all session data and removes cookie.
+	*/
 	public function destroy()
 	{
 		$_SESSION = array();
@@ -83,6 +106,14 @@ class sessionDB
 		call_user_func_array('setcookie',$this->getCookieParameters(false,-600));
 	}
 	
+	/**
+	* Session Cookie
+	*
+	* This method returns an array of all session cookie parameters.
+	*
+	* @param mixed		$value		Cookie value
+	* @param integer	$expire		Cookie expiration timestamp
+	*/
 	public function getCookieParameters($value=null,$expire=0)
 	{
 		return array(
@@ -95,17 +126,20 @@ class sessionDB
 		);
 	}
 	
+	/** @ignore */
 	public function _open($path,$name)
 	{
 		return true;
 	}
 	
+	/** @ignore */
 	public function _close()
 	{
 		$this->_gc();
 		return true;
 	}
 	
+	/** @ignore */
 	public function _read($ses_id)
 	{
 		$strReq = 'SELECT ses_value FROM '.$this->table.' '.
@@ -120,6 +154,7 @@ class sessionDB
 		}
 	}
 	
+	/** @ignore */
 	public function _write($ses_id, $data)
 	{
 		$strReq = 'SELECT ses_id '.
@@ -147,6 +182,7 @@ class sessionDB
 		return true;
 	}
 	
+	/** @ignore */
 	public function _destroy($ses_id)
 	{
 		$strReq = 'DELETE FROM '.$this->table.' '.
@@ -158,6 +194,7 @@ class sessionDB
 		return true;
 	}
 	
+	/** @ignore */
 	public function _gc()
 	{
 		$ses_life = strtotime($this->ttl);
