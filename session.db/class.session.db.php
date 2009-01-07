@@ -1,5 +1,5 @@
 <?php
-## -- BEGIN LICENSE BLOCK ----------------------------------
+# -- BEGIN LICENSE BLOCK ----------------------------------
 #
 # This file is part of Clearbricks.
 #
