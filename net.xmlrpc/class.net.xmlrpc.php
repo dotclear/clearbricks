@@ -1,38 +1,54 @@
 <?php
-# ***** BEGIN LICENSE BLOCK *****
+# -- BEGIN LICENSE BLOCK ----------------------------------
+#
 # This file is part of Clearbricks.
-# Copyright (c) 2007 Olivier Meunier and contributors.
-# All rights reserved.
 #
-# Clearbricks is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-# 
-# Clearbricks is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with Clearbricks; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# Copyright (c) 2003-2009 Olivier Meunier and contributors
+# Licensed under the GPL version 2.0 license.
+# See LICENSE file or
+# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 #
-# ***** END LICENSE BLOCK *****
+# -- END LICENSE BLOCK ------------------------------------
 
+/**
+* XML-RPC Client and Server
+*
+* This class library is fully based on Simon Willison's IXR library.
+* {@link http://scripts.incutio.com/xmlrpc/}
+*
+* @package Clearbricks
+* @subpackage XML-RPC
+*/
+
+/**
+* XML-RPC Exception
+*/
 class xmlrpcException extends Exception
 {
+	/**
+	* @param string	$message		Exception message
+	* @param integer	$code		Exception code
+	*/
 	public function __construct($message,$code=0)
 	{
 		parent::__construct($message,$code);
 	}
 }
 
+/**
+* XML-RPC Value
+*/
 class xmlrpcValue
 {
-	protected  $data;
-	protected  $type;
+	/** @var mixed Data value */	protected  $data;
+	/** @var string Data type */	protected  $type;
 	
+	/**
+	* Constructor
+	*
+	* @param mixed		$data		Data value
+	* @param string	$type		Data type
+	*/
 	public function __construct($data, $type = false)
 	{
 		$this->data = $data;
@@ -53,6 +69,13 @@ class xmlrpcValue
 		}
 	}
 	
+	/**
+	* XML Data
+	*
+	* Returns an XML subset of the Value.
+	*
+	* @return string
+	*/
 	public function getXml()
 	{
 		# Return XML for this value
@@ -95,6 +118,13 @@ class xmlrpcValue
 		return false;
 	}
 	
+	/**
+	* Calculate Type
+	*
+	* Returns the type of the value if it was not given in constructor.
+	*
+	* @return string
+	*/
 	protected function calculateType()
 	{
 		if ($this->data === true || $this->data === false) {
@@ -129,6 +159,14 @@ class xmlrpcValue
 		}
 	}
 	
+	/**
+	* Data is struct
+	*
+	* Returns true if <var>$array</var> is a Struct and not only an Array.
+	*
+	* @param array		$array		Array
+	* @return boolean
+	*/
 	protected function isStruct($array)
 	{
 		# Nasty function to check if an array is a struct or not
@@ -143,34 +181,45 @@ class xmlrpcValue
 	}
 }
 
+/**
+* XML-RPC Message
+*/
 class xmlrpcMessage
 {
-	protected $brutxml;
-	protected $message;
-	
-	public $messageType;  # methodCall / methodResponse / fault
-	public $faultCode;
-	public $faultString;
-	public $methodName;
-	public $params;
-	
-	# Current variable stacks
-	protected $_arraystructs = array();   # The stack used to keep track of the current array/struct
-	protected $_arraystructstypes = array(); # Stack keeping track of if things are structs or array
-	protected $_currentStructName = array();  # A stack as well
-	protected $_param;
-	protected $_value;
-	protected $_currentTag;
-	protected $_currentTagContents;
+	/** @var string Brut XML message*/		protected $brutxml;
+	/** @var string XML message */		protected $message;
+		    
+	/** @var string Type of message */		public $messageType;  # methodCall / methodResponse / fault
+	/** @var string Fault code */			public $faultCode;
+	/** @var string Fault string */		public $faultString;
+	/** @var string Method name */		public $methodName;
+	/** @var string Method parameters */	public $params;
+		    
+	# Currentstring variable stacks
+	/** @@ignore */	protected $_arraystructs = array();   # The stack used to keep track of the current array/struct
+	/** @@ignore */	protected $_arraystructstypes = array(); # Stack keeping track of if things are structs or array
+	/** @@ignore */	protected $_currentStructName = array();  # A stack as well
+	/** @@ignore */	protected $_param;
+	/** @@ignore */	protected $_value;
+	/** @@ignore */	protected $_currentTag;
+	/** @@ignore */	protected $_currentTagContents;
 	
 	# The XML parser
-	protected $_parser;
+	/** @ignore */		protected $_parser;
 	
+	/**
+	* Constructor
+	*
+	* @param string		$message		XML Message
+	*/
 	public function __construct($message)
 	{
 		$this->brutxml = $this->message = $message;
 	}
 	
+	/**
+	* Message parser
+	*/
 	public function parse()
 	{
 		// first remove the XML declaration
@@ -209,6 +258,7 @@ class xmlrpcMessage
 		return true;
 	}
 	
+	/** @ignore */
 	protected function tag_open($parser,$tag,$attr)
 	{
 		$this->currentTag = $tag;
@@ -232,11 +282,13 @@ class xmlrpcMessage
 		}
 	}
 	
+	/** @ignore */
 	protected function cdata($parser,$cdata)
 	{
 		$this->_currentTagContents .= $cdata;
 	}
 	
+	/** @ignore */
 	protected function tag_close($parser,$tag)
 	{
 		$valueFlag = false;
@@ -326,12 +378,21 @@ class xmlrpcMessage
 	}       
 }
 
+/**
+* XML-RPC Request
+*/
 class xmlrpcRequest
 {
-	public $method;
-	public $args;
-	public $xml;
+	/** @var string Request method name */		public $method;
+	/** @var array Request method arguments */	public $args;
+	/** @var string Request XML string */		public $xml;
 	
+	/**
+	* Constructor
+	*
+	* @param string	$method		Method name
+	* @param array		$args		Method arguments
+	*/
 	function __construct($method, $args)
 	{
 		$this->method = $method;
@@ -354,26 +415,51 @@ class xmlrpcRequest
 		$this->xml .= '  </params></methodCall>';
 	}
 	
+	/**
+	* Request length
+	*
+	* Returns {@link $xml} content length.
+	*
+	* @return integer
+	*/
 	public function getLength()
 	{
 		return strlen($this->xml);
 	}
 	
+	/**
+	* Request XML
+	*
+	* Returns request XML version.
+	*
+	* @return string
+	*/
 	public function getXml()
 	{
 		return $this->xml;
 	}
 }
 
+/**
+* XML-RPC Date object
+*/
 class xmlrpcDate
 {
-	protected $year;
-	protected $month;
-	protected $day;
-	protected $hour;
-	protected $minute;
-	protected $second;
+	/** @var string */ protected $year;
+	/** @var string */ protected $month;
+	/** @var string */ protected $day;
+	/** @var string */ protected $hour;
+	/** @var string */ protected $minute;
+	/** @var string */ protected $second;
 	
+	/**
+	* Constructor
+	*
+	* Creates a new instance of xmlrpcDate. <var>$time</var> could be a
+	* timestamp or a litteral date.
+	*
+	* @param integer|string	$time		Timestamp or litteral date.
+	*/
 	public function __construct($time)
 	{
 		# $time can be a PHP timestamp or an ISO one
@@ -384,6 +470,11 @@ class xmlrpcDate
 		}
 	}
 	
+	/**
+	* Timestamp parser
+	*
+	* @param integer		$timestamp	Timestamp
+	*/
 	protected function parseTimestamp($timestamp)
 	{
 		$this->year = date('Y', $timestamp);
@@ -395,42 +486,92 @@ class xmlrpcDate
 		$this->ts = $timestamp;
 	}
 	
+	/**
+	* ISO Date
+	*
+	* Returns the date in ISO-8601 format.
+	*
+	* @return string
+	*/
 	public function getIso()
 	{
 		return $this->year.$this->month.$this->day.'T'.$this->hour.':'.$this->minute.':'.$this->second;
 	}
 	
+	/**
+	* XML Date
+	*
+	* Returns the XML fragment for XML-RPC message inclusion.
+	*
+	* @return string
+	*/
 	public function getXml()
 	{
 		return '<dateTime.iso8601>'.$this->getIso().'</dateTime.iso8601>';
 	}
 	
+	/**
+	* Timestamp
+	*
+	* Returns the date timestamp.
+	*
+	* @return integer
+	*/
 	public function getTimestamp()
 	{
 		return mktime($this->hour, $this->minute, $this->second, $this->month, $this->day, $this->year);
 	}
 }
 
+/**
+* XML-RPC Base 64 object
+*/
 class xmlrpcBase64
 {
-	protected $data;
+	/** @var string */ protected $data;
 	
+	/**
+	* Constructor
+	*
+	* Create a new instance of xmlrpcBase64.
+	*
+	* @param string		$data		Data
+	*/
 	public function __construct($data)
 	{
 		$this->data = $data;
 	}
 	
+	/**
+	* XML Data
+	*
+	* Returns the XML fragment for XML-RPC message inclusion.
+	*
+	* @return string
+	*/
 	public function getXml()
 	{
 		return '<base64>'.base64_encode($this->data).'</base64>';
 	}
 }
 
+/**
+* XML-RPC Client
+*
+* Basic XML-RPC Client.
+*/
 class xmlrpcClient extends netHttp
 {
-	protected $request;
-	protected $message;
+	/** @var xmlrpcRequest XML-RPC Request object */ protected $request;
+	/** @var xmlrpcMessage XML-RPC Message object */ protected $message;
 	
+	/**
+	* Constructor
+	*
+	* Creates a new instance. <var>$url</var> is the XML-RPC Server end point.
+	*
+	* @param string		$url			Service URL
+	*/
 	public function __construct($url)
 	{
 		if (!$this->readUrl($url,$ssl,$host,$port,$path,$user,$pass)) {
@@ -445,6 +586,25 @@ class xmlrpcClient extends netHttp
 		$this->user_agent = 'Clearbricks XML/RPC Client';
 	}
 	
+	/**
+	* XML-RPC Query
+	*
+	* This method calls the given query (first argument) on XML-RPC Server.
+	* All other arguments of this method are XML-RPC method arguments.
+	* This method throws an exception if XML-RPC method returns an error or
+	* returns the server's response.
+	*
+	* Example:
+	* <code>
+	* <?php
+	* $o = new xmlrpcClient('http://example.com/xmlrpc');
+	* $r = $o->query('method1','hello','world');
+	* ?>
+	* </code>
+	*
+	* @param string		$method		Method name
+	* @return mixed
+	*/
 	public function query()
 	{
 		$args = func_get_args();
@@ -472,6 +632,7 @@ class xmlrpcClient extends netHttp
 	
 	# Overloading netHttp::buildRequest method, we don't need all the stuff of
 	# HTTP client.
+	/** @ignore */
 	protected function buildRequest()
 	{
 		if ($this->proxy_host) {
@@ -492,15 +653,41 @@ class xmlrpcClient extends netHttp
 	}
 }
 
+/**
+* Multicall XML-RPC Client
+*
+* Multicall client using system.multicall method of server.
+*/
 class xmlrpcClientMulticall extends xmlrpcClient
 {
-	protected $calls = array();
+	/** @var array */	protected $calls = array();
 	
+	/** @ignore */
 	function __construct($url)
 	{
 		parent::__construct($url);
 	}
 	
+	/**
+	* Add call to stack
+	*
+	* This method adds a method call for the given query (first argument) to
+	* calls stack.
+	* All other arguments of this method are XML-RPC method arguments.
+	*
+	* Example:
+	* <code>
+	* <?php
+	* $o = new xmlrpcClient('http://example.com/xmlrpc');
+	* $o->addCall('method1','hello','world');
+	* $o->addCall('method2','foo','bar');
+	* $r = $o->query();
+	* ?>
+	* </code>
+	*
+	* @param string		$method		Method name
+	* @return mixed
+	*/
 	function addCall()
 	{
 		$args = func_get_args();
@@ -514,6 +701,14 @@ class xmlrpcClientMulticall extends xmlrpcClient
 		$this->calls[] = $struct;
 	}
 	
+	/**
+	* XML-RPC Query
+	*
+	* This method sends calls stack to XML-RPC system.multicall method.
+	* See {@link xmlrpcServer::multiCall()} for details and links about it.
+	*
+	* @return array
+	*/
 	function query()
 	{
 		# Prepare multicall, then call the parent::query() method
@@ -521,16 +716,33 @@ class xmlrpcClientMulticall extends xmlrpcClient
 	}
 }
 
+/**
+* Basic XML-RPC Server
+*
+* This is the most basic XML-RPC server you can create. Built-in methods are:
+*
+* - system.getCapabilities
+* - system.listMethods
+* - system.multicall
+*/
 class xmlrpcServer
 {
-	protected $callbacks = array();
-	protected $data;
-	protected $encoding;
-	protected $message;
-	protected $capabilities;
+	/** @var array	Server methods */			protected $callbacks = array();
+	/** @var string Received data */			protected $data;
+	/** @var string Server encoding */			protected $encoding;
+	/** @var xmlrpcMessage Returned message */	protected $message;
+	/** @var array Server capabilities */		protected $capabilities;
 	
+	/** @var boolean Strict XML-RPC checks */
 	public $strict_check = false;
 	
+	/**
+	* Constructor
+	*
+	* @param array		callbacks		Server callbacks
+	* @param string	data			Server data
+	* @param string	encoding		Server encoding
+	*/
 	public function __construct($callbacks=false,$data=false,$encoding='UTF-8')
 	{
 		$this->encoding = $encoding;
@@ -542,6 +754,15 @@ class xmlrpcServer
 		$this->serve($data);
 	}
 	
+	/**
+	* Start XML-RPC Server
+	*
+	* This method starts the XML-RPC Server. It could take a data argument
+	* which should be a valid XML-RPC raw stream. If data is not specified, it
+	* take values from raw POST data.
+	*
+	* @param string	data			XML-RPC raw stream
+	*/
 	public function serve($data=false)
 	{
 		if (!$data)
@@ -638,6 +859,14 @@ class xmlrpcServer
 		$this->output($xml);
 	}
 	
+	/**
+	* Send HTTP Headers
+	*
+	* This method sends a HTTP Header
+	*
+	* @param integer	code			HTTP Status Code
+	* @param string	msg			Header message
+	*/
 	protected function head($code,$msg)
 	{
 		$status_mode = preg_match('/cgi/',PHP_SAPI);
@@ -653,6 +882,15 @@ class xmlrpcServer
 		}
 	}
 	
+	/**
+	* Method call
+	*
+	* This method calls the given XML-RPC method with arguments.
+	*
+	* @param string	methodname	Method name
+	* @param array		args			Method arguments
+	* @return mixed
+	*/
 	protected function call($methodname,$args)
 	{
 		if (!$this->hasMethod($methodname)) {
@@ -669,6 +907,15 @@ class xmlrpcServer
 		return call_user_func_array($method,$args);
 	}
 	
+	/**
+	* XML-RPC Error
+	*
+	* This method create an XML-RPC error message from a PHP Exception object.
+	* You should avoid using this in your own method and throw exceptions
+	* instead.
+	*
+	* @param Exception	e			Exception object
+	*/
 	protected function error($e)
 	{
 		$msg = $e->getMessage();
@@ -693,6 +940,13 @@ class xmlrpcServer
 		);
 	}
 	
+	/**
+	* Output response
+	*
+	* This method sends the whole XML-RPC response through HTTP.
+	*
+	* @param string	xml			XML Content
+	*/
 	protected function output($xml)
 	{
 		$xml = '<?xml version="1.0" encoding="'.$this->encoding.'"?>'."\n".$xml;
@@ -705,11 +959,27 @@ class xmlrpcServer
 		exit;
 	}
 	
+	/**
+	* XML-RPC Server has method?
+	*
+	* Returns true if the server has the given method <var>$method</var>
+	*
+	* @param string	$method		Method name
+	* @return boolean
+	*/
 	protected function hasMethod($method)
 	{
 		return in_array($method, array_keys($this->callbacks));
 	}
 	
+	/**
+	* Server Capabilities
+	*
+	* This method initiates the server capabilities:
+	* - xmlrpc
+	* - faults_interop
+	* - system.multicall
+	*/
 	protected function setCapabilities()
 	{
 		# Initialises capabilities array
@@ -729,11 +999,18 @@ class xmlrpcServer
 		);   
 	}
 	
-	protected function getCapabilities()
-	{
-		return $this->capabilities;
-	}
-	
+	/**
+	* Server Methods
+	*
+	* This method creates the three main server's methods:
+	* - system.getCapabilities
+	* - system.listMethods
+	* - system.multicall
+	*
+	* @see getCapabilities()
+	* @see listMethods()
+	* @see multiCall()
+	*/
 	protected function setCallbacks()
 	{
 		$this->callbacks['system.getCapabilities'] = array($this,'getCapabilities');
@@ -741,6 +1018,26 @@ class xmlrpcServer
 		$this->callbacks['system.multicall'] = array($this,'multiCall');
 	}
 	
+	/**
+	* Server Capabilities
+	*
+	* Returns server capabilities
+	*
+	* @return array
+	*/
+	protected function getCapabilities()
+	{
+		return $this->capabilities;
+	}
+	
+	
+	/**
+	* Server methods
+	*
+	* Returns all server methods
+	*
+	* @return array
+	*/
 	protected function listMethods()
 	{
 		# Returns a list of methods - uses array_reverse to ensure user defined
@@ -748,9 +1045,18 @@ class xmlrpcServer
 		return array_reverse(array_keys($this->callbacks));
 	}
 	
+	/**
+	* Multicall
+	*
+	* This method handles a multi-methods call
+	*
+	*  @see http://www.xmlrpc.com/discuss/msgReader$1208
+	*
+	* @param array		$methodcalls		Array of methods
+	* @return array
+	*/
 	protected function multiCall($methodcalls)
 	{
-		# See http://www.xmlrpc.com/discuss/msgReader$1208
 		$return = array();
 		foreach ($methodcalls as $call)
 		{
@@ -779,11 +1085,33 @@ class xmlrpcServer
 	}
 }
 
+/**
+* XML-RPC Introspection Server
+*
+* This class implements the most used type of XML-RPC Server.
+* It allows you to create classes inherited from this one and add methods
+* with {@link addCallback() addCallBack method}.
+*
+* This server class implements the following XML-RPC methods:
+* - system.methodSignature
+* - system.getCapabilities
+* - system.listMethods
+* - system.methodHelp
+* - system.multicall
+*/
 class xmlrpcIntrospectionServer extends xmlrpcServer
 {
 	protected $signatures;
 	protected $help;
 	
+	/**
+	* Constructor
+	*
+	* This method should be inherited to add new callbacks with
+	* {@link addCallback()}.
+	*
+	* @param string	$encoding			Server encoding
+	*/
 	public function __construct($encoding='UTF-8')
 	{
 		$this->encoding = $encoding;
@@ -831,6 +1159,17 @@ class xmlrpcIntrospectionServer extends xmlrpcServer
 		);
 	}
 	
+	/**
+	* Add Server Callback
+	*
+	* This method creates a new XML-RPC method which references a class
+	* callback. <var>$callback</var> should be a valid PHP callback.
+	*
+	* @param string	$method			Method name
+	* @param callback	$callback			Method callback
+	* @param array		$args			Array of arguments type. The first is the returned one.
+	* @param string	$help			Method help string
+	*/
 	protected function addCallback($method, $callback, $args, $help)
 	{
 		$this->callbacks[$method] = $callback;
@@ -838,6 +1177,16 @@ class xmlrpcIntrospectionServer extends xmlrpcServer
 		$this->help[$method] = $help;
 	}
 	
+	/**
+	* Method call
+	*
+	* This method calls the callbacks function or method for the given XML-RPC
+	* method <var>$methodname</var> with arguments in <var>$args</var> array.
+	*
+	* @param string	$methodname		Method name
+	* @param array		$args			Arguments
+	* @return mixed
+	*/
 	protected function call($methodname,$args)
 	{
 		# Make sure it's in an array
@@ -873,6 +1222,15 @@ class xmlrpcIntrospectionServer extends xmlrpcServer
 		return parent::call($methodname, $args);
 	}
 	
+	/**
+	* Method Arguments Check
+	*
+	* This method checks the validity of method arguments.
+	*
+	* @param array		$args			Method given arguments
+	* @param array		$signature		Method defined arguments
+	* @return boolean
+	*/
 	protected function checkArgs($args,$signature)
 	{
 		for ($i = 0, $j = count($args); $i < $j; $i++)
@@ -916,6 +1274,14 @@ class xmlrpcIntrospectionServer extends xmlrpcServer
 		return true;
 	}
 	
+	/**
+	* Method Signature
+	*
+	* This method return given XML-RPC method signature.
+	*
+	* @param string	$method		Method name
+	* @return array
+	*/
 	protected function methodSignature($method)
 	{
 		if (!$this->hasMethod($method)) {
@@ -961,6 +1327,14 @@ class xmlrpcIntrospectionServer extends xmlrpcServer
 		return $return;
 	}
 	
+	/**
+	* Method Help
+	*
+	* This method return given XML-RPC method help string.
+	*
+	* @param string	$method		Method name
+	* @return string
+	*/
 	protected function methodHelp($method)
 	{
 		return $this->help[$method];
