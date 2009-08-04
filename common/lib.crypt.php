@@ -62,7 +62,7 @@ class crypt
 		$chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
 		$chars2 = '$!@';
 		
-		foreach (range(0,8) as $i) {
+		foreach (range(0,7) as $i) {
 			$pwd[] = $chars[rand(0,strlen($chars)-1)];
 		}
 		
