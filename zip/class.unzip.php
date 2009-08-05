@@ -38,7 +38,7 @@ class fileUnzip
 		$this->file_name = $file_name;
 	}
 	
-	public function __destroy()
+	public function __destruct()
 	{
 		$this->close();
 	}
