@@ -170,6 +170,8 @@ class html
 		{
 			if (strpos($url,'/') === 0) {
 				$url = $host.$url;
+			} elseif (strpos($url,'#') === 0) {
+				$url = self::$url_root.$url;
 			} elseif (preg_match('|/$|',self::$url_root)) {
 				$url = self::$url_root.$url;
 			} else {
