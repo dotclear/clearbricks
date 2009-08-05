@@ -85,6 +85,10 @@ class sessionDB
 			array(&$this, '_gc')
 		); 
 		
+		if (isset($_SESSION) && session_name() != $this->cookie_name) {
+			$this->destroy();
+		}
+		
 		if (!isset($_COOKIE[$this->cookie_name])) {
 			session_id(sha1(uniqid(rand(),true)));
 		}
