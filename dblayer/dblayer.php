@@ -788,6 +788,16 @@ class record
 		}
 	}
 	
+	/**
+	* Returns record extensions.
+	* 
+	* @return			<b>array</b>
+	*/
+	public function extensions()
+	{
+		return $this->__extend;
+	}
+	
 	private function setRow()
 	{
 		$this->__row = $this->__info['con']->db_fetch_assoc($this->__result);
