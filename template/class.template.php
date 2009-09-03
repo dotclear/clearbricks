@@ -212,7 +212,7 @@ class template
 		}
 		
 		ob_start();
-		include $this->getFile($________);
+		@include $this->getFile($________);
 		self::$_r = ob_get_contents();
 		ob_end_clean();
 		
