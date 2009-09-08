@@ -193,13 +193,15 @@ class http
 		$array_ts = array_merge($mod_ts,$files);
 		
 		rsort($array_ts);
-		$ts = $array_ts[0];
+		$now = time();
+		$ts = min($array_ts[0],$now);
 		
 		$since = null;
 		if (!empty($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
 			$since = $_SERVER['HTTP_IF_MODIFIED_SINCE'];
 			$since = preg_replace ('/^(.*)(Mon|Tue|Wed|Thu|Fri|Sat|Sun)(.*)(GMT)(.*)/', '$2$3 GMT', $since);
 			$since = strtotime($since);
+			$since = ($since <= $now) ? $since : null;
 		}
 		
 		# Common headers list
@@ -217,7 +219,7 @@ class http
 		}
 		else
 		{
-			header('Date: '.gmdate('D, d M Y H:i:s').' GMT');
+			header('Date: '.gmdate('D, d M Y H:i:s',$now).' GMT');
 			foreach ($headers as $v) {
 				header($v);
 			}
