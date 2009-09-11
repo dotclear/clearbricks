@@ -286,7 +286,7 @@ class filemanager
 	* Move <var>$tmp</var> file to its final destination <var>$dest</var> and
 	* returns the destination file path.
 	* <var>$dest</var> should be in jail. This method will throw exception
-	* if file cannot be written.
+	* if the file cannot be written.
 	*
 	* You should first verify upload status, with {@link files::uploadStatus()}
 	* or PHP native functions.
@@ -294,9 +294,10 @@ class filemanager
 	* @see files::uploadStatus()
 	* @param string	$tmp			Temporary uploaded file path
 	* @param string	$dest		Destination file
+	* @param string	$overwrite	overwrite mode
 	* @return string				Destination real path
 	*/
-	public function uploadFile($tmp,$dest)
+	public function uploadFile($tmp,$dest,$overwrite=false)
 	{
 		$dest = $this->pwd.'/'.path::clean($dest);
 		
@@ -306,6 +307,10 @@ class filemanager
 		
 		if (!$this->inJail(dirname($dest))) {
 			throw new Exception(__('Destination directory is not in jail.'));
+		}
+		
+		if (!$overwrite && file_exists($dest)) {
+			throw new Exception(__('File already exists.'));
 		}
 		
 		if (!is_writable(dirname($dest))) {
