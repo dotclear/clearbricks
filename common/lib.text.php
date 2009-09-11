@@ -124,7 +124,7 @@ class text
 	public static function tidyURL($str,$keep_slashes=true,$keep_spaces=false)
 	{
 		$str = strip_tags($str);
-		$str = str_replace(array('?','&','#','=','+','<','>','"'),'',$str);
+		$str = str_replace(array('?','&','#','=','+','<','>','"','%'),'',$str);
 		$str = str_replace("'",' ',$str);
 		$str = preg_replace('/[\s]+/',' ',trim($str));
 		
