@@ -47,6 +47,7 @@ class fileUnzip
 	{
 		if ($this->fp) {
 			fclose($this->fp);
+			$this->fp = null;
 		}
 		
 		if ($this->memory_limit) {
