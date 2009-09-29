@@ -560,96 +560,99 @@ class xmlrpcBase64
 *
 * Basic XML-RPC Client.
 */
-class xmlrpcClient extends netHttp
+if (class_exists('netHttp'))
 {
-	/** @var xmlrpcRequest XML-RPC Request object */ protected $request;
-	/** @var xmlrpcMessage XML-RPC Message object */ protected $message;
-	
-	/**
-	* Constructor
-	*
-	* Creates a new instance. <var>$url</var> is the XML-RPC Server end point.
-	*
-	* @param string		$url			Service URL
-	*/
-	public function __construct($url)
+	class xmlrpcClient extends netHttp
 	{
-		if (!$this->readUrl($url,$ssl,$host,$port,$path,$user,$pass)) {
-			return false;
-		}
-		
-		parent::__construct($host,$port);
-		$this->useSSL($ssl);
-		$this->setAuthorization($user,$pass);
-		
-		$this->path = $path;
-		$this->user_agent = 'Clearbricks XML/RPC Client';
-	}
+		/** @var xmlrpcRequest XML-RPC Request object */ protected $request;
+		/** @var xmlrpcMessage XML-RPC Message object */ protected $message;
 	
-	/**
-	* XML-RPC Query
-	*
-	* This method calls the given query (first argument) on XML-RPC Server.
-	* All other arguments of this method are XML-RPC method arguments.
-	* This method throws an exception if XML-RPC method returns an error or
-	* returns the server's response.
-	*
-	* Example:
-	* <code>
-	* <?php
-	* $o = new xmlrpcClient('http://example.com/xmlrpc');
-	* $r = $o->query('method1','hello','world');
-	* ?>
-	* </code>
-	*
-	* @param string		$method		Method name
-	* @return mixed
-	*/
-	public function query()
-	{
-		$args = func_get_args();
-		$method = array_shift($args);
-		$this->request = new xmlrpcRequest($method, $args);
-		
-		$this->doRequest();
-		
-		if ($this->status != 200) {
-			throw new Exception('HTTP Error. '.$this->status.' '.$this->status_string);
-		}
-		
-		# Now parse what we've got back
-		$this->message = new xmlrpcMessage($this->content);
-		$this->message->parse();
-		
-		# Is the message a fault?
-		if ($this->message->messageType == 'fault')
+		/**
+		* Constructor
+		*
+		* Creates a new instance. <var>$url</var> is the XML-RPC Server end point.
+		*
+		* @param string		$url			Service URL
+		*/
+		public function __construct($url)
 		{
-			throw new xmlrpcException($this->message->faultString,$this->message->faultCode);
-		}
+			if (!$this->readUrl($url,$ssl,$host,$port,$path,$user,$pass)) {
+				return false;
+			}
 		
-		return $this->message->params[0];
-	}
+			parent::__construct($host,$port);
+			$this->useSSL($ssl);
+			$this->setAuthorization($user,$pass);
+		
+			$this->path = $path;
+			$this->user_agent = 'Clearbricks XML/RPC Client';
+		}
 	
-	# Overloading netHttp::buildRequest method, we don't need all the stuff of
-	# HTTP client.
-	/** @ignore */
-	protected function buildRequest()
-	{
-		if ($this->proxy_host) {
-			$path = $this->getRequestURL();
-		} else {
-			$path = $this->path;
-		}
+		/**
+		* XML-RPC Query
+		*
+		* This method calls the given query (first argument) on XML-RPC Server.
+		* All other arguments of this method are XML-RPC method arguments.
+		* This method throws an exception if XML-RPC method returns an error or
+		* returns the server's response.
+		*
+		* Example:
+		* <code>
+		* <?php
+		* $o = new xmlrpcClient('http://example.com/xmlrpc');
+		* $r = $o->query('method1','hello','world');
+		* ?>
+		* </code>
+		*
+		* @param string		$method		Method name
+		* @return mixed
+		*/
+		public function query()
+		{
+			$args = func_get_args();
+			$method = array_shift($args);
+			$this->request = new xmlrpcRequest($method, $args);
 		
-		return array(
-			'POST '.$path.' HTTP/1.0',
-			'Host: '.$this->host,
-			'Content-Type: text/xml',
-			'User-Agent: '.$this->user_agent,
-			'Content-Length: '.$this->request->getLength(),
-			'',
-			$this->request->getXML()
-		);
+			$this->doRequest();
+		
+			if ($this->status != 200) {
+				throw new Exception('HTTP Error. '.$this->status.' '.$this->status_string);
+			}
+		
+			# Now parse what we've got back
+			$this->message = new xmlrpcMessage($this->content);
+			$this->message->parse();
+		
+			# Is the message a fault?
+			if ($this->message->messageType == 'fault')
+			{
+				throw new xmlrpcException($this->message->faultString,$this->message->faultCode);
+			}
+		
+			return $this->message->params[0];
+		}
+	
+		# Overloading netHttp::buildRequest method, we don't need all the stuff of
+		# HTTP client.
+		/** @ignore */
+		protected function buildRequest()
+		{
+			if ($this->proxy_host) {
+				$path = $this->getRequestURL();
+			} else {
+				$path = $this->path;
+			}
+		
+			return array(
+				'POST '.$path.' HTTP/1.0',
+				'Host: '.$this->host,
+				'Content-Type: text/xml',
+				'User-Agent: '.$this->user_agent,
+				'Content-Length: '.$this->request->getLength(),
+				'',
+				$this->request->getXML()
+			);
+		}
 	}
 }
 
@@ -658,61 +661,64 @@ class xmlrpcClient extends netHttp
 *
 * Multicall client using system.multicall method of server.
 */
-class xmlrpcClientMulticall extends xmlrpcClient
+if (class_exists('xmlrpcClient'))
 {
-	/** @var array */	protected $calls = array();
-	
-	/** @ignore */
-	function __construct($url)
+	class xmlrpcClientMulticall extends xmlrpcClient
 	{
-		parent::__construct($url);
-	}
+		/** @var array */	protected $calls = array();
 	
-	/**
-	* Add call to stack
-	*
-	* This method adds a method call for the given query (first argument) to
-	* calls stack.
-	* All other arguments of this method are XML-RPC method arguments.
-	*
-	* Example:
-	* <code>
-	* <?php
-	* $o = new xmlrpcClient('http://example.com/xmlrpc');
-	* $o->addCall('method1','hello','world');
-	* $o->addCall('method2','foo','bar');
-	* $r = $o->query();
-	* ?>
-	* </code>
-	*
-	* @param string		$method		Method name
-	* @return mixed
-	*/
-	function addCall()
-	{
-		$args = func_get_args();
-		$methodName = array_shift($args);
+		/** @ignore */
+		function __construct($url)
+		{
+			parent::__construct($url);
+		}
+	
+		/**
+		* Add call to stack
+		*
+		* This method adds a method call for the given query (first argument) to
+		* calls stack.
+		* All other arguments of this method are XML-RPC method arguments.
+		*
+		* Example:
+		* <code>
+		* <?php
+		* $o = new xmlrpcClient('http://example.com/xmlrpc');
+		* $o->addCall('method1','hello','world');
+		* $o->addCall('method2','foo','bar');
+		* $r = $o->query();
+		* ?>
+		* </code>
+		*
+		* @param string		$method		Method name
+		* @return mixed
+		*/
+		function addCall()
+		{
+			$args = func_get_args();
+			$methodName = array_shift($args);
 		
-		$struct = array(
-			'methodName' => $methodName,
-			'params' => $args
-		);
+			$struct = array(
+				'methodName' => $methodName,
+				'params' => $args
+			);
 		
-		$this->calls[] = $struct;
-	}
+			$this->calls[] = $struct;
+		}
 	
-	/**
-	* XML-RPC Query
-	*
-	* This method sends calls stack to XML-RPC system.multicall method.
-	* See {@link xmlrpcServer::multiCall()} for details and links about it.
-	*
-	* @return array
-	*/
-	function query()
-	{
-		# Prepare multicall, then call the parent::query() method
-		return parent::query('system.multicall',$this->calls);
+		/**
+		* XML-RPC Query
+		*
+		* This method sends calls stack to XML-RPC system.multicall method.
+		* See {@link xmlrpcServer::multiCall()} for details and links about it.
+		*
+		* @return array
+		*/
+		function query()
+		{
+			# Prepare multicall, then call the parent::query() method
+			return parent::query('system.multicall',$this->calls);
+		}
 	}
 }
 
@@ -1099,245 +1105,249 @@ class xmlrpcServer
 * - system.methodHelp
 * - system.multicall
 */
-class xmlrpcIntrospectionServer extends xmlrpcServer
+
+if (class_exists('xmlrpcServer'))
 {
-	protected $signatures;
-	protected $help;
-	
-	/**
-	* Constructor
-	*
-	* This method should be inherited to add new callbacks with
-	* {@link addCallback()}.
-	*
-	* @param string	$encoding			Server encoding
-	*/
-	public function __construct($encoding='UTF-8')
+	class xmlrpcIntrospectionServer extends xmlrpcServer
 	{
-		$this->encoding = $encoding;
-		$this->setCallbacks();
-		$this->setCapabilities();
-		
-		$this->capabilities['introspection'] = array (
-			'specUrl' => 'http://xmlrpc.usefulinc.com/doc/reserved.html',
-			'specVersion' => 1
-		);
-		
-		$this->addCallback(
-			'system.methodSignature', 
-			array($this,'methodSignature'), 
-			array('array','string'), 
-			'Returns an array describing the return type and required parameters of a method'
-		);
-		
-		$this->addCallback(
-			'system.getCapabilities', 
-			array($this,'getCapabilities'), 
-			array('struct'), 
-			'Returns a struct describing the XML-RPC specifications supported by this server'
-		);
-		
-		$this->addCallback(
-			'system.listMethods', 
-			array($this,'listMethods'), 
-			array('array'), 
-			'Returns an array of available methods on this server'
-		);
-		
-		$this->addCallback(
-			'system.methodHelp', 
-			array($this,'methodHelp'), 
-			array('string','string'), 
-			'Returns a documentation string for the specified method'
-		);
-		
-		$this->addCallback(
-			'system.multicall',
-			array($this,'multiCall'),
-			array('struct','array'),
-			'Returns result of multiple methods calls'
-		);
-	}
+		protected $signatures;
+		protected $help;
 	
-	/**
-	* Add Server Callback
-	*
-	* This method creates a new XML-RPC method which references a class
-	* callback. <var>$callback</var> should be a valid PHP callback.
-	*
-	* @param string	$method			Method name
-	* @param callback	$callback			Method callback
-	* @param array		$args			Array of arguments type. The first is the returned one.
-	* @param string	$help			Method help string
-	*/
-	protected function addCallback($method, $callback, $args, $help)
-	{
-		$this->callbacks[$method] = $callback;
-		$this->signatures[$method] = $args;
-		$this->help[$method] = $help;
-	}
-	
-	/**
-	* Method call
-	*
-	* This method calls the callbacks function or method for the given XML-RPC
-	* method <var>$methodname</var> with arguments in <var>$args</var> array.
-	*
-	* @param string	$methodname		Method name
-	* @param array		$args			Arguments
-	* @return mixed
-	*/
-	protected function call($methodname,$args)
-	{
-		# Make sure it's in an array
-		if ($args && !is_array($args)) {
-			$args = array($args);
-		}
-		
-		# Over-rides default call method, adds signature check
-		if (!$this->hasMethod($methodname)) {
-			throw new xmlrpcException('Server error. Requested method "'.$methodname.'" not specified.',-32601);
-		}
-		
-		$method = $this->callbacks[$methodname];
-		$signature = $this->signatures[$methodname];
-		
-		if (!is_array($signature)) {
-			throw new xmlrpcException('Server error. Wrong method signature',-36600);
-		}
-		
-		$return_type = array_shift($signature);
-		
-		# Check the number of arguments
-		if (count($args) > count($signature)) {
-			throw new xmlrpcException('Server error. Wrong number of method parameters',-32602);
-		}
-		
-		# Check the argument types
-		if (!$this->checkArgs($args,$signature)) {
-			throw new xmlrpcException('Server error. Invalid method parameters',-32602);
-		}
-		
-		# It passed the test - run the "real" method call
-		return parent::call($methodname, $args);
-	}
-	
-	/**
-	* Method Arguments Check
-	*
-	* This method checks the validity of method arguments.
-	*
-	* @param array		$args			Method given arguments
-	* @param array		$signature		Method defined arguments
-	* @return boolean
-	*/
-	protected function checkArgs($args,$signature)
-	{
-		for ($i = 0, $j = count($args); $i < $j; $i++)
+		/**
+		* Constructor
+		*
+		* This method should be inherited to add new callbacks with
+		* {@link addCallback()}.
+		*
+		* @param string	$encoding			Server encoding
+		*/
+		public function __construct($encoding='UTF-8')
 		{
-			$arg = array_shift($args);
-			$type = array_shift($signature);
-			
-			switch ($type)
-			{
-				case 'int':
-				case 'i4':
-					if (is_array($arg) || !is_int($arg)) {
-						return false;
-					}
-					break;
-				case 'base64':
-				case 'string':
-					if (!is_string($arg)) {
-						return false;
-					}
-					break;
-				case 'boolean':
-					if ($arg !== false && $arg !== true) {
-						return false;
-					}
-					break;
-				case 'float':
-				case 'double':
-					if (!is_float($arg)) {
-						return false;
-					}
-					break;
-				case 'date':
-				case 'dateTime.iso8601':
-					if (!($arg instanceof xmlrpcDate)) {
-						return false;
-					}
-					break;
-			}
+			$this->encoding = $encoding;
+			$this->setCallbacks();
+			$this->setCapabilities();
+		
+			$this->capabilities['introspection'] = array (
+				'specUrl' => 'http://xmlrpc.usefulinc.com/doc/reserved.html',
+				'specVersion' => 1
+			);
+		
+			$this->addCallback(
+				'system.methodSignature', 
+				array($this,'methodSignature'), 
+				array('array','string'), 
+				'Returns an array describing the return type and required parameters of a method'
+			);
+		
+			$this->addCallback(
+				'system.getCapabilities', 
+				array($this,'getCapabilities'), 
+				array('struct'), 
+				'Returns a struct describing the XML-RPC specifications supported by this server'
+			);
+		
+			$this->addCallback(
+				'system.listMethods', 
+				array($this,'listMethods'), 
+				array('array'), 
+				'Returns an array of available methods on this server'
+			);
+		
+			$this->addCallback(
+				'system.methodHelp', 
+				array($this,'methodHelp'), 
+				array('string','string'), 
+				'Returns a documentation string for the specified method'
+			);
+		
+			$this->addCallback(
+				'system.multicall',
+				array($this,'multiCall'),
+				array('struct','array'),
+				'Returns result of multiple methods calls'
+			);
 		}
-		return true;
-	}
 	
-	/**
-	* Method Signature
-	*
-	* This method return given XML-RPC method signature.
-	*
-	* @param string	$method		Method name
-	* @return array
-	*/
-	protected function methodSignature($method)
-	{
-		if (!$this->hasMethod($method)) {
-			throw new xmlrpcException('Server error. Requested method "'.$method.'" not specified.',-32601);
-			
-		}
-		
-		# We should be returning an array of types
-		$types = $this->signatures[$method];
-		$return = array();
-		
-		foreach ($types as $type)
+		/**
+		* Add Server Callback
+		*
+		* This method creates a new XML-RPC method which references a class
+		* callback. <var>$callback</var> should be a valid PHP callback.
+		*
+		* @param string	$method			Method name
+		* @param callback	$callback			Method callback
+		* @param array		$args			Array of arguments type. The first is the returned one.
+		* @param string	$help			Method help string
+		*/
+		protected function addCallback($method, $callback, $args, $help)
 		{
-			switch ($type)
-			{
-				case 'string':
-					$return[] = 'string';
-					break;
-				case 'int':
-				case 'i4':
-					$return[] = 42;
-					break;
-				case 'double':
-					$return[] = 3.1415;
-					break;
-				case 'dateTime.iso8601':
-					$return[] = new xmlrpcDate(time());
-					break;
-				case 'boolean':
-					$return[] = true;
-					break;
-				case 'base64':
-					$return[] = new xmlrpcBase64('base64');
-					break;
-				case 'array':
-					$return[] = array('array');
-					break;
-				case 'struct':
-					$return[] = array('struct' => 'struct');
-					break;
-			}
+			$this->callbacks[$method] = $callback;
+			$this->signatures[$method] = $args;
+			$this->help[$method] = $help;
 		}
-		return $return;
-	}
 	
-	/**
-	* Method Help
-	*
-	* This method return given XML-RPC method help string.
-	*
-	* @param string	$method		Method name
-	* @return string
-	*/
-	protected function methodHelp($method)
-	{
-		return $this->help[$method];
+		/**
+		* Method call
+		*
+		* This method calls the callbacks function or method for the given XML-RPC
+		* method <var>$methodname</var> with arguments in <var>$args</var> array.
+		*
+		* @param string	$methodname		Method name
+		* @param array		$args			Arguments
+		* @return mixed
+		*/
+		protected function call($methodname,$args)
+		{
+			# Make sure it's in an array
+			if ($args && !is_array($args)) {
+				$args = array($args);
+			}
+		
+			# Over-rides default call method, adds signature check
+			if (!$this->hasMethod($methodname)) {
+				throw new xmlrpcException('Server error. Requested method "'.$methodname.'" not specified.',-32601);
+			}
+		
+			$method = $this->callbacks[$methodname];
+			$signature = $this->signatures[$methodname];
+		
+			if (!is_array($signature)) {
+				throw new xmlrpcException('Server error. Wrong method signature',-36600);
+			}
+		
+			$return_type = array_shift($signature);
+		
+			# Check the number of arguments
+			if (count($args) > count($signature)) {
+				throw new xmlrpcException('Server error. Wrong number of method parameters',-32602);
+			}
+		
+			# Check the argument types
+			if (!$this->checkArgs($args,$signature)) {
+				throw new xmlrpcException('Server error. Invalid method parameters',-32602);
+			}
+		
+			# It passed the test - run the "real" method call
+			return parent::call($methodname, $args);
+		}
+	
+		/**
+		* Method Arguments Check
+		*
+		* This method checks the validity of method arguments.
+		*
+		* @param array		$args			Method given arguments
+		* @param array		$signature		Method defined arguments
+		* @return boolean
+		*/
+		protected function checkArgs($args,$signature)
+		{
+			for ($i = 0, $j = count($args); $i < $j; $i++)
+			{
+				$arg = array_shift($args);
+				$type = array_shift($signature);
+			
+				switch ($type)
+				{
+					case 'int':
+					case 'i4':
+						if (is_array($arg) || !is_int($arg)) {
+							return false;
+						}
+						break;
+					case 'base64':
+					case 'string':
+						if (!is_string($arg)) {
+							return false;
+						}
+						break;
+					case 'boolean':
+						if ($arg !== false && $arg !== true) {
+							return false;
+						}
+						break;
+					case 'float':
+					case 'double':
+						if (!is_float($arg)) {
+							return false;
+						}
+						break;
+					case 'date':
+					case 'dateTime.iso8601':
+						if (!($arg instanceof xmlrpcDate)) {
+							return false;
+						}
+						break;
+				}
+			}
+			return true;
+		}
+	
+		/**
+		* Method Signature
+		*
+		* This method return given XML-RPC method signature.
+		*
+		* @param string	$method		Method name
+		* @return array
+		*/
+		protected function methodSignature($method)
+		{
+			if (!$this->hasMethod($method)) {
+				throw new xmlrpcException('Server error. Requested method "'.$method.'" not specified.',-32601);
+			
+			}
+		
+			# We should be returning an array of types
+			$types = $this->signatures[$method];
+			$return = array();
+		
+			foreach ($types as $type)
+			{
+				switch ($type)
+				{
+					case 'string':
+						$return[] = 'string';
+						break;
+					case 'int':
+					case 'i4':
+						$return[] = 42;
+						break;
+					case 'double':
+						$return[] = 3.1415;
+						break;
+					case 'dateTime.iso8601':
+						$return[] = new xmlrpcDate(time());
+						break;
+					case 'boolean':
+						$return[] = true;
+						break;
+					case 'base64':
+						$return[] = new xmlrpcBase64('base64');
+						break;
+					case 'array':
+						$return[] = array('array');
+						break;
+					case 'struct':
+						$return[] = array('struct' => 'struct');
+						break;
+				}
+			}
+			return $return;
+		}
+	
+		/**
+		* Method Help
+		*
+		* This method return given XML-RPC method help string.
+		*
+		* @param string	$method		Method name
+		* @return string
+		*/
+		protected function methodHelp($method)
+		{
+			return $this->help[$method];
+		}
 	}
 }
 ?>
