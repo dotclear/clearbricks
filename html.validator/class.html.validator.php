@@ -18,7 +18,7 @@
 * @package Clearbricks
 * @subpackage HTML
 */
-if (class_exists('netSocket'))
+if (class_exists('netHttp'))
 {
 	class htmlValidator extends netHttp
 	{
