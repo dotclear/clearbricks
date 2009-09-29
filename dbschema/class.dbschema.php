@@ -122,7 +122,7 @@ class dbSchema
 		$this->con =& $con;
 	}
 	
-	public static function init(&$con)
+	public static function init($con)
 	{
 		$driver = $con->driver();
 		$driver_class = $driver.'Schema';
