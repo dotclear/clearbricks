@@ -27,7 +27,7 @@ class dbStruct
 	protected $tables = array();
 	protected $references = array();
 	
-	public function __construct(&$con,$prefix='')
+	public function __construct($con,$prefix='')
 	{
 		$this->con =& $con;
 		$this->prefix = $prefix;
