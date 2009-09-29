@@ -46,7 +46,7 @@ class cursor
 	* @param dbLayer	&$con		Connection object
 	* @param string	$table	Table name
 	*/
-	public function __construct(&$con,$table)
+	public function __construct($con,$table)
 	{
 		$this->__con =& $con;
 		$this->setTable($table);

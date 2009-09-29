@@ -38,7 +38,7 @@ class sessionDB
 	* @param string	$cookie_domain	Session cookie domaine
 	* @param boolean	$cookie_secure	Session cookie is available only through SSL if true
 	*/
-	public function __construct(&$con,$table,$cookie_name,$cookie_path=null,$cookie_domain=null,$cookie_secure=false)
+	public function __construct($con,$table,$cookie_name,$cookie_path=null,$cookie_domain=null,$cookie_secure=false)
 	{
 		$this->con =& $con;
 		$this->table = $table;

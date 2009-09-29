@@ -836,13 +836,13 @@ class wiki2xhtml
 		# On vire les &nbsp; dans l'url
 		$url = str_replace('&nbsp;',' ',$url);
 		
-		if (ereg('^(.+)[.](gif|jpg|jpeg|png)$', $url) && !$no_image && $this->getOpt('active_auto_img'))
+		if (preg_match('/^(.+)[.](gif|jpg|jpeg|png)$/', $url) && !$no_image && $this->getOpt('active_auto_img'))
 		{
 			# On ajoute les dimensions de l'image si locale
 			# Idée de Stephanie
 			$img_size = null;
-			if (!ereg('[a-zA-Z]+://', $url)) {
-				if (ereg('^/',$url)) {
+			if (!preg_match('#[a-zA-Z]+://#', $url)) {
+				if (preg_match('#^/#',$url)) {
 					$path_img = $_SERVER['DOCUMENT_ROOT'] . $url;
 				} else {
 					$path_img = $url;

@@ -117,7 +117,7 @@ class dbSchema
 {
 	protected $con;
 	
-	public function __construct(&$con)
+	public function __construct($con)
 	{
 		$this->con =& $con;
 	}
