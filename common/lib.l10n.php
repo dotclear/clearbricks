@@ -87,6 +87,8 @@ class l10n
 		{
 			return false;
 		}
+		
+		return true;
 	}
 	
 	/** @ignore */

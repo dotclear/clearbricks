@@ -174,6 +174,30 @@ class http
 	}
 	
 	/**
+	* Client languages
+	*
+	* Returns an array of accepted langages ordered by priority.
+	* can be a two letters language code or a xx-xx variant.
+	*
+	* @return array
+	*/
+	public static function getAcceptLanguages()
+	{
+		$dlang = array();
+		if (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE']))
+		{
+			$acclang = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
+			foreach ($acclang as $l)
+			{
+				$L = explode(';', $l);
+				if (preg_match('/^[a-z]{2}(-[a-z]{2})?$/',$L[0])) $dlang[] = $L[0];
+			}
+		}
+		
+		return $dlang;
+	}
+	
+	/**
 	* HTTP Cache
 	*
 	* Sends HTTP cache headers (304) according to a list of files and an optionnal.
