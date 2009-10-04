@@ -186,15 +186,18 @@ class http
 		$dlang = array();
 		if (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE']))
 		{
-			$acclang = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
-			foreach ($acclang as $l)
+			$pattern = '/(?P<lang>[a-z]{2}(?:-[a-z]{2})?)(?:;q=(?P<priority>[.0-9]*))?/';
+			if (preg_match_all($pattern,$_SERVER['HTTP_ACCEPT_LANGUAGE'],$acclang) !== false)
 			{
-				$L = explode(';', $l);
-				if (preg_match('/^[a-z]{2}(-[a-z]{2})?$/',$L[0])) $dlang[] = $L[0];
+				foreach($acclang['priority'] as $i => $p)
+				{
+					if ($p == '') $acclang['priority'][$i]=1; 
+				}
+				array_multisort($acclang['priority'], SORT_DESC,$acclang['lang']);
 			}
 		}
 		
-		return $dlang;
+		return $acclang['lang'];
 	}
 	
 	/**
