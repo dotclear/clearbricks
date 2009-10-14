@@ -51,7 +51,7 @@ if (class_exists('dbSchema'))
 			$sql =
 			'SELECT table_name '.
 			'FROM information_schema.tables '.
-			"WHERE table_schema = 'public' ";
+			"WHERE table_schema = current_schema ";
 		
 			$rs = $this->con->select($sql);
 		
