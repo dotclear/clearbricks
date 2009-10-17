@@ -82,7 +82,7 @@ class http
 		else
 		{
 			$host = self::getHost();
-			$dir = dirname($_SERVER['PHP_SELF']);
+			$dir = str_replace(DIRECTORY_SEPARATOR,'/',dirname($_SERVER['PHP_SELF']));
 			
 			if (substr($page,0,1) == '/') {
 				$redir = $host.$page;
