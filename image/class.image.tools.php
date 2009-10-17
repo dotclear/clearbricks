@@ -69,7 +69,10 @@ class imageTools
 		
 		if (($info = @getimagesize($f)) !== false)
 		{
-			$this->memoryAllocate($info[0],$info[1]);
+			$this->memoryAllocate(
+				$info[0],$info[1],
+				isset($infos['channels']) ? $info['channels'] : 4
+			);
 			
 			switch ($info[2])
 			{
@@ -114,7 +117,7 @@ class imageTools
 	}
 	
 	/** @ignore */
-	public function memoryAllocate($w,$h)
+	public function memoryAllocate($w,$h,$bpp = 4)
 	{
 		$mem_used = function_exists('memory_get_usage') ? @memory_get_usage() : 4000000;
 		$mem_limit = @ini_get('memory_limit');
@@ -122,7 +125,7 @@ class imageTools
 		{
 			$mem_limit = files::str2bytes($mem_limit);
 			$mem_avail = $mem_limit-$mem_used-(512*1024);
-			$mem_needed = $w*$h*8;
+			$mem_needed = $w*$h*$bpp;
 			
 			if ($mem_needed > $mem_avail)
 			{
@@ -282,7 +285,8 @@ class imageTools
 			$_h = 1;
 		}
 		
-		$this->memoryAllocate($_w,$_h);
+		# truecolor is 24 bit RGB, i. 3 bytes per pixel.
+		$this->memoryAllocate($_w,$_h,3);
 		$dest = imagecreatetruecolor($_w,$_h);
 		$fill = imagecolorallocate($dest,128,128,128);
 		imagefill($dest,0,0,$fill);
