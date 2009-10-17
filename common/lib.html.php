@@ -162,7 +162,7 @@ class html
 	{
 		$url = $m[2];
 		
-		$link = $m[1].'%s'.$m[3];
+		$link = str_replace('%','%%',$m[1]).'%s'.str_replace('%','%%',$m[3]);
 		$host = preg_replace('|^([a-z]{3,}://)(.*?)/(.*)$|','$1$2',self::$url_root);
 		
 		$parse = parse_url($m[2]);
