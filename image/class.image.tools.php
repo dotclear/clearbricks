@@ -285,7 +285,7 @@ class imageTools
 			$_h = 1;
 		}
 		
-		# truecolor is 24 bit RGB, i. 3 bytes per pixel.
+		# truecolor is 24 bit RGB, ie. 3 bytes per pixel.
 		$this->memoryAllocate($_w,$_h,3);
 		$dest = imagecreatetruecolor($_w,$_h);
 		$fill = imagecolorallocate($dest,128,128,128);
