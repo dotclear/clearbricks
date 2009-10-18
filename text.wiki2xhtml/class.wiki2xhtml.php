@@ -348,6 +348,14 @@ class wiki2xhtml
 			'note' => array('$$','$$'),
 			'word' => array('¶¶¶','¶¶¶')
 		);
+		$this->linetags = array(
+			'empty' => 'øøø',
+			'title' => '([!]{1,4})',
+			'hr' => '[-]{4}[- ]',
+			'quote' => '(&gt;|;:)',
+			'lists' => '([*#]+)',
+			'pre' => '[ ]{1}',
+		);
 		
 		$this->tags = array_merge($tags,$this->custom_tags);
 		
@@ -390,6 +398,26 @@ class wiki2xhtml
 		}
 		if (!$this->getOpt('active_wikiwords')) {
 			unset($this->tags['word']);
+		}
+		
+		# Suppression des tags de début de ligne selon les options
+		if (!$this->getOpt('active_empty')) {
+			unset($this->linetags['empty']);
+		}
+		if (!$this->getOpt('active_title')) {
+			unset($this->linetags['title']);
+		}
+		if (!$this->getOpt('active_hr')) {
+			unset($this->linetags['hr']);
+		}
+		if (!$this->getOpt('active_quote')) {
+			unset($this->linetags['quote']);
+		}
+		if (!$this->getOpt('active_lists')) {
+			unset($this->linetags['lists']);
+		}
+		if (!$this->getOpt('active_pre')) {
+			unset($this->linetags['pre']);
 		}
 		
 		$this->open_tags = $this->__getTags();
@@ -557,6 +585,9 @@ class wiki2xhtml
 		# Paragraphe
 		else {
 			$type = 'p';
+			if (preg_match('/^\\\(?<line>(?:('.implode('|',$this->linetags).')).*)$/',$line,$cap)) {
+				$line = $cap['line'];
+			}
 			$line = trim($line);
 		}
 		
