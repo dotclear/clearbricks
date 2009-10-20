@@ -279,7 +279,7 @@ class template
 	protected function getAttrs($str)
 	{
 		$res = array();
-		if (preg_match_all('|([a-zA-Z0-9_:-]+)="(.+?)"|ms',$str,$m) > 0) {
+		if (preg_match_all('|([a-zA-Z0-9_:-]+)="([^"]*)"|ms',$str,$m) > 0) {
 			foreach ($m[1] as $i => $v) {
 				$res[$v] = $m[2][$i];
 			}
