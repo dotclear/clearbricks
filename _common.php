@@ -115,4 +115,9 @@ $__autoload['xmlrpcIntrospectionServer']	= dirname(__FILE__).'/net.xmlrpc/class.
 # Zip tools
 $__autoload['fileUnzip']		= dirname(__FILE__).'/zip/class.unzip.php';
 $__autoload['fileZip']		= dirname(__FILE__).'/zip/class.zip.php';
+
+# Diff tools
+$__autoload['diff']		= dirname(__FILE__).'/diff/lib.diff.php';
+$__autoload['uDiff']		= dirname(__FILE__).'/diff/lib.unified.diff.php';
+
 ?>
