@@ -882,6 +882,7 @@ class record
 	*/
 	public function moveStart()
 	{
+		$this->__fetch = false;
 		return $this->index(0);
 	}
 	
