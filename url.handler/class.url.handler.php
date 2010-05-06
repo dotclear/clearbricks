@@ -24,6 +24,7 @@ class urlHandler
 {
 	protected $types = array();
 	protected $default_handler;
+	protected $error_handlers = array();
 	public $mode;
 	public $type = 'default';
 	
@@ -44,6 +45,11 @@ class urlHandler
 	public function registerDefault($handler)
 	{
 		$this->default_handler = $handler;
+	}
+	
+	public function registerError($handler)
+	{
+		array_unshift($this->error_handlers,$handler);
 	}
 	
 	public function unregister($type)
@@ -156,8 +162,15 @@ class urlHandler
 		if (!is_callable($handler)) {
 			throw new Exception('Unable to call function');
 		}
-		
-		call_user_func($handler,$args);
+		try {
+			call_user_func($handler,$args);
+		} catch (Exception $e) {
+			foreach ($this->error_handlers as $err_handler) {
+				if (call_user_func($err_handler,$args,$type,$e) === true) {
+					return;
+				}
+			}
+		}
 	}
 	
 	public function callDefaultHandler($args)
