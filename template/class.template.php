@@ -212,7 +212,11 @@ class template
 		}
 		
 		ob_start();
-		@include $this->getFile($________);
+		if (ini_get('display_errors') == true) {
+			include $this->getFile($________);
+		} else {
+			@include $this->getFile($________);
+		}
 		self::$_r = ob_get_contents();
 		ob_end_clean();
 		
