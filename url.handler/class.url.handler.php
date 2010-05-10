@@ -170,6 +170,8 @@ class urlHandler
 					return;
 				}
 			}
+			# propagate exception, as it has not been processed by handlers
+			throw $e;
 		}
 	}
 	
@@ -179,7 +181,18 @@ class urlHandler
 			throw new Exception('Unable to call function');
 		}
 		
-		call_user_func($this->default_handler,$args);
+		try {
+			call_user_func($this->default_handler,$args);
+		} catch (Exception $e) {
+			foreach ($this->error_handlers as $err_handler) {
+				if (call_user_func($err_handler,$args,'default',$e) === true) {
+					return;
+				}
+			}
+			# propagate exception, as it has not been processed by handlers
+			throw $e;
+		}
+			
 	}
 	
 	protected function parseQueryString()
