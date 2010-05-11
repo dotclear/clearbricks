@@ -990,6 +990,14 @@ class record
 		
 		return $res;
 	}
+	
+	/**
+	* @return array	current rows.
+	*/
+	public function row()
+	{
+		return $this->__row;
+	}
 }
 
 /**
