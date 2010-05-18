@@ -193,7 +193,7 @@ class xmlrpcMessage
 	/** @var string Fault code */			public $faultCode;
 	/** @var string Fault string */		public $faultString;
 	/** @var string Method name */		public $methodName;
-	/** @var string Method parameters */	public $params;
+	/** @var array Method parameters */	public $params = array();
 		    
 	# Currentstring variable stacks
 	/** @@ignore */	protected $_arraystructs = array();   # The stack used to keep track of the current array/struct
