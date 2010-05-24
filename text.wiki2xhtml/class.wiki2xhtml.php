@@ -271,9 +271,14 @@ class wiki2xhtml
 				'\\\$1',$res
 				);
 			}
+
+			# Transforms urls while preserving tags.
+			$tree = preg_split($this->tag_pattern,$res,-1,PREG_SPLIT_DELIM_CAPTURE);
+			foreach ($tree as $idx => $part) {
+				$tree[$idx] = preg_replace($this->getOpt('auto_url_pattern'),'[$1$2]',$part);
+			}
+			$res = implode($tree);
 			
-			# Transforms urls
-			$res = preg_replace($this->getOpt('auto_url_pattern'),'[$1$2]',$res);
 			
 		}
 		
