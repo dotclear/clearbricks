@@ -1,14 +1,14 @@
 <?php
-# -- BEGIN LICENSE BLOCK ----------------------------------
+# -- BEGIN LICENSE BLOCK ---------------------------------------
 #
 # This file is part of Clearbricks.
 #
-# Copyright (c) 2003-2008 Olivier Meunier and contributors
+# Copyright (c) 2003-2010 Olivier Meunier & Association Dotclear
 # Licensed under the GPL version 2.0 license.
 # See LICENSE file or
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 #
-# -- END LICENSE BLOCK ------------------------------------
+# -- END LICENSE BLOCK -----------------------------------------
 
 /**
 * MySQL Database Driver
@@ -24,49 +24,49 @@ if (class_exists('dbLayer'))
 	{
 		/** @var boolean	Enables weak locks if true */
 		public static $weak_locks = false;
-	
+		
 		/** @ignore */
 		protected $__driver = 'mysql';
-	
+		
 		/** @ignore */
 		public function db_connect($host,$user,$password,$database)
 		{
 			if (!function_exists('mysql_connect')) {
 				throw new Exception('PHP MySQL functions are not available');
 			}
-		
+			
 			if (($link = @mysql_connect($host,$user,$password,true)) === false) {
 				throw new Exception('Unable to connect to database');
 			}
-		
+			
 			$this->db_post_connect($link,$database);
-		
+			
 			return $link;
 		}
-	
+		
 		/** @ignore */
 		public function db_pconnect($host,$user,$password,$database)
 		{
 			if (!function_exists('mysql_pconnect')) {
 				throw new Exception('PHP MySQL functions are not available');
 			}
-		
+			
 			if (($link = @mysql_pconnect($host,$user,$password)) === false) {
 				throw new Exception('Unable to connect to database');
 			}
-		
+			
 			$this->db_post_connect($link,$database);
-		
+			
 			return $link;
 		}
-	
+		
 		/** @ignore */
 		private function db_post_connect($link,$database)
 		{
 			if (@mysql_select_db($database,$link) === false) {
 				throw new Exception('Unable to use database '.$database);
 			}
-		
+			
 			if (version_compare($this->db_version($link),'4.1','>='))
 			{
 				$this->db_query($link,'SET NAMES utf8');
@@ -77,7 +77,7 @@ if (class_exists('dbLayer'))
 				$this->db_query($link,"SET CHARACTER_SET_DATABASE = 'utf8'");
 			}
 		}
-	
+		
 		/** @ignore */
 		public function db_close($handle)
 		{
@@ -85,7 +85,7 @@ if (class_exists('dbLayer'))
 				mysql_close($handle);
 			}
 		}
-	
+		
 		/** @ignore */
 		public function db_version($handle)
 		{
@@ -94,7 +94,7 @@ if (class_exists('dbLayer'))
 			}
 			return null;
 		}
-	
+		
 		/** @ignore */
 		public function db_query($handle,$query)
 		{
@@ -109,13 +109,13 @@ if (class_exists('dbLayer'))
 				return $res;
 			}
 		}
-	
+		
 		/** @ignore */
 		public function db_exec($handle,$query)
 		{
 			return $this->db_query($handle,$query);
 		}
-	
+		
 		/** @ignore */
 		public function db_num_fields($res)
 		{
@@ -124,7 +124,7 @@ if (class_exists('dbLayer'))
 			}
 			return 0;
 		}
-	
+		
 		/** @ignore */
 		public function db_num_rows($res)
 		{
@@ -133,7 +133,7 @@ if (class_exists('dbLayer'))
 			}
 			return 0;
 		}
-	
+		
 		/** @ignore */
 		public function db_field_name($res,$position)
 		{
@@ -141,7 +141,7 @@ if (class_exists('dbLayer'))
 				return mysql_field_name($res,$position);
 			}
 		}
-	
+		
 		/** @ignore */
 		public function db_field_type($res,$position)
 		{
@@ -149,7 +149,7 @@ if (class_exists('dbLayer'))
 				return mysql_field_type($res,$position);
 			}
 		}
-	
+		
 		/** @ignore */
 		public function db_fetch_assoc($res)
 		{
@@ -157,7 +157,7 @@ if (class_exists('dbLayer'))
 				return mysql_fetch_assoc($res);
 			}
 		}
-	
+		
 		/** @ignore */
 		public function db_result_seek($res,$row)
 		{
@@ -165,7 +165,7 @@ if (class_exists('dbLayer'))
 				return mysql_data_seek($res,$row);
 			}
 		}
-	
+		
 		/** @ignore */
 		public function db_changes($handle,$res)
 		{
@@ -173,7 +173,7 @@ if (class_exists('dbLayer'))
 				return mysql_affected_rows($handle);
 			}
 		}
-	
+		
 		/** @ignore */
 		public function db_last_error($handle)
 		{
@@ -186,7 +186,7 @@ if (class_exists('dbLayer'))
 			}		
 			return false;
 		}
-	
+		
 		/** @ignore */
 		public function db_escape_string($str,$handle=null)
 		{
@@ -196,7 +196,7 @@ if (class_exists('dbLayer'))
 				return mysql_escape_string($str);
 			}
 		}
-	
+		
 		/** @ignore */
 		public function db_write_lock($table)
 		{
@@ -209,7 +209,7 @@ if (class_exists('dbLayer'))
 				}
 			}
 		}
-	
+		
 		/** @ignore */
 		public function db_unlock()
 		{
@@ -221,28 +221,28 @@ if (class_exists('dbLayer'))
 				}
 			}
 		}
-	
+		
 		/** @ignore */
 		public function vacuum($table)
 		{
 			$this->execute('OPTIMIZE TABLE '.$this->escapeSystem($table));
 		}
-	
+		
 		/** @ignore */
 		public function dateFormat($field,$pattern)
 		{
 			$pattern = str_replace('%M','%i',$pattern);
-		
+			
 			return 'DATE_FORMAT('.$field.','."'".$this->escape($pattern)."') ";
 		}
-	
+		
 		/** @ignore */
 		public function concat()
 		{
 			$args = func_get_args();
 			return 'CONCAT('.implode(',',$args).')';
 		}
-	
+		
 		/** @ignore */
 		public function escapeSystem($str)
 		{

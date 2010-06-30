@@ -1,14 +1,14 @@
 <?php
-# -- BEGIN LICENSE BLOCK ----------------------------------
+# -- BEGIN LICENSE BLOCK ---------------------------------------
 #
 # This file is part of Clearbricks.
 #
-# Copyright (c) 2003-2008 Olivier Meunier and contributors
+# Copyright (c) 2003-2010 Olivier Meunier & Association Dotclear
 # Licensed under the GPL version 2.0 license.
 # See LICENSE file or
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 #
-# -- END LICENSE BLOCK ------------------------------------
+# -- END LICENSE BLOCK -----------------------------------------
 
 /**
 * HTML Validator
@@ -24,19 +24,19 @@ if (class_exists('netHttp'))
 	{
 		/** @ignore */
 		protected $host = 'www.htmlhelp.com';
-	
+		
 		/** @ignore */
 		protected $path = '/cgi-bin/validate.cgi';
-	
+		
 		/** @ignore */
 		protected $user_agent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.3a) Gecko/20021207';
-	
+		
 		/** @ignore */
 		protected $timeout = 2;
-	
+		
 		/** @ignore */
 		protected $html_errors = array();		///<	<b>array</b>		Validation errors list
-	
+		
 		/**
 		* Constructor, no parameters.
 		*/
@@ -44,7 +44,7 @@ if (class_exists('netHttp'))
 		{
 			parent::__construct($this->host,80,$this->timeout);
 		}
-	
+		
 		/**
 		* HTML Document
 		*
@@ -67,7 +67,7 @@ if (class_exists('netHttp'))
 			'</body>'."\n".
 			'</html>';
 		}
-	
+		
 		/**
 		* HTML validation
 		*
@@ -81,13 +81,13 @@ if (class_exists('netHttp'))
 		{
 			$data = array('area' => $html, 'charset' => $charset);
 			$this->post($this->path,$data);
-		
+			
 			if ($this->getStatus() != 200) {
 				throw new Exception('Status code line invalid.');
 			}
-		
+			
 			$result = $this->getContent();
-		
+			
 			if (strpos($result,'<p class=congratulations><strong>Congratulations, no errors!</strong></p>'))
 			{
 				return true;
@@ -100,7 +100,7 @@ if (class_exists('netHttp'))
 				return false;
 			}
 		}
-	
+		
 		/**
 		* Validation Errors
 		*
@@ -110,7 +110,7 @@ if (class_exists('netHttp'))
 		{
 			return $this->html_errors;
 		}
-	
+		
 		/**
 		* Static HTML validation
 		*
@@ -128,7 +128,7 @@ if (class_exists('netHttp'))
 		{
 			$o = new self;
 			$fragment = $o->getDocument($fragment,$charset);
-		
+			
 			if ($o->perform($fragment,$charset))
 			{
 				return array('valid' => true, 'errors' => null);

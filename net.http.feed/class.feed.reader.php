@@ -1,14 +1,14 @@
 <?php
-# -- BEGIN LICENSE BLOCK ----------------------------------
+# -- BEGIN LICENSE BLOCK ---------------------------------------
 #
 # This file is part of Clearbricks.
 #
-# Copyright (c) 2003-2008 Olivier Meunier and contributors
+# Copyright (c) 2003-2010 Olivier Meunier & Association Dotclear
 # Licensed under the GPL version 2.0 license.
 # See LICENSE file or
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 #
-# -- END LICENSE BLOCK ------------------------------------
+# -- END LICENSE BLOCK -----------------------------------------
 
 /**
 * Feed Reader
@@ -34,12 +34,12 @@ if (class_exists('netHttp'))
 		/** @ignore */							protected $user_agent = 'Clearbricks Feed Reader/0.2';
 		/** @ignore */							protected $timeout = 5;
 		/** @var array HTTP Cache validators */		protected $validators = null;
-	
+		
 		/** @var string Cache directory path */		protected $cache_dir = null;
 		/** @var string Cache file prefix */		protected $cache_file_prefix = 'cbfeed';
 		/** @var string Cache TTL */				protected $cache_ttl = '-30 minutes';
-	
-	
+		
+		
 		/**
 		* Constructor.
 		*
@@ -49,7 +49,7 @@ if (class_exists('netHttp'))
 		{
 			parent::__construct('');
 		}
-	
+		
 		/**
 		* Parse Feed
 		*
@@ -71,15 +71,15 @@ if (class_exists('netHttp'))
 				if (!$this->getFeed($url)) {
 					return false;
 				}
-			
+				
 				if ($this->getStatus() != '200') {
 					return false;
 				}
-			
+				
 				return new feedParser($this->getContent());
 			}
 		}
-	
+		
 		/**
 		* Quick Parse
 		*
@@ -96,10 +96,10 @@ if (class_exists('netHttp'))
 			if ($cache_dir) {
 				$parser->setCacheDir($cache_dir);
 			}
-		
+			
 			return $parser->parse($url);
 		}
-	
+		
 		/**
 		* Set Cache Directory
 		*
@@ -112,16 +112,16 @@ if (class_exists('netHttp'))
 		public function setCacheDir($dir)
 		{
 			$this->cache_dir = null;
-		
+			
 			if (!empty($dir) && is_dir($dir) && is_writeable($dir))
 			{
 				$this->cache_dir = $dir;
 				return true;
 			}
-		
+			
 			return false;
 		}
-	
+		
 		/**
 		* Set Cache TTL
 		*
@@ -141,7 +141,7 @@ if (class_exists('netHttp'))
 				$this->cache_ttl = $str;
 			}
 		}
-	
+		
 		/**
 		* Feed Content
 		*
@@ -158,10 +158,10 @@ if (class_exists('netHttp'))
 			$this->setHost($host,$port);
 			$this->useSSL($ssl);
 			$this->setAuthorization($user,$pass);
-		
+			
 			return $this->get($path);
 		}
-	
+		
 		/**
 		* Cache content
 		*
@@ -181,9 +181,9 @@ if (class_exists('netHttp'))
 				substr($url_md5,2,2),
 				$url_md5
 			);
-		
+			
 			$may_use_cached = false;
-		
+			
 			if (@file_exists($cached_file))
 			{
 				$may_use_cached = true;
@@ -195,7 +195,7 @@ if (class_exists('netHttp'))
 				}
 				$this->setValidator('IfModifiedSince', $ts);
 			}
-		
+			
 			if (!$this->getFeed($url))
 			{
 				if ($may_use_cached)
@@ -205,7 +205,7 @@ if (class_exists('netHttp'))
 				}
 				return false;
 			}
-		
+			
 			switch ($this->getStatus())
 			{
 				case '304':
@@ -219,7 +219,7 @@ if (class_exists('netHttp'))
 						} catch (Exception $e) {
 							return $feed;
 						}
-					
+						
 						if (($fp = @fopen($cached_file, 'wb')))
 						{
 							fwrite($fp, serialize($feed));
@@ -229,10 +229,10 @@ if (class_exists('netHttp'))
 						return $feed;
 					}
 			}
-		
+			
 			return false;
 		}
-	
+		
 		/**
 		* Build request
 		*
@@ -243,7 +243,7 @@ if (class_exists('netHttp'))
 		protected function buildRequest()
 		{
 			$headers = parent::buildRequest();
-		
+			
 			# Cache validators
 			if (!empty($this->validators))
 			{
@@ -259,16 +259,16 @@ if (class_exists('netHttp'))
 					$headers[] = '';
 				}
 			}
-		
+			
 			return $headers;
 		}
-	
+		
 		private function setValidator($key,$value)
 		{
 			if ($key == 'IfModifiedSince') {
 				$value = gmdate('D, d M Y H:i:s',$value).' GMT';
 			}
-		
+			
 			$this->validators[$key] = $value;
 		}
 	}

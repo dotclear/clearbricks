@@ -1,14 +1,14 @@
 <?php
-# -- BEGIN LICENSE BLOCK ----------------------------------
+# -- BEGIN LICENSE BLOCK ---------------------------------------
 #
 # This file is part of Clearbricks.
 #
-# Copyright (c) 2003-2009 Olivier Meunier and contributors
+# Copyright (c) 2003-2010 Olivier Meunier & Association Dotclear
 # Licensed under the GPL version 2.0 license.
 # See LICENSE file or
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 #
-# -- END LICENSE BLOCK ------------------------------------
+# -- END LICENSE BLOCK -----------------------------------------
 
 /**
 * XML-RPC Client and Server
@@ -566,7 +566,7 @@ if (class_exists('netHttp'))
 	{
 		/** @var xmlrpcRequest XML-RPC Request object */ protected $request;
 		/** @var xmlrpcMessage XML-RPC Message object */ protected $message;
-	
+		
 		/**
 		* Constructor
 		*
@@ -579,15 +579,15 @@ if (class_exists('netHttp'))
 			if (!$this->readUrl($url,$ssl,$host,$port,$path,$user,$pass)) {
 				return false;
 			}
-		
+			
 			parent::__construct($host,$port);
 			$this->useSSL($ssl);
 			$this->setAuthorization($user,$pass);
-		
+			
 			$this->path = $path;
 			$this->user_agent = 'Clearbricks XML/RPC Client';
 		}
-	
+		
 		/**
 		* XML-RPC Query
 		*
@@ -612,26 +612,26 @@ if (class_exists('netHttp'))
 			$args = func_get_args();
 			$method = array_shift($args);
 			$this->request = new xmlrpcRequest($method, $args);
-		
+			
 			$this->doRequest();
-		
+			
 			if ($this->status != 200) {
 				throw new Exception('HTTP Error. '.$this->status.' '.$this->status_string);
 			}
-		
+			
 			# Now parse what we've got back
 			$this->message = new xmlrpcMessage($this->content);
 			$this->message->parse();
-		
+			
 			# Is the message a fault?
 			if ($this->message->messageType == 'fault')
 			{
 				throw new xmlrpcException($this->message->faultString,$this->message->faultCode);
 			}
-		
+			
 			return $this->message->params[0];
 		}
-	
+		
 		# Overloading netHttp::buildRequest method, we don't need all the stuff of
 		# HTTP client.
 		/** @ignore */
@@ -642,7 +642,7 @@ if (class_exists('netHttp'))
 			} else {
 				$path = $this->path;
 			}
-		
+			
 			return array(
 				'POST '.$path.' HTTP/1.0',
 				'Host: '.$this->host,
@@ -666,13 +666,13 @@ if (class_exists('xmlrpcClient'))
 	class xmlrpcClientMulticall extends xmlrpcClient
 	{
 		/** @var array */	protected $calls = array();
-	
+		
 		/** @ignore */
 		function __construct($url)
 		{
 			parent::__construct($url);
 		}
-	
+		
 		/**
 		* Add call to stack
 		*
@@ -697,15 +697,15 @@ if (class_exists('xmlrpcClient'))
 		{
 			$args = func_get_args();
 			$methodName = array_shift($args);
-		
+			
 			$struct = array(
 				'methodName' => $methodName,
 				'params' => $args
 			);
-		
+			
 			$this->calls[] = $struct;
 		}
-	
+		
 		/**
 		* XML-RPC Query
 		*
@@ -1112,7 +1112,7 @@ if (class_exists('xmlrpcServer'))
 	{
 		protected $signatures;
 		protected $help;
-	
+		
 		/**
 		* Constructor
 		*
@@ -1126,40 +1126,40 @@ if (class_exists('xmlrpcServer'))
 			$this->encoding = $encoding;
 			$this->setCallbacks();
 			$this->setCapabilities();
-		
+			
 			$this->capabilities['introspection'] = array (
 				'specUrl' => 'http://xmlrpc.usefulinc.com/doc/reserved.html',
 				'specVersion' => 1
 			);
-		
+			
 			$this->addCallback(
 				'system.methodSignature', 
 				array($this,'methodSignature'), 
 				array('array','string'), 
 				'Returns an array describing the return type and required parameters of a method'
 			);
-		
+			
 			$this->addCallback(
 				'system.getCapabilities', 
 				array($this,'getCapabilities'), 
 				array('struct'), 
 				'Returns a struct describing the XML-RPC specifications supported by this server'
 			);
-		
+			
 			$this->addCallback(
 				'system.listMethods', 
 				array($this,'listMethods'), 
 				array('array'), 
 				'Returns an array of available methods on this server'
 			);
-		
+			
 			$this->addCallback(
 				'system.methodHelp', 
 				array($this,'methodHelp'), 
 				array('string','string'), 
 				'Returns a documentation string for the specified method'
 			);
-		
+			
 			$this->addCallback(
 				'system.multicall',
 				array($this,'multiCall'),
@@ -1167,7 +1167,7 @@ if (class_exists('xmlrpcServer'))
 				'Returns result of multiple methods calls'
 			);
 		}
-	
+		
 		/**
 		* Add Server Callback
 		*
@@ -1185,7 +1185,7 @@ if (class_exists('xmlrpcServer'))
 			$this->signatures[$method] = $args;
 			$this->help[$method] = $help;
 		}
-	
+		
 		/**
 		* Method call
 		*
@@ -1202,35 +1202,35 @@ if (class_exists('xmlrpcServer'))
 			if ($args && !is_array($args)) {
 				$args = array($args);
 			}
-		
+			
 			# Over-rides default call method, adds signature check
 			if (!$this->hasMethod($methodname)) {
 				throw new xmlrpcException('Server error. Requested method "'.$methodname.'" not specified.',-32601);
 			}
-		
+			
 			$method = $this->callbacks[$methodname];
 			$signature = $this->signatures[$methodname];
-		
+			
 			if (!is_array($signature)) {
 				throw new xmlrpcException('Server error. Wrong method signature',-36600);
 			}
-		
+			
 			$return_type = array_shift($signature);
-		
+			
 			# Check the number of arguments
 			if (count($args) > count($signature)) {
 				throw new xmlrpcException('Server error. Wrong number of method parameters',-32602);
 			}
-		
+			
 			# Check the argument types
 			if (!$this->checkArgs($args,$signature)) {
 				throw new xmlrpcException('Server error. Invalid method parameters',-32602);
 			}
-		
+			
 			# It passed the test - run the "real" method call
 			return parent::call($methodname, $args);
 		}
-	
+		
 		/**
 		* Method Arguments Check
 		*
@@ -1246,7 +1246,7 @@ if (class_exists('xmlrpcServer'))
 			{
 				$arg = array_shift($args);
 				$type = array_shift($signature);
-			
+				
 				switch ($type)
 				{
 					case 'int':
@@ -1282,7 +1282,7 @@ if (class_exists('xmlrpcServer'))
 			}
 			return true;
 		}
-	
+		
 		/**
 		* Method Signature
 		*
@@ -1297,11 +1297,11 @@ if (class_exists('xmlrpcServer'))
 				throw new xmlrpcException('Server error. Requested method "'.$method.'" not specified.',-32601);
 			
 			}
-		
+			
 			# We should be returning an array of types
 			$types = $this->signatures[$method];
 			$return = array();
-		
+			
 			foreach ($types as $type)
 			{
 				switch ($type)
@@ -1335,7 +1335,7 @@ if (class_exists('xmlrpcServer'))
 			}
 			return $return;
 		}
-	
+		
 		/**
 		* Method Help
 		*
