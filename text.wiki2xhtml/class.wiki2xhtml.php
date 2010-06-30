@@ -591,8 +591,8 @@ class wiki2xhtml
 		# Paragraphe
 		else {
 			$type = 'p';
-			if (preg_match('/^\\\(?<line>(?:('.implode('|',$this->linetags).')).*)$/',$line,$cap)) {
-				$line = $cap['line'];
+			 if (preg_match('/^\\\((?:('.implode('|',$this->linetags).')).*)$/',$line,$cap)) {
+				$line = $cap[1];
 			}
 			$line = trim($line);
 		}
