@@ -1,14 +1,14 @@
 <?php
-# -- BEGIN LICENSE BLOCK ----------------------------------
+# -- BEGIN LICENSE BLOCK ---------------------------------------
 #
 # This file is part of Clearbricks.
 #
-# Copyright (c) 2003-2008 Olivier Meunier and contributors
+# Copyright (c) 2003-2010 Olivier Meunier & Association Dotclear
 # Licensed under the GPL version 2.0 license.
 # See LICENSE file or
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 #
-# -- END LICENSE BLOCK ------------------------------------
+# -- END LICENSE BLOCK -----------------------------------------
 
 /**
 * HTTP Client
@@ -74,22 +74,22 @@ if (class_exists('netSocket'))
 		/** @var string Authentication password */		protected $password;
 		/** @var string Proxy server host */			protected $proxy_host;
 		/** @var integer Proxy server port */			protected $proxy_port;
-
+		
 		# Response vars
 		/** @var integer HTTP Status code */			protected $status;
 		/** @var string HTTP Status string */			protected $status_string;
 		/** @var array Response headers */				protected $headers = array();
 		/** @var string Response body */				protected $content = '';
-
+		
 		# Tracker variables
 		/** @var integer Internal redirects count */		protected $redirect_count = 0;
 		/** @var string Internal cookie host */			protected $cookie_host = '';
-
+		
 		# Output module (null is this->content)
 		/** @var string Output stream name */			protected $output = null;
 		/** @var resource Output resource */			protected $output_h = null;
-	
-	
+		
+		
 		/**
 		* Constructor.
 		*
@@ -102,17 +102,17 @@ if (class_exists('netSocket'))
 		public function __construct($host,$port=80,$timeout=null)
 		{
 			$this->setHost($host,$port);
-		
+			
 			if (defined('HTTP_PROXY_HOST') && defined('HTTP_PROXY_PORT')) {
 				$this->setProxy(HTTP_PROXY_HOST,HTTP_PROXY_PORT);
 			}
-		
+			
 			if ($timeout) {
 				$this->setTimeout($timeout);
 			}
 			$this->_timeout =& $this->timeout;
 		}
-	
+		
 		/**
 		* GET Request
 		*
@@ -129,14 +129,14 @@ if (class_exists('netSocket'))
 		{
 			$this->path = $path;
 			$this->method = 'GET';
-		
+			
 			if ($data) {
 				$this->path .= '?'.$this->buildQueryString($data);
 			}
-		
+			
 			return $this->doRequest();
 		}
-	
+		
 		/**
 		* POST Request
 		*
@@ -160,7 +160,7 @@ if (class_exists('netSocket'))
 			$this->postdata = $this->buildQueryString($data);
 			return $this->doRequest();
 		}
-	
+		
 		/**
 		* Query String Builder
 		*
@@ -190,10 +190,10 @@ if (class_exists('netSocket'))
 			} else {
 				$qs = $data;
 			}
-		
+			
 			return $qs;
 		}
-	
+		
 		/**
 		* Do Request
 		*
@@ -215,15 +215,15 @@ if (class_exists('netSocket'))
 				$this->_port = $this->port;
 				$this->_transport = $this->use_ssl ? 'ssl://' : '';
 			}
-		
+			
 			#Reset all the variables that should not persist between requests
 			$this->headers = array();
 			$in_headers = true;
 			$this->outputOpen();
-		
+			
 			$request = $this->buildRequest();
 			$this->debug('Request',implode("\r",$request));
-		
+			
 			$this->open();
 			$this->debug('Connecting to '.$this->_transport.$this->_host.':'.$this->_port);
 			foreach($this->write($request) as $index => $line)
@@ -241,7 +241,7 @@ if (class_exists('netSocket'))
 					$this->debug($line);
 					continue;
 				}
-			
+				
 				# Read headers
 				if ($in_headers)
 				{
@@ -255,7 +255,7 @@ if (class_exists('netSocket'))
 						}
 						continue;
 					}
-				
+					
 					if (!preg_match('/([^:]+):\\s*(.*)/', $line, $m)) {
 						# Skip to the next header
 						continue;
@@ -274,20 +274,20 @@ if (class_exists('netSocket'))
 					}
 					continue;
 				}
-			
+				
 				# We're not in the headers, so append the line to the contents
 				$this->outputWrite($line);
 			}
 			$this->close();
 			$this->outputClose();
-		
+			
 			# If data is compressed, uncompress it
 			if ($this->getHeader('content-encoding') && $this->use_gzip) {
 				$this->debug('Content is gzip encoded, unzipping it');
 				# See http://www.php.net/manual/en/function.gzencode.php
 				$this->content = gzinflate(substr($this->content, 10));
 			}
-		
+			
 			# If $persist_cookies, deal with any cookies
 			if ($this->persist_cookies && $this->getHeader('set-cookie') && $this->host == $this->cookie_host)
 			{
@@ -295,24 +295,24 @@ if (class_exists('netSocket'))
 				if (!is_array($cookies)) {
 					$cookies = array($cookies);
 				}
-			
+				
 				foreach ($cookies as $cookie)
 				{
 					if (preg_match('/([^=]+)=([^;]+);/', $cookie, $m)) {
 						$this->cookies[$m[1]] = $m[2];
 					}
 				}
-			
+				
 				# Record domain of cookies for security reasons
 				$this->cookie_host = $this->host;
 			}
-		
+			
 			# If $persist_referers, set the referer ready for the next request
 			if ($this->persist_referers) {
 				$this->debug('Persisting referer: '.$this->getRequestURL());
 				$this->referer = $this->getRequestURL();
 			}
-		
+			
 			# Finally, if handle_redirects and a redirect is sent, do that
 			if ($this->handle_redirects)
 			{
@@ -321,7 +321,7 @@ if (class_exists('netSocket'))
 					$this->redirect_count = 0;
 					throw new Exception('Number of redirects exceeded maximum ('.$this->max_redirects.')');
 				}
-			
+				
 				$location = isset($this->headers['location']) ? $this->headers['location'] : '';
 				$uri = isset($this->headers['uri']) ? $this->headers['uri'] : '';
 				if ($location || $uri)
@@ -343,7 +343,7 @@ if (class_exists('netSocket'))
 			}
 			return true;
 		}
-	
+		
 		/**
 		* Prepare Request
 		*
@@ -354,29 +354,29 @@ if (class_exists('netSocket'))
 		protected function buildRequest()
 		{
 			$headers = array();
-		
+			
 			if ($this->proxy_host) {
 				$path = $this->getRequestURL();
 			} else {
 				$path = $this->path;
 			}
-		
+			
 			# Using 1.1 leads to all manner of problems, such as "chunked" encoding
 			$headers[] = $this->method.' '.$path.' HTTP/1.0';
-		
+			
 			$headers[] = 'Host: '.$this->host;
 			$headers[] = 'User-Agent: '.$this->user_agent;
 			$headers[] = 'Accept: '.$this->accept;
-		
+			
 			if ($this->use_gzip) {
 				$headers[] = 'Accept-encoding: '.$this->accept_encoding;
 			}
 			$headers[] = 'Accept-language: '.$this->accept_language;
-		
+			
 			if ($this->referer) {
 				$headers[] = 'Referer: '.$this->referer;
 			}
-		
+			
 			# Cookies
 			if ($this->cookies) {
 				$cookie = 'Cookie: ';
@@ -385,21 +385,21 @@ if (class_exists('netSocket'))
 				}
 				$headers[] = $cookie;
 			}
-		
+			
 			# X-Forwarded-For
 			$xforward= array($_SERVER['REMOTE_ADDR']);
 			if ($this->proxy_host) {
 				$xforward[] = $_SERVER['SERVER_ADDR'];
 			}
 			$headers[] = 'X-Forwarded-For: '.implode(', ',$xforward);
-		
+			
 			# Basic authentication
 			if ($this->username && $this->password) {
 				$headers[] = 'Authorization: Basic '.base64_encode($this->username.':'.$this->password);
 			}
-		
+			
 			$headers = array_merge($headers,$this->more_headers);
-		
+			
 			# If this is a POST, set the content type and length
 			if ($this->postdata) {
 				$content_type = 'Content-Type: application/x-www-form-urlencoded';
@@ -411,10 +411,10 @@ if (class_exists('netSocket'))
 				$headers[] = '';
 				$headers[] = $this->postdata;
 			}
-		
+			
 			return $headers;
 		}
-	
+		
 		/**
 		* Open Output
 		*
@@ -431,7 +431,7 @@ if (class_exists('netSocket'))
 				$this->content = '';
 			}
 		}
-	
+		
 		/**
 		* Close Output
 		*
@@ -443,7 +443,7 @@ if (class_exists('netSocket'))
 				fclose($this->output_h);
 			}
 		}
-	
+		
 		/**
 		* Write Output
 		*
@@ -459,7 +459,7 @@ if (class_exists('netSocket'))
 				$this->content .= $c;
 			}
 		}
-	
+		
 		/**
 		* Get Status
 		*
@@ -472,7 +472,7 @@ if (class_exists('netSocket'))
 		{
 			return $this->status;
 		}
-	
+		
 		/**
 		* Get Contet
 		*
@@ -484,7 +484,7 @@ if (class_exists('netSocket'))
 		{
 			return $this->content;
 		}
-	
+		
 		/**
 		* Response Headers
 		*
@@ -496,7 +496,7 @@ if (class_exists('netSocket'))
 		{
 			return $this->headers;
 		}
-	
+		
 		/**
 		* Response Header
 		*
@@ -514,7 +514,7 @@ if (class_exists('netSocket'))
 				return false;
 			}
 		}
-	
+		
 		/**
 		* Cookies
 		*
@@ -526,7 +526,7 @@ if (class_exists('netSocket'))
 		{
 			return $this->cookies;
 		}
-	
+		
 		/**
 		* Request URL
 		*
@@ -543,7 +543,7 @@ if (class_exists('netSocket'))
 			$url .= $this->path;
 			return $url;
 		}
-	
+		
 		/**
 		* Sets server host and port.
 		*
@@ -555,7 +555,7 @@ if (class_exists('netSocket'))
 			$this->host = $host;
 			$this->port = abs((integer) $port);
 		}
-	
+		
 		/**
 		* Sets proxy host and port.
 		*
@@ -567,7 +567,7 @@ if (class_exists('netSocket'))
 			$this->proxy_host = $host;
 			$this->proxy_port = abs((integer) $port);
 		}
-	
+		
 		/**
 		* Sets connection timeout.
 		*
@@ -577,7 +577,7 @@ if (class_exists('netSocket'))
 		{
 			$this->timeout = abs((integer) $t);
 		}
-	
+		
 		/**
 		* User Agent String
 		*
@@ -590,7 +590,7 @@ if (class_exists('netSocket'))
 		{
 			$this->user_agent = $string;
 		}
-	
+		
 		/**
 		* HTTP Authentication
 		*
@@ -605,7 +605,7 @@ if (class_exists('netSocket'))
 			$this->username = $username;
 			$this->password = $password;
 		}
-	
+		
 		/**
 		* Add Header
 		*
@@ -617,7 +617,7 @@ if (class_exists('netSocket'))
 		{
 			$this->more_headers[] = $header;
 		}
-	
+		
 		/**
 		* Empty additionnal headers
 		*/
@@ -625,8 +625,7 @@ if (class_exists('netSocket'))
 		{
 			$this->more_headers = array();
 		}
-	
-	
+		
 		/**
 		* Set Cookies
 		*
@@ -639,7 +638,7 @@ if (class_exists('netSocket'))
 		{
 			$this->cookies = $array;
 		}
-	
+		
 		/**
 		* Enable / Disable SSL
 		*
@@ -658,7 +657,7 @@ if (class_exists('netSocket'))
 				$this->use_ssl = false;
 			}
 		}
-	
+		
 		/**
 		* Use Gzip
 		*
@@ -672,7 +671,7 @@ if (class_exists('netSocket'))
 		{
 			$this->use_gzip = (boolean) $boolean;
 		}
-	
+		
 		/**
 		* Persistant Cookies
 		*
@@ -685,7 +684,7 @@ if (class_exists('netSocket'))
 		{
 			$this->persist_cookies = (boolean) $boolean;
 		}
-	
+		
 		/**
 		* Persistant Referrers
 		*
@@ -698,7 +697,7 @@ if (class_exists('netSocket'))
 		{
 			$this->persist_referers = (boolean) $boolean;
 		}
-	
+		
 		/**
 		* Enable / Disable Redirects
 		*
@@ -711,7 +710,7 @@ if (class_exists('netSocket'))
 		{
 			$this->handle_redirects = (boolean) $boolean;
 		}
-	
+		
 		/**
 		* Maximum Redirects
 		*
@@ -724,7 +723,7 @@ if (class_exists('netSocket'))
 		{
 			$this->max_redirects = abs((integer) $num);
 		}
-	
+		
 		/**
 		* Headers Only
 		*
@@ -737,7 +736,7 @@ if (class_exists('netSocket'))
 		{
 			$this->headers_only = (boolean) $boolean;
 		}
-	
+		
 		/**
 		* Debug mode
 		*
@@ -749,7 +748,7 @@ if (class_exists('netSocket'))
 		{
 			$this->debug = (boolean) $boolean;
 		}
-	
+		
 		/**
 		* Set Output
 		*
@@ -762,7 +761,7 @@ if (class_exists('netSocket'))
 		{
 			$this->output = $out;
 		}
-	
+		
 		/**
 		* Quick Get
 		*
@@ -782,7 +781,7 @@ if (class_exists('netSocket'))
 			$client->get($path);
 			return $client->getStatus() == 200 ? $client->getContent() : false;
 		}
-	
+		
 		/**
 		* Quick Post
 		*
@@ -803,7 +802,7 @@ if (class_exists('netSocket'))
 			$client->post($path,$data);
 			return $client->getStatus() == 200 ? $client->getContent() : false;
 		}
-	
+		
 		/**
 		* Quick Init
 		*
@@ -818,14 +817,14 @@ if (class_exists('netSocket'))
 			if (!self::readUrl($url,$ssl,$host,$port,$path,$user,$pass)) {
 				return false;
 			}
-		
+			
 			$client = new self($host,$port);
 			$client->useSSL($ssl);
 			$client->setAuthorization($user,$pass);
-		
+			
 			return $client;
 		}
-	
+		
 		/**
 		* Read URL
 		*
@@ -845,35 +844,35 @@ if (class_exists('netSocket'))
 		public static function readURL($url,&$ssl,&$host,&$port,&$path,&$user,&$pass)
 		{
 			$bits = parse_url($url);
-		
+			
 			if (empty($bits['host'])) {
 				return false;
 			}
-		
+			
 			if (empty($bits['scheme']) || !preg_match('%^http[s]?$%',$bits['scheme'])) {
 				return false;
 			}
-		
+			
 			$scheme = isset($bits['scheme']) ? $bits['scheme'] : 'http';
 			$host = isset($bits['host']) ? $bits['host'] : null;
 			$port = isset($bits['port']) ? $bits['port'] : null;
 			$path = isset($bits['path']) ? $bits['path'] : '/';
 			$user = isset($bits['user']) ? $bits['user'] : null;
 			$pass = isset($bits['pass']) ? $bits['pass'] : null;
-		
+			
 			$ssl = $scheme == 'https';
-		
+			
 			if (!$port) {
 				$port = $ssl ? 443 : 80;
 			}
-		
+			
 			if (isset($bits['query'])) {
 				$path .= '?'.$bits['query'];
 			}
-		
+			
 			return true;
 		}
-	
+		
 		/**
 		* Debug
 		*

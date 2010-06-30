@@ -1,7 +1,7 @@
 <?php
 # ***** BEGIN LICENSE BLOCK *****
 # This file is part of Clearbricks.
-# Copyright (c) 2008 Olivier Meunier and contributors.
+# Copyright (c) 2003-2010 Olivier Meunier & Association Dotclear
 # All rights reserved.
 #
 # Clearbricks is free software; you can redistribute it and/or modify
@@ -296,7 +296,7 @@ class fileZip
 		pack('V',32).				# external file attributes - 'archive' bit set
 		pack('V',$this->old_offset).	# relative offset of local header
 		$name;
-
+		
 		$this->old_offset = $new_offset;
 		$this->ctrl_dir[] = $cdrec;
 	}

@@ -1,14 +1,14 @@
 <?php
-# -- BEGIN LICENSE BLOCK ----------------------------------
+# -- BEGIN LICENSE BLOCK ---------------------------------------
 #
 # This file is part of Clearbricks.
 #
-# Copyright (c) 2003-2008 Olivier Meunier and contributors
+# Copyright (c) 2003-2010 Olivier Meunier & Association Dotclear
 # Licensed under the GPL version 2.0 license.
 # See LICENSE file or
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 #
-# -- END LICENSE BLOCK ------------------------------------
+# -- END LICENSE BLOCK -----------------------------------------
 
 /**
 * PostgreSQL Database Driver
@@ -26,12 +26,12 @@ if (class_exists('dbLayer'))
 	{
 		/** @ignore */
 		protected $__driver = 'pgsql';
-	
+		
 		private function get_connection_string($host,$user,$password,$database)
 		{
 			$str = '';
 			$port = false;
-		
+			
 			if ($host)
 			{
 				if (strpos($host,':') !== false) {
@@ -40,7 +40,7 @@ if (class_exists('dbLayer'))
 					$port = abs((integer) array_shift($bits));
 				}
 				$str .= "host = '".addslashes($host)."' ";
-			
+				
 				if ($port) {
 					$str .= 'port = '.$port.' ';
 				}
@@ -54,42 +54,42 @@ if (class_exists('dbLayer'))
 			if ($database) {
 				$str .= "dbname = '".addslashes($database)."' ";
 			}
-		
+			
 			return $str;
 		}
-	
+		
 		/** @ignore */
 		public function db_connect($host,$user,$password,$database)
 		{
 			if (!function_exists('pg_connect')) {
 				throw new Exception('PHP PostgreSQL functions are not available');
 			}
-		
+			
 			$str = $this->get_connection_string($host,$user,$password,$database);
-		
+			
 			if (($link = @pg_connect($str)) === false) {
 				throw new Exception('Unable to connect to database');
 			}
-		
+			
 			return $link;
 		}
-	
+		
 		/** @ignore */
 		public function db_pconnect($host,$user,$password,$database)
 		{
 			if (!function_exists('pg_pconnect')) {
 				throw new Exception('PHP PostgreSQL functions are not available');
 			}
-		
+			
 			$str = $this->get_connection_string($host,$user,$password,$database);
-		
+			
 			if (($link = @pg_pconnect($str)) === false) {
 				throw new Exception('Unable to connect to database');
 			}
-		
+			
 			return $link;
 		}
-	
+		
 		/** @ignore */
 		public function db_close($handle)
 		{
@@ -97,7 +97,7 @@ if (class_exists('dbLayer'))
 				pg_close($handle);
 			}
 		}
-	
+		
 		/** @ignore */
 		public function db_version($handle)
 		{
@@ -107,7 +107,7 @@ if (class_exists('dbLayer'))
 			}
 			return null;
 		}
-	
+		
 		/** @ignore */
 		public function db_query($handle,$query)
 		{
@@ -122,13 +122,13 @@ if (class_exists('dbLayer'))
 				return $res;
 			}
 		}
-	
+		
 		/** @ignore */
 		public function db_exec($handle,$query)
 		{
 			return $this->db_query($handle,$query);
 		}
-	
+		
 		/** @ignore */
 		public function db_num_fields($res)
 		{
@@ -137,7 +137,7 @@ if (class_exists('dbLayer'))
 			}
 			return 0;
 		}
-	
+		
 		/** @ignore */
 		public function db_num_rows($res)
 		{
@@ -146,7 +146,7 @@ if (class_exists('dbLayer'))
 			}
 			return 0;
 		}
-	
+		
 		/** @ignore */
 		public function db_field_name($res,$position)
 		{
@@ -154,7 +154,7 @@ if (class_exists('dbLayer'))
 				return pg_field_name($res,$position);
 			}
 		}
-	
+		
 		/** @ignore */
 		public function db_field_type($res,$position)
 		{
@@ -162,7 +162,7 @@ if (class_exists('dbLayer'))
 				return pg_field_type($res,$position);
 			}
 		}
-	
+		
 		/** @ignore */
 		public function db_fetch_assoc($res)
 		{
@@ -170,7 +170,7 @@ if (class_exists('dbLayer'))
 				return pg_fetch_assoc($res);
 			}
 		}
-	
+		
 		/** @ignore */
 		public function db_result_seek($res,$row)
 		{
@@ -179,7 +179,7 @@ if (class_exists('dbLayer'))
 			}
 			return false;
 		}
-	
+		
 		/** @ignore */
 		public function db_changes($handle,$res)
 		{
@@ -187,7 +187,7 @@ if (class_exists('dbLayer'))
 				return pg_affected_rows($res);
 			}
 		}
-	
+		
 		/** @ignore */
 		public function db_last_error($handle)
 		{
@@ -196,32 +196,32 @@ if (class_exists('dbLayer'))
 			}
 			return false;
 		}
-	
+		
 		/** @ignore */
 		public function db_escape_string($str,$handle=null)
 		{
 			return pg_escape_string($str);
 		}
-	
+		
 		/** @ignore */
 		public function db_write_lock($table)
 		{
 			$this->execute('BEGIN');
 			$this->execute('LOCK TABLE '.$this->escapeSystem($table).' IN EXCLUSIVE MODE');
 		}
-	
+		
 		/** @ignore */
 		public function db_unlock()
 		{
 			$this->execute('END');
 		}
-	
+		
 		/** @ignore */
 		public function vacuum($table)
 		{
 			$this->execute('VACUUM FULL '.$this->escapeSystem($table));
 		}
-	
+		
 		/** @ignore */
 		public function dateFormat($field,$pattern)
 		{
@@ -233,12 +233,12 @@ if (class_exists('dbLayer'))
 				'%S' => 'SS',
 				'%Y' => 'YYYY'
 			);
-		
+			
 			$pattern = str_replace(array_keys($rep),array_values($rep),$pattern);
-		
+			
 			return 'TO_CHAR('.$field.','."'".$this->escape($pattern)."') ";
 		}
-	
+		
 		/**
 		* Function call
 		*
@@ -254,7 +254,7 @@ if (class_exists('dbLayer'))
 		{
 			$data = func_get_args();
 			array_shift($data);
-		
+			
 			foreach ($data as $k => $v)
 			{
 				if (is_null($v)) {
@@ -267,12 +267,12 @@ if (class_exists('dbLayer'))
 					$data[$k] = $v;
 				}
 			}
-		
+			
 			$req =
 			'SELECT '.$name."(\n".
 			implode(",\n",array_values($data)).
 			"\n) ";
-		
+			
 			return $this->select($req);
 		}
 	}

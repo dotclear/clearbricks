@@ -1,8 +1,8 @@
 <?php
 # ***** BEGIN LICENSE BLOCK *****
 # This file is part of Clearbricks.
-# Copyright (c) 2007 Olivier Meunier and contributors. All rights
-# reserved.
+# Copyright (c) 2003-2010 Olivier Meunier & Association Dotclear
+# All rights reserved.
 #
 # Clearbricks is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
