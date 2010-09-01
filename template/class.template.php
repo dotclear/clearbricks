@@ -31,7 +31,7 @@ class template
 	
 	protected $remove_php = true;
 	
-	protected $tag_block = '<tpl:(%1$s)(?:(\s+.*?)>|>)(.*)</tpl:%1$s>';
+	protected $tag_block = '<tpl:(%1$s)(?:(\s+.*?)>|>)(.*?)</tpl:%1$s>';
 	protected $tag_value = '{{tpl:(%s)(\s(.*?))?\}}';
 	
 	protected $tpl_path = array();
