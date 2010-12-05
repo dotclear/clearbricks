@@ -165,7 +165,7 @@ class cursor
 			} elseif (is_string($v)) {
 				$data[$k] = "'".$this->__con->escape($v)."'";
 			} elseif (is_array($v)) {
-				$data[$k] = $v[0];
+				$data[$k] = is_string($v[0]) ? "'".$this->__con->escape($v[0])."'" : $v[0];
 			} else {
 				$data[$k] = $v;
 			}
