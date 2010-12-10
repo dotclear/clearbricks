@@ -764,6 +764,19 @@ class record
 	}
 	
 	/**
+	* Field isset
+	*
+	* Returns true if a field exists (magic method from PHP 5.1).
+	*
+	* @param string		$n		Field name
+	* @return string
+	*/
+	public function __isset($n)
+	{
+		return isset($this->__row[$n]);
+	}
+	
+	/**
 	* Extend record
 	*
 	* Extends this instance capabilities by adding all public static methods of
