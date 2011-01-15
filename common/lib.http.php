@@ -348,11 +348,7 @@ class http
 		if ($status_mode) {
 			header('Status: '.$code.' '.$msg);
 		} else {
-			if (version_compare(phpversion(),'4.3.0','>=')) {
-				header($msg, true, $code);
-			} else {
-				header('HTTP/1.x '.$code.' '.$msg);
-			}
+			header($msg, true, $code);
 		}
 	}
 	
