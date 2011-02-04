@@ -296,8 +296,8 @@ class wiki2xhtml
 		}
 		
 		# Nettoyage des \s en trop
-		$res = preg_replace('/([\s]+)(<\/p>|<\/li>|<\/pre>)/', '$2', $res);
-		$res = preg_replace('/(<li>)([\s]+)/', '$1', $res);
+		$res = preg_replace('/([\s]+)(<\/p>|<\/li>|<\/pre>)/u', '$2', $res);
+		$res = preg_replace('/(<li>)([\s]+)/u', '$1', $res);
 		
 		# On vire les escapes
 		if (!empty($escape_pattern)) {
