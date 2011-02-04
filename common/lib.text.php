@@ -126,7 +126,7 @@ class text
 		$str = strip_tags($str);
 		$str = str_replace(array('?','&','#','=','+','<','>','"','%'),'',$str);
 		$str = str_replace("'",' ',$str);
-		$str = preg_replace('/[\s]+/',' ',trim($str));
+		$str = preg_replace('/[\s]+/u',' ',trim($str));
 		
 		if (!$keep_slashes) {
 			$str = str_replace('/','-',$str);
