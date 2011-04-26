@@ -114,6 +114,22 @@ class netSocket
 	}
 	
 	/**
+	* Set blocking
+	*
+	* Sets blocking or non-blocking mode on the socket.
+	*
+	* @param integer	$i		1 for yes, 0 for no
+	* @return	boolean
+	*/
+	public function setBlocking($i)
+	{
+		if (!$this->isOpen()) {
+			return false;
+		}
+		return stream_set_blocking($this->_handle,$i);
+	}
+	
+	/**
 	* Open connection.
 	*
 	* Opens socket connection and Returns an object of type {@link netSocketIterator}
