@@ -182,7 +182,7 @@ class http
 	*/
 	public static function getAcceptLanguages()
 	{
-		$dlang = array();
+		$acclang = array();
 		if (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE']))
 		{
 			$pattern = '/(?P<lang>[a-z]{2}(?:-[a-z]{2})?)(?:;q=(?P<priority>[.0-9]*))?/';
