@@ -1,0 +1,7 @@
+# use glob syntax
+syntax: glob
+
+# ignoring cleabricks `make` files
+config-stamp
+_dist
+
