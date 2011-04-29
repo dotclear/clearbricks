@@ -14,7 +14,7 @@
 # -- END LICENSE BLOCK -----------------------------------------
 
 require_once('class.mysql.dbschema.php');
-class mysqliSchema extends mysqliSchema
+class mysqliSchema extends mysqlSchema
 {
 
 }
