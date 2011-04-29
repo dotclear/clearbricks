@@ -361,48 +361,55 @@ class http
 	public static function trimRequest()
 	{
 		if(!empty($_GET)) {
-			array_walk($_GET,array('self','trimRequestHandler'));
+			array_walk($_GET,array('self','trimRequestInVar'));
 		}
 		if(!empty($_POST)) {
-			array_walk($_POST,array('self','trimRequestHandler'));
+			array_walk($_POST,array('self','trimRequestInVar'));
 		}
 		if(!empty($_REQUEST)) {
-			array_walk($_REQUEST,array('self','trimRequestHandler'));
+			array_walk($_REQUEST,array('self','trimRequestInVar'));
 		}
 		if(!empty($_COOKIE)) {
-			array_walk($_COOKIE,array('self','trimRequestHandler'));
+			array_walk($_COOKIE,array('self','trimRequestInVar'));
 		}
 	}
+	
+	/*
+	 * 
+	 * To be deleted?
+	 * -- saymonz, 29.04.2011
+	 * 
+	//*
 	
 	private static function trimRequestHandler(&$v,$key)
 	{
 		$v = self::trimRequestInVar($v);
 	}
 	
-	private static function trimRequestInVar($value)
+	//*/
+	
+	private static function trimRequestInVar(&$value,$key)
 	{
 		if (is_array($value))
 		{
-			$result = array();
-			foreach ($value as $k => $v)
+			foreach ($value as $k => &$v)
 			{
 				if (is_array($v)) {
-					$result[$k] = self::trimRequestInVar($v);
+					self::trimRequestInVar($v,$k);
 				} else {
 					if (get_magic_quotes_gpc()) {
 						$v = stripslashes($v);
 					}
-					$result[$k] = trim($v);
+					$v = trim($v);
 				}
 			}
-			return $result;
 		}
 		else
 		{
 			if (get_magic_quotes_gpc()) {
 				$value = stripslashes($value);
 			}
-			return trim($value);
+			$value = trim($value);
 		}
 	}
 	
