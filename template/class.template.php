@@ -143,6 +143,36 @@ class template
 		return $this->blockExists($name) || $this->valueExists($name);
 	}
 	
+	public function getValueCallback($name)
+	{
+		if ($this->valueExists($name))
+		{
+			return $this->values[$name];
+		}
+		
+		return false;
+	}
+	
+	public function getBlockCallback($name)
+	{
+		if ($this->blockExists($name))
+		{
+			return $this->blocks[$name];
+		}
+		
+		return false;
+	}
+	
+	public function getBlocksList()
+	{
+		return array_keys($this->blocks);
+	}
+	
+	public function getValuesList()
+	{
+		return array_keys($this->values);
+	}
+	
 	public function getFile($file)
 	{
 		$tpl_file = $this->getFilePath($file);
