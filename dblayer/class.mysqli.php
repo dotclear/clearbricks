@@ -40,7 +40,7 @@ if (class_exists('dbLayer'))
 				throw new Exception('Unable to connect to database');
 			}
 			
-			//$this->db_post_connect($link,$database);
+			$this->db_post_connect($link,$database);
 			
 			return $link;
 		}
@@ -63,6 +63,7 @@ if (class_exists('dbLayer'))
 				$this->db_query($link,"SET COLLATION_SERVER = 'utf8_general_ci'");
 				$this->db_query($link,"SET CHARACTER_SET_SERVER = 'utf8'");
 				$this->db_query($link,"SET CHARACTER_SET_DATABASE = 'utf8'");
+				$link->set_charset("utf8");
 			}
 		}
 		
