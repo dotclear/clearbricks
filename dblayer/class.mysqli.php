@@ -149,7 +149,8 @@ if (class_exists('dbLayer'))
 		public function db_fetch_assoc($res)
 		{
 			if ($res instanceof MySQLi_Result) {
-				return $res->fetch_assoc();
+				$v = $res->fetch_assoc();
+				return($v === NULL) ? false : $v;
 			}
 		}
 		
