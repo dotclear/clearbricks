@@ -417,7 +417,8 @@ class l10n
 		$langs = self::$langs;
 		if ($name_with_code) {
 			foreach ($langs as $k => &$v) {
-				$v = '('.$k.') '.$v;
+//				$v = '('.$k.') '.$v;
+				$v = $k.' - '.$v;
 			}
 		}
 		
