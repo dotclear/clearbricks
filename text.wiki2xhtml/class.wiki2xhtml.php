@@ -5,7 +5,7 @@
 
 # ***** BEGIN LICENSE BLOCK *****
 # This file is part of Clearbricks.
-# Copyright (c) 2003-2010 Olivier Meunier & Association Dotclear
+# Copyright (c) 2003-2011 Olivier Meunier & Association Dotclear
 # All rights reserved.
 #
 # Clearbricks is free software; you can redistribute it and/or modify
