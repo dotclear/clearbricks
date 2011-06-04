@@ -24,8 +24,8 @@ class diff
 	* "An O(ND) Difference Algorithm and Its Variations" by Eugene W.Myers,
 	* 1986.
 	* 
-	* @param array			$src			Original data
-	* @param array			$dst			New data
+	* @param array		$src			Original data
+	* @param array		$dst			New data
 	* 
 	* @return array
 	*/
