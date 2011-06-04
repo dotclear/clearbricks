@@ -133,8 +133,8 @@ class uDiff
 	* Applies a unified patch to a piece of text.
 	* Throws an exception on invalid or not applicable diff.
 	* 
-	* @param string		$src			Source text
-	* @param string		$diff		Patch to apply
+	* @param string	$src			Source text
+	* @param string	$diff		Patch to apply
 	* 
 	* @return	string
 	*/
@@ -216,7 +216,7 @@ class uDiff
 	/**
 	* Throws an exception on invalid unified diff.
 	* 
-	* @param string		$diff		Diff text to check
+	* @param string	$diff		Diff text to check
 	*/
 	public static function check($diff)
 	{
