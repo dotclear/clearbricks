@@ -79,7 +79,7 @@ class imageTools
 				case 3 :
 					$this->res = @imagecreatefrompng($f);
 					if (is_resource($this->res)) {
-						@imagealphablending($this->res);
+						@imagealphablending($this->res, true);
 					}
 					break;
 				case 2 :
