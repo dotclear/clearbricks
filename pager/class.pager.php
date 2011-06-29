@@ -20,18 +20,18 @@
 */
 class pager
 {
-	private $env;
-	private $nb_elements;
-	private $nb_per_page;
-	private $nb_pages_per_group;
+	protected $env;
+	protected $nb_elements;
+	protected $nb_per_page;
+	protected $nb_pages_per_group;
 	
-	private $nb_pages;
-	private $nb_groups;
-	private $env_group;
-	private $index_group_start;
-	private $index_group_end;
+	protected $nb_pages;
+	protected $nb_groups;
+	protected $env_group;
+	protected $index_group_start;
+	protected $index_group_end;
 	
-	private $page_url = null;
+	protected $page_url = null;
 	
 	/** @var integer Start index */	public $index_start;
 	/** @var integer End index */		public $index_end;
@@ -159,7 +159,7 @@ class pager
 		return $this->nb_elements > 0 ? $res : '';
 	}
 	
-	private function setURL()
+	protected function setURL()
 	{
 		if ($this->base_url !== null) {
 			$this->page_url = $this->base_url;
