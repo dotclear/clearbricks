@@ -3,7 +3,7 @@
 #
 # This file is part of Clearbricks.
 #
-# Copyright (c) 2003-2010 Olivier Meunier & Association Dotclear
+# Copyright (c) 2003-2011 Olivier Meunier & Association Dotclear
 # Licensed under the GPL version 2.0 license.
 # See LICENSE file or
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
@@ -133,8 +133,8 @@ class uDiff
 	* Applies a unified patch to a piece of text.
 	* Throws an exception on invalid or not applicable diff.
 	* 
-	* @param string		$src			Source text
-	* @param string		$diff		Patch to apply
+	* @param string	$src			Source text
+	* @param string	$diff		Patch to apply
 	* 
 	* @return	string
 	*/
@@ -216,7 +216,7 @@ class uDiff
 	/**
 	* Throws an exception on invalid unified diff.
 	* 
-	* @param string		$diff		Diff text to check
+	* @param string	$diff		Diff text to check
 	*/
 	public static function check($diff)
 	{

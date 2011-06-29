@@ -3,7 +3,7 @@
 #
 # This file is part of Clearbricks.
 #
-# Copyright (c) 2003-2010 Olivier Meunier & Association Dotclear
+# Copyright (c) 2003-2011 Olivier Meunier & Association Dotclear
 # Licensed under the GPL version 2.0 license.
 # See LICENSE file or
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
@@ -24,8 +24,8 @@ class diff
 	* "An O(ND) Difference Algorithm and Its Variations" by Eugene W.Myers,
 	* 1986.
 	* 
-	* @param array			$src			Original data
-	* @param array			$dst			New data
+	* @param array		$src			Original data
+	* @param array		$dst			New data
 	* 
 	* @return array
 	*/

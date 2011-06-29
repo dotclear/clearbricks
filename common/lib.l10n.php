@@ -3,7 +3,7 @@
 #
 # This file is part of Clearbricks.
 #
-# Copyright (c) 2003-2010 Olivier Meunier & Association Dotclear
+# Copyright (c) 2003-2011 Olivier Meunier & Association Dotclear
 # Licensed under the GPL version 2.0 license.
 # See LICENSE file or
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
@@ -417,7 +417,7 @@ class l10n
 		$langs = self::$langs;
 		if ($name_with_code) {
 			foreach ($langs as $k => &$v) {
-				$v = '('.$k.') '.$v;
+				$v = $k.' - '.$v;
 			}
 		}
 		
