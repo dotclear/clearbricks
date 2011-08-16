@@ -409,7 +409,7 @@ EOD;
             'system.multicall' => array(
                 'specUrl' => 'http://www.xmlrpc.com/discuss/msgReader$1208',
                 'specVersion' => 1
-            ),
+            )
         );   
     }
     function getCapabilities($args) {
