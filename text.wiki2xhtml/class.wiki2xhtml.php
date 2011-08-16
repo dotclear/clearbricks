@@ -360,7 +360,7 @@ class wiki2xhtml
 			'hr' => '[-]{4}[- ]',
 			'quote' => '(&gt;|;:)',
 			'lists' => '([*#]+)',
-			'pre' => '[ ]{1}',
+			'pre' => '[ ]{1}'
 		);
 		
 		$this->tags = array_merge($tags,$this->custom_tags);
