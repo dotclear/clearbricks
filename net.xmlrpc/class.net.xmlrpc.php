@@ -997,7 +997,7 @@ class xmlrpcServer
 			'system.multicall' => array(
 				'specUrl' => 'http://www.xmlrpc.com/discuss/msgReader$1208',
 				'specVersion' => 1
-			),
+			)
 		);   
 	}
 	
