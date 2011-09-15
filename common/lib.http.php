@@ -194,9 +194,10 @@ class http
 				}
 				array_multisort($acclang['priority'], SORT_DESC,$acclang['lang']);
 			}
+			return $acclang['lang'];
+		} else {
+			return $acclang;
 		}
-		
-		return $acclang['lang'];
 	}
 	
 	/**
