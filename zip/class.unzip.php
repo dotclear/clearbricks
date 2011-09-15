@@ -33,6 +33,8 @@ class fileUnzip
 	
 	protected $memory_limit = null;
 	
+	protected $exclude_pattern = '';
+	
 	public function __construct($file_name)
 	{
 		$this->file_name = $file_name;
@@ -94,6 +96,9 @@ class fileUnzip
 		
 		if (!isset($this->compressed_list[$file_name])) {
 			throw new Exception(sprintf(__('File %s is not compressed in the zip.'),$file_name));
+		}
+		if ($this->isFileExcluded($file_name)) {
+			return;
 		}
 		$details =& $this->compressed_list[$file_name];
 		
@@ -189,6 +194,11 @@ class fileUnzip
 		return isset($this->compressed_list[$f]);
 	}
 	
+	public function setExcludePattern($pattern)
+	{
+		$this->exclude_pattern = $pattern;
+	}
+	
 	protected function fp()
 	{
 		if ($this->fp === null) {
@@ -202,6 +212,15 @@ class fileUnzip
 		return $this->fp;
 	}
 	
+	protected function isFileExcluded($f)
+	{
+		if (!$this->exclude_pattern) {
+			return false;
+		}
+		
+		return preg_match($this->exclude_pattern,$f);
+	}
+
 	protected function putContent($content,$target=false)
 	{
 		if ($target) {
