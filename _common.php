@@ -118,6 +118,6 @@ $__autoload['fileZip']		= dirname(__FILE__).'/zip/class.zip.php';
 
 # Diff tools
 $__autoload['diff']		= dirname(__FILE__).'/diff/lib.diff.php';
-$__autoload['uDiff']		= dirname(__FILE__).'/diff/lib.unified.diff.php';
+$__autoload['tidyDiff']	= dirname(__FILE__).'/diff/lib.tidy.diff.php';
 
 ?>
