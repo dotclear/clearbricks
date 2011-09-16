@@ -12,9 +12,9 @@
 
 /**
 * TIDY diff
-* *
+* 
 * A TIDY diff representation
-*
+* 
 * @package Clearbricks
 * @subpackage Diff
 * @author Thomas Bouron

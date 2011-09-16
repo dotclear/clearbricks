@@ -11,14 +11,16 @@
 # -- END LICENSE BLOCK -----------------------------------------
 
 /**
- * diff utilities
- *
- * @package Clearbricks
- * @author Alex Pirine
- **/
+* Unified diff
+* 
+* Diff utilities
+* 
+* @package Clearbricks
+* @subpackage Diff
+* @author Alex Pirine
+**/
 class diff
 {
-	// unified diff format
 	private static $us_range = "@@ -%s,%s +%s,%s @@\n";
 	private static $us_ctx = " %s\n";
 	private static $us_ins = "+%s\n";
@@ -29,8 +31,6 @@ class diff
 	private static $up_ins = '/^\+(.*)$/';
 	private static $up_del = '/^-(.*)$/';
 	
-	/// @name Shortest edit script algorithm
-	//@{
 	/**
 	* Finds the shortest edit script using a fast algorithm taken from paper
 	* "An O(ND) Difference Algorithm and Its Variations" by Eugene W.Myers,
@@ -38,7 +38,6 @@ class diff
 	* 
 	* @param array		$a			Original data
 	* @param array		$b			New data
-	* 
 	* @return array
 	*/
 	public static function SES($src,$dst)
@@ -112,20 +111,15 @@ class diff
 		
 		return array_reverse($res);
 	}
-	//@}
 	
-	
-	/// @name Unified diff format
-	//@{
 	/**
-	 * Returns unified diff from source $src to destination $dst.
-	 * 
-	 * @param string		$src		Original data
-	 * @param string		$dst		New data
-	 * @param string		$ctx		Context length
-	 * 
-	 * @return string
-	 **/
+	* Returns unified diff from source $src to destination $dst.
+	* 
+	* @param string		$src		Original data
+	* @param string		$dst		New data
+	* @param string		$ctx		Context length
+	* @return string
+	*/
 	public static function uniDiff($src,$dst,$ctx=2)
 	{
 		list($src,$dst) = array(explode("\n",$src),explode("\n",$dst));
@@ -224,8 +218,7 @@ class diff
 	* 
 	* @param string		$src			Source text
 	* @param string		$diff		Patch to apply
-	* 
-	* @return	string
+	* @return string
 	*/
 	public static function uniPatch($src,$diff)
 	{
@@ -243,11 +236,11 @@ class diff
 				$m[1]--; $m[3]--;
 				
 				if ($m[1] > $t) {
-					throw new Exception('Bad range');
+					throw new Exception(__('Bad range'));
 				}
 				
 				if ($t - count($src) > $m[1]) {
-					throw new Exception('Invalid range');
+					throw new Exception(__('Invalid range'));
 				}
 				
 				while ($t - count($src) < $m[1])
@@ -256,11 +249,11 @@ class diff
 				}
 				
 				if (count($dst) !== $m[3]) {
-					throw new Exception('Invalid line number');
+					throw new Exception(__('Invalid line number'));
 				}
 				
 				if ($old_length || $new_length) {
-					throw new Exception('Chunk is out of range');
+					throw new Exception(__('Chunk is out of range'));
 				}
 				
 				$old_length = (integer) $m[2];
@@ -269,7 +262,7 @@ class diff
 			# Context
 			elseif (preg_match(self::$up_ctx,$line,$m)) {
 				if (array_shift($src) !== $m[1]) {
-					throw new Exception('Bad context');
+					throw new Exception(__('Bad context'));
 				}
 				$dst[] = $m[1];
 				$old_length--;
@@ -283,7 +276,7 @@ class diff
 			# Deletion
 			elseif (preg_match(self::$up_del,$line,$m)) {
 				if (array_shift($src) !== $m[1]) {
-					throw new Exception('Bad context (in deletion)');
+					throw new Exception(__('Bad context (in deletion)'));
 				}
 				$old_length--;
 			}
@@ -291,12 +284,12 @@ class diff
 				continue;
 			}
 			else {
-				throw new Exception('Invalid diff format');
+				throw new Exception(__('Invalid diff format'));
 			}
 		}
 		
 		if ($old_length || $new_length) {
-			throw new Exception('Chunk is out of range');
+			throw new Exception(__('Chunk is out of range'));
 		}
 		
 		return implode("\n",array_merge($dst,$src));
@@ -321,18 +314,18 @@ class diff
 			# New chunk
 			if (preg_match(self::$up_range,$line,$m)) {
 				if ($cur_line > $m[1]) {
-					throw new Exception('Invalid range');
+					throw new Exception(__('Invalid range'));
 				}
 				while ($cur_line < $m[1])
 				{
 					$ins_lines++; $cur_line++;
 				}
 				if ($ins_lines+1 != $m[3]) {
-					throw new Exception('Invalid line number');
+					throw new Exception(__('Invalid line number'));
 				}
 				
 				if ($old_length || $new_length) {
-					throw new Exception('Chunk is out of range');
+					throw new Exception(__('Chunk is out of range'));
 				}
 				
 				$old_length = $m[2];
@@ -360,15 +353,14 @@ class diff
 			}
 			# Unrecognized diff format
 			else {
-				throw new Exception('Invalid diff format');
+				throw new Exception(__('Invalid diff format'));
 			}
 		}
 		
 		if ($old_length || $new_length) {
-			throw new Exception('Chunk is out of range');
+			throw new Exception(__('Chunk is out of range'));
 		}
 	}
-	//@}
 }
 
 ?>
