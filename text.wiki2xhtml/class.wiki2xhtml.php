@@ -180,6 +180,7 @@ class wiki2xhtml
 		
 		$this->setOpt('note_prefix','wiki-footnote');
 		$this->setOpt('note_str','<div class="footnotes"><h4>Notes</h4>%s</div>');
+		$this->setOpt('note_str_single','<div class="footnotes"><h4>Note</h4>%s</div>');
 		$this->setOpt('words_pattern',
 		'((?<![A-Za-z0-9])([A-Z][a-z]+){2,}(?![A-Za-z0-9]))');
 		
@@ -328,7 +329,7 @@ class wiki2xhtml
 				$res_notes .= "\n".'<p>[<a href="#rev-'.$k.'" id="'.$k.'">'.$i.'</a>] '.$v.'</p>';
 				$i++;
 			}
-			$res .= sprintf("\n".$this->getOpt('note_str')."\n",$res_notes);
+			$res .= sprintf("\n".(count($this->foot_notes) > 1 ? $this->getOpt('note_str') : $this->getOpt('note_str_single'))."\n",$res_notes);
 		}
 		
 		return $res;
