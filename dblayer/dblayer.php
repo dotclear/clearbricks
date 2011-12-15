@@ -520,7 +520,7 @@ class dbLayer
 		if ($arg2 === null) {
 			$sql = ' LIMIT '.(integer) $arg1.' ';
 		} else {
-			$sql = ' LIMIT '.(integer) $arg2.' OFFSET '.$arg1.' ';
+			$sql = ' LIMIT '.(integer) $arg2.' OFFSET '.(integer) $arg1.' ';
 		}
 		
 		return $sql;
