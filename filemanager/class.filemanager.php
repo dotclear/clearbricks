@@ -604,7 +604,11 @@ class fileItem
 		$this->w = is_writable($file);
 		$this->d = is_dir($file);
 		$this->f = is_file($file);
-		$this->x = file_exists($file.'/.');
+		if ($this->d) {
+			$this->x = file_exists($file.'/.');
+		} else {
+			$this->x = false;
+		}
 		$this->del = files::isDeletable($file);
 		
 		$this->type = $this->d ? null : files::getMimeType($file);
