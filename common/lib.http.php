@@ -115,6 +115,10 @@ class http
 	*/
 	public static function concatURL($url,$path)
 	{
+		if (substr($url,-1,1) != '/') {
+			$url .= '/';
+		}
+		
 		if (substr($path,0,1) != '/') {
 			return $url.$path;
 		}
