@@ -634,7 +634,7 @@ class dbLayer
 * @package Clearbricks
 * @subpackage DBLayer
 */
-class record
+class record implements Iterator, Countable
 {
 	/** @var resource	Database resource link */
 	protected $__link;
@@ -1011,6 +1011,48 @@ class record
 	{
 		return $this->__row;
 	}
+
+	/* Iterator methods */
+	
+	/**
+	* @see Iterator::current
+	*/
+	public function current() {
+		return $this;
+	}
+	
+	/**
+	* @see Iterator::key
+	*/
+	public function key()
+	{
+		return $this->index();
+	}
+	/**
+	* @see Iterator::next
+	*/
+	public function next()
+	{
+		$this->fetch();
+	}
+	
+	/**
+	* @see Iterator::rewind
+	*/
+	public function rewind()
+	{
+		$this->moveStart();
+		$this->fetch();
+	}
+	
+	/**
+	* @see Iterator::valid
+	*/
+	public function valid ()
+	{
+		return $this->__fetch;
+	}
+	
 }
 
 /**
