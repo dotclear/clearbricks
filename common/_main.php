@@ -55,4 +55,7 @@ require_once dirname(__FILE__).'/lib.l10n.php';
 
 # We set default timezone to avoid warning
 dt::setTZ('UTC');
+
+# JSON functions for PHP < 5.2 or PHP > 5.2 compiling without json
+require_once dirname(__FILE__).'/lib.json.php';
 ?>
