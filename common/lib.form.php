@@ -83,7 +83,7 @@ class form
 			} elseif ($v instanceof formSelectOption) {
 				$res .= $v->render($default);
 			} else {
-				$s = ($v == $default) ? ' selected="selected"' : '';
+				$s = ($v === $default) ? ' selected="selected"' : '';
 				$res .= sprintf($option,$v,$k,$s);
 			}
 		}
