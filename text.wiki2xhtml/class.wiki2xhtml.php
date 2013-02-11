@@ -5,7 +5,7 @@
 
 # ***** BEGIN LICENSE BLOCK *****
 # This file is part of Clearbricks.
-# Copyright (c) 2003-2011 Olivier Meunier & Association Dotclear
+# Copyright (c) 2003-2013 Olivier Meunier & Association Dotclear
 # All rights reserved.
 #
 # Clearbricks is free software; you can redistribute it and/or modify
@@ -32,11 +32,14 @@
 # Nicolas Chachereau
 # Jérôme Lipowicz
 #
-# Version : 3.2.6
-# Release date : 2008-07-16
+# Version : 3.2.7
+# Release date : 2013-02-11
 
 # History :
 #
+# 3.2.7
+#			=> Les styles d'alignement des images sont modifiables via les options
+# 
 # 3.2.6
 #			=> Added ``inline html`` support
 #
@@ -123,7 +126,7 @@
 
 class wiki2xhtml
 {
-	public $__version__ = '3.2.6';
+	public $__version__ = '3.2.7';
 	
 	public $T;
 	public $opt;
@@ -189,6 +192,10 @@ class wiki2xhtml
 		
 		$this->setOpt('acronyms_file',dirname(__FILE__).'/acronyms.txt');
 		
+		$this->setOpt('img_style_left','float:left; margin: 0 1em 1em 0;');
+		$this->setOpt('img_style_center','display:block; margin:0 auto;');
+		$this->setOpt('img_style_right','float:right; margin: 0 0 1em 1em;');
+
 		$this->acro_table = $this->__getAcronyms();
 		$this->foot_notes = array();
 		$this->functions = array();
@@ -948,12 +955,16 @@ class wiki2xhtml
 		
 		if (!empty($data[2])) {
 			$data[2] = strtoupper($data[2]);
+			$style = '';
 			if ($data[2] == 'G' || $data[2] == 'L') {
-				$attr .= ' style="float:left; margin: 0 1em 1em 0;"';
+				$style = $this->getOpt('img_style_left');
 			} elseif ($data[2] == 'D' || $data[2] == 'R') {
-				$attr .= ' style="float:right; margin: 0 0 1em 1em;"';
+				$style = $this->getOpt('img_style_right');
 			} elseif ($data[2] == 'C') {
-				$attr .= ' style="display:block; margin:0 auto;"';
+				$style = $this->getOpt('img_style_center');
+			}
+			if ($style != '') {
+				$attr .= ' style="'.$style.'"';
 			}
 		}
 		
