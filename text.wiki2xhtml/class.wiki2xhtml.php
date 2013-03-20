@@ -319,7 +319,7 @@ class wiki2xhtml
 		
 		# On remet les macros
 		if ($this->getOpt('active_macros')) {
-			$res = preg_replace('/^##########MACRO#([0-9]+)#$/mse','\$this->__putMacro("$1")',$res);
+			$res = preg_replace_callback('/^##########MACRO#([0-9]+)#$/ms',array($this,'__putMacro'),$res);
 		}
 		
 		# Auto line break dans les paragraphes
@@ -1114,7 +1114,7 @@ class wiki2xhtml
 	
 	function __putMacro($id)
 	{
-		$id = (integer) $id;
+		$id = is_array($id) ? (integer) $id[1] : (integer) $id;
 		if (isset($this->macros[$id]))
 		{
 			$content = str_replace("\r",'',$this->macros[$id]);
