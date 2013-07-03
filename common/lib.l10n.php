@@ -281,7 +281,9 @@ class l10n
 		// Keep singular id and translations, remove headers and comments
 		$r = array();
 		foreach($m[1] as $v) {
-			$r[$v['msgid']] = $v['msgstr'];
+			if (!empty($v)) {
+				$r[$v['msgid']] = $v['msgstr'];
+			}
 		}
 
 		return $r;
