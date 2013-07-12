@@ -168,7 +168,9 @@ class html
 		$parse = parse_url($m[2]);
 		if (empty($parse['scheme']))
 		{
-			if (strpos($url,'/') === 0) {
+            if (strpos($url,'//') === 0 ) {
+                // Nothing to do. Already an absolute URL.
+            } elseif (strpos($url,'/') === 0) {
 				$url = $host.$url;
 			} elseif (strpos($url,'#') === 0) {
 				$url = self::$url_root.$url;
