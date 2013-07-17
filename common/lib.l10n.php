@@ -432,7 +432,7 @@ class l10n
 	/* @ignore */
 	protected static function cleanPoString($_)
 	{
-		return substr(trim($_), 1, -1);
+		return stripslashes(substr(trim($_), 1, -1));
 	}
 
 	/**
