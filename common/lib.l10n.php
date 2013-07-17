@@ -346,7 +346,7 @@ class l10n
 			}
 			
 			// comments
-			if ($line[0] == '#') {
+			if ($line[0] == '#' && strlen($line) > 2) {
 				$comment = trim(substr($line, 2));
 				switch ($line[1]) {
 
