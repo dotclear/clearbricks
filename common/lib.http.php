@@ -55,6 +55,22 @@ class http
 	}
 	
 	/**
+	* Self root URI
+	*
+	* Returns current scheme and host from a static URL.
+	*
+	* @param string	$url URL to retrieve the host from.
+	*
+	* @return string
+	*/
+	public static function getHostFromURL($url)
+	{
+		preg_match('~^([a-z]*://)?(?:(.*?)/.*|(.*))$~',$url,$matches);
+		array_shift($matches);
+		return join($matches);
+	}
+	
+	/**
 	* Self URI
 	*
 	* Returns current URI with full hostname.
