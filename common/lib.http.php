@@ -65,7 +65,7 @@ class http
 	*/
 	public static function getHostFromURL($url)
 	{
-		preg_match('~^([a-z]*://)?(?:(.*?)/.*|(.*))$~',$url,$matches);
+		preg_match('~^(?:((?:[a-z]+:)?//)|:(//))?(?:([^:\r\n]*?)/[^:\r\n]*|([^:\r\n]*))$~',$url,$matches);
 		array_shift($matches);
 		return join($matches);
 	}
