@@ -124,6 +124,9 @@ class l10n
 	 */
 	public static function trans($singular, $plural=null, $count=null)
 	{
+		// If no string to translate, return no string
+		if ($singular == '') return '';
+
 		// If no $plural form or if current language has no plural form return $singular translation
 		if ($plural === null || $count === null || self::$language_pluralsnumber == 1) {
 			$t = !empty($GLOBALS['__l10n'][$singular]) ? $GLOBALS['__l10n'][$singular] : $singular;
