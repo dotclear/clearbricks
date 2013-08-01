@@ -308,6 +308,15 @@ class l10n
 			return false;
 		}
 
+		// ignore top comments and empty lines and prepare headers
+		$i = 0;
+		while ($line = $lines[$i++]) {
+			if ($line[0] == '#' || !strlen($line) || strpos($line, 'msgstr ""') || strpos($line, 'msgid ""')) {
+				continue;
+			}
+			break;
+		}
+
 		// parsing headers; stop at the first empty line
 		$headers = array(
 			'Project-Id-Version'            => '',
@@ -321,8 +330,6 @@ class l10n
 			'Plural-Forms'                  => ''
 		);
 
-		// po file MUST start with empty msgid and msgstr with headers
-		$i = 2;
 		while ($line = $lines[$i++]) {
 			$line = self::cleanPoString($line);
 			$colon_index = strpos($line, ':');
@@ -340,8 +347,17 @@ class l10n
 		}
 
 		$entries = $entry = array();
-		for ($n = count($lines); $i < $n; $i++) {
+		for ($n = count($lines); $i <= $n; $i++) {
+
+			// end of file
+			if (!array_key_exists($i, $lines)) {
+				$entries[] = $entry;
+				break;
+			}
+
 			$line = $lines[$i];
+
+			// new translation
 			if ($line === '') {
 				$entries[] = $entry;
 				$entry = array();
@@ -418,9 +434,17 @@ class l10n
 					}
 					$entry['msgstr'][] = self::cleanPoString(substr($line, strpos($line, ' ') + 1));
 				}
-			// multiline
+			// multiline msgid
+			} elseif ($line[0] === '"' && !isset($entry['msgstr'])) {
+				$line = preg_replace('/([^\\\\])\\\\n$/', "\$1\n", self::cleanPoString($line));
+				if (!is_array($entry['msgid'])) {
+					$entry['msgid'] .= $line;
+				} else {
+					$entry['msgid'][count($entry['msgid']) - 1] .= $line;
+				}
+			// multiline msgstr
 			} elseif ($line[0] === '"' && isset($entry['msgstr'])) {
-				$line = "\n" . preg_replace('/([^\\\\])\\\\n$/', "\$1\n", self::cleanPoString($line));
+				$line = preg_replace('/([^\\\\])\\\\n$/', "\$1\n", self::cleanPoString($line));
 				if (!is_array($entry['msgstr'])) {
 					$entry['msgstr'] .= $line;
 				} else {
