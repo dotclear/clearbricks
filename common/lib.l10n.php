@@ -125,10 +125,17 @@ class l10n
 	public static function trans($singular, $plural=null, $count=null)
 	{
 		// If no string to translate, return no string
-		if ($singular == '') return '';
+		if ($singular == '') {
+
+			return '';
+
+		// If no l10n translation loaded or exists
+		} elseif (!array_key_exists('__l10n',$GLOBALS) || empty($GLOBALS['__l10n']) || !array_key_exists($singular, $GLOBALS['__l10n'])) {
+
+			return $singular;
 
 		// If no $plural form or if current language has no plural form return $singular translation
-		if ($plural === null || $count === null || self::$language_pluralsnumber == 1) {
+		} elseif ($plural === null || $count === null || self::$language_pluralsnumber == 1) {
 			$t = !empty($GLOBALS['__l10n'][$singular]) ? $GLOBALS['__l10n'][$singular] : $singular;
 
 			return is_array($t) ? $t[0] : $t;
@@ -192,11 +199,11 @@ class l10n
 
 		} elseif (($tmp = self::getPoFile($po_file)) !== false) {
 			$GLOBALS['__l10n_files'][] = $po_file;
-			$GLOBALS['__l10n'] = array_merge($GLOBALS['__l10n'],$tmp);
+			$GLOBALS['__l10n'] += $tmp; // += erase numeric keys unlike array_merge
 
 		} elseif (($tmp = self::getLangFile($lang_file)) !== false) {
 			$GLOBALS['__l10n_files'][] = $lang_file;
-			$GLOBALS['__l10n'] = array_merge($GLOBALS['__l10n'],$tmp);
+			$GLOBALS['__l10n'] += $tmp; // += erase numeric keys unlike array_merge
 
 		} else {
 
