@@ -106,12 +106,12 @@ class fileUnzip
 			throw new Exception(sprintf(__('Trying to unzip a folder name %s'),$file_name));
 		}
 		
-		if (!$details['uncompressed_size']) {
-			return $this->putContent('',$target);
-		}
-		
 		if ($target) {
 			$this->testTargetDir(dirname($target));
+		}
+		
+		if (!$details['uncompressed_size']) {
+			return $this->putContent('',$target);
 		}
 		
 		fseek($this->fp(),$details['contents_start_offset']);
