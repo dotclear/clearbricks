@@ -302,138 +302,201 @@ class l10n
 	/**
 	* Parse Po File
 	*
+	* Return an array of po headers and translations from a po file
+	*
 	* @param string $file File path
 	* @return array Parsed file
 	*/
 	public static function parsePoFile($file)
 	{
+		// stop if file not exists
 		if (!file_exists($file)) {
+
 			return false;
 		}
 
+		// read file per line in array (without ending new line)
 		if (false === ($lines = file($file, FILE_IGNORE_NEW_LINES))) {
+
 			return false;
 		}
 
-		// ignore top comments and empty lines and prepare headers
-		$i = 0;
-		while ($line = $lines[$i++]) {
-			if ($line[0] == '#' || !strlen($line) || strpos($line, 'msgstr ""') || strpos($line, 'msgid ""')) {
-				continue;
-			}
-			break;
-		}
-
-		// parsing headers; stop at the first empty line
+		// prepare variables
 		$headers = array(
-			'Project-Id-Version'            => '',
-			'Report-Msgid-Bugs-To'          => '',
-			'POT-Creation-Date'             => '',
-			'PO-Revision-Date'              => '',
-			'Last-Translator'               => '',
-			'Language-Team'                 => '',
-			'Content-Type'                  => '',
-			'Content-Transfer-Encoding'     => '',
-			'Plural-Forms'                  => ''
+			'Project-Id-Version' => '',
+			'Report-Msgid-Bugs-To' => '',
+			'POT-Creation-Date' => '',
+			'PO-Revision-Date' => '',
+			'Last-Translator' => '',
+			'Language-Team' => '',
+			'Content-Type' => '',
+			'Content-Transfer-Encoding' => '',
+			'Plural-Forms' => ''
+			// there are more headers but these ones are default
 		);
+		$headers_searched = $headers_found = false;
+		$h_line = $h_val = $h_key = '';
+		$entries = $entry = $desc = array();
+		$i = 0;
 
-		while ($line = $lines[$i++]) {
-			$line = self::cleanPoString($line);
-			$colon_index = strpos($line, ':');
-			if ($colon_index === false) {
+		// read through lines
+		for($i = 0; $i < count($lines); $i++) {
+
+			// some people like mirovinben add white space at the end of line
+			$line = trim($lines[$i]);
+
+			// clean up line
+			//$line = str_replace(array("\r\n", "\r"), "\n", $line);
+
+			// jump to next line on blank one or empty comment (#)
+			if (strlen($line) < 2) {
 				continue;
 			}
-			
-			$header_name = substr($line, 0, $colon_index);
-			if (!isset($headers[$header_name])) {
-				continue;
+
+			// headers
+			if (strpos($line, 'msgid') === 0 && !$headers_searched) {
+
+				// first msgid and msgstr is empty, ok look for headers
+				if (0 === strpos($lines[$i    ], 'msgid ""')  
+				 && 0 === strpos($lines[$i + 1], 'msgstr ""')) {
+
+					for ($l = $i + 2; $l < $i + 100; $l++) {
+
+						// an header start with '"'
+						if (0 !== strpos($lines[$l], '"')) {
+							$headers_searched = true;
+							break;
+						}
+
+						$h_line = self::cleanPoString($lines[$l]);
+
+						// an header has key:val
+						if (false === ($h_index = strpos($h_line, ':'))) {
+
+							// multiline value
+							if (!empty($h_key) && !empty($headers[$h_key])) {
+								$headers[$h_key] = trim($headers[$h_key].$h_line);
+								continue;
+
+							// your .po file is so bad
+							} else {
+								$headers_searched = true;
+								break;
+							}
+						}
+
+						// extract key and value
+						$h_key = substr($h_line, 0, $h_index);
+						$h_val = substr($h_line, $h_index + 1);
+
+						// unknow header
+						if (!isset($headers[$h_key])) {
+							//continue;
+						}
+
+						// ok it's an header, add it
+						$headers[$h_key] = trim($h_val);
+						$headers_found = true;
+						$i++;
+					}
+
+					// headers found so stop search and clean previous comments
+					if ($headers_found) {
+						$headers_searched = true;
+						$entry = $desc = array();
+						$i = $l++;
+						continue;
+					}
+				}
+				else {
+					// first msgid is not an header, stop search it
+					$headers_searched = true;
+				}
 			}
-			
-			// clean white space and end line
-			$headers[$header_name] = substr($line, $colon_index + 1, -2);
-		}
 
-		$entries = $entry = array();
-		for ($n = count($lines); $i <= $n; $i++) {
-
-			// end of file
-			if (!array_key_exists($i, $lines)) {
-				$entries[] = $entry;
-				break;
-			}
-
-			$line = $lines[$i];
-
-			// new translation
-			if ($line === '') {
-				$entries[] = $entry;
-				$entry = array();
-				continue;
-			}
-			
 			// comments
-			if ($line[0] == '#' && strlen($line) > 2) {
+			if ($line[0] == '#') {
+
+				// remove # and space from comment
 				$comment = trim(substr($line, 2));
+
 				switch ($line[1]) {
 
 					// translator comments
 					case ' ':
-						if (!isset($entry['translator-comments'])) {
-							$entry['translator-comments'] = $comment;
+						if (!isset($desc['translator-comments'])) {
+							$desc['translator-comments'] = $comment;
 						} else {
-							$entry['translator-comments'] .= "\n" . $comment;
+							$desc['translator-comments'] .= "\n" . $comment;
 						}
 						break;
 
 					// extracted comments
 					case '.':
-						if (!isset($entry['extracted-comments'])) {
-							$entry['extracted-comments'] = $comment;
+						if (!isset($desc['extracted-comments'])) {
+							$desc['extracted-comments'] = $comment;
 						} else {
-							$entry['extracted-comments'] .= "\n" . $comment;
+							$desc['extracted-comments'] .= "\n" . $comment;
 						}
 						break;
 
 					// reference
 					case ':':
-						if (!isset($entry['references'])) {
-							$entry['references'] = array();
+						if (!isset($desc['references'])) {
+							$desc['references'] = array();
 						}
-						$entry['references'][] = $comment;
+						$desc['references'][] = $comment;
 						break;
 
 					// flag
 					case ',':
-						if (!isset($entry['flags'])) {
-							$entry['flags'] = array();
+						if (!isset($desc['flags'])) {
+							$desc['flags'] = array();
 						}
-						$entry['flags'][] = $comment;
+						$desc['flags'][] = $comment;
 						break;
 
 					// previous msgid, msgctxt
 					case '|':
 						// msgid
-						if ($comment[4] == 'd') {
-							$entry['previous-msgid'] = self::cleanPoString(substr($comment, 6));
+						if (strpos($comment, 'msgid') === 0) {
+							$desc['previous-msgid'] = self::cleanPoString(substr($comment, 6));
 						// msgcxt
 						} else {
-							$entry['previous-msgctxt'] = self::cleanPoString(substr($comment, 8));
+							$desc['previous-msgctxt'] = self::cleanPoString(substr($comment, 8));
 						}
 						break;
 				}
+
 			// msgid
-			} elseif (substr($line, 0, 5) == 'msgid') {
+			} elseif (strpos($line, 'msgid') === 0 && $headers_searched) {
+
+				// add last translation and start new one
+				if ((isset($entry['msgid']) || isset($entry['msgid_plural'])) && isset($entry['msgstr'])) {
+
+					// save last translation and start new one
+					$entries[] = $entry;
+					$entry = array();
+
+					// add comments to new translation
+					if (!empty($desc)) {
+						$entry = array_merge($entry, $desc);
+						$desc = array();
+					}
+				}
+
 				// msgid_plural
-				if ($line[5] == "_") {
+				if (strpos($line, 'msgid_plural') === 0) {
 					$entry['msgid_plural'] = self::cleanPoString(substr($line, 13));
 				} else {
 					$entry['msgid'] = self::cleanPoString(substr($line, 6));
 				}
+
 			// msgstr
 			} elseif (strpos($line, 'msgstr') === 0) {
 				// no plural forms
 				if ($line[6] === ' ') {
-				$entry['msgstr'] = self::cleanPoString(substr($line, 7));
+					$entry['msgstr'] = self::cleanPoString(substr($line, 7));
 				// plural forms
 				} else {
 					if (!isset($entry['msgstr'])) {
@@ -441,17 +504,28 @@ class l10n
 					}
 					$entry['msgstr'][] = self::cleanPoString(substr($line, strpos($line, ' ') + 1));
 				}
+
 			// multiline msgid
-			} elseif ($line[0] === '"' && !isset($entry['msgstr'])) {
-				$line = preg_replace('/([^\\\\])\\\\n$/', "\$1\n", self::cleanPoString($line));
-				if (!is_array($entry['msgid'])) {
-					$entry['msgid'] .= $line;
-				} else {
-					$entry['msgid'][count($entry['msgid']) - 1] .= $line;
-				}
+			} elseif (strpos($line, '"') === 0 && !isset($entry['msgstr'])) {
+				$line = self::cleanPoString($line);
+					//msgid plural
+					if (isset($entry['msgid_plural'])) {
+						if (!is_array($entry['msgid_plural'])) {
+							$entry['msgid_plural'] .= $line;
+						} else {
+							$entry['msgid_plural'][count($entry['msgid_plural']) - 1] .= $line;
+						}
+					} else {
+						if (!is_array($entry['msgid'])) {
+							$entry['msgid'] .= $line;
+						} else {
+							$entry['msgid'][count($entry['msgid']) - 1] .= $line;
+						}
+					}
+
 			// multiline msgstr
-			} elseif ($line[0] === '"' && isset($entry['msgstr'])) {
-				$line = preg_replace('/([^\\\\])\\\\n$/', "\$1\n", self::cleanPoString($line));
+			} elseif (strpos($line, '"') === 0 && isset($entry['msgstr'])) {
+				$line = self::cleanPoString($line);
 				if (!is_array($entry['msgstr'])) {
 					$entry['msgstr'] .= $line;
 				} else {
@@ -460,13 +534,21 @@ class l10n
 			}
 		}
 
+		// Add last translation
+		if (!empty($entry)) {
+			if (!empty($desc)) {
+				$entry = array_merge($entry, $desc);
+			}
+			$entries[] = $entry;
+		}
+
 		return array($headers, $entries);
 	}
 
 	/* @ignore */
 	protected static function cleanPoString($_)
 	{
-		return stripslashes(substr(trim($_), 1, -1));
+		return stripslashes(preg_replace('/([^\\\\])\\\\n$/', "\$1\n", substr($_, 1, -1)));
 	}
 
 	/**
