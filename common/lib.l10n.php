@@ -345,30 +345,24 @@ class l10n
 			// some people like mirovinben add white space at the end of line
 			$line = trim($lines[$i]);
 
-			// clean up line
-			//$line = str_replace(array("\r\n", "\r"), "\n", $line);
-
 			// jump to next line on blank one or empty comment (#)
 			if (strlen($line) < 2) {
 				continue;
 			}
 
 			// headers
-			if (strpos($line, 'msgid') === 0 && !$headers_searched) {
+			if (!$headers_searched && preg_match('/^msgid\s+""$/', trim($line))) {
 
-				// first msgid and msgstr is empty, ok look for headers
-				if (0 === strpos($lines[$i    ], 'msgid ""')  
-				 && 0 === strpos($lines[$i + 1], 'msgstr ""')) {
+				// headers start wih empty msgid and msgstr follow be multine
+				if (!preg_match('/^msgstr\s+""$/', trim($lines[$i + 1])) 
+				 || !preg_match('/^"(.*)"$/', trim($lines[$i + 2]))) {
+						$headers_searched = true;
+				} else {
 
-					for ($l = $i + 2; $l < $i + 100; $l++) {
+					$l = $i + 2;
+					while(false !== ($def = self::cleanPoLine('multi',$lines[$l++]))) {
 
-						// an header start with '"'
-						if (0 !== strpos($lines[$l], '"')) {
-							$headers_searched = true;
-							break;
-						}
-
-						$h_line = self::cleanPoString($lines[$l]);
+						$h_line = self::cleanPoString($def[1]);
 
 						// an header has key:val
 						if (false === ($h_index = strpos($h_line, ':'))) {
@@ -397,46 +391,40 @@ class l10n
 						// ok it's an header, add it
 						$headers[$h_key] = trim($h_val);
 						$headers_found = true;
-						$i++;
 					}
 
 					// headers found so stop search and clean previous comments
 					if ($headers_found) {
 						$headers_searched = true;
 						$entry = $desc = array();
-						$i = $l++;
+						$i = $l;
 						continue;
 					}
-				}
-				else {
-					// first msgid is not an header, stop search it
-					$headers_searched = true;
 				}
 			}
 
 			// comments
-			if ($line[0] == '#') {
+			if (false !== ($def = self::cleanPoLine('comment',$line))) {
 
-				// remove # and space from comment
-				$comment = trim(substr($line, 2));
+				$str = self::cleanPoString($def[2]);
 
-				switch ($line[1]) {
+				switch ($def[1]) {
 
 					// translator comments
 					case ' ':
 						if (!isset($desc['translator-comments'])) {
-							$desc['translator-comments'] = $comment;
+							$desc['translator-comments'] = $str;
 						} else {
-							$desc['translator-comments'] .= "\n" . $comment;
+							$desc['translator-comments'] .= "\n" . $str;
 						}
 						break;
 
 					// extracted comments
 					case '.':
 						if (!isset($desc['extracted-comments'])) {
-							$desc['extracted-comments'] = $comment;
+							$desc['extracted-comments'] = $str;
 						} else {
-							$desc['extracted-comments'] .= "\n" . $comment;
+							$desc['extracted-comments'] .= "\n" . $str;
 						}
 						break;
 
@@ -445,7 +433,7 @@ class l10n
 						if (!isset($desc['references'])) {
 							$desc['references'] = array();
 						}
-						$desc['references'][] = $comment;
+						$desc['references'][] = $str;
 						break;
 
 					// flag
@@ -453,23 +441,24 @@ class l10n
 						if (!isset($desc['flags'])) {
 							$desc['flags'] = array();
 						}
-						$desc['flags'][] = $comment;
+						$desc['flags'][] = $str;
 						break;
 
 					// previous msgid, msgctxt
 					case '|':
 						// msgid
-						if (strpos($comment, 'msgid') === 0) {
-							$desc['previous-msgid'] = self::cleanPoString(substr($comment, 6));
+						if (strpos($def[2], 'msgid') === 0) {
+							$desc['previous-msgid'] = $str;
 						// msgcxt
 						} else {
-							$desc['previous-msgctxt'] = self::cleanPoString(substr($comment, 8));
+							$desc['previous-msgctxt'] = $str;
 						}
 						break;
 				}
+			}
 
 			// msgid
-			} elseif (strpos($line, 'msgid') === 0 && $headers_searched) {
+			elseif (false !== ($def = self::cleanPoLine('msgid',$line))) {
 
 				// add last translation and start new one
 				if ((isset($entry['msgid']) || isset($entry['msgid_plural'])) && isset($entry['msgstr'])) {
@@ -483,53 +472,66 @@ class l10n
 						$entry = array_merge($entry, $desc);
 						$desc = array();
 					}
+					
+					// stop searching headers
+					$headers_searched = true;
 				}
+
+				$str = self::cleanPoString($def[2]);
 
 				// msgid_plural
-				if (strpos($line, 'msgid_plural') === 0) {
-					$entry['msgid_plural'] = self::cleanPoString(substr($line, 13));
+				if (!empty($def[1])) {
+					$entry['msgid_plural'] = $str;
 				} else {
-					$entry['msgid'] = self::cleanPoString(substr($line, 6));
+					$entry['msgid'] = $str;
 				}
-
+			}
+			
 			// msgstr
-			} elseif (strpos($line, 'msgstr') === 0) {
-				// no plural forms
-				if ($line[6] === ' ') {
-					$entry['msgstr'] = self::cleanPoString(substr($line, 7));
+			elseif (false !== ($def = self::cleanPoLine('msgstr',$line))) {
+
+				$str = self::cleanPoString($def[2]);
+
 				// plural forms
-				} else {
+				if (!empty($def[1])) {
 					if (!isset($entry['msgstr'])) {
 						$entry['msgstr'] = array();
 					}
-					$entry['msgstr'][] = self::cleanPoString(substr($line, strpos($line, ' ') + 1));
+					$entry['msgstr'][] = $str;
+				} else {
+					$entry['msgstr'] = $str;
 				}
+			}
 
-			// multiline msgid
-			} elseif (strpos($line, '"') === 0 && !isset($entry['msgstr'])) {
-				$line = self::cleanPoString($line);
+			// multiline
+			elseif (false !== ($def = self::cleanPoLine('multi',$line))) {
+			
+				$str = self::cleanPoString($def[1]);
+
+				// msgid
+				if (!isset($entry['msgstr'])) {
 					//msgid plural
 					if (isset($entry['msgid_plural'])) {
 						if (!is_array($entry['msgid_plural'])) {
-							$entry['msgid_plural'] .= $line;
+							$entry['msgid_plural'] .= $str;
 						} else {
-							$entry['msgid_plural'][count($entry['msgid_plural']) - 1] .= $line;
+							$entry['msgid_plural'][count($entry['msgid_plural']) - 1] .= $str;
 						}
 					} else {
 						if (!is_array($entry['msgid'])) {
-							$entry['msgid'] .= $line;
+							$entry['msgid'] .= $str;
 						} else {
-							$entry['msgid'][count($entry['msgid']) - 1] .= $line;
+							$entry['msgid'][count($entry['msgid']) - 1] .= $str;
 						}
 					}
 
-			// multiline msgstr
-			} elseif (strpos($line, '"') === 0 && isset($entry['msgstr'])) {
-				$line = self::cleanPoString($line);
-				if (!is_array($entry['msgstr'])) {
-					$entry['msgstr'] .= $line;
+				// msgstr
 				} else {
-					$entry['msgstr'][count($entry['msgstr']) - 1] .= $line;
+					if (!is_array($entry['msgstr'])) {
+						$entry['msgstr'] .= $str;
+					} else {
+						$entry['msgstr'][count($entry['msgstr']) - 1] .= $str;
+					}
 				}
 			}
 		}
@@ -546,9 +548,28 @@ class l10n
 	}
 
 	/* @ignore */
+	protected static function cleanPoLine($type,$_)
+	{
+			$patterns = array(
+				'msgid' 	=> 'msgid(_plural|)\s+"(.*)"',
+				'msgstr' 	=> 'msgstr(\[.*?\]|)\s+"(.*)"',
+				'multi' 	=> '"(.*)"',
+				'comment' 	=> '#\s*(\s|\.|:|\,|\|)\s*(.*)'
+			);
+
+			if (array_key_exists($type,$patterns) 
+			 && preg_match('/^'.$patterns[$type].'$/i', trim($_), $m)) {
+
+				return $m;
+			}
+
+			return false;
+	}
+
+	/* @ignore */
 	protected static function cleanPoString($_)
 	{
-		return stripslashes(preg_replace('/([^\\\\])\\\\n$/', "\$1\n", substr($_, 1, -1)));
+		return stripslashes(preg_replace('/([^\\\\])\\\\n$/', "\$1\n", $_));
 	}
 
 	/**
