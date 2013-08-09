@@ -397,7 +397,7 @@ class l10n
 					if ($headers_found) {
 						$headers_searched = true;
 						$entry = $desc = array();
-						$i = $l;
+						$i = $l - 1;
 						continue;
 					}
 				}
