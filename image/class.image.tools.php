@@ -79,7 +79,8 @@ class imageTools
 				case 3 :
 					$this->res = @imagecreatefrompng($f);
 					if (is_resource($this->res)) {
-						@imagealphablending($this->res, true);
+						@imagealphablending($this->res, false);
+						@imagesavealpha($this->res, true);
 					}
 					break;
 				case 2 :
@@ -290,6 +291,8 @@ class imageTools
 		$dest = imagecreatetruecolor($_w,$_h);
 		$fill = imagecolorallocate($dest,128,128,128);
 		imagefill($dest,0,0,$fill);
+		@imagealphablending($dest, false);
+		@imagesavealpha($dest, true);
 		imagecopyresampled($dest,$this->res,0,0,$decalW,$decalH,$_w,$_h,$cropW,$cropH);
 		imagedestroy($this->res);
 		$this->res = $dest;
