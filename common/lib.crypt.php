@@ -31,11 +31,16 @@ class crypt
 	*/
 	public static function hmac($key,$data,$hashfunc='sha1')
 	{
-		$blocksize=64;
 		if ($hashfunc != 'sha1') {
 			$hashfunc = 'md5';
 		}
 		
+		if (function_exists('hash_hmac'))
+		{
+			return hash_hmac($hashfunc,$data,$key);
+		}
+
+		$blocksize=64;
 		if (strlen($key)>$blocksize) {
 			$key=pack('H*', $hashfunc($key));
 		}
