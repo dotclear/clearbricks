@@ -569,7 +569,7 @@ class l10n
 	/* @ignore */
 	protected static function cleanPoString($_)
 	{
-		return stripslashes(preg_replace('/([^\\\\])\\\\n$/', "\$1\n", $_));
+		return stripslashes(str_replace(array('\n','\r\n'),"\n",$_));
 	}
 
 	/**
