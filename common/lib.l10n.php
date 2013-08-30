@@ -199,11 +199,11 @@ class l10n
 
 		} elseif (($tmp = self::getPoFile($po_file)) !== false) {
 			$GLOBALS['__l10n_files'][] = $po_file;
-			$GLOBALS['__l10n'] += $tmp; // += erase numeric keys unlike array_merge
+			$GLOBALS['__l10n'] = $tmp + $GLOBALS['__l10n']; // "+" erase numeric keys unlike array_merge
 
 		} elseif (($tmp = self::getLangFile($lang_file)) !== false) {
 			$GLOBALS['__l10n_files'][] = $lang_file;
-			$GLOBALS['__l10n'] += $tmp; // += erase numeric keys unlike array_merge
+			$GLOBALS['__l10n'] = $tmp + $GLOBALS['__l10n']; // "+" erase numeric keys unlike array_merge
 
 		} else {
 
