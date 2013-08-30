@@ -240,7 +240,7 @@ class wiki2xhtml
 		
 		# Récupération des macros
 		if ($this->getOpt('active_macros')) {
-			$in = preg_replace('#^///(.*?)///($|\r)#mse',"\\\$this->__getMacro('\\1')",$in);
+			$in = preg_replace_callback('#^///(.*?)///($|\r)#ms',array($this,'__getMacro'),$in);
 		}
 		
 		# Vérification du niveau de titre
