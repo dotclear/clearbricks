@@ -5,3 +5,5 @@ syntax: glob
 config-stamp
 _dist
 
+/vendor
+
