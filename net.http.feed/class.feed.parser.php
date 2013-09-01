@@ -197,6 +197,8 @@ class feedParser
 					$item->link = (string) $link['href'];
 					break;
 				}
+				
+				$item->link = (string) $link['href'];
 			}
 			
 			$item->title = (string) $i->title;
@@ -248,6 +250,8 @@ class feedParser
 					$item->link = (string) $link['href'];
 					break;
 				}
+				
+				$item->link = (string) $link['href'];
 			}
 			
 			$item->title = (string) $i->title;
