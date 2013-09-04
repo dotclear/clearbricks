@@ -14,6 +14,7 @@ config:
 	-not -regex '.*svn.*' \
 	-not -name '_dist' \
 	-not -name 'debian' \
+	-not -name 'tests' \
 	-exec cp -r \{\} ./$(CB) \;
 	
 	## Copy _common.php and README files
