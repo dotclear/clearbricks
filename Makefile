@@ -17,7 +17,7 @@ config:
 	-exec cp -r \{\} ./$(CB) \;
 	
 	## Copy _common.php and README files
-	cp _common.php README ./$(CB)/
+	cp _common.php README.md ./$(CB)/
 	
 	## Remove .svn folders
 	find ./$(CB)/ -type d -name '.svn' -print0 | xargs -0 rm -rf
@@ -27,7 +27,7 @@ config:
 dist: config dist-tgz dist-zip
 
 deb:
-	cp ./README debian/README
+	cp ./README.md debian/README
 	dpkg-buildpackage -rfakeroot
 
 dist-tgz:
