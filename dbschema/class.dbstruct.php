@@ -192,7 +192,7 @@ class dbStruct
 				
 				foreach ($keys as $kname => $k)
 				{
-					if ($k['type'] == 'primary' && $this->con->driver() == 'mysql') {
+					if ($k['type'] == 'primary' && ($this->con->driver() == 'mysql' || $this->con->driver() == 'mysqli')) {
 						$kname = 'PRIMARY';
 					} else {
 						$kname = $this->prefix.$kname;
