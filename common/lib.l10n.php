@@ -130,7 +130,8 @@ class l10n
 			return '';
 
 		// If no l10n translation loaded or exists
-		} elseif (!array_key_exists('__l10n',$GLOBALS) || empty($GLOBALS['__l10n']) || !array_key_exists($singular, $GLOBALS['__l10n'])) {
+		} elseif ((!array_key_exists('__l10n',$GLOBALS) || empty($GLOBALS['__l10n']) 
+			|| !array_key_exists($singular, $GLOBALS['__l10n'])) && is_null($count)) {
 
 			return $singular;
 
@@ -297,6 +298,61 @@ class l10n
 		}
 
 		return $r;
+	}
+
+	/**
+	* Generates a PHP file from a po file
+	*
+	* Return a boolean depending on success or failure
+	*
+	* @param string $file File
+	* @return boolean true on success
+	*/
+	public static function generatePhpFileFromPo($file)
+	{
+		$license_block = <<<EOF
+# -- BEGIN LICENSE BLOCK ---------------------------------------
+#
+# This file is part of Dotclear 2.
+#
+# Copyright (c) 2003-2013 Olivier Meunier & Association Dotclear
+# Licensed under the GPL version 2.0 license.
+# See LICENSE file or
+# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+#
+# -- END LICENSE BLOCK -----------------------------------------
+EOF;
+
+		$po_file = $file.'.po';
+		$php_file = $file.'.lang.php';
+
+		$strings = self::getPoFile($po_file);
+		$fcontent =
+		"<?php\n".
+		$license_block.
+		"#\n#\n#\n".
+		"#		  DOT NOT MODIFY THIS FILE !\n\n\n\n\n";
+		
+		foreach ($strings as $vo => $tr) {
+			$vo = str_replace("'", "\\'", $vo);
+			if (is_array($tr)) {
+				foreach ($tr as $i => $t) {
+					$t = str_replace("'", "\\'", $t);
+					$fcontent .= '$GLOBALS[\'__l10n\'][\''.$vo.'\']['.$i.'] = \''.$t.'\';'."\n";
+				}
+			} else {
+				$tr = str_replace("'", "\\'", $tr);
+				$fcontent .= '$GLOBALS[\'__l10n\'][\''.$vo.'\'] = \''.$tr.'\';'."\n";
+			}
+		}
+		
+		if (($fp = fopen($php_file, 'w')) !== false) {
+			fwrite($fp, $fcontent, strlen($fcontent));
+			fclose($fp);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/**
