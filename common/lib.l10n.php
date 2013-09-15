@@ -308,21 +308,8 @@ class l10n
 	* @param string $file File
 	* @return boolean true on success
 	*/
-	public static function generatePhpFileFromPo($file)
+	public static function generatePhpFileFromPo($file,$license_block='')
 	{
-		$license_block = <<<EOF
-# -- BEGIN LICENSE BLOCK ---------------------------------------
-#
-# This file is part of Dotclear 2.
-#
-# Copyright (c) 2003-2013 Olivier Meunier & Association Dotclear
-# Licensed under the GPL version 2.0 license.
-# See LICENSE file or
-# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
-#
-# -- END LICENSE BLOCK -----------------------------------------
-EOF;
-
 		$po_file = $file.'.po';
 		$php_file = $file.'.lang.php';
 
