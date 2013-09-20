@@ -50,6 +50,73 @@ class l10n extends atoum
 			->isEqualTo('Dotclear a été mis à jour.');
 	}
 
+	public function testZeroForCountEn() {
+		\l10n::init();
+        
+		$this
+			->string(__('singular', 'plural', 0))
+			->isEqualTo('plural');
+    }
+
+	public function testZeroForCountFr() {
+		\l10n::init();
+		\l10n::set(__DIR__.'/../fixtures/l10n/fr/main');
+
+		$this
+			->string(__('The category has been successfully removed.', 'The categories have been successfully removed.', 0))
+			->isEqualTo('Catégories supprimées avec succès.');
+    }
+
+	public function testZeroForCountFrUsingLang() {
+		\l10n::init();
+		\l10n::set(__DIR__.'/../fixtures/l10n/fr/main');
+        \l10n::lang('fr');
+
+		$this
+			->string(__('The category has been successfully removed.', 'The categories have been successfully removed.', 0))
+			->isEqualTo('Catégorie supprimée avec succès.');
+    }
+
+	public function testCodeLang() {
+        \l10n::init();
+
+        $this
+            ->boolean(\l10n::isCode('xx'))
+            ->isEqualTo(false);
+
+        $this
+            ->boolean(\l10n::isCode('fr'))
+            ->isEqualTo(true);
+    }
+
+	public function testChangeNonExistingLangShouldUseDefaultOne() {
+        \l10n::init('en');
+        
+        $this
+            ->string(\l10n::lang('xx'))
+            ->isEqualTo('en');
+	}
+
+	public function testgetLanguageName() {
+        \l10n::init();
+
+        $this
+            ->string(\l10n::getLanguageName('fr'))
+            ->isEqualTo('Français');
+	}
+
+	public function testgetCode() {
+        \l10n::init();
+
+        $this
+            ->string(\l10n::getCode('Français'))
+            ->isEqualTo('fr');
+
+        $this
+            ->string(\l10n::getCode(\l10n::getLanguageName('es')))
+            ->isEqualTo('es');
+	}
+
 	public function testPhpFormatSingular() {
 		$faker	= Faker\Factory::create();
 		$text = $faker->text(20);
@@ -74,6 +141,19 @@ class l10n extends atoum
 			->string(__('The category has been successfully removed.', 'The categories have been successfully removed.', 2))
 			->isEqualTo('The categories have been successfully removed.');
 	}
+
+    public function testPluralForLanguageWithoutPluralForms() {
+		\l10n::init();
+
+		$this
+			->integer(\l10n::getLanguagePluralsNumber('aa'))
+			->isEqualTo(\l10n::getLanguagePluralsNumber('en'));
+
+		$this
+			->string(\l10n::getLanguagePluralExpression('aa'))
+			->isEqualTo(\l10n::getLanguagePluralExpression('en'));
+        
+    }
 
 	public function testSimplePlural() {
 		\l10n::init();

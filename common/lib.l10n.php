@@ -695,7 +695,7 @@ class l10n
 	{
 		$_ = self::getLanguagesName();
 
-		return array_key_exists($code,$_) ? $code : self::$language_code;
+		return (($index = array_search($code,$_)) !== false) ? $index : self::$language_code;
 	}
 
 	/**
@@ -802,7 +802,7 @@ class l10n
 	{
 		$_ = self::getLanguagesPluralsNumber();
 
-		return array_key_exists($code,$_) ? $_[$code] : self::$language_pluralsnumber;
+		return !empty($_[$code]) ? $_[$code] : self::$language_pluralsnumber;
 	}
 
 	/**
@@ -829,7 +829,7 @@ class l10n
 	{
 		$_ = self::getLanguagesPluralExpression();
 
-		return array_key_exists($code,$_) ? $_[$code] : self::$language_pluralexpression;
+		return !empty($_[$code]) ? $_[$code] : self::$language_pluralexpression;
 	}
 
 	/**
