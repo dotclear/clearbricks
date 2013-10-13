@@ -9,5 +9,5 @@ $stdOutWriter = new atoum\writers\std\out();
 $cliReport = new atoum\reports\realtime\cli();
 $cliReport->addWriter($stdOutWriter);
 
-//$runner->addTestsFromDirectory('tests/unit/');
+$runner->addTestsFromDirectory('tests/unit/');
 $runner->addReport($cliReport);

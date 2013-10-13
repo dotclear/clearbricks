@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "c7c7a548483db33644a05eacf2cf60a6",
+    "hash": "9d804ec6c7ca12fee96bf609bfa39a15",
     "packages": [
 
     ],
@@ -14,12 +14,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/atoum/atoum.git",
-                "reference": "89ff5d4d62cc51520247749cf4b3a9d82e07ec77"
+                "reference": "fd5e6b8468e6fa1c3808e759e46a8956785088a3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atoum/atoum/zipball/89ff5d4d62cc51520247749cf4b3a9d82e07ec77",
-                "reference": "89ff5d4d62cc51520247749cf4b3a9d82e07ec77",
+                "url": "https://api.github.com/repos/atoum/atoum/zipball/fd5e6b8468e6fa1c3808e759e46a8956785088a3",
+                "reference": "fd5e6b8468e6fa1c3808e759e46a8956785088a3",
                 "shasum": ""
             },
             "require": {
@@ -80,7 +80,7 @@
                 "test",
                 "unit testing"
             ],
-            "time": "2013-08-16 11:37:39"
+            "time": "2013-10-12 14:00:32"
         },
         {
             "name": "fzaninotto/faker",
@@ -88,12 +88,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/fzaninotto/Faker.git",
-                "reference": "77a4e394d99a67e7fb611e8b402c2da4b80fa4f8"
+                "reference": "2355fcf8d19de6eaa562f809150e4ddace90d985"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fzaninotto/Faker/zipball/77a4e394d99a67e7fb611e8b402c2da4b80fa4f8",
-                "reference": "77a4e394d99a67e7fb611e8b402c2da4b80fa4f8",
+                "url": "https://api.github.com/repos/fzaninotto/Faker/zipball/2355fcf8d19de6eaa562f809150e4ddace90d985",
+                "reference": "2355fcf8d19de6eaa562f809150e4ddace90d985",
                 "shasum": ""
             },
             "require": {
@@ -126,7 +126,7 @@
                 "faker",
                 "fixtures"
             ],
-            "time": "2013-08-29 19:11:59"
+            "time": "2013-10-10 13:40:29"
         }
     ],
     "aliases": [

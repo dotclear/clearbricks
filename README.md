@@ -74,6 +74,11 @@ And now can run tests:
 $ ./bin/atoum
 ```
 
+You can also get code coverage for tests by runing:
+```
+$ ./bin/atoum -c .atoum.coverage.php
+```
+
 
 [1]: http://mercurial.selenic.com/wiki/Subrepository
 [2]: http://www.selenic.com/hg/help/subrepos
