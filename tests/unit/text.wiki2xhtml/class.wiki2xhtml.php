@@ -26,7 +26,8 @@ use atoum;
 use Faker;
 
 require_once __DIR__.'/../bootstrap.php';
-require_once(str_replace('tests/unit/',  '', __FILE__));
+$f = str_replace('\\',  '/', __FILE__);
+require_once(str_replace('tests/unit/',  '', $f));
 
 class wiki2xhtml extends atoum
 {
