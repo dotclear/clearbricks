@@ -26,7 +26,8 @@ use atoum;
 use Faker;
 
 require_once __DIR__.'/../bootstrap.php';
-require_once(str_replace('tests/unit/',	 '', __FILE__));
+$f = str_replace('\\',  '/', __FILE__);
+require_once(str_replace('tests/unit/',	 '', $f));
 
 class l10n extends atoum
 {
@@ -52,7 +53,7 @@ class l10n extends atoum
 
 	public function testZeroForCountEn() {
 		\l10n::init();
-        
+
 		$this
 			->string(__('singular', 'plural', 0))
 			->isEqualTo('plural');
@@ -91,7 +92,7 @@ class l10n extends atoum
 
 	public function testChangeNonExistingLangShouldUseDefaultOne() {
         \l10n::init('en');
-        
+
         $this
             ->string(\l10n::lang('xx'))
             ->isEqualTo('en');
@@ -152,7 +153,7 @@ class l10n extends atoum
 		$this
 			->string(\l10n::getLanguagePluralExpression('aa'))
 			->isEqualTo(\l10n::getLanguagePluralExpression('en'));
-        
+
     }
 
 	public function testSimplePlural() {
@@ -186,7 +187,7 @@ class l10n extends atoum
 
 	public function testGetFilePath() {
 		\l10n::init();
-		
+
 		$this
 			->string(\l10n::getFilePath(__DIR__.$this->l10n_dir, 'main.po', 'fr'))
 			->isEqualTo(__DIR__.$this->l10n_dir.'/fr/main.po');
@@ -204,7 +205,7 @@ class l10n extends atoum
 		$content .= implode('"'."\n".'" ', explode(' ', $en_str));
 		$content .= '"'."\n";
 		$content .= 'msgstr "Pas vraiment une très longue phrase"'."\n";
-		
+
 		$tmp_file = $this->tempPoFile($content);
 		\l10n::set(str_replace('.po', '', $tmp_file));
 
@@ -226,7 +227,7 @@ class l10n extends atoum
 		$content .= 'msgstr ""'."\n".'"';
 		$content .= implode('"'."\n".'" ', explode(' ', $fr_str));
 		$content .= '"'."\n";
-		
+
 		$tmp_file = $this->tempPoFile($content);
 		\l10n::set(str_replace('.po', '', $tmp_file));
 
@@ -252,7 +253,7 @@ class l10n extends atoum
 		$this
 			->array($GLOBALS['__l10n'])
 			->isIdenticalTo(array('Dotclear has been upgraded.' => 'Dotclear a été mis à jour.'));
-	}	 
+	}
 
 	public function testPluralStringsInPhpFile() {
 		\l10n::init();
