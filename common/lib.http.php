@@ -20,10 +20,10 @@ class http
 {
 	/** @var boolean	Force HTTPS scheme on server port 443 in {@link getHost()} */
 	public static $https_scheme_on_443 = false;
-	
+
 	/** @var integer	Cache max age for {@link cache()} */
 	public static $cache_max_age = 0;
-	
+
 	/**
 	* Self root URI
 	*
@@ -50,10 +50,10 @@ class http
 			$scheme = 'http';
 			$port = ($_SERVER['SERVER_PORT'] != '80') ? ':'.$_SERVER['SERVER_PORT'] : '';
 		}
-		
+
 		return $scheme.'://'.$server_name.$port;
 	}
-	
+
 	/**
 	* Self root URI
 	*
@@ -69,7 +69,7 @@ class http
 		array_shift($matches);
 		return join($matches);
 	}
-	
+
 	/**
 	* Self URI
 	*
@@ -79,9 +79,13 @@ class http
 	*/
 	public static function getSelfURI()
 	{
-		return self::getHost().$_SERVER['REQUEST_URI'];
+		if (substr($_SERVER['REQUEST_URI'],0,1) != '/') {
+			return self::getHost().'/'.$_SERVER['REQUEST_URI'];
+		} else {
+			return self::getHost().$_SERVER['REQUEST_URI'];
+		}
 	}
-	
+
 	/**
 	* Redirect
 	*
@@ -99,7 +103,7 @@ class http
 		{
 			$host = self::getHost();
 			$dir = str_replace(DIRECTORY_SEPARATOR,'/',dirname($_SERVER['PHP_SELF']));
-			
+
 			if (substr($page,0,1) == '/') {
 				$redir = $host.$page;
 			} else {
@@ -109,16 +113,16 @@ class http
 				$redir = $host.$dir.'/'.$page;
 			}
 		}
-		
+
 		# Close session if exists
 		if (session_id()) {
 			session_write_close();
 		}
-		
+
 		header('Location: '.$redir);
 		exit;
 	}
-	
+
 	/**
 	* Concat URL and path
 	*
@@ -134,14 +138,14 @@ class http
 		if (substr($url,-1,1) != '/') {
 			$url .= '/';
 		}
-		
+
 		if (substr($path,0,1) != '/') {
 			return $url.$path;
 		}
-		
+
 		return preg_replace('#^(.+?//.+?)/(.*)$#','$1'.$path,$url);
 	}
-	
+
 	/**
 	* Real IP
 	*
@@ -153,7 +157,7 @@ class http
 	{
 		return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
 	}
-	
+
 	/**
 	* Client unique ID
 	*
@@ -167,10 +171,10 @@ class http
 		$uid  = '';
 		$uid .= isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
 		$uid .= isset($_SERVER['HTTP_ACCEPT_CHARSET']) ? $_SERVER['HTTP_ACCEPT_CHARSET'] : '';
-		
+
 		return crypt::hmac($key,$uid);
 	}
-	
+
 	/**
 	* Client language
 	*
@@ -187,10 +191,10 @@ class http
 			$L = explode(';', $acclang[0]);
 			$dlang = substr(trim($L[0]),0,2);
 		}
-		
+
 		return $dlang;
 	}
-	
+
 	/**
 	* Client languages
 	*
@@ -209,7 +213,7 @@ class http
 			{
 				foreach($acclang['priority'] as $i => $p)
 				{
-					if ($p == '') $acclang['priority'][$i]=1; 
+					if ($p == '') $acclang['priority'][$i]=1;
 				}
 				array_multisort($acclang['priority'], SORT_DESC,$acclang['lang']);
 			}
@@ -218,7 +222,7 @@ class http
 			return $acclang;
 		}
 	}
-	
+
 	/**
 	* HTTP Cache
 	*
@@ -233,15 +237,15 @@ class http
 		if (empty($files) || !is_array($files)) {
 			return;
 		}
-		
+
 		array_walk($files,create_function('&$v','$v = filemtime($v);'));
-		
+
 		$array_ts = array_merge($mod_ts,$files);
-		
+
 		rsort($array_ts);
 		$now = time();
 		$ts = min($array_ts[0],$now);
-		
+
 		$since = null;
 		if (!empty($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
 			$since = $_SERVER['HTTP_IF_MODIFIED_SINCE'];
@@ -249,12 +253,12 @@ class http
 			$since = strtotime($since);
 			$since = ($since <= $now) ? $since : null;
 		}
-		
+
 		# Common headers list
 		$headers[] = 'Last-Modified: '.gmdate('D, d M Y H:i:s',$ts).' GMT';
 		$headers[] = 'Cache-Control: must-revalidate, max-age='.abs((integer) self::$cache_max_age);
 		$headers[] = 'Pragma:';
-		
+
 		if ($since >= $ts)
 		{
 			self::head(304,'Not Modified');
@@ -271,7 +275,7 @@ class http
 			}
 		}
 	}
-	
+
 	/**
 	* HTTP Etag
 	*
@@ -286,12 +290,12 @@ class http
 		if (empty($args)) {
 			return;
 		}
-		
+
 		$etag = '"'.md5(implode('',$args)).'"';
 		unset($args);
-		
+
 		header('ETag: '.$etag);
-		
+
 		# Do we have a previously sent content?
 		if (!empty($_SERVER['HTTP_IF_NONE_MATCH']))
 		{
@@ -304,7 +308,7 @@ class http
 			}
 		}
 	}
-	
+
 	/**
 	* HTTP Header
 	*
@@ -316,7 +320,7 @@ class http
 	public static function head($code,$msg=null)
 	{
 		$status_mode = preg_match('/cgi/',PHP_SAPI);
-		
+
 		if (!$msg)
 		{
 			$msg_codes = array(
@@ -361,17 +365,17 @@ class http
 				504 => 'Gateway Timeout',
 				505 => 'HTTP Version Not Supported'
 			);
-			
+
 			$msg = isset($msg_codes[$code]) ? $msg_codes[$code] : '-';
 		}
-		
+
 		if ($status_mode) {
 			header('Status: '.$code.' '.$msg);
 		} else {
 			header($msg, true, $code);
 		}
 	}
-	
+
 	/**
 	* Trim request
 	*
@@ -393,21 +397,21 @@ class http
 			array_walk($_COOKIE,array('self','trimRequestInVar'));
 		}
 	}
-	
+
 	/*
-	 * 
+	 *
 	 * To be deleted?
 	 * -- saymonz, 29.04.2011
-	 * 
+	 *
 	//*
-	
+
 	private static function trimRequestHandler(&$v,$key)
 	{
 		$v = self::trimRequestInVar($v);
 	}
-	
+
 	//*/
-	
+
 	private static function trimRequestInVar(&$value,$key)
 	{
 		if (is_array($value))
@@ -432,7 +436,7 @@ class http
 			$value = trim($value);
 		}
 	}
-	
+
 	/**
 	* Unset global variables
 	*
@@ -444,19 +448,19 @@ class http
 		if (!ini_get('register_globals')) {
 			return;
 		}
-		
+
 		if (isset($_REQUEST['GLOBALS'])) {
 			throw new Exception('GLOBALS overwrite attempt detected');
 		}
-		
+
 		# Variables that shouldn't be unset
 		$no_unset = array('GLOBALS','_GET','_POST','_COOKIE','_REQUEST',
 		'_SERVER','_ENV','_FILES');
-		
+
 		$input = array_merge($_GET,$_POST,$_COOKIE,$_SERVER,$_ENV,$_FILES,
 				(isset($_SESSION) && is_array($_SESSION) ? $_SESSION : array()));
-		
-		foreach ($input as $k => $v) { 
+
+		foreach ($input as $k => $v) {
 			if (!in_array($k,$no_unset) && isset($GLOBALS[$k]) ) {
 				$GLOBALS[$k] = null;
 				unset($GLOBALS[$k]);
