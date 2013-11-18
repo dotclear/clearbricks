@@ -19,6 +19,14 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 # ***** END LICENSE BLOCK *****
+if (is_dir(__DIR__.'/../../../clearbricks')) {
+    define('CLEARBRICKS_PATH',__DIR__.'/../../../clearbricks');
+} elseif (isset($_SERVER['CLEARBRICKS_PATH']) && is_dir($_SERVER['CLEARBRICKS_PATH'])) {
+    define('CLEARBRICKS_PATH',$_SERVER['CLEARBRICKS_PATH']);
+}
 
+if (!defined('CLEARBRICKS_PATH') || !is_dir(CLEARBRICKS_PATH)) {
+    exit('No clearbricks path defined');
+}
 require_once __DIR__.'/../../vendor/autoload.php';
 

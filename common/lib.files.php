@@ -20,32 +20,32 @@ class files
 {
 	/** @var string Default directories mode */
 	public static $dir_mode = null;
-	
+
 	/** @var array Default MIME types */
 	public static $mimeType	= array(
 			'odt'	=> 'application/vnd.oasis.opendocument.text',
 			'odp'	=> 'application/vnd.oasis.opendocument.presentation',
 			'ods'	=> 'application/vnd.oasis.opendocument.spreadsheet',
-			
+
 			'sxw'	=> 'application/vnd.sun.xml.writer',
 			'sxc'	=> 'application/vnd.sun.xml.calc',
 			'sxi'	=> 'application/vnd.sun.xml.impress',
-			
+
 			'ppt' 	=> 'application/mspowerpoint',
 			'doc'	=> 'application/msword',
-			'xls'	=> 'application/msexcel',			
+			'xls'	=> 'application/msexcel',
 			'rtf'	=> 'application/rtf',
-			
+
 			'pdf'	=> 'application/pdf',
 			'ps'		=> 'application/postscript',
 			'ai'		=> 'application/postscript',
 			'eps'	=> 'application/postscript',
 			'json'	=> 'application/json',
 			'xml'	=> 'application/xml',
-			
+
 			'bin'	=> 'application/octet-stream',
 			'exe'	=> 'application/octet-stream',
-			
+
 			'bz2'	=> 'application/x-bzip',
 			'deb'	=> 'application/x-debian-package',
 			'gz'		=> 'application/x-gzip',
@@ -55,7 +55,7 @@ class files
 			'tar'	=> 'application/x-tar',
 			'tgz'	=> 'application/x-gtar',
 			'zip'	=> 'application/zip',
-			
+
 			'aiff'	=> 'audio/x-aiff',
 			'ua'		=> 'audio/basic',
 			'mp3'	=> 'audio/mpeg3',
@@ -66,10 +66,11 @@ class files
 			'ram'	=> 'audio/x-pn-realaudio',
 			'wav'	=> 'audio/x-wav',
 			'wma'	=> 'audio/x-ms-wma',
-			
+
 			'swf'	=> 'application/x-shockwave-flash',
 			'swfl'	=> 'application/x-shockwave-flash',
-			
+			'js'	=> 'application/javascript',
+
 			'bmp'	=> 'image/bmp',
 			'gif'	=> 'image/gif',
 			'ico'	=> 'image/vnd.microsoft.icon',
@@ -81,16 +82,15 @@ class files
 			'tiff'	=> 'image/tiff',
 			'tif'	=> 'image/tiff',
 			'xbm'	=> 'image/x-xbitmap',
-			
+
 			'css'	=> 'text/css',
 			'csv'	=> 'text/csv',
-			'js'		=> 'text/javascript',
 			'html'	=> 'text/html',
 			'htm'	=> 'text/html',
 			'txt'	=> 'text/plain',
 			'rtf'	=> 'text/richtext',
 			'rtx'	=> 'text/richtext',
-			
+
 			'mpg'	=> 'video/mpeg',
 			'mpeg'	=> 'video/mpeg',
 			'mpe'	=> 'video/mpeg',
@@ -105,7 +105,7 @@ class files
 			'avi'	=> 'video/x-msvideo',
 			'wmv'	=> 'video/x-ms-wmv'
 		);
-	
+
 	/**
 	* Directory scanning
 	*
@@ -119,24 +119,24 @@ class files
 	{
 		$res = array();
 		$dh = @opendir($d);
-		
+
 		if ($dh === false) {
 			throw new Exception(__('Unable to open directory.'));
 		}
-		
+
 		while (($f = readdir($dh)) !== false) {
 			$res[] = $f;
 		}
 		closedir($dh);
-		
+
 		sort($res);
 		if ($order) {
-			rsort($res);
+			sort($res);
 		}
-		
+
 		return $res;
 	}
-	
+
 	/**
 	* File extension
 	*
@@ -148,12 +148,12 @@ class files
 	public static function getExtension($f)
 	{
 		$f = explode('.',basename($f));
-		
+
 		if (count($f) <= 1) { return ''; }
-		
+
 		return strtolower($f[count($f)-1]);
 	}
-	
+
 	/**
 	* MIME type
 	*
@@ -166,14 +166,14 @@ class files
 	{
 		$ext = self::getExtension($f);
 		$types = self::mimeTypes();
-		
+
 		if (isset($types[$ext])) {
 			return $types[$ext];
 		} else {
-			return 'text/plain';
+			return 'application/octet-stream';
 		}
 	}
-	
+
 	/**
 	* MIME types
 	*
@@ -185,7 +185,7 @@ class files
 	{
 		return self::$mimeType;
 	}
-	
+
 	/**
 	* New MIME types
 	*
@@ -197,7 +197,7 @@ class files
 	{
 		self::$mimeType = array_merge(self::$mimeType, $tab);
 	}
-	
+
 	/**
 	* Is a file or directory deletable.
 	*
@@ -214,7 +214,7 @@ class files
 			return (is_writable(dirname($f)) && count(files::scandir($f)) <= 2);
 		}
 	}
-	
+
 	/**
 	* Recursive removal
 	*
@@ -244,7 +244,7 @@ class files
 		closedir($current_dir);
 		return @rmdir($dir);
 	}
-	
+
 	/**
 	* Touch file
 	*
@@ -263,7 +263,7 @@ class files
 			}
 		}
 	}
-	
+
 	/**
 	* Directory creation.
 	*
@@ -278,25 +278,25 @@ class files
 		if (empty($f)) {
 			return;
 		}
-		
+
 		if (DIRECTORY_SEPARATOR == '\\') {
 			$f = str_replace('/','\\',$f);
 		}
-		
+
 		if (is_dir($f)) {
 			return;
 		}
-		
+
 		if ($r)
 		{
 			$dir = path::real($f,false);
 			$dirs = array();
-			
+
 			while (!is_dir($dir)) {
 				array_unshift($dirs,basename($dir));
 				$dir = dirname($dir);
 			}
-			
+
 			foreach ($dirs as $d)
 			{
 				$dir .= DIRECTORY_SEPARATOR.$d;
@@ -313,7 +313,7 @@ class files
 			self::inheritChmod($f);
 		}
 	}
-	
+
 	/**
 	* Mode inheritage
 	*
@@ -326,14 +326,14 @@ class files
 		if (!function_exists('fileperms') || !function_exists('chmod')) {
 			return false;
 		}
-		
+
 		if (self::$dir_mode != null) {
 			return @chmod($file,self::$dir_mode);
 		} else {
 			return @chmod($file,fileperms(dirname($file)));
 		}
 	}
-	
+
 	/**
 	* Changes file content.
 	*
@@ -344,21 +344,21 @@ class files
 	*/
 	public static function putContent($f, $f_content)
 	{
-		if (file_exists($f) && !is_writable($f)) {	
+		if (file_exists($f) && !is_writable($f)) {
 			throw new Exception(__('File is not writable.'));
 		}
 		
 		$fp = @fopen($f, 'w');
-		
+
 		if ($fp === false) {
 			throw new Exception(__('Unable to open file.'));
 		}
-		
+
 		fwrite($fp,$f_content,strlen($f_content));
 		fclose($fp);
 		return true;
 	}
-	
+
 	/**
 	* Human readable file size.
 	*
@@ -371,7 +371,7 @@ class files
 		$mb = 1024 * $kb;
 		$gb = 1024 * $mb;
 		$tb = 1024 * $gb;
-		
+
 		if($size < $kb) {
 			return $size." B";
 		}
@@ -388,7 +388,7 @@ class files
 			return round($size/$tb,2)." TB";
 		}
 	}
-	
+
 	/**
 	* Converts a human readable file size to bytes.
 	*
@@ -399,7 +399,7 @@ class files
 	{
 		$v = trim($v);
 		$last = strtolower(substr($v,-1,1));
-		
+		$v = (integer)substr($v,0,-1);
 		switch($last)
 		{
 			case 'g':
@@ -409,10 +409,9 @@ class files
 			case 'k':
 				$v *= 1024;
 		}
-		
 		return $v;
 	}
-	
+
 	/**
 	* Upload status
 	*
@@ -426,7 +425,7 @@ class files
 		if (!isset($file['error'])) {
 			throw new Exception(__('Not an uploaded file.'));
 		}
-		
+
 		switch ($file['error']) {
 			case UPLOAD_ERR_OK:
 				return true;
@@ -446,11 +445,14 @@ class files
 			case UPLOAD_ERR_CANT_WRITE:
 				throw new Exception(__('Failed to write file to disk.'));
 				return false;
+			case UPLOAD_ERR_EXTENSION:
+				throw new Exception(__('A PHP extension stopped the file upload.'));
+				return false;
 			default:
 				return true;
 		}
 	}
-	
+
 	# Packages generation methods
 	#
 	/**
@@ -467,28 +469,28 @@ class files
 	{
 		if (!$contents) {
 			$contents = array('dirs'=> array(),'files' => array());
-		}			
-		
+		}
+
 		$exclude_list=array('.','..','.svn');
-		
+
 		if (empty($res)) {
 			$res = array();
 		}
-		
+
 		$dirName = preg_replace('|/$|','',$dirName);
-		
+
 		if (!is_dir($dirName)) {
 			throw new Exception(sprintf(__('%s is not a directory.'),$dirName));
 		}
-		
+
 		$contents['dirs'][] = $dirName;
-		
+
 		$d = @dir($dirName);
-		
+
 		if ($d === false) {
 			throw new Exception(__('Unable to open directory.'));
 		}
-		
+
 		while($entry = $d->read())
 		{
 			if (!in_array($entry,$exclude_list))
@@ -504,10 +506,10 @@ class files
 			}
 		}
 		$d->close();
-		
+
 		return $contents;
 	}
-	
+
 	/**
 	* Filename cleanup
 	*
@@ -545,31 +547,31 @@ class path
 	public static function real($p,$strict=true)
 	{
 		$os = (DIRECTORY_SEPARATOR == '\\') ? 'win' : 'nix';
-		
+
 		# Absolute path?
 		if ($os == 'win') {
 			$_abs = preg_match('/^\w+:/',$p);
 		} else {
 			$_abs = substr($p,0,1) == '/';
 		}
-		
+
 		# Standard path form
 		if ($os == 'win') {
 			$p = str_replace('\\','/',$p);
 		}
-		
-		# Adding root if !$_abs 
+
+		# Adding root if !$_abs
 		if (!$_abs) {
 			$p = dirname($_SERVER['SCRIPT_FILENAME']).'/'.$p;
 		}
-		
+
 		# Clean up
 		$p = preg_replace('|/+|','/',$p);
-		
+
 		if (strlen($p) > 1) {
 			$p = preg_replace('|/$|','',$p);
 		}
-		
+
 		$_start = '';
 		if ($os == 'win') {
 			list($_start,$p) = explode(':',$p);
@@ -578,17 +580,17 @@ class path
 			$_start = '/';
 		}
 		$p = substr($p,1);
-		
+
 		# Go through
 		$P = explode('/',$p);
 		$res = array();
-		
+
 		for ($i=0;$i<count($P);$i++)
 		{
 			if ($P[$i] == '.') {
 				continue;
 			}
-			
+
 			if ($P[$i] == '..') {
 				if (count($res) > 0) {
 					array_pop($res);
@@ -597,16 +599,16 @@ class path
 				array_push($res,$P[$i]);
 			}
 		}
-		
+
 		$p = $_start.implode('/',$res);
-		
+
 		if ($strict && !@file_exists($p)) {
 			return false;
 		}
-		
+
 		return $p;
 	}
-	
+
 	/**
 	* Returns a clean file path
 	*
@@ -618,10 +620,10 @@ class path
 		$p = str_replace('..','',$p);
 		$p = preg_replace('|/{2,}|','/',$p);
 		$p = preg_replace('|/$|','',$p);
-		
+
 		return $p;
 	}
-	
+
 	/**
 	* Path information
 	*
@@ -637,15 +639,15 @@ class path
 	{
 		$p = pathinfo($f);
 		$res = array();
-		
+
 		$res['dirname'] = $p['dirname'];
 		$res['basename'] = $p['basename'];
 		$res['extension'] = isset($p['extension']) ? $p['extension'] : '';
 		$res['base'] = preg_replace('/\.'.preg_quote($res['extension'],'/').'$/','',$res['basename']);
-		
+
 		return $res;
 	}
-	
+
 	/**
 	* Full path with root
 	*
@@ -660,7 +662,7 @@ class path
 		if (substr($p,0,1) == '/') {
 			return $p;
 		}
-		
+
 		return $root.'/'.$p;
 	}
 }
