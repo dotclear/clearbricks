@@ -6,7 +6,6 @@ BEFOREINCLUDE
 AFTERINCLUDE
 --TEMPLATE(include.html)--
 This is included
-
 --EXPECT--
 BEFOREINCLUDE
 This is included

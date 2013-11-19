@@ -65,14 +65,19 @@ class template extends atoum
         } else {
             $path=array();
             foreach ($t['path'] as $p) {
-                $path[] = $dir.'/'.$p;
+                $path[] = $dir.'/'.trim($p);
             }
             $GLOBALS['tpl']->setPath($path);
         }
         testTpls::register($GLOBALS['tpl']);
+        $result = $GLOBALS['tpl']->getData($basetpl);
         $this
-            ->string(trim($GLOBALS['tpl']->getData($basetpl)))
-            ->isEqualTo(trim($t['outputs'][0][1]));
+            ->string(rtrim($result))
+            ->isEqualTo(rtrim($t['outputs'][0][1]));
+        foreach ($t['templates'] as $name=>$content) {
+            unlink($dir.'/'.$name);
+        }
+        unset($GLOBALS['tpl']);
 
 	}
 
