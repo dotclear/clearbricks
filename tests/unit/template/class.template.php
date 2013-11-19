@@ -21,8 +21,6 @@
 # ***** END LICENSE BLOCK *****
 namespace tests\unit;
 
-require_once __DIR__.'/../../lib/class.integrationtest.php';
-
 use atoum;
 use Faker;
 
