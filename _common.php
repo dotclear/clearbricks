@@ -8,12 +8,12 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # Clearbricks is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with Clearbricks; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -69,6 +69,9 @@ $__autoload['sessionDB']		= dirname(__FILE__).'/session.db/class.session.db.php'
 
 # Simple Template Systeme
 $__autoload['template']		= dirname(__FILE__).'/template/class.template.php';
+$__autoload['tplNode']		= dirname(__FILE__).'/template/class.tplnode.php';
+$__autoload['tplNodeBlock']		= dirname(__FILE__).'/template/class.tplnodeblock.php';
+$__autoload['tplNodeValue']		= dirname(__FILE__).'/template/class.tplnodevalue.php';
 
 # URL Handler
 $__autoload['urlHandler']	= dirname(__FILE__).'/url.handler/class.url.handler.php';

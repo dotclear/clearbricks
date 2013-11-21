@@ -31,8 +31,8 @@ class template
 
 	protected $remove_php = true;
 
-	protected $tag_block = '<tpl:(%1$s)(?:(\s+.*?)>|>)(.*?)</tpl:%1$s>';
-	protected $tag_value = '{{tpl:(%s)(\s(.*?))?\}}';
+	protected $unknown_value_handler = null;
+	protected $unknown_block_handler = null;
 
 	protected $tpl_path = array();
 	protected $cache_dir;
@@ -272,33 +272,105 @@ class template
 		# Remove template comments <!-- #... -->
 		$fc = preg_replace('/(^\s*)?<!-- #(.*?)-->/ms','',$fc);
 
-		# Compile blocks
-		foreach ($this->blocks as $b => $f) {
-			$pattern = sprintf($this->tag_block,preg_quote($b,'#'));
+		# Lexer part : split file into small pieces
+		# each array entry will be either a tag or plain text
+		$blocks = preg_split(
+			'#(<tpl:\w+[^>]*>)|(</tpl:\w+>)|({{tpl:\w+[^}]*}})#msu',$fc,-1,
+			PREG_SPLIT_DELIM_CAPTURE|PREG_SPLIT_NO_EMPTY);
 
-			$fc = preg_replace_callback('#'.$pattern.'#ms',
-			array($this,'compileBlock'),$fc);
+		# Next : build semantic tree from tokens.
+		$rootNode = new tplNode();
+		$node = $rootNode;
+		$errors = array();
+		foreach ($blocks as $id => $block) {
+			$isblock = preg_match('#<tpl:(\w+)(?:(\s+.*?)>|>)|</tpl:(\w+)>|{{tpl:(\w+)(\s(.*?))?}}#ms',$block,$match);
+			if ($isblock == 1) {
+				if (substr($match[0],1,1) == '/') {
+					// Closing tag, check if it matches current opened node
+					$tag = $match[3];
+					if (($node instanceof tplNodeBlock) && $node->getTag() == $tag) {
+						$node->setClosing();
+						$node = $node->getParent();
+					} else {
+						// Closing tag does not match opening tag
+						// Search if it closes a parent tag
+						$search = $node;
+						while($search->getTag() != 'ROOT' && $search->getTag() != $tag) {
+							$search = $search->getParent();
+						}
+						if ($search->getTag() == $tag) {
+							$errors[] = sprintf(
+								__('Did not find closing tag for block <tpl:%s>. Content has been ignored.'),
+								html::escapeHTML($node->getTag()));
+							$search->setClosing();
+							$node = $search->getParent();
+						} else {
+							$errors[]=sprintf(
+								__('Unexpected closing tag </tpl:%s> found.'),
+								$tag);;
+						}
+					}
+				} elseif (substr($match[0],0,1) == '{') {
+					// Value tag
+					$tag = $match[4];
+					$str_attr = '';
+					$attr = array();
+					if (isset($match[6])) {
+						$str_attr = $match[6];
+						$attr = $this->getAttrs($match[6]);
+					}
+					$node->addChild(new tplNodeValue($tag,$attr,$str_attr));
+				} else {
+					// Opening tag, create new node and dive into it
+					$tag = $match[1];
+					$newnode = new tplNodeBlock($tag,isset($match[2])?$this->getAttrs($match[2]):array());
+					$node->addChild($newnode);
+					$node = $newnode;
+				}
+			} else {
+				// Simple text
+				$node->addChild(new tplNodeText($block));
+			}
 		}
 
-		# Compile values
-		foreach ($this->values as $v => $f) {
-			$pattern = sprintf($this->tag_value,preg_quote($v,'#'));
-
-			$fc = preg_replace_callback('#'.$pattern.'#ms',
-			array($this,'compileValue'),$fc);
+		if (($node instanceof tplNodeBlock) && !$node->isClosed()) {
+			$errors[] = sprintf(
+				__('Did not find closing tag for block <tpl:%s>. Content has been ignored.'),
+				html::escapeHTML($node->getTag()));
 		}
 
-		return $fc;
+		$err = "";
+		if (count($errors) > 0) {
+			$err = "\n\n<!-- \n".
+				__('WARNING: the following errors have been found while parsing template file :').
+				"\n * ".
+				join("\n * ",$errors).
+				"\n -->\n";
+		}
+
+		return $rootNode->compile($this).$err;
 	}
 
-	protected function compileBlock($match)
+	public function compileBlockNode($tag,$attr,$content)
 	{
-		$b = $match[1];
-		$content = $match[3];
-		$attr = $this->getAttrs($match[2]);
+		$res = '';
+		if (isset($this->blocks[$tag])) {
+			$res .= call_user_func($this->blocks[$tag],$attr,$content);
+		} elseif ($this->unknown_block_handler != null) {
+			$res .= call_user_func($this->unknown_block_handler,$tag,$attr,$content);
+		}
+		return $res;
+	}
 
-		# Call block function
-		return call_user_func($this->blocks[$b],$attr,$content);
+	public function compileValueNode($tag,$attr,$str_attr)
+	{
+		$res = '';
+		if (isset($this->values[$tag])) {
+			$res .= call_user_func($this->values[$tag],$attr,ltrim($str_attr));
+		} elseif ($this->unknown_value_handler != null) {
+			$res .= call_user_func($this->unknown_value_handler,$tag,$attr,$str_attr);
+		}
+		return $res;
 	}
 
 	protected function compileValue($match)
@@ -308,6 +380,20 @@ class template
 		$str_attr = isset($match[2]) ? $match[2] : null;
 
 		return call_user_func($this->values[$v],$attr,ltrim($str_attr));
+	}
+
+	public function setUnknownValueHandler($callback)
+	{
+		if (is_callable($callback)) {
+			$this->unknown_value_handler = $callback;
+		}
+	}
+
+	public function setUnknownBlockHandler($callback)
+	{
+		if (is_callable($callback)) {
+			$this->unknown_block_handler = $callback;
+		}
 	}
 
 	protected function getAttrs($str)
