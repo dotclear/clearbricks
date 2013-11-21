@@ -29,6 +29,10 @@ require_once __DIR__.'/../bootstrap.php';
 $f = str_replace('\\',  '/', __FILE__);
 require_once(str_replace('tests/unit/',  '', $f));
 require_once(__DIR__.'/../../../common/lib.files.php');
+require_once(__DIR__.'/../../../template/class.tplnode.php');
+require_once(__DIR__.'/../../../template/class.tplnodeblock.php');
+require_once(__DIR__.'/../../../template/class.tplnodevalue.php');
+require_once(__DIR__.'/../../../template/class.tplnodetext.php');
 
 class template extends atoum
 {
