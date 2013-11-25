@@ -72,6 +72,8 @@ $__autoload['template']		= dirname(__FILE__).'/template/class.template.php';
 $__autoload['tplNode']		= dirname(__FILE__).'/template/class.tplnode.php';
 $__autoload['tplNodeBlock']		= dirname(__FILE__).'/template/class.tplnodeblock.php';
 $__autoload['tplNodeValue']		= dirname(__FILE__).'/template/class.tplnodevalue.php';
+$__autoload['tplNodeBlockDefinition']		= dirname(__FILE__).'/template/class.tplnodeblockdef.php';
+$__autoload['tplNodeValueParent']		= dirname(__FILE__).'/template/class.tplnodevalueparent.php';
 
 # URL Handler
 $__autoload['urlHandler']	= dirname(__FILE__).'/url.handler/class.url.handler.php';
