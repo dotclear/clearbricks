@@ -36,6 +36,7 @@ class template
 
 	protected $tpl_path = array();
 	protected $cache_dir;
+	protected $parent_file;
 
 	protected $compile_stack = array();
 
@@ -51,6 +52,7 @@ class template
 
 		$this->self_name = $self_name;
 		$this->addValue('include',array($this,'includeFile'));
+		$this->addBlock('Block',array($this,'blockSection'));
 	}
 
 	public function includeFile($attr)
@@ -67,6 +69,10 @@ class template
 		'<?php try { '.
 		'echo '.$this->self_name."->getData('".str_replace("'","\'",$src)."'); ".
 		'} catch (Exception $e) {} ?>'."\n";
+	}
+
+	public function blockSection ($attr,$content) {
+		return $content;
 	}
 
 	public function setPath()
@@ -231,6 +237,21 @@ class template
 		return false;
 	}
 
+	public function getParentFilePath($previous_path,$file) {
+		$check_file = false;
+		foreach ($this->tpl_path as $p)
+		{
+			if ($check_file && file_exists($p.'/'.$file)) {
+				return $p."/".$file;
+			}
+			if ($p == $previous_path) {
+				$check_file = true;
+			}
+		}
+
+		return false;
+	}
+
 	public function getData($________)
 	{
 		self::$_k = array_keys($GLOBALS);
@@ -253,8 +274,7 @@ class template
 		return self::$_r;
 	}
 
-	protected function compileFile($file)
-	{
+	protected function getCompiledTree($file,&$err) {
 		$fc = file_get_contents($file);
 
 		$this->compile_stack[] = $file;
@@ -282,6 +302,7 @@ class template
 		$rootNode = new tplNode();
 		$node = $rootNode;
 		$errors = array();
+		$this->parent_file = '';
 		foreach ($blocks as $id => $block) {
 			$isblock = preg_match('#<tpl:(\w+)(?:(\s+.*?)>|>)|</tpl:(\w+)>|{{tpl:(\w+)(\s(.*?))?}}#ms',$block,$match);
 			if ($isblock == 1) {
@@ -319,11 +340,23 @@ class template
 						$str_attr = $match[6];
 						$attr = $this->getAttrs($match[6]);
 					}
-					$node->addChild(new tplNodeValue($tag,$attr,$str_attr));
+					if (strtolower($tag) == "extends") {
+						if (isset($attr['parent']) && $this->parent_file == "") {
+							$this->parent_file = $attr['parent'];
+						}
+					} elseif (strtolower($tag) == "parent") {
+						$node->addChild(new tplNodeValueParent($tag,$attr,$str_attr));
+					} else {
+						$node->addChild(new tplNodeValue($tag,$attr,$str_attr));
+					}
 				} else {
 					// Opening tag, create new node and dive into it
 					$tag = $match[1];
-					$newnode = new tplNodeBlock($tag,isset($match[2])?$this->getAttrs($match[2]):array());
+					if ($tag == "Block") {
+						$newnode = new tplNodeBlockDefinition($tag,isset($match[2])?$this->getAttrs($match[2]):array());
+					} else {
+						$newnode = new tplNodeBlock($tag,isset($match[2])?$this->getAttrs($match[2]):array());
+					}
 					$node->addChild($newnode);
 					$node = $newnode;
 				}
@@ -339,7 +372,7 @@ class template
 				html::escapeHTML($node->getTag()));
 		}
 
-		$err = "";
+		$err="";
 		if (count($errors) > 0) {
 			$err = "\n\n<!-- \n".
 				__('WARNING: the following errors have been found while parsing template file :').
@@ -347,8 +380,27 @@ class template
 				join("\n * ",$errors).
 				"\n -->\n";
 		}
+		return $rootNode;
+	}
 
-		return $rootNode->compile($this).$err;
+	protected function compileFile($file)
+	{
+		$done=false;
+		while (!$done) {
+			if (!in_array($file,$this->compile_stack)) {
+				$tree = $this->getCompiledTree($file,$err);
+				if ($this->parent_file == "__parent__") {
+					$file =  $this->getParentFilePath(dirname($file),basename($file));
+				} elseif ($this->parent_file != "") {
+					$file =  $this->getFilePath($this->parent_file);
+				} else {
+					$done=true;
+				}
+			} else {
+				$done = true;
+			}
+		}
+		return $tree->compile($this).$err;
 	}
 
 	public function compileBlockNode($tag,$attr,$content)
