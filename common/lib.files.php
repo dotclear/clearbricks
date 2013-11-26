@@ -347,7 +347,7 @@ class files
 		if (file_exists($f) && !is_writable($f)) {
 			throw new Exception(__('File is not writable.'));
 		}
-		
+
 		$fp = @fopen($f, 'w');
 
 		if ($fp === false) {
@@ -399,7 +399,7 @@ class files
 	{
 		$v = trim($v);
 		$last = strtolower(substr($v,-1,1));
-		$v = (integer)substr($v,0,-1);
+		$v = (float)substr($v,0,-1);
 		switch($last)
 		{
 			case 'g':
