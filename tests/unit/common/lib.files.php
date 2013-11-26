@@ -288,24 +288,24 @@ class files extends atoum
     public function testStr2Bytes()
     {
         $this
-            ->integer(\files::str2bytes('512B'))
-            ->isEqualTo(512);
+            ->float(\files::str2bytes('512B'))
+            ->isEqualTo((float)512);
 
         $this
-            ->integer(\files::str2bytes('512 B'))
-            ->isEqualTo(512);
+            ->float(\files::str2bytes('512 B'))
+            ->isEqualTo((float)512);
 
         $this
-            ->integer(\files::str2bytes('1k'))
-            ->isEqualTo(1024);
+            ->float(\files::str2bytes('1k'))
+            ->isEqualTo((float)1024);
 
         $this
-            ->integer(\files::str2bytes('1M'))
-            ->isEqualTo(1024*1024);
+            ->float(\files::str2bytes('1M'))
+            ->isEqualTo((float)1024*1024);
         // Max int limit reached, we have a float here
         $this
             ->float(\files::str2bytes('2G'))
-            ->isEqualTo(2* 1024 *1024*1024);
+            ->isEqualTo((float)2* 1024 *1024*1024);
     }
 
     /**
