@@ -75,10 +75,19 @@ class template extends atoum
             $GLOBALS['tpl']->setPath($path);
         }
         testTpls::register($GLOBALS['tpl']);
-        $result = $GLOBALS['tpl']->getData($basetpl);
-        $this
-            ->string(rtrim($result))
-            ->isEqualTo(rtrim($t['outputs'][0][1]));
+        if ($t['exception'] === false) {
+            $result = $GLOBALS['tpl']->getData($basetpl);
+            $this
+                ->string(trim($result))
+                ->isEqualTo(trim($t['outputs'][0][1]));
+        } else {
+
+            $this
+                ->exception(function() use($basetpl) {
+                    $result = $GLOBALS['tpl']->getData($basetpl);
+                })
+                ->hasMessage(trim($t['exception']));
+        }
         foreach ($t['templates'] as $name=>$content) {
             unlink($dir.'/'.$name);
         }
@@ -89,13 +98,14 @@ class template extends atoum
 
 	public function parse($file) {
 		$test = file_get_contents($file);
-		if (preg_match('/
-                --TEST--\s*(.*?)\s*(?:--CONDITION--\s*(.*))?\s*((?:--TEMPLATE(?:\(.*?\))?--(?:.*?))+)\s*(?:--DATA--\s*(.*))?\s*--EXCEPTION--\s*(.*)/sx', $test, $match)) {
+		if (preg_match('/--TEST--\s*(.*?)\s*(?:--CONDITION--\s*(.*))?\s*((?:--TEMPLATE(?:\(.*?\))?--(?:.*?))+)(?:--PATH--\s*(.*))?--EXCEPTION--\s*(.*)/s', $test, $match)) {
             $message = $match[1];
             $condition = $match[2];
             $templates = $this->parseTemplates($match[3]);
+            $path = isset($match[4])?explode(';',$match[4]):array();
             $exception = $match[5];
-            $outputs = array(array(null, $match[4], null, ''));
+            //$outputs = array(array(null, $match[4], null, ''));
+            $outputs=array();
         } elseif (preg_match('/--TEST--\s*(.*?)\s*(?:--CONDITION--\s*(.*))?\s*((?:--TEMPLATE(?:\(.*?\))?--(?:.*?))+)(?:--PATH--\s*(.*))?--EXPECT--.*/s', $test, $match)) {
             $message = $match[1];
             $condition = $match[2];
@@ -107,7 +117,7 @@ class template extends atoum
             throw new \Exception(sprintf('Test "%s" is not valid.', str_replace($this->fixturesDir.'/', '', $file)));
         }
 
-        return array(
+        $ret= array(
             "name"      => str_replace($this->fixturesDir.'/', '', $file),
             "msg"       => $message,
             "condition" => $condition,
@@ -116,6 +126,7 @@ class template extends atoum
             "path"      => $path,
             "outputs"   => $outputs
         );
+        return $ret;
 	}
     protected static function parseTemplates($test)
     {

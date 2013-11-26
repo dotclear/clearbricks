@@ -261,12 +261,12 @@ class template
 				global ${self::$_n};
 			}
 		}
-
+		$dest_file = $this->getFile($________);
 		ob_start();
 		if (ini_get('display_errors') == true) {
-			include $this->getFile($________);
+			include $dest_file;
 		} else {
-			@include $this->getFile($________);
+			@include $dest_file;
 		}
 		self::$_r = ob_get_contents();
 		ob_end_clean();
@@ -387,12 +387,21 @@ class template
 	{
 		$done=false;
 		while (!$done) {
-			if (!in_array($file,$this->compile_stack)) {
+			if ($file && !in_array($file,$this->compile_stack)) {
 				$tree = $this->getCompiledTree($file,$err);
 				if ($this->parent_file == "__parent__") {
-					$file =  $this->getParentFilePath(dirname($file),basename($file));
+					$newfile =  $this->getParentFilePath(dirname($file),basename($file));
+					if (!$newfile) {
+						throw new Exception('No template found for '.basename($file));
+						return false;
+					}
+					$file = $newfile;
 				} elseif ($this->parent_file != "") {
 					$file =  $this->getFilePath($this->parent_file);
+					if (!$file) {
+						throw new Exception('No template found for '.$this->parent_file);
+						return false;
+					}
 				} else {
 					$done=true;
 				}
