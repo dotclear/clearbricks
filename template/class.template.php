@@ -385,8 +385,8 @@ class template
 
 	protected function compileFile($file)
 	{
-		$done=false;
-		while (!$done) {
+		$tree=null;
+		while (true) {
 			if ($file && !in_array($file,$this->compile_stack)) {
 				$tree = $this->getCompiledTree($file,$err);
 				if ($this->parent_file == "__parent__") {
@@ -403,13 +403,16 @@ class template
 						return false;
 					}
 				} else {
-					$done=true;
+					return $tree->compile($this).$err;
 				}
 			} else {
-				$done = true;
+				if ($tree != null) {
+					return $tree->compile($this).$err;
+				} else {
+					return '';
+				}
 			}
 		}
-		return $tree->compile($this).$err;
 	}
 
 	public function compileBlockNode($tag,$attr,$content)
