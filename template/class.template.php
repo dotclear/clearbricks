@@ -39,6 +39,7 @@ class template
 	protected $parent_file;
 
 	protected $compile_stack = array();
+	protected $parent_stack = array();
 
 	# Inclusion variables
 	protected static $superglobals = array('GLOBALS','_SERVER','_GET','_POST','_COOKIE','_FILES','_ENV','_REQUEST','_SESSION');
@@ -387,9 +388,11 @@ class template
 	{
 		$tree=null;
 		while (true) {
-			if ($file && !in_array($file,$this->compile_stack)) {
+			if ($file && !in_array($file,$this->parent_stack)) {
 				$tree = $this->getCompiledTree($file,$err);
+
 				if ($this->parent_file == "__parent__") {
+					$this->parent_stack[] = $file;
 					$newfile =  $this->getParentFilePath(dirname($file),basename($file));
 					if (!$newfile) {
 						throw new Exception('No template found for '.basename($file));
@@ -397,6 +400,7 @@ class template
 					}
 					$file = $newfile;
 				} elseif ($this->parent_file != "") {
+					$this->parent_stack[] = $file;
 					$file =  $this->getFilePath($this->parent_file);
 					if (!$file) {
 						throw new Exception('No template found for '.$this->parent_file);
