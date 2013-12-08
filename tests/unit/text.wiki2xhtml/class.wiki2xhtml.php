@@ -198,7 +198,7 @@ class wiki2xhtml extends atoum
     return array(
 		 array('em', array("''","''")),
 		 array('strong', array('__','__')),
-		 array('acronym', array('??','??')),
+		 array('abbr', array('??','??')),
 		 array('q', array('{{','}}')),
 		 array('code', array('@@','@@')),
 		 array('ins', array('++','++')),
@@ -222,7 +222,7 @@ class wiki2xhtml extends atoum
 		 array('{{%s|%lang%|%url%}}', '<p><q lang="%lang%" cite="%url%">%s</q></p>', 1),
 
 		 array(" %s\n %s\n %s", '<pre>%s%s%s</pre>', 3),
-		 array('??%1$s|%2$s??', '<p><acronym title="%2$s">%1$s</acronym></p>', 2),
+		 array('??%1$s|%2$s??', '<p><abbr title="%2$s">%1$s</abbr></p>', 2),
 		 array(">%s\n>%s", '<blockquote><p>%s%s</p></blockquote>', 2),
 
 		 array('----', '<hr />', 0),
