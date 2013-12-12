@@ -238,6 +238,11 @@ class wiki2xhtml extends atoum
 		 array('%s$$%s$$', '<p>%s<sup>[<a href="#wiki-footnote-1" id="rev-wiki-footnote-1">1</a>]</sup></p>'.
 		       '<div class="footnotes"><h4>Note</h4><p>[<a href="#rev-wiki-footnote-1" id="wiki-footnote-1">1</a>] '.
 		       '%s</p></div>', 2),
+     array('%s$$%s$$', '<p>%s<sup>[<a href="#wiki-footnote-1" id="rev-wiki-footnote-1">1</a>]</sup></p>'.
+           '<div class="footnotes"><h4>Note</h4><p>[<a href="#rev-wiki-footnote-1" id="wiki-footnote-1">1</a>] '.
+           '%s</p></div>', 2),
+     array("* %s\n///\n%s\n///\n","<ul><li>%s</li></ul><pre>%s</pre>", 2),
+     array("# %s\n///\n%s\n///\n","<ol><li>%s</li></ol><pre>%s</pre>", 2)
 		 );
   }
 
