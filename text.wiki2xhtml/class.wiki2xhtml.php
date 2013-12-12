@@ -700,9 +700,9 @@ class wiki2xhtml
 			$res = '';
 			for($j = 0; $j < strlen($pre_mode); $j++) {
 				if(substr($pre_mode,(0 - $j - 1), 1) == '*') {
-					$res .= "</li>\n</ul>";
+					$res .= "</li>\n</ul>\n";
 				} else {
-					$res .= "</li>\n</ol>";
+					$res .= "</li>\n</ol>\n";
 				}
 			}
 			return $res;
