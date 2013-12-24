@@ -32,10 +32,13 @@
 # Nicolas Chachereau
 # Jérôme Lipowicz
 #
-# Version : 3.2.8
-# Release date : 2013-12-08
+# Version : 3.2.9
+# Release date : 2013-12-24
 
 # History :
+#
+# 3.2.9
+# 			=> <a name="anchor"></a> est remplacé par <a id="anchor"></a> pour assurer la compatibilité avec HTML5
 #
 # 3.2.8
 # 			=> <acronym> est remplacé par <abbr> pour assurer la compatibilité avec HTML5
@@ -997,7 +1000,7 @@ class wiki2xhtml
 		$name = $this->protectAttr($str,true);
 
 		if ($name != '') {
-			$attr = ' name="'.$name.'"';
+			$attr = ' id="'.$name.'"';
 		}
 		return null;
 	}
