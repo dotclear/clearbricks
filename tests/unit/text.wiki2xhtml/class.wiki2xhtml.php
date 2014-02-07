@@ -61,6 +61,24 @@ class wiki2xhtml extends atoum
 
       ->string($wiki2xhtml->transform(sprintf('[%s|%s|%s|%s]', $label, $url, $lang, $title)))
       ->isIdenticalTo(sprintf('<p><a href="%s" hreflang="%s" title="%s">%s</a></p>', $url, $lang, $title, $label))
+
+      ->string($wiki2xhtml->transform(sprintf('[\'\'%s\'\'|%s]', $label, $url)))
+      ->isIdenticalTo(sprintf('<p><a href="%1$s"><em>%2$s</em></a></p>', $url, $label))
+
+      ->string($wiki2xhtml->transform(sprintf('[\'\'%s\'\' (em first)|%s]', $label, $url)))
+      ->isIdenticalTo(sprintf('<p><a href="%1$s"><em>%2$s</em> (em first)</a></p>', $url, $label))
+
+      ->string($wiki2xhtml->transform(sprintf('[(em last) \'\'%s\'\'|%s]', $label, $url)))
+      ->isIdenticalTo(sprintf('<p><a href="%1$s">(em last) <em>%2$s</em></a></p>', $url, $label))
+
+      ->string($wiki2xhtml->transform(sprintf('[(not first) \'\'%s\'\' (not last)|%s]', $label, $url)))
+      ->isIdenticalTo(sprintf('<p><a href="%1$s">(not first) <em>%2$s</em> (not last)</a></p>', $url, $label))
+
+      ->string($wiki2xhtml->transform(sprintf('[__%s__|%s]', $label, $url)))
+      ->isIdenticalTo(sprintf('<p><a href="%1$s"><strong>%2$s</strong></a></p>', $url, $label))
+
+      ->string($wiki2xhtml->transform(sprintf('[em: \'\'%s\'\' and strong: __%s__|%s]', $label, $label, $url)))
+      ->isIdenticalTo(sprintf('<p><a href="%1$s">em: <em>%2$s</em> and strong: <strong>%2$s</strong></a></p>', $url, $label))
       ;
   }
 
@@ -135,7 +153,7 @@ class wiki2xhtml extends atoum
 
     if (strpos($in, '%s')!==false) {
       for ($n=1;$n<=$count;$n++) {
-	$phrase[$n] = $faker->text(20);
+	      $phrase[$n] = $faker->text(20);
       }
 
       $in = vsprintf($in, $phrase);
@@ -231,7 +249,7 @@ class wiki2xhtml extends atoum
 		 array('!!!%s', '<h3>%s</h3>', 1),
 		 array('!!%s', '<h4>%s</h4>', 1),
 		 array('!%s', '<h5>%s</h5>', 1),
-		 array('~%word%~', '<p><a name="%word%"></a></p>', 1),
+		 array('~%word%~', '<p><a id="%word%"></a></p>', 1),
 
 		 array('@@%s@@', '<p><code>%s</code></p>', 1),
 
