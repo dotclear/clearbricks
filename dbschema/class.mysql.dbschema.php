@@ -117,8 +117,11 @@ if (class_exists('dbSchema'))
 					$type = $m[1];
 					$len = (integer) $m[2];
 				}
-				
-				if ($default != '' && !is_numeric($default)) {
+
+				// $default from db is a string and is NULL in schema so upgrade failed.
+				if (strtoupper($default)=='NULL') {
+					$default = null;
+				} elseif ($default != '' && !is_numeric($default)) {
 					$default = "'".$default."'";
 				}
 				
