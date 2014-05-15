@@ -86,6 +86,12 @@ if (class_exists('dbSchema'))
 				}
 				
 				$default = preg_replace('/::([\w\d\s]*)$/','',$default);
+				$default = preg_replace('/^\((-?\d*)\)$/','$1',$default);
+
+				// $default from db is a string and is NULL in schema so upgrade failed.
+				if (strtoupper($default)=='NULL') {
+					$default = null;
+				}
 				
 				$res[$field] = array(
 					'type' => $type,
@@ -94,7 +100,7 @@ if (class_exists('dbSchema'))
 					'default' => $default
 				);
 			}
-			
+
 			return $res;
 		}
 		
@@ -397,4 +403,3 @@ if (class_exists('dbSchema'))
 		}
 	}
 }
-?>
