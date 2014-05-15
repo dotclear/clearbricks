@@ -266,7 +266,7 @@ if (class_exists('dbSchema'))
 			}
 			
 			$sql =
-			'CREATE TABLE '.$name." (\n".
+			'CREATE TABLE '.$this->con->escapeSystem($name)." (\n".
 				implode(",\n",$a).
 			"\n)";
 			
