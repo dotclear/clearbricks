@@ -442,6 +442,8 @@ class htmlFilter
 				'onkeydown','onkeypress','onkeyup','onmousedown',
 				'onmousemove','onmouseout','onmouseover','onmouseup',
 				'style','title'),
+	'figure' => array('class','id','style'),
+	'figcaption' => array('class','id','style'),
 	'font'		=> array('class','color','dir','face','id','lang','size',
 				'style','title'),
 	'form'		=> array('accept-charset','accept','action','class','dir',

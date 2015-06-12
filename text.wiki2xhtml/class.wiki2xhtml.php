@@ -794,7 +794,9 @@ class wiki2xhtml
 							break;
 						case 'img':
 							$type = 'close';
-							$res = $this->__parseImg($res,$attr);
+							if (($res = $this->__parseImg($res,$attr,$tag))!==null) {
+								$type = 'open';
+							}
 							break;
 						case 'abbr':
 							$res = $this->__parseAcronym($res,$attr);
@@ -946,11 +948,13 @@ class wiki2xhtml
 		}
 	}
 
-	function __parseImg($str,&$attr)
+	function __parseImg($str,&$attr,&$tag)
 	{
 		$data = $this->__splitTagsAttr($str);
 
 		$alt = '';
+		$attr = '';
+		$align_attr = '';
 		$url = $data[0];
 		if (!empty($data[1])) {
 			$alt = $data[1];
@@ -970,12 +974,25 @@ class wiki2xhtml
 				$style = $this->getOpt('img_style_center');
 			}
 			if ($style != '') {
-				$attr .= ' style="'.$style.'"';
+				$align_attr = ' style="'.$style.'"';
 			}
 		}
 
+		if (empty($data[4])) {
+			$attr .= $align_attr;
+		}
 		if (!empty($data[3])) {
 			$attr .= ' title="'.$this->protectAttr($data[3]).'"';
+		}
+
+		if (!empty($data[4])) {
+			$tag = 'figure';
+			$img = '<img'.$attr.' />';
+			$img .= '<figcaption>'.$this->protectAttr($data[4]).'</figcaption>';
+
+			$attr = $align_attr;
+
+			return $img;
 		}
 
 		return null;
