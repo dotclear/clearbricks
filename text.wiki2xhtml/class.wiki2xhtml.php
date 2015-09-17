@@ -32,10 +32,13 @@
 # Nicolas Chachereau
 # Jérôme Lipowicz
 #
-# Version : 3.2.9
-# Release date : 2013-12-24
+# Version : 3.2.10
+# Release date : 2015-09-17
 
 # History :
+#
+# 3.2.10
+# 			=> Added ""marked text"" support (HTML5 only)
 #
 # 3.2.9
 # 			=> <a name="anchor"></a> est remplacé par <a id="anchor"></a> pour assurer la compatibilité avec HTML5
@@ -132,7 +135,7 @@
 
 class wiki2xhtml
 {
-	public $__version__ = '3.2.8';
+	public $__version__ = '3.2.10';
 
 	public $T;
 	public $opt;
@@ -159,27 +162,28 @@ class wiki2xhtml
 		$this->setOpt('active_hr',1);			# Activation des <hr />
 		$this->setOpt('active_lists',1);		# Activation des listes
 		$this->setOpt('active_quote',1);		# Activation du <blockquote>
-		$this->setOpt('active_pre',1);		# Activation du <pre>
+		$this->setOpt('active_pre',1);			# Activation du <pre>
 		$this->setOpt('active_empty',1);		# Activation du bloc vide øøø
 		$this->setOpt('active_auto_urls',0);	# Activation de la reconnaissance d'url
-		$this->setOpt('active_auto_br',0);	# Activation du saut de ligne automatique (dans les paragraphes)
-		$this->setOpt('active_antispam',1);	# Activation de l'antispam pour les emails
-		$this->setOpt('active_urls',1);		# Activation des liens []
-		$this->setOpt('active_auto_img',1);	# Activation des images automatiques dans les liens []
-		$this->setOpt('active_img',1);		# Activation des images (())
+		$this->setOpt('active_auto_br',0);		# Activation du saut de ligne automatique (dans les paragraphes)
+		$this->setOpt('active_antispam',1);		# Activation de l'antispam pour les emails
+		$this->setOpt('active_urls',1);			# Activation des liens []
+		$this->setOpt('active_auto_img',1);		# Activation des images automatiques dans les liens []
+		$this->setOpt('active_img',1);			# Activation des images (())
 		$this->setOpt('active_anchor',1);		# Activation des ancres ~...~
 		$this->setOpt('active_em',1);			# Activation du <em> ''...''
 		$this->setOpt('active_strong',1);		# Activation du <strong> __...__
 		$this->setOpt('active_br',1);			# Activation du <br /> %%%
 		$this->setOpt('active_q',1);			# Activation du <q> {{...}}
-		$this->setOpt('active_code',1);		# Activation du <code> @@...@@
-		$this->setOpt('active_acronym',1); 	# Activation des acronymes
-		$this->setOpt('active_ins',1);		# Activation des ins ++..++
-		$this->setOpt('active_del',1);		# Activation des del --..--
+		$this->setOpt('active_code',1);			# Activation du <code> @@...@@
+		$this->setOpt('active_acronym',1); 		# Activation des acronymes
+		$this->setOpt('active_ins',1);			# Activation des ins ++..++
+		$this->setOpt('active_del',1);			# Activation des del --..--
 		$this->setOpt('active_inline_html',1);	# Activation du HTML inline ``...``
 		$this->setOpt('active_footnotes',1);	# Activation des notes de bas de page
 		$this->setOpt('active_wikiwords',0);	# Activation des mots wiki
 		$this->setOpt('active_macros',1);		# Activation des macros /// ///
+		$this->setOpt('active_mark',1);			# Activation des mark ""..""
 
 		$this->setOpt('parse_pre',1);			# Parser l'intérieur de blocs <pre> ?
 
@@ -354,19 +358,20 @@ class wiki2xhtml
 	function __initTags()
 	{
 		$tags = array(
-			'em' => array("''","''"),
-			'strong' => array('__','__'),
-			'abbr' => array('??','??'),
-			'a' => array('[',']'),
-			'img' => array('((','))'),
-			'q' => array('{{','}}'),
-			'code' => array('@@','@@'),
-			'anchor' => array('~','~'),
-			'del' => array('--','--'),
-			'ins' => array('++','++'),
-			'inline' => array('``','``'),
-			'note' => array('$$','$$'),
-			'word' => array('¶¶¶','¶¶¶')
+			'em' 		=> array("''","''"),
+			'strong' 	=> array('__','__'),
+			'abbr' 		=> array('??','??'),
+			'a' 		=> array('[',']'),
+			'img' 		=> array('((','))'),
+			'q' 		=> array('{{','}}'),
+			'code' 		=> array('@@','@@'),
+			'anchor' 	=> array('~','~'),
+			'del' 		=> array('--','--'),
+			'ins' 		=> array('++','++'),
+			'inline' 	=> array('``','``'),
+			'note' 		=> array('$$','$$'),
+			'word' 		=> array('¶¶¶','¶¶¶'),
+			'mark' 		=> array('""','""')
 		);
 		$this->linetags = array(
 			'empty' => 'øøø',
@@ -418,6 +423,9 @@ class wiki2xhtml
 		}
 		if (!$this->getOpt('active_wikiwords')) {
 			unset($this->tags['word']);
+		}
+		if (!$this->getOpt('active_mark')) {
+			unset($this->tags['mark']);
 		}
 
 		# Suppression des tags de début de ligne selon les options
@@ -1240,6 +1248,10 @@ class wiki2xhtml
 
 		if ($this->getOpt('active_del')) {
 			$help['i'][] = '<strong>Suppression</strong> : deux moins <code>--texte--</code>';
+		}
+
+		if ($this->getOpt('active_mark')) {
+			$help['i'][] = '<mark>Texte marqué</mark> : deux guillemets <code>""texte""</code>';
 		}
 
 		if ($this->getOpt('active_urls')) {
