@@ -14,7 +14,7 @@
 @defgroup CLEARBRICKS Clearbricks classes
 */
 
-define('CLEARBRICKS_VERSION','0.8');
+define('CLEARBRICKS_VERSION','0.9');
 
 # Autoload
 $__autoload = array(
@@ -33,13 +33,13 @@ $__autoload = array(
 function cb_autoload($name)
 {
 	global $__autoload;
-	
+
 	if (isset($__autoload[$name])) {
 		require_once $__autoload[$name];
 	}
 }
 
-# if php version >= 5.1.2, we can benefit from spl_autoload_register, 
+# if php version >= 5.1.2, we can benefit from spl_autoload_register,
 # so other libraries can define their own independent autoload too
 if (function_exists("spl_autoload_register")) {
 	spl_autoload_register("cb_autoload");
@@ -58,4 +58,3 @@ dt::setTZ('UTC');
 
 # JSON functions for PHP < 5.2 or PHP > 5.2 compiling without json
 require_once dirname(__FILE__).'/lib.json.php';
-?>
