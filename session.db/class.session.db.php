@@ -25,20 +25,21 @@ class sessionDB
 	private $cookie_name;
 	private $cookie_path;
 	private $ttl = '-120 minutes';
-	
+
 	/**
 	* Constructor
 	*
 	* This method creates an instance of sessionDB class.
 	*
-	* @param dbLayer	&$con		dbLayer inherited database instance
-	* @param string	$table		Table name
-	* @param string	$cookie_name	Session cookie name
-	* @param string	$cookie_path	Session cookie path
-	* @param string	$cookie_domain	Session cookie domaine
+	* @param dbLayer	&$con			dbLayer inherited database instance
+	* @param string		$table			Table name
+	* @param string		$cookie_name	Session cookie name
+	* @param string		$cookie_path	Session cookie path
+	* @param string		$cookie_domain	Session cookie domaine
 	* @param boolean	$cookie_secure	Session cookie is available only through SSL if true
+	* @param string 	$ttl 			TTL (default -120 minutes)
 	*/
-	public function __construct($con,$table,$cookie_name,$cookie_path=null,$cookie_domain=null,$cookie_secure=false)
+	public function __construct($con,$table,$cookie_name,$cookie_path=null,$cookie_domain=null,$cookie_secure=false,$ttl=null)
 	{
 		$this->con =& $con;
 		$this->table = $table;
@@ -46,7 +47,10 @@ class sessionDB
 		$this->cookie_path = is_null($cookie_path) ? '/' : $cookie_path;
 		$this->cookie_domain = $cookie_domain;
 		$this->cookie_secure = $cookie_secure;
-		
+		if (!is_null($ttl)) {
+			$this->ttl = $ttl;
+		}
+
 		if(function_exists('ini_set'))
 		{
 			@ini_set('session.use_cookies','1');
@@ -58,7 +62,7 @@ class sessionDB
 			@ini_set('session.cookie_secure',$this->cookie_secure);
 		}
 	}
-	
+
 	/**
 	* Destructor
 	*
@@ -70,7 +74,7 @@ class sessionDB
 			session_write_close();
 		}
 	}
-	
+
 	/**
 	* Session Start
 	*/
@@ -83,20 +87,20 @@ class sessionDB
 			array(&$this, '_write'),
 			array(&$this, '_destroy'),
 			array(&$this, '_gc')
-		); 
-		
+		);
+
 		if (isset($_SESSION) && session_name() != $this->cookie_name) {
 			$this->destroy();
 		}
-		
+
 		if (!isset($_COOKIE[$this->cookie_name])) {
 			session_id(sha1(uniqid(rand(),true)));
 		}
-		
+
 		session_name($this->cookie_name);
 		session_start();
 	}
-	
+
 	/**
 	* Session Destroy
 	*
@@ -109,7 +113,7 @@ class sessionDB
 		session_destroy();
 		call_user_func_array('setcookie',$this->getCookieParameters(false,-600));
 	}
-	
+
 	/**
 	* Session Cookie
 	*
@@ -129,48 +133,48 @@ class sessionDB
 			$this->cookie_secure
 		);
 	}
-	
+
 	/** @ignore */
 	public function _open($path,$name)
 	{
 		return true;
 	}
-	
+
 	/** @ignore */
 	public function _close()
 	{
 		$this->_gc();
 		return true;
 	}
-	
+
 	/** @ignore */
 	public function _read($ses_id)
 	{
 		$strReq = 'SELECT ses_value FROM '.$this->table.' '.
 				'WHERE ses_id = \''.$this->checkID($ses_id).'\' ';
-		
+
 		$rs = $this->con->select($strReq);
-		
+
 		if ($rs->isEmpty()) {
 			return '';
 		} else {
 			return $rs->f('ses_value');
 		}
 	}
-	
+
 	/** @ignore */
 	public function _write($ses_id, $data)
 	{
 		$strReq = 'SELECT ses_id '.
 				'FROM '.$this->table.' '.
 				"WHERE ses_id = '".$this->checkID($ses_id)."' ";
-		
+
 		$rs = $this->con->select($strReq);
-		
+
 		$cur = $this->con->openCursor($this->table);
 		$cur->ses_time = (string) time();
 		$cur->ses_value = (string) $data;
-		
+
 		if (!$rs->isEmpty())
 		{
 			$cur->update("WHERE ses_id = '".$this->checkID($ses_id)."' ");
@@ -179,47 +183,47 @@ class sessionDB
 		{
 			$cur->ses_id = (string) $this->checkID($ses_id);
 			$cur->ses_start = (string) time();
-			
+
 			$cur->insert();
 		}
-		
+
 		return true;
 	}
-	
+
 	/** @ignore */
 	public function _destroy($ses_id)
 	{
 		$strReq = 'DELETE FROM '.$this->table.' '.
 				'WHERE ses_id = \''.$this->checkID($ses_id).'\' ';
-		
+
 		$this->con->execute($strReq);
-		
+
 		$this->_optimize();
 		return true;
 	}
-	
+
 	/** @ignore */
 	public function _gc()
 	{
 		$ses_life = strtotime($this->ttl);
-		
+
 		$strReq = 'DELETE FROM '.$this->table.' '.
 				'WHERE ses_time < '.$ses_life.' ';
-		
-		
+
+
 		$this->con->execute($strReq);
-		
+
 		if ($this->con->changes() > 0) {
 			$this->_optimize();
 		}
 		return true;
 	}
-	
+
 	private function _optimize()
 	{
 		$this->con->vacuum($this->table);
 	}
-	
+
 	private function checkID($id)
 	{
 		if (!preg_match('/^([0-9a-f]{40})$/i',$id)) {
@@ -228,5 +232,3 @@ class sessionDB
 		return $id;
 	}
 }
-
-?>
