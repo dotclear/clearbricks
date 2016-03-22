@@ -34,7 +34,7 @@ class crypt
 
 		if (function_exists('hash_hmac'))
 		{
-			if (!in_array($hasfunc,hash_algos())) {
+			if (!in_array($hashfunc,hash_algos())) {
 				$hashfunc = 'sha1';
 			}
 			return hash_hmac($hashfunc,$data,$key);
