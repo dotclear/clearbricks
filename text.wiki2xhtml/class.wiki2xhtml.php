@@ -31,22 +31,31 @@
 # Jean-Charles Bagneris
 # Nicolas Chachereau
 # Jérôme Lipowicz
+# Franck Paul
 #
-# Version : 3.2.10
-# Release date : 2015-09-17
+# Version : 3.2.11
+# Release date : 2016-03-23
 
 # History :
 #
+# 3.2.11
+# Franck
+# 			=> Added ) aside block support (HTML5 only)
+#
 # 3.2.10
+# Franck
 # 			=> Added ""marked text"" support (HTML5 only)
 #
 # 3.2.9
+# Franck
 # 			=> <a name="anchor"></a> est remplacé par <a id="anchor"></a> pour assurer la compatibilité avec HTML5
 #
 # 3.2.8
+# Franck
 # 			=> <acronym> est remplacé par <abbr> pour assurer la compatibilité avec HTML5
 #
 # 3.2.7
+# Franck
 #			=> Les styles d'alignement des images sont modifiables via les options
 #
 # 3.2.6
@@ -103,7 +112,7 @@
 #			=> Titres au format setext (experimental, désactivé)
 #
 # 3.0
-# Olivier		=> Récriture du parseur inline, plus d'erreur XHTML
+# Olivier	=> Récriture du parseur inline, plus d'erreur XHTML
 #			=> Ajout d'une vérification d'intégrité pour les listes
 #			=> Les acronymes sont maintenant dans un fichier texte
 #			=> Ajout d'un tag images ((..)), del --..-- et ins ++..++
@@ -117,18 +126,18 @@
 # 2.0
 # Stephanie	=> correction des PCRE et ajout de fonctionnalités
 # Mathieu 	=> ajout du strip-tags, implementation des options, reconnaissance automatique d'url, etc.
-# Olivier		=> chagement de active_link en active_urls
+# Olivier	=> chagement de active_link en active_urls
 #			=> ajout des options pour les blocs
 #			=> intégration de l'aide dans le code, avec les options
 #			=> début de quelque chose pour la reconnaissance auto d'url (avec Mat)
 
 # TODO :
 # Mathieu	=> active_wiki_urls (modifier wikiParseUrl ?)
-# 		=> active_auto_urls
+# 			=> active_auto_urls
 #
-# *		=> ajouter des options.
-# 		=> trouver un meilleur nom pour active_link ? (pour le jour ou ca sera tellement une usine
-#		   a gaz que on generera des tags <link> :)
+# *			=> ajouter des options.
+# 			=> trouver un meilleur nom pour active_link ? (pour le jour ou ca sera tellement une usine
+#		   	   a gaz que on generera des tags <link> :)
 #
 
 # Wiki2xhtml
@@ -184,6 +193,7 @@ class wiki2xhtml
 		$this->setOpt('active_wikiwords',0);	# Activation des mots wiki
 		$this->setOpt('active_macros',1);		# Activation des macros /// ///
 		$this->setOpt('active_mark',1);			# Activation des mark ""..""
+		$this->setOpt('active_aside',1);		# Activation du <aside>
 
 		$this->setOpt('parse_pre',1);			# Parser l'intérieur de blocs <pre> ?
 
@@ -374,12 +384,13 @@ class wiki2xhtml
 			'mark' 		=> array('""','""')
 		);
 		$this->linetags = array(
-			'empty' => 'øøø',
-			'title' => '([!]{1,4})',
-			'hr' => '[-]{4}[- ]',
-			'quote' => '(&gt;|;:)',
-			'lists' => '([*#]+)',
-			'pre' => '[ ]{1}'
+			'empty' 	=> 'øøø',
+			'title'		=> '([!]{1,4})',
+			'hr' 		=> '[-]{4}[- ]',
+			'quote' 	=> '(&gt;|;:)',
+			'lists' 	=> '([*#]+)',
+			'pre' 		=> '[ ]{1}',
+			'aside'		=> '[\)]{1}'
 		);
 
 		$this->tags = array_merge($tags,$this->custom_tags);
@@ -447,6 +458,9 @@ class wiki2xhtml
 		if (!$this->getOpt('active_pre')) {
 			unset($this->linetags['pre']);
 		}
+		if (!$this->getOpt('active_aside')) {
+			unset($this->linetags['aside']);
+		}
 
 		$this->open_tags = $this->__getTags();
 		$this->close_tags = $this->__getTags(false);
@@ -511,8 +525,8 @@ class wiki2xhtml
 			$res .= $this->__closeLine($type,$mode,$pre_type,$pre_mode);
 			$res .= $this->__openLine($type,$mode,$pre_type,$pre_mode);
 
-			# P dans les blockquotes
-			if ($type == 'blockquote' && trim($line) == '' && $pre_type == $type) {
+			# P dans les blockquotes et les asides
+			if (($type == 'blockquote' || $type == 'aside') && trim($line) == '' && $pre_type == $type) {
 				$res .= "</p>\n<p>";
 			}
 
@@ -610,6 +624,12 @@ class wiki2xhtml
 			$type = 'pre';
 			$line = $cap[1];
 		}
+		# Aside
+		elseif ($this->getOpt('active_aside') && preg_match('/^[\)]{1}(.*)$/',$line,$cap))
+		{
+			$type = 'aside';
+			$line = trim($cap[1]);
+		}
 		# Paragraphe
 		else {
 			$type = 'p';
@@ -644,6 +664,10 @@ class wiki2xhtml
 		elseif ($open && $type == 'pre')
 		{
 			return "\n<pre>";
+		}
+		elseif ($open && $type == 'aside')
+		{
+			return "\n<aside><p>";
 		}
 		elseif ($open && $type == 'hr')
 		{
@@ -705,6 +729,10 @@ class wiki2xhtml
 		elseif ($close && $pre_type == 'pre')
 		{
 			return "</pre>\n";
+		}
+		elseif ($close && $pre_type == 'aside')
+		{
+			return "</p></aside>\n";
 		}
 		elseif ($close && $pre_type == 'list')
 		{
