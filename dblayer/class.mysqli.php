@@ -24,34 +24,45 @@ if (class_exists('dbLayer'))
 	{
 		/** @var boolean	Enables weak locks if true */
 		public static $weak_locks = true;
-		
+
 		/** @ignore */
 		protected $__driver = 'mysqli';
-		
-				
+
 		/** @ignore */
 		public function db_connect($host,$user,$password,$database)
 		{
 			if (!function_exists('mysqli_connect')) {
 				throw new Exception('PHP MySQLi functions are not available');
 			}
-			
-			if (($link = @mysqli_connect($host,$user,$password,$database)) === false) {
-				throw new Exception('Unable to connect to database');
+
+			$port = false;
+			if (strpos($host,':') !== false) {
+				$bits = explode(':',$host);
+				$host = array_shift($bits);
+				$port = abs((integer) array_shift($bits));
 			}
-			
+			if ($port) {
+				if (($link = @mysqli_connect($host,$user,$password,$database,$port)) === false) {
+					throw new Exception('Unable to connect to database');
+				}
+			} else {
+				if (($link = @mysqli_connect($host,$user,$password,$database)) === false) {
+					throw new Exception('Unable to connect to database');
+				}
+			}
+
 			$this->db_post_connect($link,$database);
-			
+
 			return $link;
 		}
-		
+
 		/** @ignore */
 		public function db_pconnect($host,$user,$password,$database)
 		{
-			// No pconnect wtih mysqli, below code is for comatibility 
+			// No pconnect wtih mysqli, below code is for comatibility
 			return $this->db_connect($host,$user,$password,$database);
 		}
-		
+
 		/** @ignore */
 		private function db_post_connect($link,$database)
 		{
@@ -66,7 +77,7 @@ if (class_exists('dbLayer'))
 				$link->set_charset("utf8");
 			}
 		}
-		
+
 		/** @ignore */
 		public function db_close($handle)
 		{
@@ -74,7 +85,7 @@ if (class_exists('dbLayer'))
 				mysqli_close($handle);
 			}
 		}
-		
+
 		/** @ignore */
 		public function db_version($handle)
 		{
@@ -83,13 +94,13 @@ if (class_exists('dbLayer'))
 			}
 			return null;
 		}
-		
+
 		/** @ignore */
 		public function db_query($handle,$query)
 		{
 			if ($handle instanceof MySQLi)
 			{
-			
+
 				$res = @mysqli_query($handle, $query);
 				if ($res === false) {
 					$e = new Exception($this->db_last_error($handle));
@@ -99,13 +110,13 @@ if (class_exists('dbLayer'))
 				return $res;
 			}
 		}
-		
+
 		/** @ignore */
 		public function db_exec($handle,$query)
 		{
 			return $this->db_query($handle,$query);
 		}
-		
+
 		/** @ignore */
 		public function db_num_fields($res)
 		{
@@ -115,7 +126,7 @@ if (class_exists('dbLayer'))
 			}
 			return 0;
 		}
-		
+
 		/** @ignore */
 		public function db_num_rows($res)
 		{
@@ -124,7 +135,7 @@ if (class_exists('dbLayer'))
 			}
 			return 0;
 		}
-		
+
 		/** @ignore */
 		public function db_field_name($res,$position)
 		{
@@ -134,7 +145,7 @@ if (class_exists('dbLayer'))
 				return $finfo->name;
 			}
 		}
-		
+
 		/** @ignore */
 		public function db_field_type($res,$position)
 		{
@@ -144,7 +155,7 @@ if (class_exists('dbLayer'))
 				return $this->_convert_types($finfo->type);
 			}
 		}
-		
+
 		/** @ignore */
 		public function db_fetch_assoc($res)
 		{
@@ -153,7 +164,7 @@ if (class_exists('dbLayer'))
 				return($v === NULL) ? false : $v;
 			}
 		}
-		
+
 		/** @ignore */
 		public function db_result_seek($res,$row)
 		{
@@ -161,7 +172,7 @@ if (class_exists('dbLayer'))
 				return $res->data_seek($row);
 			}
 		}
-		
+
 		/** @ignore */
 		public function db_changes($handle,$res)
 		{
@@ -169,7 +180,7 @@ if (class_exists('dbLayer'))
 				return mysqli_affected_rows($handle);
 			}
 		}
-		
+
 		/** @ignore */
 		public function db_last_error($handle)
 		{
@@ -179,20 +190,20 @@ if (class_exists('dbLayer'))
 				if ($e) {
 					return $e.' ('.mysqli_errno($handle).')';
 				}
-			}		
+			}
 			return false;
 		}
-		
+
 		/** @ignore */
 		public function db_escape_string($str,$handle=null)
 		{
 			if ($handle instanceof MySQLi) {
-				
+
 				return mysqli_real_escape_string($handle, $str);
 			}
 			return addslashes($str);
 		}
-		
+
 		/** @ignore */
 		public function db_write_lock($table)
 		{
@@ -205,7 +216,7 @@ if (class_exists('dbLayer'))
 				}
 			}
 		}
-		
+
 		/** @ignore */
 		public function db_unlock()
 		{
@@ -217,34 +228,34 @@ if (class_exists('dbLayer'))
 				}
 			}
 		}
-		
+
 		/** @ignore */
 		public function vacuum($table)
 		{
 			$this->execute('OPTIMIZE TABLE '.$this->escapeSystem($table));
 		}
-		
+
 		/** @ignore */
 		public function dateFormat($field,$pattern)
 		{
 			$pattern = str_replace('%M','%i',$pattern);
-			
+
 			return 'DATE_FORMAT('.$field.','."'".$this->escape($pattern)."') ";
 		}
-		
+
 		/** @ignore */
 		public function concat()
 		{
 			$args = func_get_args();
 			return 'CONCAT('.implode(',',$args).')';
 		}
-		
+
 		/** @ignore */
 		public function escapeSystem($str)
 		{
 			return '`'.$str.'`';
 		}
-		
+
 		protected function _convert_types($id) {
 			$id2type = array(
 				'1'=>'int',
@@ -252,33 +263,32 @@ if (class_exists('dbLayer'))
 				'3'=>'int',
 				'8'=>'int',
 				'9'=>'int',
-		
+
 				'16'=>'int', //BIT type recognized as unknown with mysql adapter
-				
+
 				'4'=>'real',
 				'5'=>'real',
 				'246'=>'real',
-			
+
 				'253'=>'string',
 				'254'=>'string',
-				
+
 				'10'=>'date',
 				'11'=>'time',
 				'12'=>'datetime',
 				'13'=>'year',
-			
+
 				'7'=>'timestamp',
-			
+
 				'252'=>'blob'
-				
-			); 
+
+			);
 			$type = 'unknown';
-			
+
 			if(isset($id2type[$id])) $type = $id2type[$id];
-			
+
 			return $type;
 		}
-		
+
 	}
 }
-?>
