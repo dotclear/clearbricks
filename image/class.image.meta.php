@@ -14,7 +14,7 @@
 * Image metadata
 *
 * This class reads EXIF, IPTC and XMP metadata from a JPEG file.
-* 
+*
 * - Contributor: Mathieu Lecarme.
 *
 * @package Clearbricks
@@ -24,13 +24,13 @@ class imageMeta
 {
 	/** @var array		Internal XMP array */
 	protected $xmp = array();
-	
+
 	/** @var array		Internal IPTC array */
 	protected $iptc = array();
-	
+
 	/** @var array		Internal EXIF array */
 	protected $exif = array();
-	
+
 	/**
 	* Read metadata
 	*
@@ -45,7 +45,7 @@ class imageMeta
 		$o->loadFile($f);
 		return $o->getMeta();
 	}
-	
+
 	/**
 	* Get metadata
 	*
@@ -67,16 +67,16 @@ class imageMeta
 				$this->properties[$k] = $this->exif[$k];
 			}
 		}
-		
+
 		# Fix date format
 		$this->properties['DateTimeOriginal'] = preg_replace(
 			'/^(\d{4}):(\d{2}):(\d{2})/','$1-$2-$3',
 			$this->properties['DateTimeOriginal']
 		);
-		
+
 		return $this->properties;
 	}
-	
+
 	/**
 	* Load file
 	*
@@ -89,12 +89,12 @@ class imageMeta
 		if (!is_file($f) || !is_readable($f)) {
 			throw new Exception('Unable to read file');
 		}
-		
+
 		$this->readXMP($f);
 		$this->readIPTC($f);
 		$this->readExif($f);
 	}
-	
+
 	/**
 	* Read XMP
 	*
@@ -107,22 +107,22 @@ class imageMeta
 		if (($fp = @fopen($f,'rb')) === false) {
 			throw new Exception('Unable to open image file');
 		}
-		
+
 		$inside = false;
 		$done = false;
 		$xmp = null;
-		
+
 		while (!feof($fp))
 		{
 			$buffer = fgets($fp,4096);
-			
+
 			$xmp_start = strpos($buffer,'<x:xmpmeta');
-			
+
 			if ($xmp_start !== false) {
 				$buffer = substr($buffer,$xmp_start);
 				$inside = true;
 			}
-			
+
 			if ($inside)
 			{
 				$xmp_end = strpos($buffer,'</x:xmpmeta>');
@@ -131,20 +131,20 @@ class imageMeta
 					$inside = false;
 					$done = true;
 				}
-				
+
 				$xmp .= $buffer;
 			}
-			
+
 			if ($done) {
 				break;
 			}
 		}
 		fclose($fp);
-		
+
 		if (!$xmp) {
 			return;
 		}
-		
+
 		foreach ($this->xmp_reg as $code => $patterns)
 		{
 			foreach ($patterns as $p)
@@ -155,18 +155,18 @@ class imageMeta
 				}
 			}
 		}
-		
+
 		if (preg_match('%<dc:subject>\s*<rdf:Bag>(.+?)</rdf:Bag%msu',$xmp,$m)
 		&& preg_match_all('%<rdf:li>(.+?)</rdf:li>%msu',$m[1],$m))
 		{
 			$this->xmp['Keywords'] = implode(',',$m[1]);
 		}
-		
+
 		foreach ($this->xmp as $k => $v) {
 			$this->xmp[$k] = html::decodeEntities(text::toUTF8($v));
 		}
 	}
-	
+
 	/**
 	* Read IPTC
 	*
@@ -179,20 +179,20 @@ class imageMeta
 		if (!function_exists('iptcparse')) {
 			return;
 		}
-		
+
 		$imageinfo = null;
 		@getimagesize($f,$imageinfo);
-		
+
 		if (!is_array($imageinfo) || !isset($imageinfo['APP13'])) {
 			return;
 		}
-		
+
 		$iptc = @iptcparse($imageinfo['APP13']);
-		
+
 		if (!is_array($iptc)) {
 			return;
 		}
-		
+
 		foreach ($this->iptc_ref as $k => $v)
 		{
 			if (isset($iptc[$k]) && isset($this->iptc_to_property[$v])) {
@@ -200,7 +200,7 @@ class imageMeta
 			}
 		}
 	}
-	
+
 	/**
 	* Read EXIF
 	*
@@ -213,21 +213,27 @@ class imageMeta
 		if (!function_exists('exif_read_data')) {
 			return;
 		}
-		
+
 		$d = @exif_read_data($f,'ANY_TAG');
-		
+
 		if (!is_array($d)) {
 			return;
 		}
-		
+
 		foreach ($this->exif_to_property as $k => $v)
 		{
 			if (isset($d[$k])) {
-				$this->exif[$v] = text::toUTF8($d[$k]);
+				if (is_array($d[$k])) {
+					foreach ($d[$k] as $kk => $vv) {
+						$this->exif[$v.'.'.$kk] = text::toUTF8($vv);
+					}
+				} else {
+					$this->exif[$v] = text::toUTF8($d[$k]);
+				}
 			}
 		}
 	}
-	
+
 	/* Properties
 	------------------------------------------------------- */
 	/** @var array		Final properties array */
@@ -254,7 +260,7 @@ class imageMeta
 		'City' => null,
 		'Keywords' => null
 	);
-	
+
 	# XMP
 	/** @ignore */
 	protected $xmp_reg = array(
@@ -334,7 +340,7 @@ class imageMeta
 			'%photoshop:City="(.+?)"%msu'
 		)
 	);
-	
+
 	# IPTC
 	/** @ignore */
 	protected $iptc_ref = array(
@@ -363,7 +369,7 @@ class imageMeta
 		'2#120' => 'Iptc.Caption',              // Caption/Abstract (2000 chars max)
 		'2#122' => 'Iptc.CaptionWriter'         // Caption Writer/Editor (32 chars max)
 	);
-	
+
 	/** @ignore */
 	protected $iptc_to_property = array(
 		'Iptc.ObjectName' => 'Title',
@@ -376,7 +382,7 @@ class imageMeta
 		'Iptc.City' => 'City',
 		'Iptc.Keywords' => 'Keywords'
 	);
-	
+
 	# EXIF
 	/** @ignore */
 	protected $exif_to_property = array(
