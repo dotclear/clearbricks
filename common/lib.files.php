@@ -37,8 +37,8 @@ class files
 			'rtf'	=> 'application/rtf',
 
 			'pdf'	=> 'application/pdf',
-			'ps'		=> 'application/postscript',
-			'ai'		=> 'application/postscript',
+			'ps'	=> 'application/postscript',
+			'ai'	=> 'application/postscript',
 			'eps'	=> 'application/postscript',
 			'json'	=> 'application/json',
 			'xml'	=> 'application/xml',
@@ -48,7 +48,7 @@ class files
 
 			'bz2'	=> 'application/x-bzip',
 			'deb'	=> 'application/x-debian-package',
-			'gz'		=> 'application/x-gzip',
+			'gz'	=> 'application/x-gzip',
 			'jar'	=> 'application/x-java-archive',
 			'rar'	=> 'application/rar',
 			'rpm'	=> 'application/x-redhat-package-manager',
@@ -57,12 +57,12 @@ class files
 			'zip'	=> 'application/zip',
 
 			'aiff'	=> 'audio/x-aiff',
-			'ua'		=> 'audio/basic',
+			'ua'	=> 'audio/basic',
 			'mp3'	=> 'audio/mpeg3',
 			'mid'	=> 'audio/x-midi',
 			'midi'	=> 'audio/x-midi',
 			'ogg'	=> 'application/ogg',
-			'ra'		=> 'audio/x-pn-realaudio',
+			'ra'	=> 'audio/x-pn-realaudio',
 			'ram'	=> 'audio/x-pn-realaudio',
 			'wav'	=> 'audio/x-wav',
 			'wma'	=> 'audio/x-ms-wma',
@@ -97,7 +97,7 @@ class files
 			'ogv'	=> 'video/ogg',
 			'viv'	=> 'video/vnd.vivo',
 			'vivo'	=> 'video/vnd.vivo',
-			'qt'		=> 'video/quicktime',
+			'qt'	=> 'video/quicktime',
 			'mov'	=> 'video/quicktime',
 			'mp4'	=> 'video/mp4',
 			'm4v'	=> 'video/x-m4v',
@@ -147,11 +147,13 @@ class files
 	*/
 	public static function getExtension($f)
 	{
-		$f = explode('.',basename($f));
-
-		if (count($f) <= 1) { return ''; }
-
-		return strtolower($f[count($f)-1]);
+		if (function_exists('pathinfo')) {
+			return strtolower(pathinfo($f,PATHINFO_EXTENSION));
+		} else {
+			$f = explode('.',basename($f));
+			if (count($f) <= 1) { return ''; }
+			return strtolower($f[count($f)-1]);
+		}
 	}
 
 	/**
