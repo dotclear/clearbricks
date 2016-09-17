@@ -27,6 +27,9 @@ if (class_exists('dbLayer'))
 		/** @ignore */
 		protected $__driver = 'pgsql';
 		
+		/** @ignore */
+		protected $utf8_unicode_ci = null;
+		
 		private function get_connection_string($host,$user,$password,$database)
 		{
 			$str = '';
@@ -71,6 +74,8 @@ if (class_exists('dbLayer'))
 				throw new Exception('Unable to connect to database');
 			}
 			
+			$this->db_post_connect($link,$database);
+			
 			return $link;
 		}
 		
@@ -87,9 +92,22 @@ if (class_exists('dbLayer'))
 				throw new Exception('Unable to connect to database');
 			}
 			
+			$this->db_post_connect($link,$database);
+			
 			return $link;
 		}
 		
+		/** @ignore */
+		private function db_post_connect($handle,$database)
+		{
+			$result = $this->db_query($handle,"SELECT * FROM pg_collation WHERE (collcollate LIKE '%.utf8')");
+			if($this->db_num_rows($result) > 0) {
+				$this->db_result_seek($result, 0);
+				$row = $this->db_fetch_assoc($result);
+				$this->utf8_unicode_ci = '"'.$row['collname'].'"';
+			}
+		}
+
 		/** @ignore */
 		public function db_close($handle)
 		{
@@ -239,6 +257,35 @@ if (class_exists('dbLayer'))
 			return 'TO_CHAR('.$field.','."'".$this->escape($pattern)."') ";
 		}
 		
+		/** @ignore */
+		public function orderBy()
+		{
+			foreach (func_get_args() as $v) {
+				if(is_string($v)) {
+					$res[] = $v;
+				} elseif(is_array($v) && !empty($v)) {
+					if(isset($v['order'])) {
+						$v['order'] = strtoupper($v['order']);
+						if($v['order'] != 'ASC' && $v['order'] != 'DESC') {
+							$v['order'] = '';
+						}
+					} else {
+						$v['order'] = '';
+					}
+					if(isset($v['collate'])) {
+						if($this->utf8_unicode_ci) {
+							$res[] = $v['field'].' COLLATE '.$this->utf8_unicode_ci.' '.$v['order'];
+						} else {
+							$res[] = 'LOWER('.$v['field'].') '.$v['order'];
+						}
+					} else {
+						$res[] = $v['field'].' '.$v['order'];
+					}
+				}
+			}
+			return empty($res) ? '' : ' ORDER BY '.implode(',',$res).' ';
+		}
+	
 		/**
 		* Function call
 		*
