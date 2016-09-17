@@ -243,6 +243,28 @@ if (class_exists('dbLayer'))
 			return 'DATE_FORMAT('.$field.','."'".$this->escape($pattern)."') ";
 		}
 
+
+		/** @ignore */
+		public function orderBy()
+		{
+			foreach (func_get_args() as $v) {
+				if(is_string($v)) {
+					$res[] = $v;
+				} elseif(is_array($v) && !empty($v)) {
+					if(isset($v['order'])) {
+						$v['order'] = strtoupper($v['order']);
+						if($v['order'] != 'ASC' && $v['order'] != 'DESC') {
+							$v['order'] = '';
+						}
+					} else {
+						$v['order'] = '';
+					}
+					$res[] = $v['field'].($v['collate'] ? ' COLLATE utf8_unicode_ci' : '').' '.$v['order'];
+				}
+			}
+			return empty($res) ? '' : ' ORDER BY '.implode(',',$res).' ';
+		}
+	
 		/** @ignore */
 		public function concat()
 		{

@@ -26,6 +26,9 @@ if (class_exists('dbLayer'))
 		protected $__driver = 'sqlite';
 		
 		/** @ignore */
+		protected $utf8_unicode_ci = null;
+		
+		/** @ignore */
 		public function db_connect($host,$user,$password,$database)
 		{
 			if (!class_exists('PDO') || !in_array('sqlite',PDO::getAvailableDrivers())) {
@@ -58,6 +61,12 @@ if (class_exists('dbLayer'))
 				$this->db_exec($handle,'PRAGMA short_column_names = 1');
 				$this->db_exec($handle,'PRAGMA encoding = "UTF-8"');
 				$handle->sqliteCreateFunction('now',array($this,'now'),0);
+				if (class_exists('Collator') && method_exists($handle,'sqliteCreateCollation')) {
+					$this->utf8_unicode_ci = new Collator('root');
+					if (!$handle->sqliteCreateCollation('utf8_unicode_ci',array($this->utf8_unicode_ci,'compare'))) {
+						$this->utf8_unicode_ci = null;
+					}
+				}
 			}
 		}
 		
@@ -267,6 +276,35 @@ if (class_exists('dbLayer'))
 			return "strftime('".$this->escape($pattern)."',".$field.') ';
 		}
 		
+		/** @ignore */
+		public function orderBy()
+		{
+			foreach (func_get_args() as $v) {
+				if(is_string($v)) {
+					$res[] = $v;
+				} elseif(is_array($v) && !empty($v)) {
+					if(isset($v['order'])) {
+						$v['order'] = strtoupper($v['order']);
+						if($v['order'] != 'ASC' && $v['order'] != 'DESC') {
+							$v['order'] = '';
+						}
+					} else {
+						$v['order'] = '';
+					}
+					if(isset($v['collate'])) {
+						if($this->utf8_unicode_ci instanceof Collator) {
+							$res[] = $v['field'].' COLLATE utf8_unicode_ci '.$v['order'];
+						} else {
+							$res[] = 'LOWER('.$v['field'].') '.$v['order'];
+						}
+					} else {
+						$res[] = $v['field'].' '.$v['order'];
+					}
+				}
+			}
+			return empty($res) ? '' : ' ORDER BY '.implode(',',$res).' ';
+		}
+	
 		# Internal SQLite function that adds NOW() SQL function.
 		/** @ignore */
 		public function now()
