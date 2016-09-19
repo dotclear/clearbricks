@@ -563,6 +563,41 @@ class dbLayer
 	}
 	
 	/**
+	* ORDER BY fragment
+	*
+	* Returns a ORDER BY query fragment where arguments could be an array or a string
+	*
+	* array param:
+	*	key		: decription
+	*	field	: field name (string)
+	*	collate	: True or False (boolean) (Alphabetical order / Binary order)
+	*	order	: ASC or DESC (string) (Ascending order / Descending order)
+	*
+	* string param field name (Binary ascending order)
+	*
+	* @return string
+	*/
+	public function orderBy()
+	{
+		foreach (func_get_args() as $v) {
+			if(is_string($v)) {
+				$res[] = $v;
+			} elseif(is_array($v) && !empty($v)) {
+				if(isset($v['order'])) {
+					$v['order'] = strtoupper($v['order']);
+					if($v['order'] != 'ASC' && $v['order'] != 'DESC') {
+						$v['order'] = '';
+					}
+				} else {
+					$v['order'] = '';
+				}
+				$res[] = ($v['collate'] ? 'LOWER('.$v['field'].')' : $v['field']).' '.$v['order'];
+			}
+		}
+		return isEmpty($res) ? '' : ' ORDER BY '.implode(',',$res).' ';
+	}
+	
+	/**
 	* Concat strings
 	*
 	* Returns SQL concatenation of methods arguments. Theses arguments
