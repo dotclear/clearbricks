@@ -579,18 +579,16 @@ class dbLayer
 	*/
 	public function orderBy()
 	{
+		$default = array(
+			'order'		=> '',
+			'collate'	=> false
+		);
 		foreach (func_get_args() as $v) {
 			if(is_string($v)) {
 				$res[] = $v;
-			} elseif(is_array($v) && !empty($v)) {
-				if(isset($v['order'])) {
-					$v['order'] = strtoupper($v['order']);
-					if($v['order'] != 'ASC' && $v['order'] != 'DESC') {
-						$v['order'] = '';
-					}
-				} else {
-					$v['order'] = '';
-				}
+			} elseif(is_array($v) && !empty($v['field'])) {
+				$v = array_merge($default, $v);
+				$v['order'] = (strtoupper($v['order']) == 'DESC' ?: '');
 				$res[] = ($v['collate'] ? 'LOWER('.$v['field'].')' : $v['field']).' '.$v['order'];
 			}
 		}
