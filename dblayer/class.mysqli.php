@@ -262,7 +262,21 @@ if (class_exists('dbLayer'))
 			}
 			return empty($res) ? '' : ' ORDER BY '.implode(',',$res).' ';
 		}
-	
+
+		/** @ignore */
+		public function lexFields()
+		{
+			$fmt = '%s COLLATE utf8_unicode_ci';
+			foreach (func_get_args() as $v) {
+				if (is_string($v)) {
+					$res[] = sprintf($fmt,$v);
+				} elseif (is_array($v)) {
+					$res = array_map(function ($i) use ($fmt) { return sprintf($fmt,$i); },$v);
+				}
+			}
+			return empty($res) ? '' : implode(',',$res);
+		}
+
 		/** @ignore */
 		public function concat()
 		{

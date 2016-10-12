@@ -12,9 +12,9 @@
 
 /**
 * SQLite Database Driver
-* 
+*
 * See the {@link dbLayer} documentation for common methods.
-* 
+*
 * @package Clearbricks
 * @subpackage DBLayer
 */
@@ -24,36 +24,36 @@ if (class_exists('dbLayer'))
 	{
 		/** @ignore */
 		protected $__driver = 'sqlite';
-		
+
 		/** @ignore */
 		protected $utf8_unicode_ci = null;
-		
+
 		/** @ignore */
 		public function db_connect($host,$user,$password,$database)
 		{
 			if (!class_exists('PDO') || !in_array('sqlite',PDO::getAvailableDrivers())) {
 				throw new Exception('PDO SQLite class is not available');
 			}
-			
+
 			$link = new PDO('sqlite:'.$database);
 			$this->db_post_connect($link,$database);
-			
+
 			return $link;
 		}
-		
+
 		/** @ignore */
 		public function db_pconnect($host,$user,$password,$database)
 		{
 			if (!class_exists('PDO') || !in_array('sqlite',PDO::getAvailableDrivers())) {
 				throw new Exception('PDO SQLite class is not available');
 			}
-			
+
 			$link = new PDO('sqlite:'.$database,null,null,array(PDO::ATTR_PERSISTENT => true));
 			$this->db_post_connect($link,$database);
-			
+
 			return $link;
 		}
-		
+
 		/** @ignore */
 		private function db_post_connect($handle,$database)
 		{
@@ -69,7 +69,7 @@ if (class_exists('dbLayer'))
 				}
 			}
 		}
-		
+
 		/** @ignore */
 		public function db_close($handle)
 		{
@@ -78,7 +78,7 @@ if (class_exists('dbLayer'))
 				$this->__link = null;
 			}
 		}
-		
+
 		/** @ignore */
 		public function db_version($handle)
 		{
@@ -86,24 +86,24 @@ if (class_exists('dbLayer'))
 				return $handle->getAttribute(PDO::ATTR_SERVER_VERSION);
 			}
 		}
-		
+
 		# There is no other way than get all selected data in a staticRecord
 		/** @ignore */
 		public function select($sql)
 		{
 			$result = $this->db_query($this->__link,$sql);
 			$this->__last_result =& $result;
-			
+
 			$info = array();
 			$info['con'] =& $this;
 			$info['cols'] = $this->db_num_fields($result);
 			$info['info'] = array();
-			
+
 			for ($i=0; $i<$info['cols']; $i++) {
 				$info['info']['name'][] = $this->db_field_name($result,$i);
 				$info['info']['type'][] = $this->db_field_type($result,$i);
 			}
-			
+
 			$data = array();
 			while ($r = $result->fetch(PDO::FETCH_ASSOC))
 			{
@@ -115,13 +115,13 @@ if (class_exists('dbLayer'))
 				}
 				$data[] = $R;
 			}
-			
+
 			$info['rows'] = count($data);
 			$result->closeCursor();
-			
+
 			return new staticRecord($data,$info);
 		}
-		
+
 		/** @ignore */
 		public function db_query($handle,$query)
 		{
@@ -133,17 +133,17 @@ if (class_exists('dbLayer'))
 					$e->sql = $query;
 					throw $e;
 				}
-				
+
 				return $res;
 			}
 		}
-		
+
 		/** @ignore */
 		public function db_exec($handle,$query)
 		{
 			return $this->db_query($handle,$query);
 		}
-		
+
 		/** @ignore */
 		public function db_num_fields($res)
 		{
@@ -152,12 +152,12 @@ if (class_exists('dbLayer'))
 			}
 			return 0;
 		}
-		
+
 		/** @ignore */
 		public function db_num_rows($res)
 		{
 		}
-		
+
 		/** @ignore */
 		public function db_field_name($res,$position)
 		{
@@ -166,7 +166,7 @@ if (class_exists('dbLayer'))
 				return preg_replace('/^.+\./','',$m['name']); # we said short_column_names = 1
 			}
 		}
-		
+
 		/** @ignore */
 		public function db_field_type($res,$position)
 		{
@@ -184,17 +184,17 @@ if (class_exists('dbLayer'))
 				}
 			}
 		}
-		
+
 		/** @ignore */
 		public function db_fetch_assoc($res)
 		{
 		}
-		
+
 		/** @ignore */
 		public function db_result_seek($res,$row)
 		{
 		}
-		
+
 		/** @ignore */
 		public function db_changes($handle,$res)
 		{
@@ -202,7 +202,7 @@ if (class_exists('dbLayer'))
 				return $res->rowCount();
 			}
 		}
-		
+
 		/** @ignore */
 		public function db_last_error($handle)
 		{
@@ -212,7 +212,7 @@ if (class_exists('dbLayer'))
 			}
 			return false;
 		}
-		
+
 		/** @ignore */
 		public function db_escape_string($str,$handle=null)
 		{
@@ -221,13 +221,13 @@ if (class_exists('dbLayer'))
 			}
 			return $str;
 		}
-		
+
 		/** @ignore */
 		public function escapeSystem($str)
 		{
 			return "'".$this->escape($str)."'";
 		}
-		
+
 		/** @ignore */
 		public function begin()
 		{
@@ -235,7 +235,7 @@ if (class_exists('dbLayer'))
 				$this->__link->beginTransaction();
 			}
 		}
-		
+
 		/** @ignore */
 		public function commit()
 		{
@@ -243,7 +243,7 @@ if (class_exists('dbLayer'))
 				$this->__link->commit();
 			}
 		}
-		
+
 		/** @ignore */
 		public function rollback()
 		{
@@ -251,31 +251,31 @@ if (class_exists('dbLayer'))
 				$this->__link->rollBack();
 			}
 		}
-		
+
 		/** @ignore */
 		public function db_write_lock($table)
 		{
 			$this->execute('BEGIN EXCLUSIVE TRANSACTION');
 		}
-		
+
 		/** @ignore */
 		public function db_unlock()
 		{
 			$this->execute('END');
 		}
-		
+
 		/** @ignore */
 		public function vacuum($table)
 		{
 			$this->execute('VACUUM '.$this->escapeSystem($table));
 		}
-		
+
 		/** @ignore */
 		public function dateFormat($field,$pattern)
 		{
 			return "strftime('".$this->escape($pattern)."',".$field.') ';
 		}
-		
+
 		/** @ignore */
 		public function orderBy()
 		{
@@ -302,7 +302,21 @@ if (class_exists('dbLayer'))
 			}
 			return empty($res) ? '' : ' ORDER BY '.implode(',',$res).' ';
 		}
-	
+
+		/** @ignore */
+		public function lexFields()
+		{
+			$fmt = $this->utf8_unicode_ci instanceof Collator ? '%s COLLATE utf8_unicode_ci' : 'LOWER(%s)';
+			foreach (func_get_args() as $v) {
+				if (is_string($v)) {
+					$res[] = sprintf($fmt,$v);
+				} elseif (is_array($v)) {
+					$res = array_map(function ($i) use ($fmt) { return sprintf($fmt,$i); },$v);
+				}
+			}
+			return empty($res) ? '' : implode(',',$res);
+		}
+
 		# Internal SQLite function that adds NOW() SQL function.
 		/** @ignore */
 		public function now()
@@ -311,4 +325,3 @@ if (class_exists('dbLayer'))
 		}
 	}
 }
-?>
