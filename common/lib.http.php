@@ -43,7 +43,7 @@ class http
 		elseif (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on')
 		{
 			$scheme = 'https';
-			$port = ($_SERVER['SERVER_PORT'] != '443') ? ':'.$_SERVER['SERVER_PORT'] : '';
+			$port = !in_array($_SERVER['SERVER_PORT'],array('80','443')) ? ':'.$_SERVER['SERVER_PORT'] : '';
 		}
 		else
 		{
