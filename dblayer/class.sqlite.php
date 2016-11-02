@@ -288,7 +288,7 @@ if (class_exists('dbLayer'))
 					$res[] = $v;
 				} elseif(is_array($v) && !empty($v['field'])) {
 					$v = array_merge($default, $v);
-					$v['order'] = (isset($v['order']) && strtoupper($v['order']) == 'DESC' ? 'DESC' : '');
+					$v['order'] = (strtoupper($v['order']) == 'DESC' ? 'DESC' : '');
 					if($v['collate']) {
 						if($this->utf8_unicode_ci instanceof Collator) {
 							$res[] = $v['field'].' COLLATE utf8_unicode_ci '.$v['order'];
