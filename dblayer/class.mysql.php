@@ -248,7 +248,7 @@ if (class_exists('dbLayer'))
 					$res[] = $v;
 				} elseif(is_array($v) && !empty($v['field'])) {
 					$v = array_merge($default, $v);
-					$v['order'] = (strtoupper($v['order']) == 'DESC' ?: '');
+					$v['order'] = (isset($v['order']) && strtoupper($v['order']) == 'DESC' ? 'DESC' : '');
 					$res[] = $v['field'].($v['collate'] ? ' COLLATE utf8_unicode_ci' : '').' '.$v['order'];
 				}
 			}

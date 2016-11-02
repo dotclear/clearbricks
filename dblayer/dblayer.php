@@ -588,7 +588,7 @@ class dbLayer
 				$res[] = $v;
 			} elseif(is_array($v) && !empty($v['field'])) {
 				$v = array_merge($default, $v);
-				$v['order'] = (strtoupper($v['order']) == 'DESC' ?: '');
+				$v['order'] = (isset($v['order']) && strtoupper($v['order']) == 'DESC' ? 'DESC' : '');
 				$res[] = ($v['collate'] ? 'LOWER('.$v['field'].')' : $v['field']).' '.$v['order'];
 			}
 		}
