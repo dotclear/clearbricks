@@ -272,7 +272,7 @@ if (class_exists('dbLayer'))
 					$res[] = $v;
 				} elseif(is_array($v) && !empty($v['field'])) {
 					$v = array_merge($default, $v);
-					$v['order'] = (isset($v['order']) && strtoupper($v['order']) == 'DESC' ? 'DESC' : '');
+					$v['order'] = (strtoupper($v['order']) == 'DESC' ? 'DESC' : '');
 					if($v['collate']) {
 						if($this->utf8_unicode_ci) {
 							$res[] = $v['field'].' COLLATE '.$this->utf8_unicode_ci.' '.$v['order'];
