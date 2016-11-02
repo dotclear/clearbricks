@@ -100,11 +100,14 @@ if (class_exists('dbLayer'))
 		/** @ignore */
 		private function db_post_connect($handle,$database)
 		{
-			$result = $this->db_query($handle,"SELECT * FROM pg_collation WHERE (collcollate LIKE '%.utf8')");
-			if($this->db_num_rows($result) > 0) {
-				$this->db_result_seek($result, 0);
-				$row = $this->db_fetch_assoc($result);
-				$this->utf8_unicode_ci = '"'.$row['collname'].'"';
+			if (version_compare($this->db_version(),'9.1') >= 0) {
+				// Only for PostgreSQL 9.1+
+				$result = $this->db_query($handle,"SELECT * FROM pg_collation WHERE (collcollate LIKE '%.utf8')");
+				if($this->db_num_rows($result) > 0) {
+					$this->db_result_seek($result, 0);
+					$row = $this->db_fetch_assoc($result);
+					$this->utf8_unicode_ci = '"'.$row['collname'].'"';
+				}
 			}
 		}
 
