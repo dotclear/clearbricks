@@ -364,6 +364,27 @@ class dbLayer
 	}
 
 	/**
+	* Return an empty record (without any information)
+	*
+	* Return an empty {@link record} object.
+	*
+	* @param string	$sql			SQL query
+	* @return record
+	*/
+	public function nullRecord()
+	{
+		$result = false;
+
+		$info = array();
+		$info['con'] =& $this;
+		$info['cols'] = 0;	// no fields
+		$info['rows'] = 0;	// no rows
+		$info['info'] = array('name' => array(),'type' => array());
+
+		return new record($result,$info);
+	}
+
+	/**
 	* Run query
 	*
 	* Executes a query and return true if succeed
