@@ -214,7 +214,9 @@ class sessionDB
 
 		$this->con->execute($strReq);
 
-		$this->_optimize();
+		if (!$this->transient) {
+			$this->_optimize();
+		}
 		return true;
 	}
 
