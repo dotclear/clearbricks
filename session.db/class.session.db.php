@@ -25,6 +25,7 @@ class sessionDB
 	private $cookie_name;
 	private $cookie_path;
 	private $ttl = '-120 minutes';
+	private $transient = false;
 
 	/**
 	* Constructor
@@ -38,8 +39,10 @@ class sessionDB
 	* @param string		$cookie_domain	Session cookie domaine
 	* @param boolean	$cookie_secure	Session cookie is available only through SSL if true
 	* @param string 	$ttl 			TTL (default -120 minutes)
+	* @param boolean	$transient		Transient session : no db optimize on session destruction if true
 	*/
-	public function __construct($con,$table,$cookie_name,$cookie_path=null,$cookie_domain=null,$cookie_secure=false,$ttl=null)
+	public function __construct($con,$table,$cookie_name,
+		$cookie_path=null,$cookie_domain=null,$cookie_secure=false,$ttl=null,$transient=false)
 	{
 		$this->con =& $con;
 		$this->table = $table;
@@ -50,6 +53,7 @@ class sessionDB
 		if (!is_null($ttl)) {
 			$this->ttl = $ttl;
 		}
+		$this->transient = $transient;
 
 		if(function_exists('ini_set'))
 		{
@@ -112,6 +116,18 @@ class sessionDB
 		session_unset();
 		session_destroy();
 		call_user_func_array('setcookie',$this->getCookieParameters(false,-600));
+	}
+
+	/**
+	 * Session Transient
+	 *
+	 * This method set the transient flag of the session
+	 *
+	 * @param boolean 	$transient 	Session transient flag
+	 */
+	public function setTransientSession($transient=false)
+	{
+		$this->transient = $transient;
 	}
 
 	/**
