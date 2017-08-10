@@ -1,9 +1,9 @@
 <?php
 # -- BEGIN LICENSE BLOCK ---------------------------------------
 #
-# This file is a mysqli driver for Clearbrick.
+# This file is a mysqlimb4 driver for Clearbrick.
 #
-# Copyright (c) 2011 Maxime Varinard @ Vaisonet
+# Copyright (c) 2017 Franck Paul
 # Licensed under the GPL version 2.0 license.
 # See LICENSE file or
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
@@ -11,7 +11,7 @@
 # -- END LICENSE BLOCK -----------------------------------------
 
 /**
-* MySQLi Database Driver
+* MySQLi utf8-mb4 Database Driver
 *
 * See the {@link dbLayer} documentation for common methods.
 *
