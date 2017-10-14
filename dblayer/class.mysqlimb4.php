@@ -35,20 +35,24 @@ if (class_exists('dbLayer'))
 				throw new Exception('PHP MySQLi functions are not available');
 			}
 
-			$port = false;
+			$port = ini_get("mysqli.default_port");
+			$socket = null;
 			if (strpos($host,':') !== false) {
+				// Port or socket given
 				$bits = explode(':',$host);
 				$host = array_shift($bits);
-				$port = abs((integer) array_shift($bits));
+				$socket = array_shift($bits);
+				if (abs((integer) $socket) > 0) {
+					// TCP/IP connection on given port
+					$port = abs((integer) $socket);
+					$socket = null;
+				} else {
+					// Socket connection
+					$port = null;
+				}
 			}
-			if ($port) {
-				if (($link = @mysqli_connect($host,$user,$password,$database,$port)) === false) {
-					throw new Exception('Unable to connect to database');
-				}
-			} else {
-				if (($link = @mysqli_connect($host,$user,$password,$database)) === false) {
-					throw new Exception('Unable to connect to database');
-				}
+			if (($link = @mysqli_connect($host,$user,$password,$database,$port,$socket)) === false) {
+				throw new Exception('Unable to connect to database');
 			}
 
 			$this->db_post_connect($link,$database);
