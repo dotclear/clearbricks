@@ -70,7 +70,7 @@ if (class_exists('dbLayer'))
 		/** @ignore */
 		private function db_post_connect($link,$database)
 		{
-			if (version_compare($this->db_version($link),'4.1','>='))
+			if (version_compare($this->db_version($link),'5.7','>='))
 			{
 				$this->db_query($link,'SET NAMES utf8mb4');
 				$this->db_query($link,'SET CHARACTER SET utf8mb4');
