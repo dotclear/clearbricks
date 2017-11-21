@@ -79,6 +79,8 @@ if (class_exists('dbLayer'))
 				$this->db_query($link,"SET CHARACTER_SET_SERVER = 'utf8mb4'");
 				$this->db_query($link,"SET CHARACTER_SET_DATABASE = 'utf8mb4'");
 				$link->set_charset("utf8mb4");
+			} else {
+				throw new Exception('Unable to connect to an utf8mb4 database');
 			}
 		}
 
