@@ -59,6 +59,14 @@ class form extends atoum
             ->match('#<optgroup\slabel="onetwo">#')
             ->match('#<option\svalue="one">one<\/option>#')
             ->contains('</optgroup');
+
+        $this
+        	->string(\form::combo('testID', array(), array(
+        			'tabindex' => 'atabindex',
+        			'disabled' => true
+        		)))
+            ->contains('tabindex="atabindex"')
+            ->contains('disabled="disabled"');
     }
 
     /** Test for <input type="radio"
@@ -84,6 +92,14 @@ class form extends atoum
         $this
             ->string(\form::radio('testID', 'testvalue', true, 'aclassname', 'atabindex', false, 'data-test="A test"'))
             ->notContains('disabled');
+
+        $this
+        	->string(\form::radio('testID', 'testvalue', array(
+        			'tabindex' => 'atabindex',
+        			'disabled' => true
+        		)))
+            ->contains('tabindex="atabindex"')
+            ->contains('disabled="disabled"');
     }
 
     /** Test for <input type="checkbox"
@@ -109,12 +125,20 @@ class form extends atoum
         $this
             ->string(\form::checkbox('testID', 'testvalue', true, 'aclassname', 'atabindex', false, 'data-test="A test"'))
             ->notContains('disabled');
+
+        $this
+        	->string(\form::checkbox('testID', 'testvalue', array(
+        			'tabindex' => 'atabindex',
+        			'disabled' => true
+        		)))
+            ->contains('tabindex="atabindex"')
+            ->contains('disabled="disabled"');
     }
 
     public function testField()
     {
         $this
-            ->string(\form::field('testID', 10, 20, 'testvalue', 'aclassname', 'atabindex', true, 'data-test="A test"'))
+            ->string(\form::field('testID', 10, 20, 'testvalue', 'aclassname', 'atabindex', true, 'data-test="A test"', true))
             ->contains('type="text"')
             ->contains('size="10"')
             ->contains('maxlength="20"')
@@ -124,22 +148,31 @@ class form extends atoum
             ->contains('tabindex="atabindex"')
             ->contains('disabled="disabled"')
             ->contains('data-test="A test"')
-            ->contains('value="testvalue"');
+            ->contains('value="testvalue"')
+            ->contains('required');
 
         $this
-            ->string(\form::field(array('aName', 'testID'), 10, 20, 'testvalue', 'aclassname', 'atabindex', true, 'data-test="A test"'))
+            ->string(\form::field(array('aName', 'testID'), 10, 20, 'testvalue', 'aclassname', 'atabindex', true, 'data-test="A test"', true))
             ->contains('name="aName"')
             ->contains('id="testID"');
 
         $this
-            ->string(\form::field('testID', 10, 20, 'testvalue', 'aclassname', 'atabindex', false, 'data-test="A test"'))
+            ->string(\form::field('testID', 10, 20, 'testvalue', 'aclassname', 'atabindex', false, 'data-test="A test"', true))
             ->notContains('disabled');
+
+        $this
+        	->string(\form::field('testID', 10, 20, array(
+        			'tabindex' => 'atabindex',
+        			'disabled' => true
+        		)))
+            ->contains('tabindex="atabindex"')
+            ->contains('disabled="disabled"');
     }
 
     public function testPassword()
     {
         $this
-            ->string(\form::password('testID', 10, 20, 'testvalue', 'aclassname', 'atabindex', true, 'data-test="A test"'))
+            ->string(\form::password('testID', 10, 20, 'testvalue', 'aclassname', 'atabindex', true, 'data-test="A test"', true))
             ->contains('type="password"')
             ->contains('size="10"')
             ->contains('maxlength="20"')
@@ -149,23 +182,333 @@ class form extends atoum
             ->contains('tabindex="atabindex"')
             ->contains('disabled="disabled"')
             ->contains('data-test="A test"')
-            ->contains('value="testvalue"');
+            ->contains('value="testvalue"')
+            ->contains('required');
 
         $this
-            ->string(\form::password(array('aName', 'testID'), 10, 20, 'testvalue', 'aclassname', 'atabindex', true, 'data-test="A test"'))
+            ->string(\form::password(array('aName', 'testID'), 10, 20, 'testvalue', 'aclassname', 'atabindex', true, 'data-test="A test"', true))
             ->contains('name="aName"')
             ->contains('id="testID"');
 
         $this
-            ->string(\form::password('testID', 10, 20, 'testvalue', 'aclassname', 'atabindex', false, 'data-test="A test"'))
+            ->string(\form::password('testID', 10, 20, 'testvalue', 'aclassname', 'atabindex', false, 'data-test="A test"', true))
             ->notContains('disabled');
+
+        $this
+        	->string(\form::password('testID', 10, 20, array(
+        			'tabindex' => 'atabindex',
+        			'disabled' => true
+        		)))
+            ->contains('tabindex="atabindex"')
+            ->contains('disabled="disabled"');
+    }
+
+	/**
+	 * Create a color input field
+	 */
+	public function testColor()
+	{
+        $this
+            ->string(\form::color('testID', 10, 20, '#f369a3', 'aclassname', 'atabindex', true, 'data-test="A test"', true))
+            ->contains('type="color"')
+            ->contains('size="10"')
+            ->contains('maxlength="20"')
+            ->contains('name="testID"')
+            ->contains('id="testID"')
+            ->contains('class="aclassname"')
+            ->contains('tabindex="atabindex"')
+            ->contains('disabled="disabled"')
+            ->contains('data-test="A test"')
+            ->contains('value="#f369a3"')
+            ->contains('required');
+
+        $this
+            ->string(\form::color(array('aName', 'testID'), 10, 20, '#f369a3', 'aclassname', 'atabindex', true, 'data-test="A test"', true))
+            ->contains('name="aName"')
+            ->contains('id="testID"');
+
+        $this
+            ->string(\form::color('testID', 10, 20, '#f369a3', 'aclassname', 'atabindex', false, 'data-test="A test"', true))
+            ->notContains('disabled');
+
+        $this
+        	->string(\form::color('testID', array(
+        			'tabindex' => 'atabindex',
+        			'disabled' => true
+        		)))
+        	->contains('size="7"')
+        	->contains('maxlength="7"')
+            ->contains('tabindex="atabindex"')
+            ->contains('disabled="disabled"');
+	}
+
+	/**
+	 * Create an email input field
+	 */
+	public function testEmail()
+	{
+        $this
+            ->string(\form::email('testID', 10, 20, 'me@example.com', 'aclassname', 'atabindex', true, 'data-test="A test"', true))
+            ->contains('type="email"')
+            ->contains('size="10"')
+            ->contains('maxlength="20"')
+            ->contains('name="testID"')
+            ->contains('id="testID"')
+            ->contains('class="aclassname"')
+            ->contains('tabindex="atabindex"')
+            ->contains('disabled="disabled"')
+            ->contains('data-test="A test"')
+            ->contains('value="me@example.com"')
+            ->contains('required');
+
+        $this
+            ->string(\form::email(array('aName', 'testID'), 10, 20, 'me@example.com', 'aclassname', 'atabindex', true, 'data-test="A test"', true))
+            ->contains('name="aName"')
+            ->contains('id="testID"');
+
+        $this
+            ->string(\form::email('testID', 10, 20, 'me@example.com', 'aclassname', 'atabindex', false, 'data-test="A test"', true))
+            ->notContains('disabled');
+
+        $this
+        	->string(\form::email('testID', array(
+        			'tabindex' => 'atabindex',
+        			'disabled' => true
+        		)))
+            ->contains('tabindex="atabindex"')
+            ->contains('disabled="disabled"');
+	}
+
+	/**
+	 * Create an URL input field
+	 */
+	public function testUrl()
+	{
+        $this
+            ->string(\form::url('testID', 10, 20, 'https://example.com/', 'aclassname', 'atabindex', true, 'data-test="A test"', true))
+            ->contains('type="url"')
+            ->contains('size="10"')
+            ->contains('maxlength="20"')
+            ->contains('name="testID"')
+            ->contains('id="testID"')
+            ->contains('class="aclassname"')
+            ->contains('tabindex="atabindex"')
+            ->contains('disabled="disabled"')
+            ->contains('data-test="A test"')
+            ->contains('value="https://example.com/"')
+            ->contains('required');
+
+        $this
+            ->string(\form::url(array('aName', 'testID'), 10, 20, 'https://example.com/', 'aclassname', 'atabindex', true, 'data-test="A test"', true))
+            ->contains('name="aName"')
+            ->contains('id="testID"');
+
+        $this
+            ->string(\form::url('testID', 10, 20, 'https://example.com/', 'aclassname', 'atabindex', false, 'data-test="A test"', true))
+            ->notContains('disabled');
+
+        $this
+        	->string(\form::url('testID', array(
+        			'tabindex' => 'atabindex',
+        			'disabled' => true
+        		)))
+            ->contains('tabindex="atabindex"')
+            ->contains('disabled="disabled"');
+	}
+
+	/**
+	 * Create a datetime (local) input field
+	 */
+	public function testDatetime()
+	{
+        $this
+            ->string(\form::datetime('testID', 10, 20, '1962-05-13T02:15', 'aclassname', 'atabindex', true, 'data-test="A test"', true))
+            ->contains('type="datetime-local"')
+            ->contains('size="10"')
+            ->contains('maxlength="20"')
+            ->contains('name="testID"')
+            ->contains('id="testID"')
+            ->contains('class="aclassname"')
+            ->contains('tabindex="atabindex"')
+            ->contains('disabled="disabled"')
+            ->contains('data-test="A test"')
+            ->contains('value="1962-05-13T02:15"')
+            ->contains('required')
+            ->contains('pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}')
+            ->contains('placeholder="1962-05-13T02:15"');
+
+        $this
+            ->string(\form::url(array('aName', 'testID'), 10, 20, '1962-05-13T02:15', 'aclassname', 'atabindex', true, 'data-test="A test"', true))
+            ->contains('name="aName"')
+            ->contains('id="testID"');
+
+        $this
+            ->string(\form::url('testID', 10, 20, '1962-05-13T02:15', 'aclassname', 'atabindex', false, 'data-test="A test"', true))
+            ->notContains('disabled');
+
+        $this
+        	->string(\form::url('testID', array(
+        			'tabindex' => 'atabindex',
+        			'disabled' => true
+        		)))
+            ->contains('tabindex="atabindex"')
+            ->contains('disabled="disabled"');
+	}
+
+	/**
+	 * Create a date input field
+	 */
+	public function testDate()
+	{
+        $this
+            ->string(\form::date('testID', 10, 20, '1962-05-13', 'aclassname', 'atabindex', true, 'data-test="A test"', true))
+            ->contains('type="date"')
+            ->contains('size="10"')
+            ->contains('maxlength="20"')
+            ->contains('name="testID"')
+            ->contains('id="testID"')
+            ->contains('class="aclassname"')
+            ->contains('tabindex="atabindex"')
+            ->contains('disabled="disabled"')
+            ->contains('data-test="A test"')
+            ->contains('value="1962-05-13"')
+            ->contains('required')
+            ->contains('pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}')
+            ->contains('placeholder="1962-05-13"');
+
+        $this
+            ->string(\form::date(array('aName', 'testID'), 10, 20, '1962-05-13', 'aclassname', 'atabindex', true, 'data-test="A test"', true))
+            ->contains('name="aName"')
+            ->contains('id="testID"');
+
+        $this
+            ->string(\form::date('testID', 10, 20, '1962-05-13', 'aclassname', 'atabindex', false, 'data-test="A test"', true))
+            ->notContains('disabled');
+
+        $this
+        	->string(\form::date('testID', array(
+        			'tabindex' => 'atabindex',
+        			'disabled' => true
+        		)))
+            ->contains('tabindex="atabindex"')
+            ->contains('disabled="disabled"');
+	}
+
+	/**
+	 * Create a datetime (local) input field
+	 */
+	public function testTime()
+	{
+        $this
+            ->string(\form::time('testID', 10, 20, '02:15', 'aclassname', 'atabindex', true, 'data-test="A test"', true))
+            ->contains('type="time"')
+            ->contains('size="10"')
+            ->contains('maxlength="20"')
+            ->contains('name="testID"')
+            ->contains('id="testID"')
+            ->contains('class="aclassname"')
+            ->contains('tabindex="atabindex"')
+            ->contains('disabled="disabled"')
+            ->contains('data-test="A test"')
+            ->contains('value="02:15"')
+            ->contains('required')
+            ->contains('pattern="[0-9]{2}:[0-9]{2}')
+            ->contains('placeholder="02:15"');
+
+        $this
+            ->string(\form::time(array('aName', 'testID'), 10, 20, '02:15', 'aclassname', 'atabindex', true, 'data-test="A test"', true))
+            ->contains('name="aName"')
+            ->contains('id="testID"');
+
+        $this
+            ->string(\form::time('testID', 10, 20, '02:15', 'aclassname', 'atabindex', false, 'data-test="A test"', true))
+            ->notContains('disabled');
+
+        $this
+        	->string(\form::time('testID', array(
+        			'tabindex' => 'atabindex',
+        			'disabled' => true
+        		)))
+            ->contains('tabindex="atabindex"')
+            ->contains('disabled="disabled"');
+	}
+
+	/**
+	 * Create a file input field
+	 */
+	public function testFile()
+	{
+        $this
+            ->string(\form::file('testID', 'filename.ext', 'aclassname', 'atabindex', true, 'data-test="A test"', true))
+            ->contains('type="file"')
+            ->contains('name="testID"')
+            ->contains('id="testID"')
+            ->contains('class="aclassname"')
+            ->contains('tabindex="atabindex"')
+            ->contains('disabled="disabled"')
+            ->contains('data-test="A test"')
+            ->contains('value="filename.ext"')
+            ->contains('required');
+
+        $this
+            ->string(\form::file(array('aName', 'testID'), 'filename.ext', 'aclassname', 'atabindex', true, 'data-test="A test"', true))
+            ->contains('name="aName"')
+            ->contains('id="testID"');
+
+        $this
+            ->string(\form::file('testID', 'filename.ext', 'aclassname', 'atabindex', false, 'data-test="A test"', true))
+            ->notContains('disabled');
+
+        $this
+        	->string(\form::file('testID', array(
+        			'tabindex' => 'atabindex',
+        			'disabled' => true
+        		)))
+            ->contains('tabindex="atabindex"')
+            ->contains('disabled="disabled"');
+	}
+
+    public function testNumber()
+    {
+        $this
+            ->string(\form::number('testID', 0, 99, 13, 'aclassname', 'atabindex', true, 'data-test="A test"', true))
+            ->contains('type="number"')
+            ->contains('min="0"')
+            ->contains('max="99"')
+            ->contains('name="testID"')
+            ->contains('id="testID"')
+            ->contains('class="aclassname"')
+            ->contains('tabindex="atabindex"')
+            ->contains('disabled="disabled"')
+            ->contains('data-test="A test"')
+            ->contains('value="13"')
+            ->contains('required');
+
+        $this
+            ->string(\form::number(array('aName', 'testID'), 0, 99, 13, 'aclassname', 'atabindex', true, 'data-test="A test"', true))
+            ->contains('name="aName"')
+            ->contains('id="testID"');
+
+        $this
+            ->string(\form::number('testID', 0, 99, 13, 'aclassname', 'atabindex', false, 'data-test="A test"', true))
+            ->notContains('disabled');
+
+        $this
+        	->string(\form::number('testID', array(
+        			'tabindex' => 'atabindex',
+        			'disabled' => true
+        		)))
+            ->notContains('min=')
+            ->notContains('max=')
+            ->contains('tabindex="atabindex"')
+            ->contains('disabled="disabled"');
     }
 
     public function testTextArea()
     {
         $this
-            ->string(\form::textArea('testID', 10, 20, 'testvalue', 'aclassname', 'atabindex', true, 'data-test="A test"'))
-            ->match('#<textarea.*?testvalue.*?<\/textarea>#')
+            ->string(\form::textArea('testID', 10, 20, 'testvalue', 'aclassname', 'atabindex', true, 'data-test="A test"', true))
+            ->match('#<textarea.*?testvalue.*?<\/textarea>#s')
             ->contains('cols="10"')
             ->contains('rows="20"')
             ->contains('name="testID"')
@@ -173,16 +516,25 @@ class form extends atoum
             ->contains('class="aclassname"')
             ->contains('tabindex="atabindex"')
             ->contains('disabled="disabled"')
-            ->contains('data-test="A test"');
+            ->contains('data-test="A test"')
+            ->contains('required');
 
         $this
-            ->string(\form::textArea(array('aName', 'testID'), 10, 20, 'testvalue', 'aclassname', 'atabindex', true, 'data-test="A test"'))
+            ->string(\form::textArea(array('aName', 'testID'), 10, 20, 'testvalue', 'aclassname', 'atabindex', true, 'data-test="A test"', true))
             ->contains('name="aName"')
             ->contains('id="testID"');
 
         $this
-            ->string(\form::textArea('testID', 10, 20, 'testvalue', 'aclassname', 'atabindex', false, 'data-test="A test"'))
+            ->string(\form::textArea('testID', 10, 20, 'testvalue', 'aclassname', 'atabindex', false, 'data-test="A test"', true))
             ->notContains('disabled');
+
+        $this
+        	->string(\form::textArea('testID', 10, 20, array(
+        			'tabindex' => 'atabindex',
+        			'disabled' => true
+        		)))
+            ->contains('tabindex="atabindex"')
+            ->contains('disabled="disabled"');
     }
 
     public function testHidden()
