@@ -3,7 +3,7 @@
 #
 # This file is part of Dotclear 2.
 #
-# Copyright (c) 2003-2013 Olivier Meunier & Association Dotclear
+# Copyright (c) Olivier Meunier & Association Dotclear
 # Licensed under the GPL version 2.0 license.
 # See LICENSE file or
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
@@ -74,12 +74,12 @@ class crypt extends atoum
     }
 
     /**
-     * If the encoder is not know, fallcak into md5 encoder
+     * If the encoder is not know, fallcak into sha1 encoder (if PHP hash_hmac() exists)
      */
     public function testHMacFallback() {
         $this
             ->string(\crypt::hmac($this->big_key, $this->data, 'dummyencoder'))
-            ->isIdenticalTo(hash_hmac('md5', $this->data, $this->big_key));
+            ->isIdenticalTo(hash_hmac('sha1', $this->data, $this->big_key));
     }
 
     /**
