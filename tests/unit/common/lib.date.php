@@ -30,6 +30,7 @@ class dt extends atoum
      */
     public function testStrNormal()
     {
+        \dt::setTZ('UTC');
         $this
             ->string(\dt::str("%d%m%Y"))
             ->isEqualTo(strftime("%d%m%Y"));
@@ -40,6 +41,7 @@ class dt extends atoum
      */
     public function testStrTimestamp()
     {
+        \dt::setTZ('UTC');
         $this
             ->string(\dt::str('%d%m%Y', 1))
             ->isEqualTo('01011970');
@@ -52,8 +54,9 @@ class dt extends atoum
      */
     public function testStrWithTimestampAndTimezone()
     {
+        \dt::setTZ('UTC');
         $this
-            ->integer((int)\dt::str('%H', 1, 'Indian/Reunion') - (int)\dt::str('%H', 1, 'Europe/Paris'))
+            ->integer((int) \dt::str('%H', 1, 'Indian/Reunion') - (int) \dt::str('%H', 1, 'Europe/Paris'))
             ->isEqualTo(3);
     }
 
@@ -63,6 +66,7 @@ class dt extends atoum
      */
     public function testDt2Str()
     {
+        \dt::setTZ('UTC');
         $this
             ->string(\dt::dt2str('%Y', '1970-01-01'))
             ->isEqualTo(\dt::str('%Y', 1));
@@ -83,6 +87,7 @@ class dt extends atoum
      */
     public function testDt2DummyStr()
     {
+        \dt::setTZ('UTC');
         $this
             ->string(\dt::dt2str('%Y', 'Everything but a time'))
             ->isEqualTo(\dt::str('%Y', 1));
@@ -112,7 +117,6 @@ class dt extends atoum
             ->isEqualTo('1970-01-01T00:00:01+04:00');
     }
 
-
     public function testRfc822()
     {
         // Info not found
@@ -129,8 +133,8 @@ class dt extends atoum
     public function testToUTC()
     {
         \dt::setTZ('Indian/Reunion'); // UTC + 4
-        $this->integer(\dt::toUTC(4*3600))
-        ->isEqualTo(0);
+        $this->integer(\dt::toUTC(4 * 3600))
+            ->isEqualTo(0);
     }
 
     /*
@@ -141,7 +145,7 @@ class dt extends atoum
         \dt::setTZ('UTC');
         $this
             ->integer(\dt::addTimeZone('Indian/Reunion', 0))
-            ->isEqualTo(4*3600);
+            ->isEqualTo(4 * 3600);
     }
 
     /*
