@@ -11,12 +11,12 @@
 #
 # Clearbricks is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.    See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
 # along with Clearbricks; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA	02111-1307	USA
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111-1307    USA
 #
 # ***** END LICENSE BLOCK *****
 
@@ -24,52 +24,60 @@ namespace tests\unit;
 
 use atoum;
 
-require_once __DIR__.'/../bootstrap.php';
-require_once(str_replace('tests/unit/',	 '', __FILE__));
+require_once __DIR__ . '/../bootstrap.php';
+
+require_once str_replace('tests/unit/', '', __FILE__);
 
 class dbStruct extends atoum
 {
     private $prefix = 'dc_';
 
-    public function testMustEscapeNameInCreateTable($driver, $query) {
-        $controller = new \atoum\mock\controller();
-        $controller->__construct = function() {};
+    public function testMustEscapeNameInCreateTable($driver, $query)
+    {
+        $controller              = new \atoum\mock\controller();
+        $controller->__construct = function () {};
 
         $driver_class_name = sprintf('\mock\%sConnection', $driver);
-        $con = new $driver_class_name($driver, $controller);
+        $con               = new $driver_class_name($driver, $controller);
 
         $s = new \dbStruct($con, $this->prefix);
         $s->blog->blog_id('varchar', 32, false);
 
         $tables = $s->getTables();
-        $tname = $this->prefix .'blog';
+        $tname  = $this->prefix . 'blog';
 
         $this
             ->if($schema = \dbSchema::init($con))
             ->and($schema->createTable($tname, $tables[$tname]->getFields()))
-                  ->then()
-                  ->mock($con)->call('execute')
-                  ->withIdenticalArguments($query)
-                  ->once();
+            ->then()
+            ->mock($con)->call('execute')
+            ->withIdenticalArguments($query)
+            ->once();
     }
 
-    /* 
+    /*
      * providers
      **/
-    protected function testMustEscapeNameInCreateTableDataProvider() {
-        $create_query['mysql'] = sprintf('CREATE TABLE `%sblog` ('."\n", $this->prefix);
-        $create_query['mysql'] .= '`blog_id` varchar(32) NOT NULL '."\n";
+    protected function testMustEscapeNameInCreateTableDataProvider()
+    {
+        $create_query['mysql'] = sprintf('CREATE TABLE `%sblog` (' . "\n", $this->prefix);
+        $create_query['mysql'] .= '`blog_id` varchar(32) NOT NULL ' . "\n";
         $create_query['mysql'] .= ') ENGINE=InnoDB CHARACTER SET utf8 COLLATE utf8_bin ';
 
         $create_query['mysqli'] = $create_query['mysql'];
 
-        $create_query['pgsql'] = sprintf('CREATE TABLE "%sblog" ('."\n", $this->prefix);
-        $create_query['pgsql'] .= 'blog_id varchar(32) NOT NULL '."\n".')';
+        $create_query['mysqlimb4'] = sprintf('CREATE TABLE `%sblog` (' . "\n", $this->prefix);
+        $create_query['mysqlimb4'] .= '`blog_id` varchar(32) NOT NULL ' . "\n";
+        $create_query['mysqlimb4'] .= ') ENGINE=InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci';
+
+        $create_query['pgsql'] = sprintf('CREATE TABLE "%sblog" (' . "\n", $this->prefix);
+        $create_query['pgsql'] .= 'blog_id varchar(32) NOT NULL ' . "\n" . ')';
 
         return array(
             array('pgsql', $create_query['pgsql']),
             array('mysql', $create_query['mysql']),
-            array('mysqli', $create_query['mysqli'])
+            array('mysqli', $create_query['mysqli']),
+            array('mysqlimb4', $create_query['mysqlimb4'])
         );
     }
 }
