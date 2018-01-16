@@ -1,6 +1,11 @@
 <?php
 
-use \mageekguy\atoum;
+use mageekguy\atoum;
+use mageekguy\atoum\reports;
+
+// Enable extension
+$extension = new reports\extension($script);
+$extension->addToRunner($runner);
 
 // Write all on stdout.
 $stdOutWriter = new atoum\writers\std\out();
