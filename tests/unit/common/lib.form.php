@@ -338,16 +338,16 @@ class form extends atoum
             ->contains('placeholder="1962-05-13T02:15"');
 
         $this
-            ->string(\form::url(array('aName', 'testID'), 10, 20, '1962-05-13T02:15', 'aclassname', 'atabindex', true, 'data-test="A test"', true))
+            ->string(\form::datetime(array('aName', 'testID'), 10, 20, '1962-05-13T02:15', 'aclassname', 'atabindex', true, 'data-test="A test"', true))
             ->contains('name="aName"')
             ->contains('id="testID"');
 
         $this
-            ->string(\form::url('testID', 10, 20, '1962-05-13T02:15', 'aclassname', 'atabindex', false, 'data-test="A test"', true))
+            ->string(\form::datetime('testID', 10, 20, '1962-05-13T02:15', 'aclassname', 'atabindex', false, 'data-test="A test"', true))
             ->notContains('disabled');
 
         $this
-            ->string(\form::url('testID', array(
+            ->string(\form::datetime('testID', array(
                 'tabindex' => 'atabindex',
                 'disabled' => true,
             )))

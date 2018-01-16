@@ -95,7 +95,6 @@ class dt extends atoum
 
     /*
      * Convert timestamp to ISO8601 date
-     * @todo this test fail
      */
     public function testISO8601()
     {
@@ -107,7 +106,6 @@ class dt extends atoum
 
     /*
      * Convert timestamp to ISO8601 date but not UTC.
-     * @todo this test fail
      */
     public function testISO8601WithAnotherTimezone()
     {
@@ -119,7 +117,10 @@ class dt extends atoum
 
     public function testRfc822()
     {
-        // Info not found
+        \dt::setTZ('UTC');
+        $this
+            ->string(\dt::rfc822(1, 'Indian/Reunion'))
+            ->isEqualTo('Thu, 01 Jan 1970 00:00:01 +0400');
     }
 
     public function testGetTimeOffset()
