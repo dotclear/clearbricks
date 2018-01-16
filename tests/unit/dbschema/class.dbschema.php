@@ -11,269 +11,293 @@
 #
 # Clearbricks is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.    See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
 # along with Clearbricks; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA	02111-1307	USA
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111-1307    USA
 #
 # ***** END LICENSE BLOCK *****
 
 namespace tests\unit;
 
 use atoum;
-use Faker;
 
-require_once __DIR__.'/../bootstrap.php';
-require_once(str_replace('tests/unit/',	 '', __FILE__));
+require_once __DIR__ . '/../bootstrap.php';
+
+require_once str_replace('tests/unit/', '', __FILE__);
 
 class dbSchema extends atoum
 {
-	private $prefix = 'dc_';
-	private $index = 0;
+    private $prefix = 'dc_';
+    private $index  = 0;
 
-	private function getConnection($driver) {
-		$controller = new \atoum\mock\controller();
-		$controller->__construct = function() {};
-		
-		$class_name = sprintf('\mock\%sConnection', $driver);
-		$con = new $class_name($driver, $controller);
-		$this->calling($con)->driver = $driver;
+    private function getConnection($driver)
+    {
+        $controller              = new \atoum\mock\controller();
+        $controller->__construct = function () {};
 
-		return $con;
-	}
+        $class_name                  = sprintf('\mock\%sConnection', $driver);
+        $con                         = new $class_name($driver, $controller);
+        $this->calling($con)->driver = $driver;
 
-	public function testQueryForCreateTable($driver, $query) {
-		$con = $this->getConnection($driver);
+        return $con;
+    }
 
-		$table_name = $this->prefix . 'blog';
-		$fields = array('status' => array('type' => 'smallint', 'len' => 0, 'null' => false, 'default' => -2));
+    public function testQueryForCreateTable($driver, $query)
+    {
+        $con = $this->getConnection($driver);
 
-		$this
-			->if($schema = \dbSchema::init($con))
-			->and($schema->createTable($table_name, $fields))
-				  ->then()
-				  ->mock($con)->call('execute')
-				  ->withIdenticalArguments($query)
-				  ->once();
-	}
+        $table_name = $this->prefix . 'blog';
+        $fields     = array('status' => array('type' => 'smallint', 'len' => 0, 'null' => false, 'default' => -2));
 
-	public function testQueryForRetrieveFields($driver, $query) {
-		$con = $this->getConnection($driver);
+        $this
+            ->if($schema = \dbSchema::init($con))
+            ->and($schema->createTable($table_name, $fields))
+            ->then()
+            ->mock($con)->call('execute')
+            ->withIdenticalArguments($query)
+            ->once();
+    }
 
-		$table_name = $this->prefix . 'blog';
+    public function testQueryForRetrieveFields($driver, $query)
+    {
+        $con = $this->getConnection($driver);
 
-		$this
-			->if($schema = \dbSchema::init($con))
-			->and($schema->getColumns($table_name))
-				  ->then()
-				  ->mock($con)->call('select')
-				  ->withIdenticalArguments($query)
-				  ->once();
-	}
-	
-	public function testGetColumns($driver, $row, $result) {
-		$con = $this->getConnection($driver);
+        $table_name = $this->prefix . 'blog';
 
-		$rs_controller = new \atoum\mock\controller();
-		$rs_controller->__construct = function() {
-			$this->__fetch = false;
-		};
+        $this
+            ->if($schema = \dbSchema::init($con))
+            ->and($schema->getColumns($table_name))
+            ->then()
+            ->mock($con)->call('select')
+            ->withIdenticalArguments($query)
+            ->once();
+    }
 
-		$rs = new \mock\record(true, array('con' => $con), $rs_controller);
-		$this->calling($con)->select = function() use ($rs) {
-			return $rs;
-		};
+    public function testGetColumns($driver, $row, $result)
+    {
+        $con = $this->getConnection($driver);
 
-		$this->calling($rs)->fetch = function() use ($row) {
-			// need to deal with several rows
-			if (!$this->__fetch) {
-				$this->__fetch = true;
-				return true;
-			} else {
-				return false;
-			}
-		};
+        $rs_controller              = new \atoum\mock\controller();
+        $rs_controller->__construct = function () {
+            $this->__fetch = false;
+        };
 
-		$this->calling($rs)->__get = function($n) use ($row) {
-			return $row[$n];
-		};
-		$this->calling($rs)->f = function($n) use ($row) {
-			return $row[$n];
-		};
+        $rs                          = new \mock\record(true, array('con' => $con), $rs_controller);
+        $this->calling($con)->select = function () use ($rs) {
+            return $rs;
+        };
 
-		$table_name = $this->prefix . 'blog';
+        $this->calling($rs)->fetch = function () use ($row) {
+            // need to deal with several rows
+            if (!$this->__fetch) {
+                $this->__fetch = true;
+                return true;
+            } else {
+                return false;
+            }
+        };
 
-		$schema = \dbSchema::init($con);
-		$columns = $schema->getColumns($table_name);
-		
-		$this
-			->string($columns['status']['type'])
-			->isIdenticalTo($result['status']['type'])
-			->integer((int) $columns['status']['len']) // len can be null
-			->isIdenticalTo($result['status']['len'])
-			->boolean($columns['status']['null'])
-			->isIdenticalTo($result['status']['null'])
-			->string($columns['status']['default'])
-			->isIdenticalTo($result['status']['default']);
-	}
+        $this->calling($rs)->__get = function ($n) use ($row) {
+            return $row[$n];
+        };
+        $this->calling($rs)->f = function ($n) use ($row) {
+            return $row[$n];
+        };
 
+        $table_name = $this->prefix . 'blog';
 
-	public function testDefaultNullMustBeNullNotString($driver, $row, $result) {
-		$con = $this->getConnection($driver);
+        $schema  = \dbSchema::init($con);
+        $columns = $schema->getColumns($table_name);
 
-		$rs_controller = new \atoum\mock\controller();
-		$rs_controller->__construct = function() {
-			$this->__fetch = false;
-		};
+        $this
+            ->string($columns['status']['type'])
+            ->isIdenticalTo($result['status']['type'])
+            ->integer((int) $columns['status']['len']) // len can be null
+            ->isIdenticalTo($result['status']['len'])
+            ->boolean($columns['status']['null'])
+            ->isIdenticalTo($result['status']['null'])
+            ->string($columns['status']['default'])
+            ->isIdenticalTo($result['status']['default']);
+    }
 
-		$rs = new \mock\record(true, array('con' => $con), $rs_controller);
-		$this->calling($con)->select = function() use ($rs) {
-			return $rs;
-		};
+    public function testDefaultNullMustBeNullNotString($driver, $row, $result)
+    {
+        $con = $this->getConnection($driver);
 
-		$this->calling($rs)->fetch = function() use ($row) {
-			// need to deal with several rows
-			if (!$this->__fetch) {
-				$this->__fetch = true;
-				return true;
-			} else {
-				return false;
-			}
-		};
+        $rs_controller              = new \atoum\mock\controller();
+        $rs_controller->__construct = function () {
+            $this->__fetch = false;
+        };
 
-		$this->calling($rs)->__get = function($n) use ($row) {
-			return $row[$n];
-		};
-		$this->calling($rs)->f = function($n) use ($row) {
-			return $row[$n];
-		};
+        $rs                          = new \mock\record(true, array('con' => $con), $rs_controller);
+        $this->calling($con)->select = function () use ($rs) {
+            return $rs;
+        };
 
-		$table_name = $this->prefix . 'blog';
+        $this->calling($rs)->fetch = function () use ($row) {
+            // need to deal with several rows
+            if (!$this->__fetch) {
+                $this->__fetch = true;
+                return true;
+            } else {
+                return false;
+            }
+        };
 
-		$schema = \dbSchema::init($con);
-		$columns = $schema->getColumns($table_name);
-		
-		$this
-			->string($columns['status']['type'])
-			->isIdenticalTo($result['status']['type'])
-			->integer((int) $columns['status']['len']) // len can be null
-			->isIdenticalTo($result['status']['len'])
-			->boolean($columns['status']['null'])
-			->isIdenticalTo($result['status']['null'])
-			->variable($columns['status']['default'])
-			->isNull($result['status']['default']);
-	}
+        $this->calling($rs)->__get = function ($n) use ($row) {
+            return $row[$n];
+        };
+        $this->calling($rs)->f = function ($n) use ($row) {
+            return $row[$n];
+        };
 
-	/* 
-	 * providers
-	 **/
-	protected function testQueryForCreateTableDataProvider() {
-		$query['pgsql'] = sprintf('CREATE TABLE %sblog ('."\n", $this->prefix);
-		$query['pgsql'] .= 'status smallint NOT NULL DEFAULT -2 '."\n";
-		$query['pgsql'] .= ')';
+        $table_name = $this->prefix . 'blog';
 
-		$query['mysql'] = sprintf('CREATE TABLE `%sblog` ('."\n", $this->prefix);
-		$query['mysql'] .= '`status` smallint NOT NULL DEFAULT -2 '."\n";
-		$query['mysql'] .= ') ENGINE=InnoDB CHARACTER SET utf8 COLLATE utf8_bin ';
+        $schema  = \dbSchema::init($con);
+        $columns = $schema->getColumns($table_name);
 
-		$query['mysqli'] = $query['mysql'];
+        $this
+            ->string($columns['status']['type'])
+            ->isIdenticalTo($result['status']['type'])
+            ->integer((int) $columns['status']['len']) // len can be null
+            ->isIdenticalTo($result['status']['len'])
+            ->boolean($columns['status']['null'])
+            ->isIdenticalTo($result['status']['null'])
+            ->variable($columns['status']['default'])
+            ->isNull($result['status']['default']);
+    }
 
-		return array(
-			array('pgsql', $query['pgsql']),
-			array('mysql', $query['mysql']),
-			array('mysqli', $query['mysqli'])
-		);
-	}
+    /*
+     * providers
+     **/
+    protected function testQueryForCreateTableDataProvider()
+    {
+        $query['pgsql'] = sprintf('CREATE TABLE "%sblog" (' . "\n", $this->prefix);
+        $query['pgsql'] .= 'status smallint NOT NULL DEFAULT -2 ' . "\n";
+        $query['pgsql'] .= ')';
 
-	protected function testQueryForRetrieveFieldsDataProvider() {
-		$query['pgsql'] = sprintf("SELECT column_name, udt_name, character_maximum_length, is_nullable, column_default FROM information_schema.columns WHERE table_name = '%sblog' ", $this->prefix);
+        $query['mysql'] = sprintf('CREATE TABLE `%sblog` (' . "\n", $this->prefix);
+        $query['mysql'] .= '`status` smallint NOT NULL DEFAULT -2 ' . "\n";
+        $query['mysql'] .= ') ENGINE=InnoDB CHARACTER SET utf8 COLLATE utf8_bin ';
 
-		$query['mysql'] = sprintf('SHOW COLUMNS FROM `%sblog`', $this->prefix);
+        $query['mysqli'] = $query['mysql'];
 
-		$query['mysqli'] = $query['mysql'];
+        $query['mysqlimb4'] = sprintf('CREATE TABLE `%sblog` (' . "\n", $this->prefix);
+        $query['mysqlimb4'] .= '`status` smallint NOT NULL DEFAULT -2 ' . "\n";
+        $query['mysqlimb4'] .= ') ENGINE=InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci';
 
-		return array(
-			array('pgsql', $query['pgsql']),
-			array('mysql', $query['mysql']),
-			array('mysqli', $query['mysqli'])
-		);
-	}
+        return array(
+            array('pgsql', $query['pgsql']),
+            array('mysql', $query['mysql']),
+            array('mysqli', $query['mysqli']),
+            array('mysqlimb4', $query['mysqlimb4']),
+        );
+    }
 
-	protected function testGetColumnsDataProvider() {
-		$row['pgsql'] = array(
-			'column_name' => 'status', 
-			'udt_name' => 'int2',
-			'is_nullable' => 'NO',
-			'column_default' => '(-2)',
-			'character_maximum_length' => null
-		);
-		$result['pgsql'] = array('status' => array(
-			'type' => 'int2', 
-			'len' => 0,
-			'null' => false,
-			'default' => '-2'
-		));
+    protected function testQueryForRetrieveFieldsDataProvider()
+    {
+        $query['pgsql'] = sprintf("SELECT column_name, udt_name, character_maximum_length, is_nullable, column_default FROM information_schema.columns WHERE table_name = '%sblog' ", $this->prefix);
 
-		$row['mysql'] = array(
-			'Field' => 'status', 
-			'Type' => 'smallint(6)',
-			'Null' => 'NO',
-			'Default' => '-2'
-		);
-		$result['mysql'] = array('status' => array(
-			'type' => 'smallint', 
-			'len' => 6,
-			'null' => false,
-			'default' => '-2'
-		));
+        $query['mysql'] = sprintf('SHOW COLUMNS FROM `%sblog`', $this->prefix);
 
-		$result['mysqli'] = $result['mysql'];
-		$row['mysqli'] = $row['mysql'];
+        $query['mysqli'] = $query['mysql'];
 
-		return array(
-			array('pgsql', $row['pgsql'], $result['pgsql']),
-			array('mysql', $row['mysql'], $result['mysql']),
-			array('mysqli', $row['mysqli'], $result['mysqli'])
-		);
-	}
+        $query['mysqlimb4'] = $query['mysql'];
 
-	protected function testDefaultNullMustBeNullNotStringDataProvider() {
-		$row['pgsql'] = array(
-			'column_name' => 'status', 
-			'udt_name' => 'int2',
-			'is_nullable' => 'NO',
-			'column_default' => 'NULL::character varying',
-			'character_maximum_length' => null
-		);
-		$result['pgsql'] = array('status' => array(
-			'type' => 'int2', 
-			'len' => 0,
-			'null' => false,
-			'default' => null
-		));
+        return array(
+            array('pgsql', $query['pgsql']),
+            array('mysql', $query['mysql']),
+            array('mysqli', $query['mysqli']),
+            array('mysqlimb4', $query['mysqlimb4']),
+        );
+    }
 
-		$row['mysql'] = array(
-			'Field' => 'status', 
-			'Type' => 'smallint(6)',
-			'Null' => 'NO',
-			'Default' => 'NULL'
-		);
-		$result['mysql'] = array('status' => array(
-			'type' => 'smallint', 
-			'len' => 6,
-			'null' => false,
-			'default' => null
-		));
+    protected function testGetColumnsDataProvider()
+    {
+        $row['pgsql'] = array(
+            'column_name'              => 'status',
+            'udt_name'                 => 'int2',
+            'is_nullable'              => 'NO',
+            'column_default'           => '(-2)',
+            'character_maximum_length' => null,
+        );
+        $result['pgsql'] = array('status' => array(
+            'type'    => 'int2',
+            'len'     => 0,
+            'null'    => false,
+            'default' => '-2',
+        ));
 
-		$result['mysqli'] = $result['mysql'];
-		$row['mysqli'] = $row['mysql'];
+        $row['mysql'] = array(
+            'Field'   => 'status',
+            'Type'    => 'smallint(6)',
+            'Null'    => 'NO',
+            'Default' => '-2',
+        );
+        $result['mysql'] = array('status' => array(
+            'type'    => 'smallint',
+            'len'     => 6,
+            'null'    => false,
+            'default' => '-2',
+        ));
 
-		return array(
-			array('pgsql', $row['pgsql'], $result['pgsql']),
-			array('mysql', $row['mysql'], $result['mysql']),
-			array('mysqli', $row['mysqli'], $result['mysqli'])
-		);
-	}
+        $result['mysqli'] = $result['mysql'];
+        $row['mysqli']    = $row['mysql'];
+
+        $result['mysqlimb4'] = $result['mysql'];
+        $row['mysqlimb4']    = $row['mysql'];
+
+        return array(
+            array('pgsql', $row['pgsql'], $result['pgsql']),
+            array('mysql', $row['mysql'], $result['mysql']),
+            array('mysqli', $row['mysqli'], $result['mysqli']),
+            array('mysqlimb4', $row['mysqlimb4'], $result['mysqlimb4']),
+        );
+    }
+
+    protected function testDefaultNullMustBeNullNotStringDataProvider()
+    {
+        $row['pgsql'] = array(
+            'column_name'              => 'status',
+            'udt_name'                 => 'int2',
+            'is_nullable'              => 'NO',
+            'column_default'           => 'NULL::character varying',
+            'character_maximum_length' => null,
+        );
+        $result['pgsql'] = array('status' => array(
+            'type'    => 'int2',
+            'len'     => 0,
+            'null'    => false,
+            'default' => null,
+        ));
+
+        $row['mysql'] = array(
+            'Field'   => 'status',
+            'Type'    => 'smallint(6)',
+            'Null'    => 'NO',
+            'Default' => 'NULL',
+        );
+        $result['mysql'] = array('status' => array(
+            'type'    => 'smallint',
+            'len'     => 6,
+            'null'    => false,
+            'default' => null,
+        ));
+
+        $result['mysqli'] = $result['mysql'];
+        $row['mysqli']    = $row['mysql'];
+
+        $result['mysqlimb4'] = $result['mysql'];
+        $row['mysqlimb4']    = $row['mysql'];
+
+        return array(
+            array('pgsql', $row['pgsql'], $result['pgsql']),
+            array('mysql', $row['mysql'], $result['mysql']),
+            array('mysqli', $row['mysqli'], $result['mysqli']),
+            array('mysqlimb4', $row['mysqlimb4'], $result['mysqlimb4']),
+        );
+    }
 }

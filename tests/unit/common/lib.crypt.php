@@ -12,9 +12,9 @@
 
 namespace tests\unit;
 
-require_once __DIR__.'/../bootstrap.php';
+require_once __DIR__ . '/../bootstrap.php';
 
-require_once CLEARBRICKS_PATH.'/common/lib.crypt.php';
+require_once str_replace('tests/unit/', '', __FILE__);
 
 use atoum;
 use Faker;
@@ -25,14 +25,15 @@ use Faker;
 class crypt extends atoum
 {
     const BIG_KEY_SIZE = 200;
-    const DATA_SIZE = 50;
+    const DATA_SIZE    = 50;
 
     private $big_key, $data;
 
-    public function setUp() {
-        $faker = Faker\Factory::create();
+    public function setUp()
+    {
+        $faker         = Faker\Factory::create();
         $this->big_key = $faker->text(self::BIG_KEY_SIZE);
-        $this->data = $faker->text(self::DATA_SIZE);
+        $this->data    = $faker->text(self::DATA_SIZE);
     }
 
     /**
@@ -58,7 +59,8 @@ class crypt extends atoum
     /**
      * hmac explicit SHA1 encryption
      */
-    public function testHMacSHA1Explicit() {
+    public function testHMacSHA1Explicit()
+    {
         $this
             ->string(\crypt::hmac($this->big_key, $this->data, 'sha1'))
             ->isIdenticalTo(hash_hmac('sha1', $this->data, $this->big_key));
@@ -67,7 +69,8 @@ class crypt extends atoum
     /**
      * hmac explict MD5 encryption
      */
-    public function testHMacMD5() {
+    public function testHMacMD5()
+    {
         $this
             ->string(\crypt::hmac($this->big_key, $this->data, 'md5'))
             ->isIdenticalTo(hash_hmac('md5', $this->data, $this->big_key));
@@ -76,7 +79,8 @@ class crypt extends atoum
     /**
      * If the encoder is not know, fallcak into sha1 encoder (if PHP hash_hmac() exists)
      */
-    public function testHMacFallback() {
+    public function testHMacFallback()
+    {
         $this
             ->string(\crypt::hmac($this->big_key, $this->data, 'dummyencoder'))
             ->isIdenticalTo(hash_hmac('sha1', $this->data, $this->big_key));
