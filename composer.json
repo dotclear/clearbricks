@@ -14,7 +14,8 @@
     },
     "require-dev": {
         "atoum/atoum": "dev-master",
-        "fzaninotto/faker": "dev-master"
+        "fzaninotto/faker": "dev-master",
+        "atoum/reports-extension": "dev-master"
     },
     "config": {
         "bin-dir": "bin/"

@@ -8,3 +8,4 @@ _dist
 # composer stuff
 vendor
 composer.phar
+coverage

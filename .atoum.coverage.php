@@ -1,17 +1,12 @@
 <?php
 
-use \mageekguy\atoum;
+use mageekguy\atoum\reports;
+use mageekguy\atoum\reports\coverage;
+use mageekguy\atoum\writers\std;
 
-// Write all on stdout.
-$stdOutWriter = new atoum\writers\std\out();
+$script->addDefaultReport();
 
-// Generate a CLI report.
-$cliReport = new atoum\reports\realtime\cli();
-$cliReport->addWriter($stdOutWriter);
-
-// Coverage
-$coverageField = new atoum\report\fields\runner\coverage\html('Clearbricks', '/var/www/coverage/clearbricks');
-$coverageField->setRootUrl('http://localhost/coverage/clearbricks');
-$cliReport->addField($coverageField);
-
-$runner->addReport($cliReport);
+$coverage = new coverage\html();
+$coverage->addWriter(new std\out());
+$coverage->setOutPutDirectory(__DIR__ . '/coverage/html');
+$runner->addReport($coverage);
