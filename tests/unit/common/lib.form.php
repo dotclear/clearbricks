@@ -14,7 +14,7 @@ namespace tests\unit;
 
 require_once __DIR__ . '/../bootstrap.php';
 
-require_once CLEARBRICKS_PATH . '/common/lib.form.php';
+require_once str_replace('tests/unit/', '', __FILE__);
 
 use atoum;
 
@@ -50,7 +50,7 @@ class form extends atoum
             ->match('/<option\svalue="one"\sselected="selected".*?<\/option>/');
 
         $this
-            ->string(\form::combo(array('aName','anID'), array()))
+            ->string(\form::combo(array('aName', 'anID'), array()))
             ->contains('name="aName"')
             ->contains('id="anID"');
 
@@ -61,10 +61,10 @@ class form extends atoum
             ->contains('</optgroup');
 
         $this
-        	->string(\form::combo('testID', array(), array(
-        			'tabindex' => 'atabindex',
-        			'disabled' => true
-        		)))
+            ->string(\form::combo('testID', array(), array(
+                'tabindex' => 'atabindex',
+                'disabled' => true,
+            )))
             ->contains('tabindex="atabindex"')
             ->contains('disabled="disabled"');
     }
@@ -94,10 +94,10 @@ class form extends atoum
             ->notContains('disabled');
 
         $this
-        	->string(\form::radio('testID', 'testvalue', array(
-        			'tabindex' => 'atabindex',
-        			'disabled' => true
-        		)))
+            ->string(\form::radio('testID', 'testvalue', array(
+                'tabindex' => 'atabindex',
+                'disabled' => true,
+            )))
             ->contains('tabindex="atabindex"')
             ->contains('disabled="disabled"');
     }
@@ -127,10 +127,10 @@ class form extends atoum
             ->notContains('disabled');
 
         $this
-        	->string(\form::checkbox('testID', 'testvalue', array(
-        			'tabindex' => 'atabindex',
-        			'disabled' => true
-        		)))
+            ->string(\form::checkbox('testID', 'testvalue', array(
+                'tabindex' => 'atabindex',
+                'disabled' => true,
+            )))
             ->contains('tabindex="atabindex"')
             ->contains('disabled="disabled"');
     }
@@ -161,10 +161,10 @@ class form extends atoum
             ->notContains('disabled');
 
         $this
-        	->string(\form::field('testID', 10, 20, array(
-        			'tabindex' => 'atabindex',
-        			'disabled' => true
-        		)))
+            ->string(\form::field('testID', 10, 20, array(
+                'tabindex' => 'atabindex',
+                'disabled' => true,
+            )))
             ->contains('tabindex="atabindex"')
             ->contains('disabled="disabled"');
     }
@@ -195,19 +195,19 @@ class form extends atoum
             ->notContains('disabled');
 
         $this
-        	->string(\form::password('testID', 10, 20, array(
-        			'tabindex' => 'atabindex',
-        			'disabled' => true
-        		)))
+            ->string(\form::password('testID', 10, 20, array(
+                'tabindex' => 'atabindex',
+                'disabled' => true,
+            )))
             ->contains('tabindex="atabindex"')
             ->contains('disabled="disabled"');
     }
 
-	/**
-	 * Create a color input field
-	 */
-	public function testColor()
-	{
+    /**
+     * Create a color input field
+     */
+    public function testColor()
+    {
         $this
             ->string(\form::color('testID', 10, 20, '#f369a3', 'aclassname', 'atabindex', true, 'data-test="A test"', true))
             ->contains('type="color"')
@@ -232,21 +232,21 @@ class form extends atoum
             ->notContains('disabled');
 
         $this
-        	->string(\form::color('testID', array(
-        			'tabindex' => 'atabindex',
-        			'disabled' => true
-        		)))
-        	->contains('size="7"')
-        	->contains('maxlength="7"')
+            ->string(\form::color('testID', array(
+                'tabindex' => 'atabindex',
+                'disabled' => true,
+            )))
+            ->contains('size="7"')
+            ->contains('maxlength="7"')
             ->contains('tabindex="atabindex"')
             ->contains('disabled="disabled"');
-	}
+    }
 
-	/**
-	 * Create an email input field
-	 */
-	public function testEmail()
-	{
+    /**
+     * Create an email input field
+     */
+    public function testEmail()
+    {
         $this
             ->string(\form::email('testID', 10, 20, 'me@example.com', 'aclassname', 'atabindex', true, 'data-test="A test"', true))
             ->contains('type="email"')
@@ -271,19 +271,19 @@ class form extends atoum
             ->notContains('disabled');
 
         $this
-        	->string(\form::email('testID', array(
-        			'tabindex' => 'atabindex',
-        			'disabled' => true
-        		)))
+            ->string(\form::email('testID', array(
+                'tabindex' => 'atabindex',
+                'disabled' => true,
+            )))
             ->contains('tabindex="atabindex"')
             ->contains('disabled="disabled"');
-	}
+    }
 
-	/**
-	 * Create an URL input field
-	 */
-	public function testUrl()
-	{
+    /**
+     * Create an URL input field
+     */
+    public function testUrl()
+    {
         $this
             ->string(\form::url('testID', 10, 20, 'https://example.com/', 'aclassname', 'atabindex', true, 'data-test="A test"', true))
             ->contains('type="url"')
@@ -308,19 +308,19 @@ class form extends atoum
             ->notContains('disabled');
 
         $this
-        	->string(\form::url('testID', array(
-        			'tabindex' => 'atabindex',
-        			'disabled' => true
-        		)))
+            ->string(\form::url('testID', array(
+                'tabindex' => 'atabindex',
+                'disabled' => true,
+            )))
             ->contains('tabindex="atabindex"')
             ->contains('disabled="disabled"');
-	}
+    }
 
-	/**
-	 * Create a datetime (local) input field
-	 */
-	public function testDatetime()
-	{
+    /**
+     * Create a datetime (local) input field
+     */
+    public function testDatetime()
+    {
         $this
             ->string(\form::datetime('testID', 10, 20, '1962-05-13T02:15', 'aclassname', 'atabindex', true, 'data-test="A test"', true))
             ->contains('type="datetime-local"')
@@ -347,19 +347,19 @@ class form extends atoum
             ->notContains('disabled');
 
         $this
-        	->string(\form::url('testID', array(
-        			'tabindex' => 'atabindex',
-        			'disabled' => true
-        		)))
+            ->string(\form::url('testID', array(
+                'tabindex' => 'atabindex',
+                'disabled' => true,
+            )))
             ->contains('tabindex="atabindex"')
             ->contains('disabled="disabled"');
-	}
+    }
 
-	/**
-	 * Create a date input field
-	 */
-	public function testDate()
-	{
+    /**
+     * Create a date input field
+     */
+    public function testDate()
+    {
         $this
             ->string(\form::date('testID', 10, 20, '1962-05-13', 'aclassname', 'atabindex', true, 'data-test="A test"', true))
             ->contains('type="date"')
@@ -386,19 +386,19 @@ class form extends atoum
             ->notContains('disabled');
 
         $this
-        	->string(\form::date('testID', array(
-        			'tabindex' => 'atabindex',
-        			'disabled' => true
-        		)))
+            ->string(\form::date('testID', array(
+                'tabindex' => 'atabindex',
+                'disabled' => true,
+            )))
             ->contains('tabindex="atabindex"')
             ->contains('disabled="disabled"');
-	}
+    }
 
-	/**
-	 * Create a datetime (local) input field
-	 */
-	public function testTime()
-	{
+    /**
+     * Create a datetime (local) input field
+     */
+    public function testTime()
+    {
         $this
             ->string(\form::time('testID', 10, 20, '02:15', 'aclassname', 'atabindex', true, 'data-test="A test"', true))
             ->contains('type="time"')
@@ -425,19 +425,19 @@ class form extends atoum
             ->notContains('disabled');
 
         $this
-        	->string(\form::time('testID', array(
-        			'tabindex' => 'atabindex',
-        			'disabled' => true
-        		)))
+            ->string(\form::time('testID', array(
+                'tabindex' => 'atabindex',
+                'disabled' => true,
+            )))
             ->contains('tabindex="atabindex"')
             ->contains('disabled="disabled"');
-	}
+    }
 
-	/**
-	 * Create a file input field
-	 */
-	public function testFile()
-	{
+    /**
+     * Create a file input field
+     */
+    public function testFile()
+    {
         $this
             ->string(\form::file('testID', 'filename.ext', 'aclassname', 'atabindex', true, 'data-test="A test"', true))
             ->contains('type="file"')
@@ -460,13 +460,13 @@ class form extends atoum
             ->notContains('disabled');
 
         $this
-        	->string(\form::file('testID', array(
-        			'tabindex' => 'atabindex',
-        			'disabled' => true
-        		)))
+            ->string(\form::file('testID', array(
+                'tabindex' => 'atabindex',
+                'disabled' => true,
+            )))
             ->contains('tabindex="atabindex"')
             ->contains('disabled="disabled"');
-	}
+    }
 
     public function testNumber()
     {
@@ -494,10 +494,10 @@ class form extends atoum
             ->notContains('disabled');
 
         $this
-        	->string(\form::number('testID', array(
-        			'tabindex' => 'atabindex',
-        			'disabled' => true
-        		)))
+            ->string(\form::number('testID', array(
+                'tabindex' => 'atabindex',
+                'disabled' => true,
+            )))
             ->notContains('min=')
             ->notContains('max=')
             ->contains('tabindex="atabindex"')
@@ -529,10 +529,10 @@ class form extends atoum
             ->notContains('disabled');
 
         $this
-        	->string(\form::textArea('testID', 10, 20, array(
-        			'tabindex' => 'atabindex',
-        			'disabled' => true
-        		)))
+            ->string(\form::textArea('testID', 10, 20, array(
+                'tabindex' => 'atabindex',
+                'disabled' => true,
+            )))
             ->contains('tabindex="atabindex"')
             ->contains('disabled="disabled"');
     }
@@ -552,4 +552,3 @@ class form extends atoum
             ->contains('id="testID"');
     }
 }
-
