@@ -29,8 +29,10 @@ class crypt extends atoum
 
     private $big_key, $data;
 
-    public function setUp()
+    public function __construct()
     {
+        parent::__construct();
+
         $faker         = Faker\Factory::create();
         $this->big_key = $faker->text(self::BIG_KEY_SIZE);
         $this->data    = $faker->text(self::DATA_SIZE);
@@ -67,7 +69,7 @@ class crypt extends atoum
     }
 
     /**
-     * hmac explict MD5 encryption
+     * hmac explicit MD5 encryption
      */
     public function testHMacMD5()
     {
@@ -77,13 +79,33 @@ class crypt extends atoum
     }
 
     /**
-     * If the encoder is not know, fallcak into sha1 encoder (if PHP hash_hmac() exists)
+     * If the encoder is not known, fallback into sha1 encoder (if PHP hash_hmac() exists)
      */
     public function testHMacFallback()
     {
         $this
             ->string(\crypt::hmac($this->big_key, $this->data, 'dummyencoder'))
             ->isIdenticalTo(hash_hmac('sha1', $this->data, $this->big_key));
+    }
+
+    /**
+     * hmac_legacy explicit MD5 encryption
+     */
+    public function testHMacLegacy()
+    {
+        $this
+            ->string(\crypt::hmac_legacy($this->big_key, $this->data, 'md5'))
+            ->isIdenticalTo(hash_hmac('md5', $this->data, $this->big_key));
+    }
+
+    /**
+     * If the encoder is not known, fallback into sha1 encoder (if PHP hash_hmac() exists)
+     */
+    public function testHMacLegacyFallback()
+    {
+        $this
+            ->string(\crypt::hmac_legacy($this->big_key, $this->data, 'dummyencoder'))
+            ->isIdenticalTo(hash_hmac('md5', $this->data, $this->big_key));
     }
 
     /**
