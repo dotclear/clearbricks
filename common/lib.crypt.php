@@ -39,6 +39,11 @@ class crypt
             return hash_hmac($hashfunc, $data, $key);
         }
 
+        return self::hmac_legacy($key, $data, $hashfunc);
+    }
+
+    public static function hmac_legacy($key, $data, $hashfunc = 'sha1')
+    {
         // Legacy way
         if ($hashfunc != 'sha1') {
             $hashfunc = 'md5';
