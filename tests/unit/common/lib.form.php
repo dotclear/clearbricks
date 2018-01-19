@@ -18,6 +18,42 @@ require_once str_replace('tests/unit/', '', __FILE__);
 
 use atoum;
 
+class formSelectOption extends atoum
+{
+
+	public function testOption()
+	{
+		$option = new \formSelectOption('un',1,'classme','data-test="This Is A Test"');
+
+		$this
+			->string($option->render(0))
+			->match('/<option.*?<\/option>/')
+			->match('/<option\svalue="1".*?>un<\/option>/');
+
+		$this
+			->string($option->render(1))
+			->match('/<option.*?<\/option>/')
+			->match('/<option.*?value="1".*?>un<\/option>/')
+			->match('/<option.*?selected="selected".*?>un<\/option>/');
+	}
+
+	public function testOptionOpt()
+	{
+		$option = new \formSelectOption('deux',2);
+
+		$this
+			->string($option->render(0))
+			->match('/<option.*?<\/option>/')
+			->match('/<option\svalue="2".*?>deux<\/option>/');
+
+		$this
+			->string($option->render(2))
+			->match('/<option.*?<\/option>/')
+			->match('/<option.*?value="2".*?>deux<\/option>/')
+			->match('/<option.*?selected="selected".*?>deux<\/option>/');
+	}
+}
+
 /**
  * Test the form class.
  * formSelectOptions is implicitly tested with testCombo

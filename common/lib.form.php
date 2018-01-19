@@ -655,7 +655,7 @@ class formSelectOption
      */
     public function render($default)
     {
-        $attr = $this->html;
+        $attr = $this->html ? ' ' . $this->html : '';
         $attr .= $this->class_name ? ' class="' . $this->class_name . '"' : '';
 
         if ($this->value == $default) {

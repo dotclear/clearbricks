@@ -74,7 +74,7 @@ And now can run tests:
 $ ./bin/atoum
 ```
 
-Add ```-epbc``` option to enable path and branch coverage
+Add ```-ebpc``` option to enable path and branch coverage (this option requires xDebug 2.3+)
 
 You can also get code coverage report (in `coverage/html`) for tests by runing:
 
