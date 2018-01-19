@@ -89,13 +89,33 @@ class crypt extends atoum
     }
 
     /**
-     * hmac_legacy explicit MD5 encryption
+     * hmac_legacy implicit
      */
     public function testHMacLegacy()
     {
         $this
+            ->string(\crypt::hmac_legacy($this->big_key, $this->data))
+            ->isIdenticalTo(hash_hmac('sha1', $this->data, $this->big_key));
+    }
+
+    /**
+     * hmac_legacy explicit MD5 encryption
+     */
+    public function testHMacLegacyMD5()
+    {
+        $this
             ->string(\crypt::hmac_legacy($this->big_key, $this->data, 'md5'))
             ->isIdenticalTo(hash_hmac('md5', $this->data, $this->big_key));
+    }
+
+    /**
+     * hmac_legacy explicit Sha1 encryption
+     */
+    public function testHMacLegacySha1()
+    {
+        $this
+            ->string(\crypt::hmac_legacy($this->big_key, $this->data, 'sha1'))
+            ->isIdenticalTo(hash_hmac('sha1', $this->data, $this->big_key));
     }
 
     /**
