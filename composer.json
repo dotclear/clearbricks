@@ -1,7 +1,7 @@
 {
     "name": "dotclear/clearbricks",
     "description": "Clearbricks is not yet another framework.",
-    "license": "GPL-V2",
+    "license": "GPL-2.0-or-later",
     "authors": [
         {
             "name": "Dotclear Team",
