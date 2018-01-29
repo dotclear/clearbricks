@@ -33,7 +33,7 @@ class htmlFilter
      *
      * Creates a new instance of the class.
      */
-    public function __construct()
+    public function __construct($keep_aria = false, $keep_data = false)
     {
         $this->parser = xml_parser_create('UTF-8');
         xml_set_object($this->parser, $this);
@@ -66,11 +66,13 @@ class htmlFilter
         // Remove events attributes
         $this->removeArrayAttributes($this->event_attrs);
 
-        // Remove aria-* and data-* attributes as tidy extension does also it (still not ready for HTML5)
-        $this->removePatternAttributes(
-            '^aria-[\-\w]+$',
-            '^data-[\-\w].*$'
-        );
+        // Remove aria-* and data-* attributes if necessary (tidy extension does it, not ready for HTML5)
+        if (!$keep_aria) {
+            $this->removePatternAttributes('^aria-[\-\w]+$');
+        }
+        if (!$keep_data) {
+            $this->removePatternAttributes('^data-[\-\w].*$');
+        }
     }
 
     /**
