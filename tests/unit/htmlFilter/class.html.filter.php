@@ -39,6 +39,7 @@ class htmlFilter extends atoum
 <p>Hello</p>
 <div aria-role="navigation">
  <p data-customattribute="will be an error">bla</p>
+ <img src="/public/sample.jpg" />
  <p>bla</p>
 </div>
 <div>
@@ -52,6 +53,7 @@ EODTIDY;
 <p>Hello</p>
 <div>
 <p>bla</p>
+<img src="/public/sample.jpg" />
 <p>bla</p>
 </div>
 <div>
@@ -81,6 +83,41 @@ EODTIDYV;
             ->isIdenticalTo('<p>test');
     }
 
+    public function testSimpleAttr()
+    {
+        $filter = new \htmlFilter();
+        $filter->removeAttributes('id');
+
+        $this->string($filter->apply('<p id="para">test</I>', false))
+            ->isIdenticalTo('<p>test');
+    }
+
+    public function testSimpleTagAttr()
+    {
+        $filter = new \htmlFilter();
+        $filter->removeTagAttributes('p','id');
+
+        $this->string($filter->apply('<p id="para">test<span id="sp">x</span></I>', false))
+            ->isIdenticalTo('<p>test<span id="sp">x</span>');
+    }
+
+    public function testSimpleURI()
+    {
+        $filter = new \htmlFilter();
+
+        $this->string($filter->apply('<img src="ssh://localhost/sample.jpg" />', false))
+            ->isIdenticalTo('<img src="#" />');
+    }
+
+    public function testSimpleOwnTags()
+    {
+        $filter = new \htmlFilter();
+        $filter->setTags(array('span' => array()));
+
+        $this->string($filter->apply('<p id="para">test<span id="sp">x</span></I>', false))
+            ->isIdenticalTo('test<span id="sp">x</span>');
+    }
+
     public function testComplex()
     {
         $filter = new \htmlFilter();
@@ -88,6 +125,7 @@ EODTIDYV;
 <p>Hello</p>
 <div aria-role="navigation">
  <p data-customattribute="will be an error">bla</p>
+ <img src="/public/sample.jpg" />
  <p>bla</p>
 </div>
 <div>
@@ -101,6 +139,7 @@ EOD;
 <p>Hello</p>
 <div>
  <p>bla</p>
+ <img src="/public/sample.jpg" />
  <p>bla</p>
 </div>
 <div>
@@ -108,6 +147,39 @@ EOD;
  <div>
   <p>Opps, a mistake
 EODV;
+        $this->string($filter->apply($str, false))
+            ->isIdenticalTo($validStr);
+    }
+
+    public function testComplexWithAria()
+    {
+        $filter = new \htmlFilter(true);
+        $str    = <<<EODA
+<p>Hello</p>
+<div aria-role="navigation">
+ <p data-customattribute="will be an error">bla</p>
+ <img src="/public/sample.jpg" />
+ <p>bla</p>
+</div>
+<div>
+ <p>Hi there!</p>
+ <div>
+  <p>Opps, a mistake</px>
+ </div>
+</div>
+EODA;
+        $validStr = <<<EODVA
+<p>Hello</p>
+<div aria-role="navigation">
+ <p>bla</p>
+ <img src="/public/sample.jpg" />
+ <p>bla</p>
+</div>
+<div>
+ <p>Hi there!</p>
+ <div>
+  <p>Opps, a mistake
+EODVA;
         $this->string($filter->apply($str, false))
             ->isIdenticalTo($validStr);
     }
