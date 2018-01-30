@@ -100,6 +100,8 @@ class html extends atoum
 
     public function testAbsoluteURLs()
     {
+        \html::$absolute_regs[] = '/(<param\s+name="movie"\s+value=")(.*?)(")/msu';
+
         $this
             ->string(\html::absoluteURLs('<a href="/best-blog-engine-ever/">Clickme</a>', 'http://dotclear.org/'))
             ->isEqualTo('<a href="http://dotclear.org/best-blog-engine-ever/">Clickme</a>');
@@ -108,5 +110,20 @@ class html extends atoum
             ->string(\html::absoluteURLs('<a href="best-blog-engine-ever/">Clickme</a>', 'http://dotclear.org/'))
             ->isEqualTo('<a href="http://dotclear.org/best-blog-engine-ever/">Clickme</a>');
 
+        $this
+            ->string(\html::absoluteURLs('<a href="#anchor">Clickme</a>', 'http://dotclear.org/'))
+            ->isEqualTo('<a href="http://dotclear.org/#anchor">Clickme</a>');
+
+        $this
+            ->string(\html::absoluteURLs('<a href="index.php">Clickme</a>', '/'))
+            ->isEqualTo('<a href="/index.php">Clickme</a>');
+
+        $this
+            ->string(\html::absoluteURLs('<a href="lib">Clickme</a>', '/var/tmp'))
+            ->isEqualTo('<a href="/var/lib">Clickme</a>');
+
+        $this
+            ->string(\html::absoluteURLs('<param name="movie" value="my-movie.flv" />', 'http://dotclear.org/'))
+            ->isEqualTo('<param name="movie" value="http://dotclear.org/my-movie.flv" />');
     }
 }
