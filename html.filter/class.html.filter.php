@@ -33,7 +33,7 @@ class htmlFilter
      *
      * Creates a new instance of the class.
      */
-    public function __construct($keep_aria = false, $keep_data = false)
+    public function __construct($keep_aria = false, $keep_data = false, $keep_js = false)
     {
         $this->parser = xml_parser_create('UTF-8');
         xml_set_object($this->parser, $this);
@@ -60,18 +60,43 @@ class htmlFilter
             'meta',
             'noframes',
             'script',
+            'noscript',
             'style'
         );
-
-        // Remove events attributes
-        $this->removeArrayAttributes($this->event_attrs);
 
         // Remove aria-* and data-* attributes if necessary (tidy extension does it, not ready for HTML5)
         if (!$keep_aria) {
             $this->removePatternAttributes('^aria-[\-\w]+$');
+            $this->removeAttributes('role');
         }
         if (!$keep_data) {
             $this->removePatternAttributes('^data-[\-\w].*$');
+        }
+
+        if (!$keep_js) {
+            // Remove events attributes
+            $this->removeArrayAttributes($this->event_attrs);
+            // Remove inline JS in URI
+            $this->removeHosts('javascript');
+        }
+    }
+
+    /**
+     * Append hosts
+     *
+     * Appends hosts to remove from URI. Each method argument is a host. Example:
+     *
+     * <code>
+     * <?php
+     * $filter = new htmlFilter();
+     * $filter->removeHosts('javascript');
+     * ?>
+     * </code>
+     */
+    public function removeHosts()
+    {
+        foreach ($this->argsArray(func_get_args()) as $host) {
+            $this->removed_hosts[] = $host;
         }
     }
 
@@ -332,10 +357,18 @@ class htmlFilter
 
     private function getURI($uri)
     {
-        $u = @parse_url($uri);
+        // Trim URI
+        $uri = trim($uri);
+        // Remove escaped Unicode characters
+        $uri = preg_replace('/\\\u[a-fA-F0-9]{4}/', '', $uri);
+        // Sanitize and parse URL
+        $uri = filter_var($uri, FILTER_SANITIZE_URL);
+        $u   = @parse_url($uri);
 
         if (is_array($u) && (empty($u['scheme']) || in_array($u['scheme'], $this->allowed_schemes))) {
-            return $uri;
+            if (empty($u['host']) || (!in_array($u['host'], $this->removed_hosts))) {
+                return $uri;
+            }
         }
 
         return '#';
@@ -391,9 +424,15 @@ class htmlFilter
     private $removed_attrs         = array();
     private $removed_pattern_attrs = array();
     private $removed_tag_attrs     = array();
+    private $removed_hosts         = array();
 
     private $allowed_schemes = array(
-        'http', 'https', 'ftp', 'mailto', 'news'
+        'data',
+        'http',
+        'https',
+        'ftp',
+        'mailto',
+        'news'
     );
 
     // List of attributes which allow URL value
@@ -431,6 +470,7 @@ class htmlFilter
         'itemscope',
         'itemtype',
         'lang',
+        'role',
         'slot',
         'spellcheck',
         'style',
