@@ -38,6 +38,7 @@ class htmlFilter extends atoum
         $str    = <<<EODTIDY
 <p>Hello</p>
 <div aria-role="navigation">
+ <a href="javascript:alert('bouh!')">Bouh</a>
  <p data-customattribute="will be an error">bla</p>
  <img src="/public/sample.jpg" />
  <p>bla</p>
@@ -51,7 +52,7 @@ class htmlFilter extends atoum
 EODTIDY;
         $validStr = <<<EODTIDYV
 <p>Hello</p>
-<div>
+<div><a href="#">Bouh</a>
 <p>bla</p>
 <img src="/public/sample.jpg" />
 <p>bla</p>
@@ -95,7 +96,7 @@ EODTIDYV;
     public function testSimpleTagAttr()
     {
         $filter = new \htmlFilter();
-        $filter->removeTagAttributes('p','id');
+        $filter->removeTagAttributes('p', 'id');
 
         $this->string($filter->apply('<p id="para">test<span id="sp">x</span></I>', false))
             ->isIdenticalTo('<p>test<span id="sp">x</span>');
@@ -116,6 +117,24 @@ EODTIDYV;
 
         $this->string($filter->apply('<p id="para">test<span id="sp">x</span></I>', false))
             ->isIdenticalTo('test<span id="sp">x</span>');
+    }
+
+    public function testRemovedAttr()
+    {
+        $filter = new \htmlFilter();
+        $filter->removeTagAttributes('a', array('href'));
+
+        $this->string($filter->apply('<a href="#" title="test" target="#">test</a>', false))
+            ->isIdenticalTo('<a title="test" target="#">test</a>');
+    }
+
+    public function testRemovedAttrs()
+    {
+        $filter = new \htmlFilter();
+        $filter->removeTagAttributes('a', array('target', 'href'));
+
+        $this->string($filter->apply('<a href="#" title="test" target="#">test</a>', false))
+            ->isIdenticalTo('<a title="test">test</a>');
     }
 
     public function testComplex()
@@ -198,5 +217,22 @@ EODVA;
 
         $this->string($filter->apply('<a accesskey="x">test</a>', false))
             ->isIdenticalTo('<a accesskey="x">test</a>');
+    }
+
+    /**
+     * @dataProvider testAllDataProvider
+     */
+    protected function testAllDataProvider()
+    {
+        require_once __DIR__ . '/../fixtures/data/class.html.filter.php';
+        return array_values($dataTest);
+    }
+
+    public function testAll($title, $payload, $expected)
+    {
+        $filter = new \htmlFilter(true, true);
+
+        $this->string($result = $filter->apply($payload, false))
+            ->isIdenticalTo($expected);
     }
 }
