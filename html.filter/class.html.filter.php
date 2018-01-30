@@ -478,7 +478,7 @@ class htmlFilter
         'title',
         'translate',
         'xml:lang',
-        'wml:base');
+        'xml:base');
 
     // List of events attributes
     private $event_attrs = array(
