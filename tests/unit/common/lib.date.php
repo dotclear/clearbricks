@@ -147,6 +147,11 @@ class dt extends atoum
         $this
             ->integer(\dt::addTimeZone('Indian/Reunion', 0))
             ->isEqualTo(4 * 3600);
+
+        \dt::setTZ('UTC');
+        $this
+            ->integer(\dt::addTimeZone('Indian/Reunion') - time() - \dt::getTimeOffset('Indian/Reunion'))
+            ->isEqualTo(0);
     }
 
     /*
@@ -164,5 +169,41 @@ class dt extends atoum
         $this
             ->string($tzs['Europe/Paris'])
             ->isEqualTo('Europe/Paris');
+    }
+
+    public function testGetZonesFlip()
+    {
+        $tzs = \dt::getZones(true, false);
+
+        $this
+            ->array($tzs)
+            ->isNotNull();
+
+        $this
+            ->string($tzs['Europe/Paris'])
+            ->isEqualTo('Europe/Paris');
+    }
+
+    public function testGetZonesGroup()
+    {
+        $tzs = \dt::getZones(true, true);
+
+        $this
+            ->array($tzs)
+            ->isNotNull();
+
+        $this
+            ->array($tzs['Europe'])
+            ->isNotNull()
+            ->string($tzs['Europe']['Europe/Paris'])
+            ->isEqualTo('Europe/Paris');
+    }
+
+    public function testStr()
+    {
+        \dt::setTZ('UTC');
+        $this
+            ->string(\dt::str("%a %A %b %B", 1))
+            ->isEqualTo('_Thu Thursday _Jan January');
     }
 }

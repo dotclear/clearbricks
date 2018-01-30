@@ -477,8 +477,8 @@ class htmlFilter
         'tabindex',
         'title',
         'translate',
-        'xml:lang',
-        'xml:base');
+        'xml:base',
+        'xml:lang');
 
     // List of events attributes
     private $event_attrs = array(
