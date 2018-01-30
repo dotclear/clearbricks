@@ -197,21 +197,22 @@ class form
      * $nid could be a string or an array of name and ID.
      * $default could be a string or an associative array of any of optional parameters
      *
-     * @param string|array  $nid         Element ID and name
-     * @param integer       $size        Element size
-     * @param integer       $max         Element maxlength
-     * @param string|array  $default     Element value | associative array of optional parameters
-     * @param string        $class       Element class name
-     * @param string        $tabindex    Element tabindex
-     * @param boolean       $disabled    True if disabled
-     * @param string        $extra_html  Extra HTML attributes
-     * @param boolean       $required    Element is required
-     * @param string         $type          Input type
+     * @param string|array  $nid          Element ID and name
+     * @param integer       $size         Element size
+     * @param integer       $max          Element maxlength
+     * @param string|array  $default      Element value | associative array of optional parameters
+     * @param string        $class        Element class name
+     * @param string        $tabindex     Element tabindex
+     * @param boolean       $disabled     True if disabled
+     * @param string        $extra_html   Extra HTML attributes
+     * @param boolean       $required     Element is required
+     * @param string        $type         Input type
+     * @param string        $autocomplete Autocomplete attributes if relevant
      *
      * @return string
      */
     public static function field($nid, $size, $max, $default = '', $class = '', $tabindex = '',
-        $disabled = false, $extra_html = '', $required = false, $type = 'text') {
+        $disabled = false, $extra_html = '', $required = false, $type = 'text', $autocomplete = '') {
 
         self::getNameAndId($nid, $name, $id);
         if (func_num_args() > 3 && is_array($default)) {
@@ -229,6 +230,7 @@ class form
             ($tabindex ? 'tabindex="' . $tabindex . '" ' : '') .
             ($disabled ? 'disabled="disabled" ' : '') .
             ($required ? 'required ' : '') .
+            ($autocomplete ? 'autocomplete="' . $autocomplete . '" ' : '') .
             $extra_html .
 
             ' />' . "\n";
@@ -250,18 +252,20 @@ class form
      * @param boolean       $disabled    True if disabled
      * @param string        $extra_html  Extra HTML attributes
      * @param boolean       $required    Element is required
+     * @param string        $autocomplete Autocomplete attributes if relevant (new-password/current-password)
      *
      * @return string
      */
     public static function password($nid, $size, $max, $default = '', $class = '', $tabindex = '',
-        $disabled = false, $extra_html = '', $required = false) {
+        $disabled = false, $extra_html = '', $required = false, $autocomplete = '') {
 
         if (func_num_args() > 3 && is_array($default)) {
             // Cope with associative array of optional parameters
             $options = self::getDefaults(__CLASS__, __FUNCTION__);
             extract(array_merge($options, array_intersect_key($default, $options)));
         }
-        return self::field($nid, $size, $max, $default, $class, $tabindex, $disabled, $extra_html, $required, 'password');
+        return self::field($nid, $size, $max, $default, $class, $tabindex, $disabled, $extra_html,
+            $required, 'password', $autocomplete);
     }
 
     /**
@@ -301,27 +305,29 @@ class form
      * $nid could be a string or an array of name and ID.
      * $size could be a integer or an associative array of any of optional parameters
      *
-     * @param string|array   $nid         Element ID and name
-     * @param integer|array  $size        Element size | associative array of optional parameters
-     * @param integer        $max         Element maxlength
-     * @param string         $default     Element value
-     * @param string         $class       Element class name
-     * @param string         $tabindex    Element tabindex
-     * @param boolean        $disabled    True if disabled
-     * @param string         $extra_html  Extra HTML attributes
-     * @param boolean        $required    Element is required
+     * @param string|array   $nid          Element ID and name
+     * @param integer|array  $size         Element size | associative array of optional parameters
+     * @param integer        $max          Element maxlength
+     * @param string         $default      Element value
+     * @param string         $class        Element class name
+     * @param string         $tabindex     Element tabindex
+     * @param boolean        $disabled     True if disabled
+     * @param string         $extra_html   Extra HTML attributes
+     * @param boolean        $required     Element is required
+     * @param string         $autocomplete Autocomplete attributes if relevant
      *
      * @return string
      */
     public static function email($nid, $size = 20, $max = 255, $default = '', $class = '', $tabindex = '',
-        $disabled = false, $extra_html = '', $required = false) {
+        $disabled = false, $extra_html = '', $required = false, $autocomplete = '') {
 
         if (func_num_args() > 1 && is_array($size)) {
             // Cope with associative array of optional parameters
             $options = self::getDefaults(__CLASS__, __FUNCTION__);
             extract(array_merge($options, array_intersect_key($size, $options)));
         }
-        return self::field($nid, $size, $max, $default, $class, $tabindex, $disabled, $extra_html, $required, 'email');
+        return self::field($nid, $size, $max, $default, $class, $tabindex, $disabled, $extra_html,
+            $required, 'email', $autocomplete);
     }
 
     /**
@@ -331,27 +337,29 @@ class form
      * $nid could be a string or an array of name and ID.
      * $size could be a integer or an associative array of any of optional parameters
      *
-     * @param string|array   $nid         Element ID and name
-     * @param integer|array  $size        Element size | associative array of optional parameters
-     * @param integer        $max         Element maxlength
-     * @param string         $default     Element value
-     * @param string         $class       Element class name
-     * @param string         $tabindex    Element tabindex
-     * @param boolean        $disabled    True if disabled
-     * @param string         $extra_html  Extra HTML attributes
-     * @param boolean        $required    Element is required
+     * @param string|array   $nid          Element ID and name
+     * @param integer|array  $size         Element size | associative array of optional parameters
+     * @param integer        $max          Element maxlength
+     * @param string         $default      Element value
+     * @param string         $class        Element class name
+     * @param string         $tabindex     Element tabindex
+     * @param boolean        $disabled     True if disabled
+     * @param string         $extra_html   Extra HTML attributes
+     * @param boolean        $required     Element is required
+     * @param string         $autocomplete Autocomplete attributes if relevant
      *
      * @return string
      */
     public static function url($nid, $size = 20, $max = 255, $default = '', $class = '', $tabindex = '',
-        $disabled = false, $extra_html = '', $required = false) {
+        $disabled = false, $extra_html = '', $required = false, $autocomplete = '') {
 
         if (func_num_args() > 1 && is_array($size)) {
             // Cope with associative array of optional parameters
             $options = self::getDefaults(__CLASS__, __FUNCTION__);
             extract(array_merge($options, array_intersect_key($size, $options)));
         }
-        return self::field($nid, $size, $max, $default, $class, $tabindex, $disabled, $extra_html, $required, 'url');
+        return self::field($nid, $size, $max, $default, $class, $tabindex, $disabled, $extra_html,
+            $required, 'url', $autocomplete);
     }
 
     /**
@@ -361,20 +369,21 @@ class form
      * $nid could be a string or an array of name and ID.
      * $size could be a integer or an associative array of any of optional parameters
      *
-     * @param string|array   $nid         Element ID and name
-     * @param integer|array  $size        Element size | associative array of optional parameters
-     * @param integer        $max         Element maxlength
-     * @param string         $default     Element value (in YYYY-MM-DDThh:mm format)
-     * @param string         $class       Element class name
-     * @param string         $tabindex    Element tabindex
-     * @param boolean        $disabled    True if disabled
-     * @param string         $extra_html  Extra HTML attributes
-     * @param boolean        $required    Element is required
+     * @param string|array   $nid          Element ID and name
+     * @param integer|array  $size         Element size | associative array of optional parameters
+     * @param integer        $max          Element maxlength
+     * @param string         $default      Element value (in YYYY-MM-DDThh:mm format)
+     * @param string         $class        Element class name
+     * @param string         $tabindex     Element tabindex
+     * @param boolean        $disabled     True if disabled
+     * @param string         $extra_html   Extra HTML attributes
+     * @param boolean        $required     Element is required
+     * @param string         $autocomplete Autocomplete attributes if relevant
      *
      * @return string
      */
     public static function datetime($nid, $size = 16, $max = 16, $default = '', $class = '', $tabindex = '',
-        $disabled = false, $extra_html = '', $required = false) {
+        $disabled = false, $extra_html = '', $required = false, $autocomplete = '') {
 
         if (func_num_args() > 1 && is_array($size)) {
             // Cope with associative array of optional parameters
@@ -388,7 +397,8 @@ class form
         if (strpos(strtolower($extra_html), 'placeholder') === false) {
             $extra_html .= ' placeholder="1962-05-13T02:15"';
         }
-        return self::field($nid, $size, $max, $default, $class, $tabindex, $disabled, $extra_html, $required, 'datetime-local');
+        return self::field($nid, $size, $max, $default, $class, $tabindex, $disabled, $extra_html,
+            $required, 'datetime-local', $autocomplete);
     }
 
     /**
@@ -398,20 +408,21 @@ class form
      * $nid could be a string or an array of name and ID.
      * $size could be a integer or an associative array of any of optional parameters
      *
-     * @param string|array   $nid         Element ID and name
-     * @param integer|array  $size        Element size | associative array of optional parameters
-     * @param integer        $max         Element maxlength
-     * @param string         $default     Element value (in YYYY-MM-DD format)
-     * @param string         $class       Element class name
-     * @param string         $tabindex    Element tabindex
-     * @param boolean        $disabled    True if disabled
-     * @param string         $extra_html  Extra HTML attributes
-     * @param boolean        $required    Element is required
+     * @param string|array   $nid          Element ID and name
+     * @param integer|array  $size         Element size | associative array of optional parameters
+     * @param integer        $max          Element maxlength
+     * @param string         $default      Element value (in YYYY-MM-DD format)
+     * @param string         $class        Element class name
+     * @param string         $tabindex     Element tabindex
+     * @param boolean        $disabled     True if disabled
+     * @param string         $extra_html   Extra HTML attributes
+     * @param boolean        $required     Element is required
+     * @param string         $autocomplete Autocomplete attributes if relevant
      *
      * @return string
      */
     public static function date($nid, $size = 10, $max = 10, $default = '', $class = '', $tabindex = '',
-        $disabled = false, $extra_html = '', $required = false) {
+        $disabled = false, $extra_html = '', $required = false, $autocomplete = '') {
 
         if (func_num_args() > 1 && is_array($size)) {
             // Cope with associative array of optional parameters
@@ -425,7 +436,8 @@ class form
         if (strpos(strtolower($extra_html), 'placeholder') === false) {
             $extra_html .= ' placeholder="1962-05-13"';
         }
-        return self::field($nid, $size, $max, $default, $class, $tabindex, $disabled, $extra_html, $required, 'date');
+        return self::field($nid, $size, $max, $default, $class, $tabindex, $disabled, $extra_html,
+            $required, 'date', $autocomplete);
     }
 
     /**
@@ -435,20 +447,21 @@ class form
      * $nid could be a string or an array of name and ID.
      * $size could be a integer or an associative array of any of optional parameters
      *
-     * @param string|array   $nid         Element ID and name
-     * @param integer|array  $size        Element size | associative array of optional parameters
-     * @param integer        $max         Element maxlength
-     * @param string         $default     Element value (in hh:mm format)
-     * @param string         $class       Element class name
-     * @param string         $tabindex    Element tabindex
-     * @param boolean        $disabled    True if disabled
-     * @param string         $extra_html  Extra HTML attributes
-     * @param boolean        $required    Element is required
+     * @param string|array   $nid          Element ID and name
+     * @param integer|array  $size         Element size | associative array of optional parameters
+     * @param integer        $max          Element maxlength
+     * @param string         $default      Element value (in hh:mm format)
+     * @param string         $class        Element class name
+     * @param string         $tabindex     Element tabindex
+     * @param boolean        $disabled     True if disabled
+     * @param string         $extra_html   Extra HTML attributes
+     * @param boolean        $required     Element is required
+     * @param string         $autocomplete Autocomplete attributes if relevant
      *
      * @return string
      */
     public static function time($nid, $size = 5, $max = 5, $default = '', $class = '', $tabindex = '',
-        $disabled = false, $extra_html = '', $required = false) {
+        $disabled = false, $extra_html = '', $required = false, $autocomplete = '') {
 
         if (func_num_args() > 1 && is_array($size)) {
             // Cope with associative array of optional parameters
@@ -462,7 +475,8 @@ class form
         if (strpos(strtolower($extra_html), 'placeholder') === false) {
             $extra_html .= ' placeholder="02:15"';
         }
-        return self::field($nid, $size, $max, $default, $class, $tabindex, $disabled, $extra_html, $required, 'time');
+        return self::field($nid, $size, $max, $default, $class, $tabindex, $disabled, $extra_html,
+            $required, 'time', $autocomplete);
     }
 
     /**
@@ -512,20 +526,21 @@ class form
      * $nid could be a string or an array of name and ID.
      * $min could be a string or an associative array of any of optional parameters
      *
-     * @param string|array   $nid         Element ID and name
-     * @param integer|array  $min         Element min value (may be negative) | associative array of optional parameters
-     * @param integer        $max         Element max value (may be negative)
-     * @param string         $default     Element value
-     * @param string         $class       Element class name
-     * @param string         $tabindex    Element tabindex
-     * @param boolean        $disabled    True if disabled
-     * @param string         $extra_html  Extra HTML attributes
-     * @param boolean        $required    Element is required
+     * @param string|array   $nid          Element ID and name
+     * @param integer|array  $min          Element min value (may be negative) | associative array of optional parameters
+     * @param integer        $max          Element max value (may be negative)
+     * @param string         $default      Element value
+     * @param string         $class        Element class name
+     * @param string         $tabindex     Element tabindex
+     * @param boolean        $disabled     True if disabled
+     * @param string         $extra_html   Extra HTML attributes
+     * @param boolean        $required     Element is required
+     * @param string         $autocomplete Autocomplete attributes if relevant
      *
      * @return string
      */
     public static function number($nid, $min = null, $max = null, $default = '', $class = '', $tabindex = '',
-        $disabled = false, $extra_html = '', $required = false) {
+        $disabled = false, $extra_html = '', $required = false, $autocomplete = '') {
 
         self::getNameAndId($nid, $name, $id);
         if (func_num_args() > 1 && is_array($min)) {
@@ -544,6 +559,7 @@ class form
             ($tabindex ? 'tabindex="' . $tabindex . '" ' : '') .
             ($disabled ? 'disabled="disabled" ' : '') .
             ($required ? 'required ' : '') .
+            ($autocomplete ? 'autocomplete="' . $autocomplete . '" ' : '') .
             $extra_html .
 
             ' />' . "\n";
@@ -556,20 +572,21 @@ class form
      * $nid could be a string or an array of name and ID.
      * $default could be a string or an associative array of any of optional parameters
      *
-     * @param string|array  $nid         Element ID and name
-     * @param integer       $cols        Number of columns
-     * @param integer       $rows        Number of rows
-     * @param string|array  $default     Element value | associative array of optional parameters
-     * @param string        $class       Element class name
-     * @param string        $tabindex    Element tabindex
-     * @param boolean       $disabled    True if disabled
-     * @param string        $extra_html  Extra HTML attributes
-     * @param boolean       $required    Element is required
+     * @param string|array  $nid          Element ID and name
+     * @param integer       $cols         Number of columns
+     * @param integer       $rows         Number of rows
+     * @param string|array  $default      Element value | associative array of optional parameters
+     * @param string        $class        Element class name
+     * @param string        $tabindex     Element tabindex
+     * @param boolean       $disabled     True if disabled
+     * @param string        $extra_html   Extra HTML attributes
+     * @param boolean       $required     Element is required
+     * @param string        $autocomplete Autocomplete attributes if relevant
      *
      * @return string
      */
     public static function textArea($nid, $cols, $rows, $default = '', $class = '',
-        $tabindex = '', $disabled = false, $extra_html = '', $required = false) {
+        $tabindex = '', $disabled = false, $extra_html = '', $required = false, $autocomplete = '') {
 
         self::getNameAndId($nid, $name, $id);
         if (func_num_args() > 3 && is_array($default)) {
@@ -585,6 +602,7 @@ class form
             ($class ? 'class="' . $class . '" ' : '') .
             ($disabled ? 'disabled="disabled" ' : '') .
             ($required ? 'required ' : '') .
+            ($autocomplete ? 'autocomplete="' . $autocomplete . '" ' : '') .
             $extra_html . '>' . "\n" .
 
             $default . "\n" .
