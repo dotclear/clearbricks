@@ -33,10 +33,14 @@
 # Jérôme Lipowicz
 # Franck Paul
 #
-# Version : 3.2.11
-# Release date : 2016-03-23
+# Version : 3.2.12
+# Release date : 2018-02-02
 
 # History :
+#
+# 3.2.12
+# Franck
+#             => PHP 7.2 compliance
 #
 # 3.2.11
 # Franck
@@ -70,7 +74,7 @@
 #
 # 3.2.3
 # Olivier
-#             => PHP5 Strict
+#            => PHP5 Strict
 #
 # 3.2.2
 # Olivier
@@ -121,11 +125,11 @@
 #            => Ajout des mots wiki
 #
 # 2.5
-# Olivier        => Récriture du code, plus besoin du saut de ligne entre blocs !=
+# Olivier    => Récriture du code, plus besoin du saut de ligne entre blocs !=
 #
 # 2.0
-# Stephanie    => correction des PCRE et ajout de fonctionnalités
-# Mathieu     => ajout du strip-tags, implementation des options, reconnaissance automatique d'url, etc.
+# Stephanie  => correction des PCRE et ajout de fonctionnalités
+# Mathieu    => ajout du strip-tags, implementation des options, reconnaissance automatique d'url, etc.
 # Olivier    => chagement de active_link en active_urls
 #            => ajout des options pour les blocs
 #            => intégration de l'aide dans le code, avec les options
@@ -133,10 +137,10 @@
 
 # TODO :
 # Mathieu    => active_wiki_urls (modifier wikiParseUrl ?)
-#             => active_auto_urls
+#            => active_auto_urls
 #
-# *            => ajouter des options.
-#             => trouver un meilleur nom pour active_link ? (pour le jour ou ca sera tellement une usine
+# *          => ajouter des options.
+#            => trouver un meilleur nom pour active_link ? (pour le jour ou ca sera tellement une usine
 #                  a gaz que on generera des tags <link> :)
 #
 
