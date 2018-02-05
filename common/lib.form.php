@@ -603,9 +603,7 @@ class form
             ($disabled ? 'disabled="disabled" ' : '') .
             ($required ? 'required ' : '') .
             ($autocomplete ? 'autocomplete="' . $autocomplete . '" ' : '') .
-            $extra_html . '>' . "\n" .
-            $default . "\n" .
-            '</textarea>' . "\n";
+            $extra_html . '>' . $default . '</textarea>' . "\n";
     }
 
     /**
