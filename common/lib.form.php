@@ -604,7 +604,6 @@ class form
             ($required ? 'required ' : '') .
             ($autocomplete ? 'autocomplete="' . $autocomplete . '" ' : '') .
             $extra_html . '>' . "\n" .
-
             $default . "\n" .
             '</textarea>' . "\n";
     }
