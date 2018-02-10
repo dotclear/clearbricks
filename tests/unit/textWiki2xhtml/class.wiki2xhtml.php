@@ -113,6 +113,7 @@ class wiki2xhtml extends atoum
             'active_hr' => 0,
             'active_quote' => 0,
             'active_lists' => 0,
+            'active_defl' => 0,
             'active_pre' => 0,
             'active_aside' => 0
         ));
@@ -143,6 +144,9 @@ Another ""mark""
 
  Pre code
  Another code line
+
+= term
+: definition
 
 ) And finally an aside paragraph
 )
@@ -185,6 +189,10 @@ EOW;
 
 <p>Pre code
 Another code line</p>
+
+
+<p>= term
+: definition</p>
 
 
 <p>) And finally an aside paragraph
@@ -465,9 +473,16 @@ EOH;
             array('%s$$%s$$', '<p>%s<sup>[<a href="#wiki-footnote-1" id="rev-wiki-footnote-1">1</a>]</sup></p>' .
                 '<div class="footnotes"><h4>Note</h4><p>[<a href="#rev-wiki-footnote-1" id="wiki-footnote-1">1</a>] ' .
                 '%s</p></div>', 2),
-            array("* %s\n///\n%s\n///\n", "<ul><li>%s</li></ul><pre>%s</pre>", 2),
-            array("# %s\n///\n%s\n///\n", "<ol><li>%s</li></ol><pre>%s</pre>", 2)
 
+            array("* %s\n///\n%s\n///\n", "<ul><li>%s</li></ul><pre>%s</pre>", 2),
+            array("# %s\n///\n%s\n///\n", "<ol><li>%s</li></ol><pre>%s</pre>", 2),
+
+            array("= term", "<dl><dt>term</dt></dl>", 0),
+            array(": definition", "<dl><dd>definition</dd></dl>", 0),
+            array("= %s", "<dl><dt>%s</dt></dl>", 1),
+            array(": %s", "<dl><dd>%s</dd></dl>", 1),
+            array("= %s\n: %s", "<dl><dt>%s</dt><dd>%s</dd></dl>", 2),
+            array("= %s\n= %s\n: %s", "<dl><dt>%s</dt><dt>%s</dt><dd>%s</dd></dl>", 3),
         );
     }
 

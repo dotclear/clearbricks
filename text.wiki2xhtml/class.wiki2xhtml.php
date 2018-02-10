@@ -174,6 +174,7 @@ class wiki2xhtml
         $this->setOpt('active_setext_title', 0); # Activation des titres setext (EXPERIMENTAL)
         $this->setOpt('active_hr', 1); # Activation des <hr />
         $this->setOpt('active_lists', 1); # Activation des listes
+        $this->setOpt('active_defl', 1); # Activation des listes de définition
         $this->setOpt('active_quote', 1); # Activation du <blockquote>
         $this->setOpt('active_pre', 1); # Activation du <pre>
         $this->setOpt('active_empty', 1); # Activation du bloc vide øøø
@@ -389,6 +390,7 @@ class wiki2xhtml
             'hr'    => '[-]{4}[- ]',
             'quote' => '(&gt;|;:)',
             'lists' => '([*#]+)',
+            'defl'  => '([=|:]{1})',
             'pre'   => '[ ]{1}',
             'aside' => '[\)]{1}'
         );
@@ -454,6 +456,9 @@ class wiki2xhtml
         }
         if (!$this->getOpt('active_lists')) {
             unset($this->linetags['lists']);
+        }
+        if (!$this->getOpt('active_defl')) {
+            unset($this->linetags['defl']);
         }
         if (!$this->getOpt('active_pre')) {
             unset($this->linetags['pre']);
@@ -610,6 +615,11 @@ class wiki2xhtml
                 $line = trim($cap[2]);
             }
         }
+        elseif ($this->getOpt('active_defl') && preg_match('/^([=|:]{1})(.*)$/', $line, $cap)) {
+            $type = 'defl';
+            $mode = $cap[1];
+            $line = trim($cap[2]);
+        }
         # Préformaté
         elseif ($this->getOpt('active_pre') && preg_match('/^[ ]{1}(.*)$/', $line, $cap)) {
             $type = 'pre';
@@ -675,8 +685,20 @@ class wiki2xhtml
             } else {
                 $res .= "</li>\n";
             }
-
             return $res . "<li>";
+        } elseif ($type == 'defl') {
+            $res = ($pre_mode !== '=' && $pre_mode !== ':' ? "<dl>\n" : '');
+            if ($pre_mode == '=') {
+                $res .= "</dt>\n";
+            } elseif ($pre_mode == '=') {
+                $res .= "</dd>\n";
+            }
+            if ($mode == '=') {
+                $res .= "<dt>";
+            } else {
+                $res .= "<dd>";
+            }
+            return $res;
         } else {
             return;
         }
@@ -707,6 +729,14 @@ class wiki2xhtml
                 } else {
                     $res .= "</li>\n</ol>\n";
                 }
+            }
+            return $res;
+        } elseif ($close && $pre_type == 'defl') {
+            $res = '';
+            if ($pre_mode == '=') {
+                $res .= "</dt>\n</dl>\n";
+            } else {
+                $res .= "</dd>\n</dl>\n";
             }
             return $res;
         } else {
