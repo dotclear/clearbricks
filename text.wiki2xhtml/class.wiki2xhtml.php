@@ -33,10 +33,14 @@
 # Jérôme Lipowicz
 # Franck Paul
 #
-# Version : 3.2.12
-# Release date : 2018-02-02
+# Version : 3.2.13
+# Release date : 2018-02-10
 
 # History :
+#
+# 3.2.13
+# Franck
+#             => Added = <term>, : <definition> support (definition list)
 #
 # 3.2.12
 # Franck
