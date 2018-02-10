@@ -482,7 +482,7 @@ EOH;
             array("= %s", "<dl><dt>%s</dt></dl>", 1),
             array(": %s", "<dl><dd>%s</dd></dl>", 1),
             array("= %s\n: %s", "<dl><dt>%s</dt><dd>%s</dd></dl>", 2),
-            array("= %s\n= %s\n: %s", "<dl><dt>%s</dt><dt>%s</dt><dd>%s</dd></dl>", 3),
+            array("= %s\n= %s\n: %s\n: %s", "<dl><dt>%s</dt><dt>%s</dt><dd>%s</dd><dd>%s</dd></dl>", 4),
         );
     }
 

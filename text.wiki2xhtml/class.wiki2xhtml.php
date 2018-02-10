@@ -694,7 +694,7 @@ class wiki2xhtml
             $res = ($pre_mode !== '=' && $pre_mode !== ':' ? "<dl>\n" : '');
             if ($pre_mode == '=') {
                 $res .= "</dt>\n";
-            } elseif ($pre_mode == '=') {
+            } elseif ($pre_mode == ':') {
                 $res .= "</dd>\n";
             }
             if ($mode == '=') {
