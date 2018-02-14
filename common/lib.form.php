@@ -284,18 +284,20 @@ class form
      * @param boolean        $disabled    True if disabled
      * @param string         $extra_html  Extra HTML attributes
      * @param boolean        $required    Element is required
-     *
+     * @param string         $autocomplete Autocomplete attributes if relevant
+      *
      * @return string
      */
     public static function color($nid, $size = 7, $max = 7, $default = '', $class = '', $tabindex = '',
-        $disabled = false, $extra_html = '', $required = false) {
+        $disabled = false, $extra_html = '', $required = false, $autocomplete = '') {
 
         if (func_num_args() > 1 && is_array($size)) {
             // Cope with associative array of optional parameters
             $options = self::getDefaults(__CLASS__, __FUNCTION__);
             extract(array_merge($options, array_intersect_key($size, $options)));
         }
-        return self::field($nid, $size, $max, $default, $class, $tabindex, $disabled, $extra_html, $required, 'color');
+        return self::field($nid, $size, $max, $default, $class, $tabindex, $disabled, $extra_html,
+            $required, 'color', $autocomplete);
     }
 
     /**
