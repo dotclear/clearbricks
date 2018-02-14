@@ -152,7 +152,7 @@
 
 class wiki2xhtml
 {
-    public $__version__ = '3.2.10';
+    public $__version__ = '3.2.13';
 
     public $T;
     public $opt;
