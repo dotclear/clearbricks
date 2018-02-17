@@ -335,7 +335,7 @@ class form
     /**
      * HTML5 URL field
      *
-     * Returns HTML code for an input URL field.
+     * Returns HTML code for an input URL (absolute) field.
      * $nid could be a string or an array of name and ID.
      * $size could be a integer or an associative array of any of optional parameters
      *
