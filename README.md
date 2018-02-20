@@ -48,6 +48,14 @@ Then, you can create a _common.php file wich will contain:
 
 You're done!
 
+## API documentation
+
+A doxygen configuration file is provided to generate the Clearbricks API documentation which will be [readable](doxygen/index.html) in doxygen folder:
+
+```
+$ doxygen .doxygen.conf
+```
+
 ## Tests
 
 Clearbricks classes are tested using [atoum][3].
