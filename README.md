@@ -32,25 +32,26 @@ repository as [a subrepository][1]. This day, you'll love me :-)
 Here is an example of using Clearbricks and dbLayer in your own repository
 as an external property, using [subrepositories documentation][2]:
 
-    :::sh
-    $ hg clone https://hg.clearbricks.org/hg path/to/clearbricks
-    $ echo 'path/to/clearbricks https://hg.clearbricks.org/hg' >> .hgsub
+```sh
+hg clone https://hg.clearbricks.org/hg path/to/clearbricks
+echo 'path/to/clearbricks https://hg.clearbricks.org/hg' >> .hgsub
+```
 
 Save and push.
 
-Then, you can create a _common.php file wich will contain:
+Then, you can create a \_common.php file wich will contain:
 
-    :::php
-    <?php
-    require dirname(__FILE__).'/common/_main.php';
-    $__autoload['dbLayer'] = dirname(__FILE__).'/dblayer/dblayer.php';
-
+```php
+<?php
+require dirname(__FILE__).'/common/_main.php';
+$__autoload['dbLayer'] = dirname(__FILE__).'/dblayer/dblayer.php';
+```
 
 You're done!
 
 ## API documentation
 
-A doxygen configuration file is provided to generate the Clearbricks API documentation which will be [readable](doxygen/index.html) in doxygen folder:
+A [doxygen configuration file](http://www.stack.nl/~dimitri/doxygen/manual/config.html) is provided to generate the Clearbricks API documentation which will be [readable](doxygen/index.html) in doxygen folder:
 
 ```
 $ doxygen .doxygen.conf
@@ -62,32 +63,32 @@ Clearbricks classes are tested using [atoum][3].
 To run tests,
 
 Clone this repository:
-```
-$ hg clone https://hg.clearbricks.org/hg path/to/clearbricks
+```sh
+hg clone https://hg.clearbricks.org/hg path/to/clearbricks
 ```
 
 Download the [`composer.phar`](https://getcomposer.org/composer.phar) executable or use the installer.
 
-```
-$ curl -sS https://getcomposer.org/installer | php
+```sh
+curl -sS https://getcomposer.org/installer | php
 ```
 
 Update dependencies via composer:
-```
-$ composer.phar install
+```sh
+composer.phar install
 ```
 
 And now can run tests:
-```
-$ ./bin/atoum
+```sh
+./bin/atoum
 ```
 
 Add ```-ebpc``` option to enable path and branch coverage (this option requires xDebug 2.3+)
 
 You can also get code coverage report (in `coverage/html`) for tests by runing:
 
-```
-$ ./bin/atoum -c .atoum.coverage.php
+```sh
+./bin/atoum -c .atoum.coverage.php
 ```
 
 [1]: http://mercurial.selenic.com/wiki/Subrepository
