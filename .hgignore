@@ -9,3 +9,5 @@ _dist
 vendor
 composer.phar
 coverage
+doxygen
+
