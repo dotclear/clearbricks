@@ -20,6 +20,12 @@
 #
 # ***** END LICENSE BLOCK *****
 
+/**
+ * @interface i_dbSchema
+ *
+ * @package Clearbricks
+ * @subpackage DBSchema
+ */
 interface i_dbSchema
 {
     /**
@@ -113,6 +119,12 @@ interface i_dbSchema
     function db_drop_unique($table, $name);
 }
 
+/**
+ * @class dbSchema
+ *
+ * @package Clearbricks
+ * @subpackage DBSchema
+ */
 class dbSchema
 {
     protected $con;
@@ -160,7 +172,7 @@ class dbSchema
             'float8'            => 'float',
             'decimal'           => 'numeric',
             'character varying' => 'varchar',
-            'character'         => 'char',
+            'character'         => 'char'
         );
 
         if (isset($c[$type])) {

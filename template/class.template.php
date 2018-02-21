@@ -20,6 +20,12 @@
 #
 # ***** END LICENSE BLOCK *****
 
+/**
+ * @class template
+ *
+ * @package Clearbricks
+ * @subpackage Template
+ */
 class template
 {
 	private $self_name;

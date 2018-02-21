@@ -11,18 +11,16 @@
 # -- END LICENSE BLOCK -----------------------------------------
 
 /**
- * HTTP utilities
+ * @class http
+ * @brief HTTP utilities
  *
  * @package Clearbricks
  * @subpackage Common
  */
 class http
 {
-    /** @var boolean    Force HTTPS scheme on server port 443 in {@link getHost()} */
-    public static $https_scheme_on_443 = false;
-
-    /** @var integer    Cache max age for {@link cache()} */
-    public static $cache_max_age = 0;
+    public static $https_scheme_on_443 = false; ///< boolean: Force HTTPS scheme on server port 443 in {@link getHost()}
+    public static $cache_max_age = 0; ///< integer: Cache max age for {@link cache()}
 
     /**
      * Self root URI
@@ -390,20 +388,6 @@ class http
             array_walk($_COOKIE, array('self', 'trimRequestInVar'));
         }
     }
-
-    /*
-     *
-     * To be deleted?
-     * -- saymonz, 29.04.2011
-     *
-    //*
-
-    private static function trimRequestHandler(&$v,$key)
-    {
-    $v = self::trimRequestInVar($v);
-    }
-
-    //*/
 
     private static function trimRequestInVar(&$value, $key)
     {

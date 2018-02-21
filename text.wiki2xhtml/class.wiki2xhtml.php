@@ -148,8 +148,11 @@
 #                  a gaz que on generera des tags <link> :)
 #
 
-# Wiki2xhtml
-
+/**
+ * class wiki2xhtml
+ *
+ * @package Clearbricks
+ */
 class wiki2xhtml
 {
     public $__version__ = '3.2.13';
@@ -618,8 +621,7 @@ class wiki2xhtml
             } else {
                 $line = trim($cap[2]);
             }
-        }
-        elseif ($this->getOpt('active_defl') && preg_match('/^([=|:]{1})(.*)$/', $line, $cap)) {
+        } elseif ($this->getOpt('active_defl') && preg_match('/^([=|:]{1})(.*)$/', $line, $cap)) {
             $type = 'defl';
             $mode = $cap[1];
             $line = trim($cap[2]);
@@ -1307,32 +1309,4 @@ class wiki2xhtml
 
         return $res;
     }
-
-    /*
-function debug()
-{
-$mode = $type = null;
-$max = count($this->T);
-
-$res =
-'<table border="1">'.
-'<tr><th>p-mode</th><th>p-type</th><th>mode</th><th>type</th><th>chaine</th></tr>';
-
-for ($i=0; $i<$max; $i++)
-{
-$pre_mode = $mode;
-$pre_type = $type;
-
-$line = $this->__getLine($i,$type,$mode);
-
-$res .=
-'<tr><td>'.$pre_mode.'</td><td>'.$pre_type.'</td>'.
-'<td>'.$mode.'</td><td>'.$type.'</td><td>'.$line.'</td></tr>';
-
-}
-$res .= '</table>';
-
-return $res;
-}
-//*/
 }

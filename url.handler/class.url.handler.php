@@ -20,6 +20,11 @@
 #
 # ***** END LICENSE BLOCK *****
 
+/**
+ * class urlHandler
+ *
+ * @package Clearbricks
+ */
 class urlHandler
 {
     protected $types = array();

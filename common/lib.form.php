@@ -11,7 +11,8 @@
 # -- END LICENSE BLOCK -----------------------------------------
 
 /**
- * HTML Forms creation helpers
+ * @class form
+ * @brief HTML Forms creation helpers
  *
  * @package Clearbricks
  * @subpackage Common
@@ -64,11 +65,16 @@ class form
      * Select Box
      *
      * Returns HTML code for a select box.
-     * $nid could be a string or an array of name and ID.
-     * $data is an array with option titles keys and values in values
-     * or an array of object of type {@link formSelectOption}. If $data is an array of
+     * **$nid** could be a string or an array of name and ID.
+     * **$data** is an array with option titles keys and values in values
+     * or an array of object of type {@link formSelectOption}. If **$data** is an array of
      * arrays, optgroups will be created.
-     * $default could be a string or an associative array of any of optional parameters
+     *
+     * **$default** could be a string or an associative array of any of optional parameters:
+     *
+     * ```php
+     * form::combo(array('name', 'id'), $data, array('class' => 'maximal', 'extra_html' => 'data-language="php"'));
+     * ```
      *
      * @uses formSelectOption
      *
@@ -264,6 +270,8 @@ class form
      * $nid could be a string or an array of name and ID.
      * $default could be a string or an associative array of any of optional parameters
      *
+     * @uses form::field
+     *
      * @param string|array  $nid         Element ID and name
      * @param integer       $size        Element size
      * @param integer       $max         Element maxlength
@@ -297,6 +305,8 @@ class form
      * Returns HTML code for an input color field.
      * $nid could be a string or an array of name and ID.
      * $size could be a integer or an associative array of any of optional parameters
+     *
+     * @uses form::field
      *
      * @param string|array   $nid         Element ID and name
      * @param integer|array  $size        Element size | associative array of optional parameters
@@ -332,6 +342,8 @@ class form
      * $nid could be a string or an array of name and ID.
      * $size could be a integer or an associative array of any of optional parameters
      *
+     * @uses form::field
+     *
      * @param string|array   $nid          Element ID and name
      * @param integer|array  $size         Element size | associative array of optional parameters
      * @param integer        $max          Element maxlength
@@ -362,9 +374,11 @@ class form
     /**
      * HTML5 URL field
      *
-     * Returns HTML code for an input URL (absolute) field.
+     * Returns HTML code for an input (absolute) URL field.
      * $nid could be a string or an array of name and ID.
      * $size could be a integer or an associative array of any of optional parameters
+     *
+     * @uses form::field
      *
      * @param string|array   $nid          Element ID and name
      * @param integer|array  $size         Element size | associative array of optional parameters
@@ -399,6 +413,8 @@ class form
      * Returns HTML code for an input datetime field.
      * $nid could be a string or an array of name and ID.
      * $size could be a integer or an associative array of any of optional parameters
+     *
+     * @uses form::field
      *
      * @param string|array   $nid          Element ID and name
      * @param integer|array  $size         Element size | associative array of optional parameters
@@ -441,6 +457,8 @@ class form
      * $nid could be a string or an array of name and ID.
      * $size could be a integer or an associative array of any of optional parameters
      *
+     * @uses form::field
+     *
      * @param string|array   $nid          Element ID and name
      * @param integer|array  $size         Element size | associative array of optional parameters
      * @param integer        $max          Element maxlength
@@ -482,6 +500,8 @@ class form
      * $nid could be a string or an array of name and ID.
      * $size could be a integer or an associative array of any of optional parameters
      *
+     * @uses form::field
+     *
      * @param string|array   $nid          Element ID and name
      * @param integer|array  $size         Element size | associative array of optional parameters
      * @param integer        $max          Element maxlength
@@ -510,7 +530,7 @@ class form
             $extra_html .= ' pattern="[0-9]{2}:[0-9]{2}"';
         }
         if (strpos(strtolower($extra_html), 'placeholder') === false) {
-            $extra_html .= ' placeholder="02:15"';
+            $extra_html .= ' placeholder="14:45"';
         }
         return self::field($nid, $size, $max, $default, $class, $tabindex, $disabled, $extra_html,
             $required, 'time', $autocomplete);
@@ -675,7 +695,8 @@ class form
 }
 
 /**
- * HTML Forms creation helpers
+ * @class formSelectOption
+ * @brief HTML Forms creation helpers
  *
  * @package Clearbricks
  * @subpackage Common

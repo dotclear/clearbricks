@@ -11,18 +11,18 @@
 # -- END LICENSE BLOCK -----------------------------------------
 
 /**
- * Files manipulation utilities
+ * @class files
+ * @brief Files manipulation utilities
  *
  * @package Clearbricks
  * @subpackage Common
  */
 class files
 {
-    /** @var string Default directories mode */
-    public static $dir_mode = null;
+    public static $dir_mode = null; ///< Default directories mode
 
-    /** @var array Default MIME types */
-    public static $mimeType = array(
+    public static $mimeType =       ///< MIME types
+    array(
         'odt'  => 'application/vnd.oasis.opendocument.text',
         'odp'  => 'application/vnd.oasis.opendocument.presentation',
         'ods'  => 'application/vnd.oasis.opendocument.spreadsheet',

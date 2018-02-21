@@ -11,7 +11,8 @@
 # -- END LICENSE BLOCK -----------------------------------------
 
 /**
- * Functions to handle passwords or sensitive data
+ * @class crypt
+ * @brief Functions to handle passwords or sensitive data
  *
  * @package Clearbricks
  * @subpackage Common

@@ -20,6 +20,12 @@
 #
 # ***** END LICENSE BLOCK *****
 
+/**
+ * @class dbStruct
+ *
+ * @package Clearbricks
+ * @subpackage DBSchema
+ */
 class dbStruct
 {
     protected $con;
@@ -370,6 +376,12 @@ class dbStruct
     }
 }
 
+/**
+ * @class dbStructTable
+ *
+ * @package Clearbricks
+ * @subpackage DBSchema
+ */
 class dbStructTable
 {
     protected $name;
@@ -401,7 +413,7 @@ class dbStructTable
     protected $allowed_types = array(
         'smallint', 'integer', 'bigint', 'real', 'float', 'numeric',
         'date', 'time', 'timestamp',
-        'char', 'varchar', 'text',
+        'char', 'varchar', 'text'
     );
 
     public function __construct($name)
@@ -504,7 +516,7 @@ class dbStructTable
             'type'    => $type,
             'len'     => (integer) $len,
             'default' => $default,
-            'null'    => (boolean) $null,
+            'null'    => (boolean) $null
         );
 
         return $this;
@@ -546,7 +558,7 @@ class dbStructTable
 
         $this->indexes[$name] = array(
             'type' => strtolower($type),
-            'cols' => $cols,
+            'cols' => $cols
         );
 
         return $this;
@@ -568,7 +580,7 @@ class dbStructTable
             'p_table' => $p_table,
             'p_cols'  => $p_cols,
             'update'  => $update,
-            'delete'  => $delete,
+            'delete'  => $delete
         );
     }
 
@@ -578,7 +590,7 @@ class dbStructTable
 
         $this->keys[$name] = array(
             'type' => $type,
-            'cols' => $cols,
+            'cols' => $cols
         );
 
         if ($type == 'primary') {
