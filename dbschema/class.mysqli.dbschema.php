@@ -14,6 +14,13 @@
 # -- END LICENSE BLOCK -----------------------------------------
 
 require_once 'class.mysql.dbschema.php';
+
+/**
+ * @class mysqliSchema
+ *
+ * @package Clearbricks
+ * @subpackage DBSchema
+ */
 class mysqliSchema extends mysqlSchema
 {
 

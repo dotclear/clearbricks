@@ -20,6 +20,12 @@
 #
 # ***** END LICENSE BLOCK *****
 
+/**
+ * @class sqliteSchema
+ *
+ * @package Clearbricks
+ * @subpackage DBSchema
+ */
 if (class_exists('dbSchema')) {
     class sqliteSchema extends dbSchema implements i_dbSchema
     {
@@ -133,7 +139,7 @@ if (class_exists('dbSchema')) {
                     'type'    => $type,
                     'len'     => $len,
                     'null'    => $null,
-                    'default' => $default,
+                    'default' => $default
                 );
             }
             return $res;
@@ -161,7 +167,7 @@ if (class_exists('dbSchema')) {
                         'name'    => $name,
                         'primary' => true,
                         'unique'  => false,
-                        'cols'    => $cols,
+                        'cols'    => $cols
                     );
                 }
             }
@@ -175,7 +181,7 @@ if (class_exists('dbSchema')) {
                         'name'    => $name,
                         'primary' => false,
                         'unique'  => true,
-                        'cols'    => $cols,
+                        'cols'    => $cols
                     );
                 }
             }
@@ -203,7 +209,7 @@ if (class_exists('dbSchema')) {
                 $res[] = array(
                     'name' => $rs->name,
                     'type' => 'btree',
-                    'cols' => $cols,
+                    'cols' => $cols
                 );
             }
 
@@ -280,7 +286,7 @@ if (class_exists('dbSchema')) {
                     'p_table' => $p_table,
                     'p_cols'  => array($p_col),
                     'update'  => $on_update,
-                    'delete'  => $on_delete,
+                    'delete'  => $on_delete
                 );
             }
 

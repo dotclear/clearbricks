@@ -11,7 +11,8 @@
 # -- END LICENSE BLOCK -----------------------------------------
 
 /**
- * Date/time utilities
+ * @class dt
+ * @brief Date/time utilities
  *
  * @package Clearbricks
  * @subpackage Common

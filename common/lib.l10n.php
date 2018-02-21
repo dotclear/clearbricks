@@ -11,7 +11,8 @@
 # -- END LICENSE BLOCK -----------------------------------------
 
 /**
- * Localization tools
+ * @class l10n
+ * @brief Localization tools
  *
  * @package Clearbricks
  * @subpackage Common

@@ -11,7 +11,8 @@
 # -- END LICENSE BLOCK -----------------------------------------
 
 /**
- * HTML code filter
+ * @class htmlFilter
+ * @brief HTML code filter
  *
  * This class removes all unwanted tags and attributes from an HTML string.
  *

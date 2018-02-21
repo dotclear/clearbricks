@@ -14,6 +14,13 @@
 # -- END LICENSE BLOCK -----------------------------------------
 
 require_once 'class.mysql.dbschema.php';
+
+/**
+ * @class mysqlimb4Schema
+ *
+ * @package Clearbricks
+ * @subpackage DBSchema
+ */
 class mysqlimb4Schema extends mysqlSchema
 {
     public function db_create_table($name, $fields)

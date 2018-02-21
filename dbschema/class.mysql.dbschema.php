@@ -20,6 +20,12 @@
 #
 # ***** END LICENSE BLOCK *****
 
+/**
+ * @class mysqlSchema
+ *
+ * @package Clearbricks
+ * @subpackage DBSchema
+ */
 if (class_exists('dbSchema')) {
     class mysqlSchema extends dbSchema implements i_dbSchema
     {
@@ -125,7 +131,7 @@ if (class_exists('dbSchema')) {
                     'type'    => $type,
                     'len'     => $len,
                     'null'    => $null,
-                    'default' => $default,
+                    'default' => $default
                 );
             }
             return $res;
@@ -157,7 +163,7 @@ if (class_exists('dbSchema')) {
                     'name'    => $name,
                     'primary' => $name == 'PRIMARY',
                     'unique'  => $idx['unique'],
-                    'cols'    => array_values($idx['cols']),
+                    'cols'    => array_values($idx['cols'])
                 );
             }
 
@@ -190,7 +196,7 @@ if (class_exists('dbSchema')) {
                 $res[] = array(
                     'name' => $name,
                     'type' => $idx['type'],
-                    'cols' => $idx['cols'],
+                    'cols' => $idx['cols']
                 );
             }
 
@@ -234,7 +240,7 @@ if (class_exists('dbSchema')) {
                         'p_table' => $match[3][$i],
                         'p_cols'  => $r_cols,
                         'update'  => $on_update,
-                        'delete'  => $on_delete,
+                        'delete'  => $on_delete
                     );
                 }
             }

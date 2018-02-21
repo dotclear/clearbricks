@@ -20,6 +20,12 @@
 #
 # ***** END LICENSE BLOCK *****
 
+/**
+ * @class pgsqlSchema
+ *
+ * @package Clearbricks
+ * @subpackage DBSchema
+ */
 if (class_exists('dbSchema')) {
     class pgsqlSchema extends dbSchema implements i_dbSchema
     {
@@ -28,7 +34,7 @@ if (class_exists('dbSchema')) {
             'r' => 'restrict',
             'c' => 'cascade',
             'n' => 'set null',
-            'd' => 'set default',
+            'd' => 'set default'
         );
 
         public function dbt2udt($type, &$len, &$default)
@@ -95,7 +101,7 @@ if (class_exists('dbSchema')) {
                     'type'    => $type,
                     'len'     => $len,
                     'null'    => $null,
-                    'default' => $default,
+                    'default' => $default
                 );
             }
 
@@ -129,7 +135,7 @@ if (class_exists('dbSchema')) {
                     'name'    => $rs->idxname,
                     'primary' => (boolean) $rs->indisprimary,
                     'unique'  => (boolean) $rs->indisunique,
-                    'cols'    => array(),
+                    'cols'    => array()
                 );
 
                 for ($i = 1; $i <= $rs->indnatts; $i++) {
@@ -169,7 +175,7 @@ if (class_exists('dbSchema')) {
                 $k = array(
                     'name' => $rs->idxname,
                     'type' => $rs->amname,
-                    'cols' => array(),
+                    'cols' => array()
                 );
 
                 for ($i = 1; $i <= $rs->indnatts; $i++) {
@@ -217,7 +223,7 @@ if (class_exists('dbSchema')) {
                     'p_table' => $rs->reftab,
                     'p_cols'  => array(),
                     'update'  => $this->ref_actions_map[$rs->confupdtype],
-                    'delete'  => $this->ref_actions_map[$rs->confdeltype],
+                    'delete'  => $this->ref_actions_map[$rs->confdeltype]
                 );
 
                 $cols = $this->con->select(sprintf($cols_sql, $rs->conrelid, $conkey, $rs->confrelid, $confkey));

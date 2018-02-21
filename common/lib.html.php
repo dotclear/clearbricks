@@ -11,18 +11,20 @@
 # -- END LICENSE BLOCK -----------------------------------------
 
 /**
- * HTML utilities
+ * @class html
+ * @brief HTML utilities
  *
  * @package Clearbricks
  * @subpackage Common
  */
 class html
 {
-    /** @ignore */
+    /**
+     * @ignore
+     */
     public static $url_root;
 
-    /** @var array     Array of regular expression for {@link absoluteURLs()} */
-    public static $absolute_regs = array();
+    public static $absolute_regs = array(); ///< Array of regular expression for {@link absoluteURLs()}
 
     /**
      * HTML escape

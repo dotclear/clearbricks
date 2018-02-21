@@ -20,11 +20,18 @@
 #
 # ***** END LICENSE BLOCK *****
 
-// Value node, for all {{tpl:Tag}}
+/**
+ * @class tplNodeValueParent
+ * @brief Value node, for all {{tpl:Tag}}
+ *
+ * @package Clearbricks
+ * @subpackage Template
+ */
 class tplNodeValueParent extends tplNodeValue
 {
-	public function compile($tpl) {
-		// simply ask currently being displayed to display itself!
-		return tplNodeBlockDefinition::renderParent($tpl);
-	}
+    public function compile($tpl)
+    {
+        // simply ask currently being displayed to display itself!
+        return tplNodeBlockDefinition::renderParent($tpl);
+    }
 }
