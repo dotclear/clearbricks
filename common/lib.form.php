@@ -18,6 +18,16 @@
  */
 class form
 {
+    /**
+     * return id and name from given argument
+     *
+     * @param  string|array $nid   input argument
+     * @param  string       &$name returned name
+     * @param  string       &$id   returned id
+     *
+     * @static
+     * @access private
+     */
     private static function getNameAndId($nid, &$name, &$id)
     {
         if (is_array($nid)) {
@@ -34,6 +44,9 @@ class form
      * @param  string  $class   class name
      * @param  string  $method  method name
      * @return array
+     *
+     * @static
+     * @access private
      */
     private static function getDefaults($class, $method)
     {
@@ -68,6 +81,8 @@ class form
      * @param string        $extra_html  Extra HTML attributes
      *
      * @return string
+     *
+     * @static
      */
     public static function combo($nid, $data, $default = '', $class = '', $tabindex = '',
         $disabled = false, $extra_html = '') {
@@ -128,6 +143,8 @@ class form
      * @param string         $extra_html  Extra HTML attributes
      *
      * @return string
+     *
+     * @static
      */
     public static function radio($nid, $value, $checked = '', $class = '', $tabindex = '',
         $disabled = false, $extra_html = '') {
@@ -167,6 +184,8 @@ class form
      * @param string         $extra_html  Extra HTML attributes
      *
      * @return string
+     *
+     * @static
      */
     public static function checkbox($nid, $value, $checked = '', $class = '', $tabindex = '',
         $disabled = false, $extra_html = '') {
@@ -210,6 +229,8 @@ class form
      * @param string        $autocomplete Autocomplete attributes if relevant
      *
      * @return string
+     *
+     * @static
      */
     public static function field($nid, $size, $max, $default = '', $class = '', $tabindex = '',
         $disabled = false, $extra_html = '', $required = false, $type = 'text', $autocomplete = '') {
@@ -255,6 +276,8 @@ class form
      * @param string        $autocomplete Autocomplete attributes if relevant (new-password/current-password)
      *
      * @return string
+     *
+     * @static
      */
     public static function password($nid, $size, $max, $default = '', $class = '', $tabindex = '',
         $disabled = false, $extra_html = '', $required = false, $autocomplete = '') {
@@ -285,8 +308,10 @@ class form
      * @param string         $extra_html  Extra HTML attributes
      * @param boolean        $required    Element is required
      * @param string         $autocomplete Autocomplete attributes if relevant
-      *
+     *
      * @return string
+     *
+     * @static
      */
     public static function color($nid, $size = 7, $max = 7, $default = '', $class = '', $tabindex = '',
         $disabled = false, $extra_html = '', $required = false, $autocomplete = '') {
@@ -319,6 +344,8 @@ class form
      * @param string         $autocomplete Autocomplete attributes if relevant
      *
      * @return string
+     *
+     * @static
      */
     public static function email($nid, $size = 20, $max = 255, $default = '', $class = '', $tabindex = '',
         $disabled = false, $extra_html = '', $required = false, $autocomplete = '') {
@@ -351,6 +378,8 @@ class form
      * @param string         $autocomplete Autocomplete attributes if relevant
      *
      * @return string
+     *
+     * @static
      */
     public static function url($nid, $size = 20, $max = 255, $default = '', $class = '', $tabindex = '',
         $disabled = false, $extra_html = '', $required = false, $autocomplete = '') {
@@ -383,6 +412,8 @@ class form
      * @param string         $autocomplete Autocomplete attributes if relevant
      *
      * @return string
+     *
+     * @static
      */
     public static function datetime($nid, $size = 16, $max = 16, $default = '', $class = '', $tabindex = '',
         $disabled = false, $extra_html = '', $required = false, $autocomplete = '') {
@@ -422,6 +453,8 @@ class form
      * @param string         $autocomplete Autocomplete attributes if relevant
      *
      * @return string
+     *
+     * @static
      */
     public static function date($nid, $size = 10, $max = 10, $default = '', $class = '', $tabindex = '',
         $disabled = false, $extra_html = '', $required = false, $autocomplete = '') {
@@ -461,6 +494,8 @@ class form
      * @param string         $autocomplete Autocomplete attributes if relevant
      *
      * @return string
+     *
+     * @static
      */
     public static function time($nid, $size = 5, $max = 5, $default = '', $class = '', $tabindex = '',
         $disabled = false, $extra_html = '', $required = false, $autocomplete = '') {
@@ -497,6 +532,8 @@ class form
      * @param boolean        $required    Element is required
      *
      * @return string
+     *
+     * @static
      */
     public static function file($nid, $default = '', $class = '', $tabindex = '', $disabled = false, $extra_html = '',
         $required = false) {
@@ -540,6 +577,8 @@ class form
      * @param string         $autocomplete Autocomplete attributes if relevant
      *
      * @return string
+     *
+     * @static
      */
     public static function number($nid, $min = null, $max = null, $default = '', $class = '', $tabindex = '',
         $disabled = false, $extra_html = '', $required = false, $autocomplete = '') {
@@ -586,6 +625,8 @@ class form
      * @param string        $autocomplete Autocomplete attributes if relevant
      *
      * @return string
+     *
+     * @static
      */
     public static function textArea($nid, $cols, $rows, $default = '', $class = '',
         $tabindex = '', $disabled = false, $extra_html = '', $required = false, $autocomplete = '') {
@@ -618,6 +659,8 @@ class form
      * @param string        $value  Element value
      *
      * @return string
+     *
+     * @static
      */
     public static function hidden($nid, $value)
     {
@@ -639,11 +682,16 @@ class form
  */
 class formSelectOption
 {
-    public $name;
-    public $value;
-    public $class_name;
-    public $html;
+    public $name;       ///< Option name
+    public $value;      ///< Option value
+    public $class_name; ///< Element class name
+    public $html;       ///< Extra HTML attributes
 
+    /**
+     * sprintf template for option
+     * @var string $option
+     * @access private
+     */
     private $option = '<option value="%1$s"%3$s>%2$s</option>' . "\n";
 
     /**
