@@ -26,7 +26,11 @@
  * @package Clearbricks
  * @subpackage DBSchema
  */
+
+/** @cond ONCE */
 if (class_exists('dbSchema')) {
+/** @endcond */
+
     class mysqlSchema extends dbSchema implements i_dbSchema
     {
         public function dbt2udt($type, &$len, &$default)
@@ -464,4 +468,7 @@ if (class_exists('dbSchema')) {
             $this->con->execute($sql);
         }
     }
+
+/** @cond ONCE */
 }
+/** @endcond */

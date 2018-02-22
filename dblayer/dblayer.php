@@ -13,8 +13,8 @@
 require dirname(__FILE__) . '/class.cursor.php';
 
 /**
- * @interface i_dbLayer
- * @brief Clearbricks Database Abstraction Layer interface
+ * @class i_dbLayer
+ * @brief Database Abstraction Layer interface
  *
  * All methods in this interface should be implemented in your database driver.
  *
@@ -157,7 +157,7 @@ interface i_dbLayer
      * and return true on success.
      *
      * @param resource    $res            Resource result
-     * @param integer    $position        Row position
+     * @param integer    $row        Row position
      * @return boolean
      */
     function db_result_seek($res, $row);
@@ -224,10 +224,10 @@ interface i_dbLayer
  */
 class dbLayer
 {
-    protected $__driver = null; ///< string: Driver name
+    protected $__driver  = null; ///< string: Driver name
     protected $__version = null; ///< string: Database version
-    protected $__link; ///< resource: Database resource link
-    protected $__last_result; ///< resource: Last result resource link
+    protected $__link;           ///< resource: Database resource link
+    protected $__last_result;    ///< resource: Last result resource link
 
     /**
      * Start connection
@@ -352,11 +352,10 @@ class dbLayer
     }
 
     /**
-     * Return an empty record (without any information)
+     * Return an empty record
      *
-     * Return an empty {@link record} object.
+     * Return an empty {@link record} object (without any information).
      *
-     * @param string    $sql            SQL query
      * @return record
      */
     public function nullRecord()
@@ -694,12 +693,12 @@ class dbLayer
  */
 class record implements Iterator, Countable
 {
-    protected $__link; ///< resource: Database resource link
-    protected $__result; ///< resource: Query result resource
-    protected $__info; ///< array: Result information array
+    protected $__link;             ///< resource: Database resource link
+    protected $__result;           ///< resource: Query result resource
+    protected $__info;             ///< array: Result information array
     protected $__extend = array(); ///< array: List of static functions that extend record
-    protected $__index = 0; ///< integer: Current result position
-    protected $__row = false; ///< array: Current result row content
+    protected $__index  = 0;       ///< integer: Current result position
+    protected $__row    = false;   ///< array: Current result row content
 
     private $__fetch = false;
 
@@ -1114,7 +1113,6 @@ class staticRecord extends record
     private $__sortfield;
     private $__sortsign;
 
-    /** @ignore */
     public function __construct($result, $info)
     {
         if (is_array($result)) {
@@ -1161,19 +1159,16 @@ class staticRecord extends record
         return new self($data, $info);
     }
 
-    /** @ignore */
     public function field($n)
     {
         return $this->__data[$this->__index][$n];
     }
 
-    /** @ignore */
     public function exists($n)
     {
         return isset($this->__data[$this->__index][$n]);
     }
 
-    /** @ignore */
     public function index($row = null)
     {
         if ($row === null) {
@@ -1188,7 +1183,6 @@ class staticRecord extends record
         return true;
     }
 
-    /** @ignore */
     public function rows()
     {
         return $this->__data;

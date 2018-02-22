@@ -444,7 +444,7 @@ class form
             $extra_html .= ' pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}"';
         }
         if (strpos(strtolower($extra_html), 'placeholder') === false) {
-            $extra_html .= ' placeholder="1962-05-13T02:15"';
+            $extra_html .= ' placeholder="1962-05-13T14:45"';
         }
         return self::field($nid, $size, $max, $default, $class, $tabindex, $disabled, $extra_html,
             $required, 'datetime-local', $autocomplete);

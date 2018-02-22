@@ -124,6 +124,8 @@ class restServer
 }
 
 /**
+ * @class xmlTag
+ *
  * XML Tree
  *
  * @package Clearbricks

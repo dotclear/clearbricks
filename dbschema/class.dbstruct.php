@@ -113,9 +113,9 @@ class dbStruct
     }
 
     /**
-    Synchronize this schema taken from database with $schema.
-
-    @param    s        <b>dbStruct</b>        Structure to synchronize with
+     * Synchronize this schema taken from database with $schema.
+     *
+     * @param      dbStruct $s Structure to synchronize with
      */
     public function synchronize($s)
     {

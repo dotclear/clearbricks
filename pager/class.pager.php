@@ -188,7 +188,6 @@ class pager
         $this->page_url = html::escapeHTML($url);
     }
 
-    /** @ignore */
     public function debug()
     {
         return

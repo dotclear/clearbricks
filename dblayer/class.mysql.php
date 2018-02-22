@@ -19,19 +19,17 @@
  * @package Clearbricks
  * @subpackage DBLayer
  */
+
+/** @cond ONCE */
 if (class_exists('dbLayer')) {
+/** @endcond */
+
     class mysqlConnection extends dbLayer implements i_dbLayer
     {
         public static $weak_locks = false; ///< boolean: Enables weak locks if true
 
-        /**
-         * @ignore
-         */
         protected $__driver = 'mysql';
 
-        /**
-         * @ignore
-         */
         public function db_connect($host, $user, $password, $database)
         {
             if (!function_exists('mysql_connect')) {
@@ -47,9 +45,6 @@ if (class_exists('dbLayer')) {
             return $link;
         }
 
-        /**
-         * @ignore
-         */
         public function db_pconnect($host, $user, $password, $database)
         {
             if (!function_exists('mysql_pconnect')) {
@@ -65,9 +60,6 @@ if (class_exists('dbLayer')) {
             return $link;
         }
 
-        /**
-         * @ignore
-         */
         private function db_post_connect($link, $database)
         {
             if (@mysql_select_db($database, $link) === false) {
@@ -84,9 +76,6 @@ if (class_exists('dbLayer')) {
             }
         }
 
-        /**
-         * @ignore
-         */
         public function db_close($handle)
         {
             if (is_resource($handle)) {
@@ -94,9 +83,6 @@ if (class_exists('dbLayer')) {
             }
         }
 
-        /**
-         * @ignore
-         */
         public function db_version($handle)
         {
             if (is_resource($handle)) {
@@ -105,9 +91,6 @@ if (class_exists('dbLayer')) {
             return;
         }
 
-        /**
-         * @ignore
-         */
         public function db_query($handle, $query)
         {
             if (is_resource($handle)) {
@@ -121,17 +104,11 @@ if (class_exists('dbLayer')) {
             }
         }
 
-        /**
-         * @ignore
-         */
         public function db_exec($handle, $query)
         {
             return $this->db_query($handle, $query);
         }
 
-        /**
-         * @ignore
-         */
         public function db_num_fields($res)
         {
             if (is_resource($res)) {
@@ -140,9 +117,6 @@ if (class_exists('dbLayer')) {
             return 0;
         }
 
-        /**
-         * @ignore
-         */
         public function db_num_rows($res)
         {
             if (is_resource($res)) {
@@ -151,9 +125,6 @@ if (class_exists('dbLayer')) {
             return 0;
         }
 
-        /**
-         * @ignore
-         */
         public function db_field_name($res, $position)
         {
             if (is_resource($res)) {
@@ -161,9 +132,6 @@ if (class_exists('dbLayer')) {
             }
         }
 
-        /**
-         * @ignore
-         */
         public function db_field_type($res, $position)
         {
             if (is_resource($res)) {
@@ -171,9 +139,6 @@ if (class_exists('dbLayer')) {
             }
         }
 
-        /**
-         * @ignore
-         */
         public function db_fetch_assoc($res)
         {
             if (is_resource($res)) {
@@ -181,9 +146,6 @@ if (class_exists('dbLayer')) {
             }
         }
 
-        /**
-         * @ignore
-         */
         public function db_result_seek($res, $row)
         {
             if (is_resource($res)) {
@@ -191,9 +153,6 @@ if (class_exists('dbLayer')) {
             }
         }
 
-        /**
-         * @ignore
-         */
         public function db_changes($handle, $res)
         {
             if (is_resource($handle)) {
@@ -201,9 +160,6 @@ if (class_exists('dbLayer')) {
             }
         }
 
-        /**
-         * @ignore
-         */
         public function db_last_error($handle)
         {
             if (is_resource($handle)) {
@@ -215,9 +171,6 @@ if (class_exists('dbLayer')) {
             return false;
         }
 
-        /**
-         * @ignore
-         */
         public function db_escape_string($str, $handle = null)
         {
             if (is_resource($handle)) {
@@ -227,9 +180,6 @@ if (class_exists('dbLayer')) {
             }
         }
 
-        /**
-         * @ignore
-         */
         public function db_write_lock($table)
         {
             try {
@@ -242,9 +192,6 @@ if (class_exists('dbLayer')) {
             }
         }
 
-        /**
-         * @ignore
-         */
         public function db_unlock()
         {
             try {
@@ -256,17 +203,11 @@ if (class_exists('dbLayer')) {
             }
         }
 
-        /**
-         * @ignore
-         */
         public function vacuum($table)
         {
             $this->execute('OPTIMIZE TABLE ' . $this->escapeSystem($table));
         }
 
-        /**
-         * @ignore
-         */
         public function dateFormat($field, $pattern)
         {
             $pattern = str_replace('%M', '%i', $pattern);
@@ -274,9 +215,6 @@ if (class_exists('dbLayer')) {
             return 'DATE_FORMAT(' . $field . ',' . "'" . $this->escape($pattern) . "') ";
         }
 
-        /**
-         * @ignore
-         */
         public function orderBy()
         {
             $default = array(
@@ -295,9 +233,6 @@ if (class_exists('dbLayer')) {
             return empty($res) ? '' : ' ORDER BY ' . implode(',', $res) . ' ';
         }
 
-        /**
-         * @ignore
-         */
         public function lexFields()
         {
             $fmt = '%s COLLATE utf8_unicode_ci';
@@ -311,21 +246,18 @@ if (class_exists('dbLayer')) {
             return empty($res) ? '' : implode(',', $res);
         }
 
-        /**
-         * @ignore
-         */
         public function concat()
         {
             $args = func_get_args();
             return 'CONCAT(' . implode(',', $args) . ')';
         }
 
-        /**
-         * @ignore
-         */
         public function escapeSystem($str)
         {
             return '`' . $str . '`';
         }
     }
+
+/** @cond ONCE */
 }
+/** @endcond */

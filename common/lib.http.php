@@ -20,7 +20,7 @@
 class http
 {
     public static $https_scheme_on_443 = false; ///< boolean: Force HTTPS scheme on server port 443 in {@link getHost()}
-    public static $cache_max_age = 0; ///< integer: Cache max age for {@link cache()}
+    public static $cache_max_age       = 0;     ///< integer: Cache max age for {@link cache()}
 
     /**
      * Self root URI
@@ -274,8 +274,6 @@ class http
      * HTTP Etag
      *
      * Sends HTTP cache headers (304) according to a list of etags in client request.
-     *
-     * @param string    $p_content    Response page content
      */
     public static function etag()
     {

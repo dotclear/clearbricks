@@ -21,7 +21,7 @@
 # ***** END LICENSE BLOCK *****
 
 /**
- * class xmlsql
+ * @class xmlsql
  *
  * @package Clearbricks
  */

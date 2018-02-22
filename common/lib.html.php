@@ -19,11 +19,7 @@
  */
 class html
 {
-    /**
-     * @ignore
-     */
     public static $url_root;
-
     public static $absolute_regs = array(); ///< Array of regular expression for {@link absoluteURLs()}
 
     /**
@@ -128,7 +124,7 @@ class html
      *
      * Removes host part in URL
      *
-     * @param string    $str        URL to transform
+     * @param string    $url        URL to transform
      * @return    string
      */
     public static function stripHostURL($url)

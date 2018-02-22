@@ -511,7 +511,8 @@ class files
 }
 
 /**
- * Path manipulation utilities
+ * @class path
+ * @brief Path manipulation utilities
  *
  * @package Clearbricks
  * @subpackage Common

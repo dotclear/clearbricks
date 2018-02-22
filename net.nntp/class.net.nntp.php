@@ -21,7 +21,10 @@
 # ***** END LICENSE BLOCK *****
 
 /**
- * class netNntp
+ * @class netNntp
+ *
+ * @package Clearbricks
+ * @subpackage Network
  */
 class netNntp extends netSocket
 {

@@ -48,7 +48,6 @@ class imageMeta
      * Returns all image metadata in an array as defined in {@link $properties}.
      * Should call {@link loadFile()} before.
      *
-     * @param string    $f        Image file path
      * @return array
      */
     public function getMeta()
@@ -250,7 +249,6 @@ class imageMeta
     );
 
     # XMP
-    /** @ignore */
     protected $xmp_reg = array(
         'Title'             => array(
             '%<dc:title>\s*<rdf:Alt>\s*<rdf:li.*?>(.+?)</rdf:li>%msu'
@@ -330,7 +328,6 @@ class imageMeta
     );
 
     # IPTC
-    /** @ignore */
     protected $iptc_ref = array(
         '1#090' => 'Iptc.Envelope.CharacterSet', // Character Set used (32 chars max)
         '2#005' => 'Iptc.ObjectName',            // Title (64 chars max)
@@ -358,7 +355,6 @@ class imageMeta
         '2#122' => 'Iptc.CaptionWriter'         // Caption Writer/Editor (32 chars max)
     );
 
-    /** @ignore */
     protected $iptc_to_property = array(
         'Iptc.ObjectName'    => 'Title',
         'Iptc.Caption'       => 'Description',
@@ -372,7 +368,6 @@ class imageMeta
     );
 
     # EXIF
-    /** @ignore */
     protected $exif_to_property = array(
         //'' => 'Title',
         'ImageDescription'  => 'Description',

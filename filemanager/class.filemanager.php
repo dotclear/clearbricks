@@ -202,8 +202,7 @@ class filemanager
      *
      * Creates list of items in working directory and append it to {@link $dir}
      *
-     * @uses sortHandler()
-     * @uses fileItem
+     * @uses sortHandler(), fileItem
      */
     public function getDir()
     {
@@ -310,13 +309,13 @@ class filemanager
     /**
      * Upload file by bits
      *
-     * Creates a new file <var>$dest</var> with contents of <var>$bits</var> and
+     * Creates a new file <var>$name</var> with contents of <var>$bits</var> and
      * return the destination file path.
-     * <var>$dest</var> should be in jail. This method will throw exception
+     * <var>$name</var> should be in jail. This method will throw exception
      * if file cannot be written.
      *
      * @param string    $bits        Destination file content
-     * @param string    $dest        Destination file
+     * @param string    $name        Destination file
      * @return string                Destination real path
      */
     public function uploadBits($name, $bits)

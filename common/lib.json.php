@@ -10,7 +10,10 @@
 #
 # -- END LICENSE BLOCK -----------------------------------------
 
+/** @cond ONCE */
 if (!function_exists('json_encode')) {
+/** @endcond */
+
     function json_encode($str)
     {
         try {
@@ -39,9 +42,15 @@ if (!function_exists('json_encode')) {
     {
         return empty($GLOBALS['json_last_error']) ? 0 : $GLOBALS['json_last_error'];
     }
-}
 
+/** @cond ONCE */
+}
+/** @endcond */
+
+/** @cond ONCE */
 if (!class_exists('Services_JSON')) {
+/** @endcond */
+
     /**
      * Marker constant for Services_JSON::decode(), used to flag stack state
      */
@@ -81,9 +90,7 @@ if (!class_exists('Services_JSON')) {
      * @class Services_JSON
      * @brief Converts to and from JSON format.
      *
-     * This class library is from Michal Migurski's Services_JSON library.
-     * {@link    http://pear.php.net/pepr/pepr-proposal-show.php?id=198}
-     * {@license    http://www.opensource.org/licenses/bsd-license.php}
+     * This class library is from Michal Migurski's Services_JSON library (http://pear.php.net/pepr/pepr-proposal-show.php?id=198 <a href="http://www.opensource.org/licenses/bsd-license.php">BSD</a>)
      *
      * @package Clearbricks
      * @subpackage Common
@@ -120,7 +127,6 @@ if (!class_exists('Services_JSON')) {
          *
          * @param    string  $utf16  UTF-16 character
          * @return   string  UTF-8 character
-         * @access   private
          */
         public function utf162utf8($utf16)
         {
@@ -164,7 +170,6 @@ if (!class_exists('Services_JSON')) {
          *
          * @param    string  $utf8   UTF-8 character
          * @return   string  UTF-16 character
-         * @access   private
          */
         public function utf82utf16($utf8)
         {
@@ -208,7 +213,6 @@ if (!class_exists('Services_JSON')) {
          *                           to be in ASCII or UTF-8 format!
          *
          * @return   mixed   JSON string representation of input var or an error if a problem occurs
-         * @access   public
          */
         public function encode($var)
         {
@@ -405,7 +409,6 @@ if (!class_exists('Services_JSON')) {
          * @param    mixed   $value  reference to an array element to be encoded
          *
          * @return   string  JSON-formatted name-value pair, like '"name":value'
-         * @access   private
          */
         public function name_value($name, $value)
         {
@@ -424,7 +427,6 @@ if (!class_exists('Services_JSON')) {
          * @param    $str    string      string value to strip of comments and whitespace
          *
          * @return   string  string value stripped of comments and whitespace
-         * @access   private
          */
         public function reduce_string($str)
         {
@@ -455,7 +457,6 @@ if (!class_exists('Services_JSON')) {
          *                   See argument 1 to Services_JSON() above for object-output behavior.
          *                   Note that decode() always returns strings
          *                   in ASCII or UTF-8 format!
-         * @access   public
          */
         public function decode($str)
         {
@@ -737,9 +738,6 @@ if (!class_exists('Services_JSON')) {
             }
         }
 
-        /**
-         * @todo Ultimately, this should just call PEAR::isError()
-         */
         public function isError($data, $code = null)
         {
             if (class_exists('pear')) {
@@ -753,7 +751,9 @@ if (!class_exists('Services_JSON')) {
         }
     }
 
+    /** @cond ONCE */
     if (class_exists('PEAR_Error')) {
+    /** @endcond */
 
         class Services_JSON_Error extends PEAR_Error
         {
@@ -763,11 +763,8 @@ if (!class_exists('Services_JSON')) {
             }
         }
 
+    /** @cond ONCE */
     } else {
-
-        /**
-         * @todo Ultimately, this class shall be descended from PEAR_Error
-         */
         class Services_JSON_Error
         {
             public function __construct($message = 'unknown error', $code = null,
@@ -775,6 +772,9 @@ if (!class_exists('Services_JSON')) {
 
             }
         }
-
     }
+    /** @endcond */
+
+/** @cond ONCE */
 }
+/** @endcond */
