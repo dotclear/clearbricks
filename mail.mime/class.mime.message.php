@@ -22,6 +22,9 @@
 
 /**
  * @class mimeMessage
+ *
+ * @package Clearbricks
+ * @subpackage Mail
  */
 class mimeMessage
 {

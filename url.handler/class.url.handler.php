@@ -21,7 +21,7 @@
 # ***** END LICENSE BLOCK *****
 
 /**
- * class urlHandler
+ * @class urlHandler
  *
  * @package Clearbricks
  */

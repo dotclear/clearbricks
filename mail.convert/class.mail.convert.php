@@ -25,6 +25,9 @@
  *
  * This class converts mail body to xHTML in a descent fashion.
  * It can also rewrap mail body.
+ *
+ * @package Clearbricks
+ * @subpackage Mail
  */
 class mailConvert
 {

@@ -22,8 +22,7 @@ class dt
     /**
      * Timestamp formating
      *
-     * Returns a date formated like PHP
-     * {@link http://www.php.net/manual/en/function.strftime.php strftime}
+     * Returns a date formated like PHP <a href="http://www.php.net/manual/en/function.strftime.php">strftime</a>
      * function.
      * Special cases %a, %A, %b and %B are handled by {@link l10n} library.
      *
@@ -200,7 +199,7 @@ class dt
      *
      * Returns an array of supported timezones, codes are keys and names are values.
      *
-     * @todo Store timzones in a static variable at the first time.
+     * @todo Store timezones in a static variable at the first time.
      *
      * @param boolean    $flip    Names are keys and codes are values
      * @param boolean    $groups    Return timezones in arrays of continents

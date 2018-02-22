@@ -3,7 +3,7 @@
 #
 # This file is part of Clearbricks.
 #
-# Copyright (c) 2003-2013 Olivier Meunier & Association Dotclear
+# Copyright (c) 2003-2013 Florent Cotton, Olivier Meunier & Association Dotclear
 # Licensed under the GPL version 2.0 license.
 # See LICENSE file or
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
@@ -19,9 +19,6 @@
  *
  * @package Clearbricks
  * @subpackage Feeds
- *
- * @author Florent Cotton
- * @author Olivier Meunier
  */
 class feedParser
 {
@@ -264,14 +261,14 @@ class feedParser
      * @param SimpleXMLElement    $node    SimpleXML Node
      * @return array
      */
-    protected function nodes2array(&$nodes)
+    protected function nodes2array(&$node)
     {
-        if (empty($nodes)) {
+        if (empty($node)) {
             return array();
         }
 
         $res = array();
-        foreach ($nodes as $v) {
+        foreach ($node as $v) {
             $res[] = (string) $v;
         }
 

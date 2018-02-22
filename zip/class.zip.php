@@ -21,7 +21,7 @@
 # ***** END LICENSE BLOCK *****
 
 /**
- * @class filezip
+ * @class fileZip
  *
  * @package Clearbricks
  * @subpackage Zip

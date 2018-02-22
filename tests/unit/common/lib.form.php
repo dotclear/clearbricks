@@ -378,7 +378,7 @@ class form extends atoum
 			->contains('value="1962-05-13T02:15"')
 			->contains('required')
 			->contains('pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}')
-			->contains('placeholder="1962-05-13T02:15"');
+			->contains('placeholder="1962-05-13T14:45"');
 
 		$this
 			->string(\form::datetime(array('aName', 'testID'), 10, 20, '1962-05-13T02:15', 'aclassname', 'atabindex', true, 'data-test="A test"', true))
@@ -456,7 +456,7 @@ class form extends atoum
 			->contains('value="02:15"')
 			->contains('required')
 			->contains('pattern="[0-9]{2}:[0-9]{2}')
-			->contains('placeholder="02:15"');
+			->contains('placeholder="14:45"');
 
 		$this
 			->string(\form::time(array('aName', 'testID'), 10, 20, '02:15', 'aclassname', 'atabindex', true, 'data-test="A test"', true))

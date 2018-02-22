@@ -26,7 +26,11 @@
  * @package Clearbricks
  * @subpackage DBSchema
  */
+
+/** @cond ONCE */
 if (class_exists('dbSchema')) {
+/** @endcond */
+
     class sqliteSchema extends dbSchema implements i_dbSchema
     {
         private $table_hist = array();
@@ -492,4 +496,7 @@ if (class_exists('dbSchema')) {
             throw new Exception('SQLite unique index cannot be removed.');
         }
     }
+
+/** @cond ONCE */
 }
+/** @endcond */

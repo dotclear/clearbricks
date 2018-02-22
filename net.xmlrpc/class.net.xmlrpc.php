@@ -11,11 +11,6 @@
 # -- END LICENSE BLOCK -----------------------------------------
 
 /**
- * XML-RPC Client and Server
- *
- * This class library is fully based on Simon Willison's IXR library.
- * {@link http://scripts.incutio.com/xmlrpc/}
- *
  * @package Clearbricks
  * @subpackage XML-RPC
  */
@@ -198,16 +193,14 @@ class xmlrpcMessage
     public $params = array(); ///< array Method parameters
 
     # Currentstring variable stacks
-    /** @ignore */protected $_arraystructs      = array(); # The stack used to keep track of the current array/struct
-    /** @ignore */protected $_arraystructstypes = array(); # Stack keeping track of if things are structs or array
-    /** @ignore */protected $_currentStructName = array(); # A stack as well
-    /** @ignore */protected $_param;
-    /** @ignore */protected $_value;
-    /** @ignore */protected $_currentTag;
-    /** @ignore */protected $_currentTagContents;
-
-    # The XML parser
-    /** @ignore */protected $_parser;
+    protected $_arraystructs      = array(); ///< The stack used to keep track of the current array/struct
+    protected $_arraystructstypes = array(); ///< Stack keeping track of if things are structs or array
+    protected $_currentStructName = array(); ///< A stack as well
+    protected $_param;
+    protected $_value;
+    protected $_currentTag;
+    protected $_currentTagContents;
+    protected $_parser; ///< The XML parser
 
     /**
      * Constructor
@@ -281,7 +274,6 @@ class xmlrpcMessage
         return true;
     }
 
-    /** @ignore */
     protected function tag_open($parser, $tag, $attr)
     {
         $this->currentTag = $tag;
@@ -304,13 +296,11 @@ class xmlrpcMessage
         }
     }
 
-    /** @ignore */
     protected function cdata($parser, $cdata)
     {
         $this->_currentTagContents .= $cdata;
     }
 
-    /** @ignore */
     protected function tag_close($parser, $tag)
     {
         $valueFlag = false;
@@ -577,13 +567,21 @@ class xmlrpcBase64
  * @class xmlrpcClient
  * @brief XML-RPC Client
  *
+ * XML-RPC Client
+ *
+ * This class library is fully based on Simon Willison's IXR library (http://scripts.incutio.com/xmlrpc/).
+ *
  * Basic XML-RPC Client.
  */
+
+/** @cond ONCE */
 if (class_exists('netHttp')) {
+/** @endcond */
+
     class xmlrpcClient extends netHttp
     {
-        /** @var xmlrpcRequest XML-RPC Request object */protected $request;
-        /** @var xmlrpcMessage XML-RPC Message object */protected $message;
+        protected $request; ///< xmlrpcRequest XML-RPC Request object
+        protected $message; ///< xmlrpcMessage XML-RPC Message object
 
         /**
          * Constructor
@@ -622,7 +620,6 @@ if (class_exists('netHttp')) {
          * ?>
          * </code>
          *
-         * @param string        $method        Method name
          * @return mixed
          */
         public function query()
@@ -651,7 +648,6 @@ if (class_exists('netHttp')) {
 
         # Overloading netHttp::buildRequest method, we don't need all the stuff of
         # HTTP client.
-        /** @ignore */
         protected function buildRequest()
         {
             if ($this->proxy_host) {
@@ -671,20 +667,30 @@ if (class_exists('netHttp')) {
             );
         }
     }
+
+/** @cond ONCE */
 }
+/** @endcond */
 
 /**
  * @class xmlrpcClientMulticall
  * @brief Multicall XML-RPC Client
  *
+ * Multicall XML-RPC Client
+ *
+ * This class library is fully based on Simon Willison's IXR library (http://scripts.incutio.com/xmlrpc/).
+ *
  * Multicall client using system.multicall method of server.
  */
+
+/** @cond ONCE */
 if (class_exists('xmlrpcClient')) {
+/** @endcond */
+
     class xmlrpcClientMulticall extends xmlrpcClient
     {
-        /** @var array */protected $calls = array();
+        protected $calls = array(); ///< array
 
-        /** @ignore */
         public function __construct($url)
         {
             parent::__construct($url);
@@ -707,7 +713,6 @@ if (class_exists('xmlrpcClient')) {
          * ?>
          * </code>
          *
-         * @param string        $method        Method name
          * @return mixed
          */
         public function addCall()
@@ -737,11 +742,18 @@ if (class_exists('xmlrpcClient')) {
             return parent::query('system.multicall', $this->calls);
         }
     }
+
+/** @cond ONCE */
 }
+/** @endcond */
 
 /**
  * @class xmlrpcServer
  * @brief Basic XML-RPC Server
+ *
+ * XML-RPC Server
+ *
+ * This class library is fully based on Simon Willison's IXR library (http://scripts.incutio.com/xmlrpc/).
  *
  * This is the most basic XML-RPC server you can create. Built-in methods are:
  *
@@ -762,9 +774,9 @@ class xmlrpcServer
     /**
      * Constructor
      *
-     * @param array        callbacks        Server callbacks
-     * @param string    data            Server data
-     * @param string    encoding        Server encoding
+     * @param array     $callbacks       Server callbacks
+     * @param string    $data            Server data
+     * @param string    $encoding        Server encoding
      */
     public function __construct($callbacks = false, $data = false, $encoding = 'UTF-8')
     {
@@ -784,7 +796,7 @@ class xmlrpcServer
      * which should be a valid XML-RPC raw stream. If data is not specified, it
      * take values from raw POST data.
      *
-     * @param string    data            XML-RPC raw stream
+     * @param string    $data            XML-RPC raw stream
      */
     public function serve($data = false)
     {
@@ -881,8 +893,8 @@ class xmlrpcServer
      *
      * This method sends a HTTP Header
      *
-     * @param integer    code            HTTP Status Code
-     * @param string    msg            Header message
+     * @param integer   $code           HTTP Status Code
+     * @param string    $msg            Header message
      */
     protected function head($code, $msg)
     {
@@ -900,8 +912,8 @@ class xmlrpcServer
      *
      * This method calls the given XML-RPC method with arguments.
      *
-     * @param string    methodname    Method name
-     * @param array        args            Method arguments
+     * @param string       $methodname      Method name
+     * @param array        $args            Method arguments
      * @return mixed
      */
     protected function call($methodname, $args)
@@ -927,7 +939,7 @@ class xmlrpcServer
      * You should avoid using this in your own method and throw exceptions
      * instead.
      *
-     * @param Exception    e            Exception object
+     * @param Exception    $e            Exception object
      */
     protected function error($e)
     {
@@ -958,7 +970,7 @@ class xmlrpcServer
      *
      * This method sends the whole XML-RPC response through HTTP.
      *
-     * @param string    xml            XML Content
+     * @param string    $xml            XML Content
      */
     protected function output($xml)
     {
@@ -1110,7 +1122,10 @@ class xmlrpcServer
  * - system.multicall
  */
 
+/** @cond ONCE */
 if (class_exists('xmlrpcServer')) {
+/** @endcond */
+
     class xmlrpcIntrospectionServer extends xmlrpcServer
     {
         protected $signatures;
@@ -1348,4 +1363,7 @@ if (class_exists('xmlrpcServer')) {
             return $this->help[$method];
         }
     }
+
+/** @cond ONCE */
 }
+/** @endcond */

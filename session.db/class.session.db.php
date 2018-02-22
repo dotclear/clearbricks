@@ -149,20 +149,17 @@ class sessionDB
         );
     }
 
-    /** @ignore */
     public function _open($path, $name)
     {
         return true;
     }
 
-    /** @ignore */
     public function _close()
     {
         $this->_gc();
         return true;
     }
 
-    /** @ignore */
     public function _read($ses_id)
     {
         $strReq = 'SELECT ses_value FROM ' . $this->table . ' ' .
@@ -177,7 +174,6 @@ class sessionDB
         }
     }
 
-    /** @ignore */
     public function _write($ses_id, $data)
     {
         $strReq = 'SELECT ses_id ' .
@@ -202,7 +198,6 @@ class sessionDB
         return true;
     }
 
-    /** @ignore */
     public function _destroy($ses_id)
     {
         $strReq = 'DELETE FROM ' . $this->table . ' ' .
@@ -216,7 +211,6 @@ class sessionDB
         return true;
     }
 
-    /** @ignore */
     public function _gc()
     {
         $ses_life = strtotime($this->ttl);

@@ -24,9 +24,7 @@ class text
      *
      * Returns true if $email is a valid email address.
      *
-     * @copyright Cal Henderson
-     * @license http://creativecommons.org/licenses/by-sa/2.5/ CC-BY-SA
-     * @link http://www.iamcal.com/publish/articles/php/parsing_email/
+     * @copyright Cal Henderson (http://www.iamcal.com/publish/articles/php/parsing_email/ <a href="http://creativecommons.org/licenses/by-sa/2.5/">CC-BY-SA</a>)
      *
      * @param string    $email    Email string
      * @return boolean
@@ -247,9 +245,7 @@ class text
      * Comes from W3 FAQ: Multilingual Forms
      * Note: modified to include full ASCII range including control chars
      *
-     * @copyright Harry Fuecks
-     * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU LGPL 2.1
-     * @link http://phputf8.sourceforge.net
+     * @copyright Harry Fuecks (http://phputf8.sourceforge.net <a href="http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html">GNU LGPL 2.1</a>)
      *
      * @param string    $str        String to search
      * @return integer|false
@@ -285,9 +281,7 @@ class text
      *
      * Replaces non utf8 bytes in $str by $repl.
      *
-     * @copyright Harry Fuecks
-     * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU LGPL 2.1
-     * @link http://phputf8.sourceforge.net
+     * @copyright Harry Fuecks (http://phputf8.sourceforge.net <a href="http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html">GNU LGPL 2.1</a>)
      *
      * @param string    $str        String to clean
      * @param string    $repl    Replacement string

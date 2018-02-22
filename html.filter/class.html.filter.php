@@ -16,8 +16,7 @@
  *
  * This class removes all unwanted tags and attributes from an HTML string.
  *
- * This was inspired by Ulf Harnhammar's Kses:
- * {@link http://sourceforge.net/projects/kses}
+ * This was inspired by Ulf Harnhammar's Kses (http://sourceforge.net/projects/kses)
  *
  * @package Clearbricks
  * @subpackage HTML

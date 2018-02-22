@@ -29,68 +29,67 @@
 interface i_dbSchema
 {
     /**
-    This method should return an array of all tables in database for the current
-    connection.
-
-    @return    <b>array</b>
+     * This method should return an array of all tables in database for the current connection.
+     *
+     * @return     array
      */
     public function db_get_tables();
 
     /**
-    This method should return an associative array of columns in given table
-    <var>$table</var> with column names in keys. Each line value is an array
-    with following values:
-
-    - [type] data type (string)
-    - [len] data length (integer or null)
-    - [null] is null? (boolean)
-    - [default] default value (string)
-
-    @param    table    <b>string</b>        Table name
-    @return    <b>array</b>
+     * This method should return an associative array of columns in given table
+     * <var>$table</var> with column names in keys. Each line value is an array
+     * with following values:
+     *
+     * - [type] data type (string)
+     * - [len] data length (integer or null)
+     * - [null] is null? (boolean)
+     * - [default] default value (string)
+     *
+     * @param      string $table Table name
+     * @return     array
      */
     function db_get_columns($table);
 
     /**
-    This method should return an array of keys in given table
-    <var>$table</var>. Each line value is an array with following values:
-
-    - [name] index name (string)
-    - [primary] primary key (boolean)
-    - [unique] unique key (boolean)
-    - [cols] columns (array)
-
-    @param    table    <b>string</b>        Table name
-    @return    <b>array</b>
+     * This method should return an array of keys in given table
+     * <var>$table</var>. Each line value is an array with following values:
+     *
+     * - [name] index name (string)
+     * - [primary] primary key (boolean)
+     * - [unique] unique key (boolean)
+     * - [cols] columns (array)
+     *
+     * @param      string $table Table name
+     * @return     array
      */
     function db_get_keys($table);
 
     /**
-    This method should return an array of indexes in given table
-    <var>$table</var>. Each line value is an array with following values:
-
-    - [name] index name (string)
-    - [type] index type (string)
-    - [cols] columns (array)
-
-    @param    table    <b>string</b>        Table name
-    @return    <b>array</b>
+     * This method should return an array of indexes in given table
+     * <var>$table</var>. Each line value is an array with following values:
+     *
+     * - [name] index name (string)
+     * - [type] index type (string)
+     * - [cols] columns (array)
+     *
+     * @param      string $table Table name
+     * @return     array
      */
     function db_get_indexes($table);
 
     /**
-    This method should return an array of foreign keys in given table
-    <var>$table</var>. Each line value is an array with following values:
-
-    - [name] key name (string)
-    - [c_cols] child columns (array)
-    - [p_table] parent table (string)
-    - [p_cols] parent columns (array)
-    - [update] on update statement (string)
-    - [delete] on delete statement (string)
-
-    @param    table    <b>string</b>        Table name
-    @return    <b>array</b>
+     * This method should return an array of foreign keys in given table
+     * <var>$table</var>. Each line value is an array with following values:
+     *
+     * - [name] key name (string)
+     * - [c_cols] child columns (array)
+     * - [p_table] parent table (string)
+     * - [p_cols] parent columns (array)
+     * - [update] on update statement (string)
+     * - [delete] on delete statement (string)
+     *
+     * @param      string $table Table name
+     * @return     array
      */
     function db_get_references($table);
 
@@ -152,12 +151,12 @@ class dbSchema
     }
 
     /**
-    Database data type to universal data type conversion.
-
-    @param    type        <b>string</b>        Type name
-    @param    leng        <b>integer</b>        Field length (in/out)
-    @param    default    <b>string</b>        Default field value (in/out)
-    @return    <b>string</b>
+     * Database data type to universal data type conversion.
+     *
+     * @param      string $type Type name
+     * @param      integer $len Field length (in/out)
+     * @param      string $default Default field value (in/out)
+     * @return     string
      */
     public function dbt2udt($type, &$len, &$default)
     {
@@ -183,12 +182,12 @@ class dbSchema
     }
 
     /**
-    Universal data type to database data tye conversion.
-
-    @param    type        <b>string</b>        Type name
-    @param    leng        <b>integer</b>        Field length (in/out)
-    @param    default    <b>string</b>        Default field value (in/out)
-    @return    <b>string</b>
+     * Universal data type to database data tye conversion.
+     *
+     * @param      string $type Type name
+     * @param      integer $len Field length (in/out)
+     * @param      string $default Default field value (in/out)
+     * @return     string
      */
     public function udt2dbt($type, &$len, &$default)
     {
@@ -196,10 +195,10 @@ class dbSchema
     }
 
     /**
-    Returns an array of all table names.
-
-    @see        i_dbSchema::db_get_tables
-    @return    <b>array</b>
+     * Returns an array of all table names.
+     *
+     * @see        i_dbSchema::db_get_tables
+     * @return     array
      */
     public function getTables()
     {
@@ -207,11 +206,12 @@ class dbSchema
     }
 
     /**
-    Returns an array of columns (name and type) of a given table.
-
-    @see        i_dbSchema::db_get_columns
-    @param    table    <b>string</b>        Table name
-    @return    <b>array</b>
+     * Returns an array of columns (name and type) of a given table.
+     *
+     * @see        i_dbSchema::db_get_columns
+     *
+     * @param      string $table Table name
+     * @return     array
      */
     public function getColumns($table)
     {
@@ -219,11 +219,12 @@ class dbSchema
     }
 
     /**
-    Returns an array of index of a given table.
-
-    @see        i_dbSchema::db_get_keys
-    @param    table    <b>string</b>        Table name
-    @return    <b>array</b>
+     * Returns an array of index of a given table.
+     *
+     * @see        i_dbSchema::db_get_keys
+     *
+     * @param      string $table Table name
+     * @return     array
      */
     public function getKeys($table)
     {
@@ -231,11 +232,12 @@ class dbSchema
     }
 
     /**
-    Returns an array of indexes of a given table.
-
-    @see        i_dbSchema::db_get_index
-    @param    table    <b>string</b>        Table name
-    @return    <b>array</b>
+     * Returns an array of indexes of a given table.
+     *
+     * @see        i_dbSchema::db_get_index
+     *
+     * @param      string $table Table name
+     * @return     array
      */
     public function getIndexes($table)
     {
@@ -243,11 +245,12 @@ class dbSchema
     }
 
     /**
-    Returns an array of foreign keys of a given table.
-
-    @see        i_dbSchema::db_get_references
-    @param    table    <b>string</b>        Table name
-    @return    <b>array</b>
+     * Returns an array of foreign keys of a given table.
+     *
+     * @see        i_dbSchema::db_get_references
+     *
+     * @param      string $table Table name
+     * @return     array
      */
     public function getReferences($table)
     {

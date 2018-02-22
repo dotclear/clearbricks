@@ -26,7 +26,11 @@
  * @package Clearbricks
  * @subpackage DBSchema
  */
+
+/** @cond ONCE */
 if (class_exists('dbSchema')) {
+/** @endcond */
+
     class pgsqlSchema extends dbSchema implements i_dbSchema
     {
         protected $ref_actions_map = array(
@@ -402,4 +406,7 @@ if (class_exists('dbSchema')) {
             $this->con->execute($sql);
         }
     }
+
+/** @cond ONCE */
 }
+/** @endcond */

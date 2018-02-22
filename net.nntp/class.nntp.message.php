@@ -21,7 +21,10 @@
 # ***** END LICENSE BLOCK *****
 
 /**
- * class nntpMessage
+ * @class nntpMessage
+ *
+ * @package Clearbricks
+ * @subpackage Network
  */
 class nntpMessage extends mimeMessage
 {

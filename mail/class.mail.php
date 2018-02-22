@@ -83,8 +83,9 @@ class mail
      *
      * Encodes given string as a quoted printable mail header.
      *
-     * @param string    $str            String to encode
-     * @return string
+     * @param      string $str String to encode
+     * @param      string $charset Charset (default UTF-8)
+     * @return     string
      */
     public static function QPHeader($str, $charset = 'UTF-8')
     {
@@ -100,7 +101,8 @@ class mail
      *
      * Encodes given string as a base64 mail header.
      *
-     * @param string    $str            String to encode
+     * @param      string $str String to encode
+     * @param      string $charset Charset (default UTF-8)
      * @return string
      */
     public static function B64Header($str, $charset = 'UTF-8')

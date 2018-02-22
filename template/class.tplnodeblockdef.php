@@ -135,5 +135,4 @@ class tplNodeBlockDefinition extends tplNodeBlock
             self::getStackBlock($this->name, $tpl)
         );
     }
-
 }

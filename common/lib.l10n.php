@@ -10,35 +10,39 @@
 #
 # -- END LICENSE BLOCK -----------------------------------------
 
-/**
- * @class l10n
- * @brief Localization tools
- *
- * @package Clearbricks
- * @subpackage Common
- */
-
+/** @cond ONCE */
 if (!function_exists('__')) {
+/** @endcond */
 
     /**
      * Translated string
      *
      * @see l10n::trans()
      *
-     * @param string $singular Singular form of the string
-     * @param string $pural Plural form of the string (optionnal)
-     * @param integer $count Context number for plural form (optionnal)
-     * @return string translated string
+     * @param      string   $singular Singular form of the string
+     * @param      string   $plural Plural form of the string (optionnal)
+     * @param      integer  $count Context number for plural form (optionnal)
+     * @return     string   translated string
      */
     function __($singular, $plural = null, $count = null)
     {
         return l10n::trans($singular, $plural, $count);
     }
+
+/** @cond ONCE */
 }
+/** @endcond */
 
 /**
+ * @class l10n
+ * @brief Localization tools
+ *
  * Localization utilities
+ *
+ * @package Clearbricks
+ * @subpackage Common
  */
+
 class l10n
 {
     /// @name Languages properties
@@ -60,10 +64,10 @@ class l10n
     protected static $language_pluralfunction   = null;
     //@}
 
-    /** @ignore @deprecated */
+    /** @deprecated */
     public static $text_direction;
 
-    /** @ignore @deprecated */
+    /** @deprecated */
     protected static $langs = array();
 
     /**
@@ -237,7 +241,7 @@ class l10n
         return file_exists($f) ? $f : false;
     }
 
-    /** @ignore @deprecated */
+    /** @deprecated */
     public static function getLangFile($file)
     {
         if (!file_exists($file)) {
@@ -305,8 +309,9 @@ class l10n
      *
      * Return a boolean depending on success or failure
      *
-     * @param string $file File
-     * @return boolean true on success
+     * @param      string $file File
+     * @param      string $license_block optional license block to add at the beginning
+     * @return     boolean true on success
      */
     public static function generatePhpFileFromPo($file, $license_block = '')
     {
@@ -854,17 +859,17 @@ class l10n
      *
      * The list follows ISO 639.1 norm with additionnal IETF codes as pt-br
      *
-     * Countries codes and names from
-     * {@link http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes}
-     * {@link http://www.gnu.org/software/gettext/manual/gettext.html#Language-Codes}
-     * {@link http://www.loc.gov/standards/iso639-2/php/English_list.php}
+     * Countries codes and names from:
+     * - http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
+     * - http://www.gnu.org/software/gettext/manual/gettext.html#Language-Codes
+     * - http://www.loc.gov/standards/iso639-2/php/English_list.php
      *
-     * Text direction from
-     * {@link http://translate.sourceforge.net/wiki/l10n/displaysettings}
-     * {@link http://meta.wikimedia.org/wiki/Template:List_of_language_names_ordered_by_code}
+     * Text direction from:
+     * - http://translate.sourceforge.net/wiki/l10n/displaysettings
+     * - http://meta.wikimedia.org/wiki/Template:List_of_language_names_ordered_by_code
      *
-     * Plural-forms taken from
-     * {@link http://translate.sourceforge.net/wiki/l10n/pluralforms}
+     * Plural-forms taken from:
+     * - http://translate.sourceforge.net/wiki/l10n/pluralforms
      *
      * $languages_definitions types look like this:
      * 0 = code ISO 639.1 (2 digit) + IETF add

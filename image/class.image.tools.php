@@ -14,19 +14,14 @@
  * @class imageTools
  * @brief Image manipulations
  *
- * Class to manipulate images. Some methods are based on
- * {@link https://dev.media-box.net/big/}
+ * Class to manipulate images. Some methods are based on https://dev.media-box.net/big/
  *
  * @package Clearbricks
  * @subpackage Images
  */
 class imageTools
 {
-    public $res;                 ///< resource: Image resource
-
-    /**
-     * @ignore
-     */
+    public $res; ///< resource: Image resource
     public $memory_limit = null;
 
     /**
@@ -117,7 +112,6 @@ class imageTools
         return imagesy($this->res);
     }
 
-    /** @ignore */
     public function memoryAllocate($w, $h, $bpp = 4)
     {
         $mem_used  = function_exists('memory_get_usage') ? @memory_get_usage() : 4000000;
@@ -144,7 +138,7 @@ class imageTools
      *
      * Returns image content in a file or as HTML output (with headers)
      *
-     * @param string        $type        Image type (png or jpg)
+     * @param string         $type        Image type (png or jpg)
      * @param string|null    $file        Output file. If null, output will be echoed in STDOUT
      * @param integer        $qual        JPEG image quality
      */
@@ -183,10 +177,10 @@ class imageTools
     /**
      * Resize image
      *
-     * @param mixed        $WIDTH        Image width (px or percent)
-     * @param mixed        $HEIGHT        Image height (px or percent)
-     * @param string    $mode        Crop mode (force, crop, ratio)
-     * @param boolean    $EXPAND        Allow resize of image
+     * @param mixed         $WIDTH          Image width (px or percent)
+     * @param mixed         $HEIGHT         Image height (px or percent)
+     * @param string        $MODE           Crop mode (force, crop, ratio)
+     * @param boolean       $EXPAND         Allow resize of image
      */
     public function resize($WIDTH, $HEIGHT, $MODE = 'ratio', $EXPAND = false)
     {

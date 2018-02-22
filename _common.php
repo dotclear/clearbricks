@@ -20,6 +20,30 @@
 #
 # ***** END LICENSE BLOCK *****
 
+/**
+ * @package Clearbricks
+ *
+ * Tiny library including:
+ * - Database abstraction layer (MySQL/MariadDB, postgreSQL and SQLite)
+ * - File manager
+ * - Feed reader
+ * - HTML filter/validator
+ * - Images manipulation tools
+ * - Mail utilities
+ * - HTML pager
+ * - REST Server
+ * - Database driven session handler
+ * - Simple Template Systeme
+ * - URL Handler
+ * - Wiki to XHTML Converter
+ * - HTTP/NNTP clients
+ * - XML-RPC Client and Server
+ * - Zip tools
+ * - Diff tools
+ *
+ * @version 1.0
+ */
+
 require dirname(__FILE__).'/common/_main.php';
 
 # Database Abstraction Layer

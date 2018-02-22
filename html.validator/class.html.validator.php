@@ -19,22 +19,18 @@
  * @package Clearbricks
  * @subpackage HTML
  */
+
+/** @cond ONCE */
 if (class_exists('netHttp')) {
+/** @endcond */
+
     class htmlValidator extends netHttp
     {
-        /** @ignore */
-        protected $host = 'www.htmlhelp.com';
-
-        /** @ignore */
-        protected $path = '/cgi-bin/validate.cgi';
-
-        /** @ignore */
+        protected $host       = 'www.htmlhelp.com';
+        protected $path       = '/cgi-bin/validate.cgi';
         protected $user_agent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.3a) Gecko/20021207';
+        protected $timeout    = 2;
 
-        /** @ignore */
-        protected $timeout = 2;
-
-        /** @ignore */
         protected $html_errors = array(); ///<    <b>array</b>        Validation errors list
 
         /**
@@ -133,4 +129,7 @@ if (class_exists('netHttp')) {
             }
         }
     }
+
+/** @cond ONCE */
 }
+/** @endcond */

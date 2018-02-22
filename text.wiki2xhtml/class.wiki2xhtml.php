@@ -149,7 +149,7 @@
 #
 
 /**
- * class wiki2xhtml
+ * @class wiki2xhtml
  *
  * @package Clearbricks
  */

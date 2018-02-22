@@ -19,12 +19,8 @@
  */
 class socketMail
 {
-    /**
-     * @ignore
-     */
     public static $fp;
-
-    public static $timeout = 10; ///< integer: Socket timeout
+    public static $timeout    = 10;   ///< integer: Socket timeout
     public static $smtp_relay = null; ///< string: SMTP Relay to user
 
     /**

@@ -3,7 +3,7 @@
 #
 # This file is part of Clearbricks.
 #
-# Copyright (c) 2003-2013 Olivier Meunier & Association Dotclear
+# Copyright (c) 2003-2013 Florent Cotton, Olivier Meunier & Association Dotclear
 # Licensed under the GPL version 2.0 license.
 # See LICENSE file or
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
@@ -22,22 +22,21 @@
  *
  * @package Clearbricks
  * @subpackage Feeds
- *
- * @author Florent Cotton
- * @author Olivier Meunier
- *
- * @uses feedParser
  */
+
+/** @cond ONCE */
 if (class_exists('netHttp')) {
+/** @endcond */
+
     class feedReader extends netHttp
     {
-        /** @ignore */protected $user_agent                          = 'Clearbricks Feed Reader/0.2';
-        /** @ignore */protected $timeout                             = 5;
-        /** @var array HTTP Cache validators */protected $validators = null;
+        protected $user_agent = 'Clearbricks Feed Reader/0.2';
+        protected $timeout    = 5;
+        protected $validators = null; ///< array HTTP Cache validators
 
-        /** @var string Cache directory path */protected $cache_dir      = null;
-        /** @var string Cache file prefix */protected $cache_file_prefix = 'cbfeed';
-        /** @var string Cache TTL */protected $cache_ttl                 = '-30 minutes';
+        protected $cache_dir         = null;          ///< string Cache directory path
+        protected $cache_file_prefix = 'cbfeed';      ///< string Cache file prefix
+        protected $cache_ttl         = '-30 minutes'; ///< string Cache TTL
 
         /**
          * Constructor.
@@ -54,6 +53,8 @@ if (class_exists('netHttp')) {
          *
          * Returns a new feedParser instance for given URL or false if source URL is
          * not a valid feed.
+         *
+         * @uses feedParser
          *
          * @param string    $url            Feed URL
          * @return feedParser|false
@@ -258,4 +259,7 @@ if (class_exists('netHttp')) {
             $this->validators[$key] = $value;
         }
     }
+
+/** @cond ONCE */
 }
+/** @endcond */
