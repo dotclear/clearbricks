@@ -19,6 +19,8 @@
  */
 class dt
 {
+    private static $timezones = null;
+
     /**
      * Timestamp formating
      *
@@ -199,27 +201,30 @@ class dt
      *
      * Returns an array of supported timezones, codes are keys and names are values.
      *
-     * @todo Store timezones in a static variable at the first time.
-     *
-     * @param boolean    $flip    Names are keys and codes are values
+     * @param boolean    $flip      Names are keys and codes are values
      * @param boolean    $groups    Return timezones in arrays of continents
      * @return array
      */
     public static function getZones($flip = false, $groups = false)
     {
-        if (!is_readable($f = dirname(__FILE__) . '/tz.dat')) {
-            return array();
-        }
-
-        $tz = file(dirname(__FILE__) . '/tz.dat');
-
-        $res = array();
-
-        foreach ($tz as $v) {
-            $v = trim($v);
-            if ($v) {
-                $res[$v] = str_replace('_', ' ', $v);
+        if (is_null(self::$timezones)) {
+            // Read timezones from file
+            if (!is_readable($f = dirname(__FILE__) . '/tz.dat')) {
+                return array();
             }
+            $tz = file(dirname(__FILE__) . '/tz.dat');
+            $res = array();
+            foreach ($tz as $v) {
+                $v = trim($v);
+                if ($v) {
+                    $res[$v] = str_replace('_', ' ', $v);
+                }
+            }
+            // Store timezones for further accesses
+            self::$timezones = $res;
+        } else {
+            // Timezones already read from file
+            $res = self::$timezones;
         }
 
         if ($flip) {

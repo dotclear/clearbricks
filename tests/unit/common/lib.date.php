@@ -169,6 +169,17 @@ class dt extends atoum
         $this
             ->string($tzs['Europe/Paris'])
             ->isEqualTo('Europe/Paris');
+
+        // Test another call
+        $tzs = \dt::getZones();
+
+        $this
+            ->array($tzs)
+            ->isNotNull();
+
+        $this
+            ->string($tzs['Indian/Reunion'])
+            ->isEqualTo('Indian/Reunion');
     }
 
     public function testGetZonesFlip()
