@@ -63,27 +63,24 @@ class crypt
     /**
      * Password generator
      *
-     * Returns an 8 characters random password.
+     * Returns an n characters random password.
      *
-     * @todo Add a length param
-     *
-     * @return    string
+     * @param      integer $length required length
+     * @return     string
      */
-    public static function createPassword()
+    public static function createPassword($length = 8)
     {
         $pwd    = array();
         $chars  = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
         $chars2 = '$!@';
 
-        foreach (range(0, 7) as $i) {
+        for ($i = 0; $i < $length; $i++) {
             $pwd[] = $chars[rand(0, strlen($chars) - 1)];
         }
-
-        $pos1       = array_rand(array(0, 1, 2, 3));
-        $pos2       = array_rand(array(4, 5, 6, 7));
-        $pwd[$pos1] = $chars2[rand(0, strlen($chars2) - 1)];
-        $pwd[$pos2] = $chars2[rand(0, strlen($chars2) - 1)];
-
+        for ($j = 0; $j < (int)($length / 4); $j++) {
+            $pos       = rand(0, 3) + 4 * $j;
+            $pwd[$pos] = $chars2[rand(0, strlen($chars2) - 1)];
+        }
         return implode('', $pwd);
     }
 }

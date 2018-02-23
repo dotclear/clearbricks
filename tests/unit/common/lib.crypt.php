@@ -134,9 +134,25 @@ class crypt extends atoum
      */
     public function testCreatePassword()
     {
-        $this
-            ->string(\crypt::createPassword())
-            ->hasLength(8)
-            ->match('/[a-bA-B0-9@\!\$]/');
+        for ($i = 0; $i < 10; $i++) {
+            $this
+                ->string(\crypt::createPassword())
+                ->hasLength(8)
+                ->match('/[a-zA-Z0-9@\!\$]/');
+        }
+
+        for ($i = 0; $i < 10; $i++) {
+            $this
+                ->string(\crypt::createPassword(10))
+                ->hasLength(10)
+                ->match('/[a-zA-Z0-9@\!\$]/');
+        }
+
+        for ($i = 0; $i < 10; $i++) {
+            $this
+                ->string(\crypt::createPassword(13))
+                ->hasLength(13)
+                ->match('/[a-zA-Z0-9@\!\$]/');
+        }
     }
 }
