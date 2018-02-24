@@ -12,14 +12,14 @@
 
 namespace tests\unit;
 
-require_once __DIR__.'/../bootstrap.php';
+require_once __DIR__ . '/../bootstrap.php';
 
 require_once CLEARBRICKS_PATH . '/common/lib.l10n.php';
-require_once CLEARBRICKS_PATH.'/common/lib.files.php';
-require_once CLEARBRICKS_PATH.'/common/lib.text.php';
+require_once CLEARBRICKS_PATH . '/common/lib.files.php';
+require_once CLEARBRICKS_PATH . '/common/lib.text.php';
 
 define('TEST_DIRECTORY', realpath(
-    __DIR__ .'/../fixtures/files'
+    __DIR__ . '/../fixtures/files'
 ));
 
 use atoum;
@@ -43,11 +43,11 @@ class files extends atoum
         // Sorted
         $this
             ->array(\files::scandir(TEST_DIRECTORY, true))
-            ->isIdenticalTo(array('.','..','02-two.txt', '1-one.txt', '30-three.txt'));
+            ->isIdenticalTo(array('.', '..', '02-two.txt', '1-one.txt', '30-three.txt'));
 
         // DOn't exists
         $this
-            ->exception(function() {
+            ->exception(function () {
                 \files::scandir('thisdirectorydontexists');
             });
     }
@@ -123,7 +123,7 @@ class files extends atoum
     public function testFileIsDeletable()
     {
         $tmpname = tempnam(sys_get_temp_dir(), "testfile.txt");
-        $file = fopen($tmpname, "w+");
+        $file    = fopen($tmpname, "w+");
         $this
             ->boolean(\files::isDeletable($tmpname))
             ->isTrue();
@@ -143,6 +143,11 @@ class files extends atoum
             ->boolean(\files::isDeletable($dirname))
             ->isTrue();
         rmdir($dirname);
+
+        // Test with a non existing dir
+        $this
+            ->boolean(\files::isDeletable($dirname))
+            ->isFalse();
     }
 
     /**
@@ -152,8 +157,9 @@ class files extends atoum
     {
         $dirstructure = join(DIRECTORY_SEPARATOR, array(".", "temp", "tests", "are", "good", "for", "you"));
         mkdir($dirstructure, 0700, true);
+        touch($dirstructure . DIRECTORY_SEPARATOR . "file.txt");
         $this
-            ->boolean(\files::deltree("./temp"))
+            ->boolean(\files::deltree(join(DIRECTORY_SEPARATOR, array(".", "temp"))))
             ->isTrue();
 
         $this
@@ -168,7 +174,7 @@ class files extends atoum
     public function testTouch()
     {
         $file_name = tempnam(sys_get_temp_dir(), "testfile.txt");
-        $fts = filemtime($file_name);
+        $fts       = filemtime($file_name);
         // Must keep at least one second of difference
         sleep(1);
         \files::touch($file_name);
@@ -191,6 +197,16 @@ class files extends atoum
             ->boolean(is_dir($dirPath))
             ->isTrue();
         \files::deltree($dirPath);
+
+        // Test with void name
+        $this
+            ->variable(\files::makeDir(''))
+            ->isNull();
+
+        // test with already existing dir
+        $this
+            ->variable(\files::makeDir(TEST_DIRECTORY))
+            ->isNull();
     }
 
     /**
@@ -199,10 +215,10 @@ class files extends atoum
     public function testMakeDirWithParent()
     {
         // Test multitple parent
-        $dirPath =  sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'this/is/a/test/directory/';
+        $dirPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'this/is/a/test/directory/';
         \files::makeDir($dirPath, true);
         $path = '';
-        foreach(array(sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'this','is','a','test','directory') as $p) {
+        foreach (array(sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'this', 'is', 'a', 'test', 'directory') as $p) {
             $path .= $p . DIRECTORY_SEPARATOR;
             $this->boolean(is_dir($path));
         }
@@ -216,21 +232,20 @@ class files extends atoum
      */
     public function testMakeDirImpossible()
     {
-        if (DIRECTORY_SEPARATOR == '\\')
-        {
+        if (DIRECTORY_SEPARATOR == '\\') {
             $dir = 'COM1'; // Windows system forbid that name
         } else {
             $dir = '/dummy'; // On Unix system can't create a directory at root
         }
 
-        $this->exception(function() use($dir) {
+        $this->exception(function () use ($dir) {
             \files::makeDir($dir);
         });
     }
 
     public function testInheritChmod()
     {
-        $dirName = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'atestdir2';
+        $dirName    = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'atestdir2';
         $sonDirName = $dirName . DIRECTORY_SEPARATOR . 'anotherDir';
         mkdir($dirName, 0777);
         mkdir($sonDirName);
@@ -241,17 +256,49 @@ class files extends atoum
             ->boolean($sonPerms === $parentPerms)
             ->isTrue();
         \files::deltree($dirName);
+
+        // Test again witha dir mode set
+        \files::$dir_mode = 0770;
+        mkdir($dirName, 0777);
+        mkdir($sonDirName);
+        $parentPerms = fileperms($dirName);
+        \files::inheritChmod($sonDirName);
+        $sonPerms = fileperms($sonDirName);
+        $this
+            ->boolean($sonPerms === $parentPerms)
+            ->isFalse();
+        $this
+            ->integer($sonPerms)
+            ->isEqualTo(16888); // Aka 0770
+        \files::deltree($dirName);
     }
 
     public function testPutContent()
     {
-        $content = 'A Content';
+        $content  = 'A Content';
         $filename = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'atestfile.txt';
         \files::putContent($filename, $content);
         $this
             ->string(file_get_contents($filename))
             ->isEqualTo($content);
-        unset($filename);
+        unlink($filename);
+
+    }
+
+    public function testPutContentException()
+    {
+        // Test exceptions
+        $content  = 'A Content';
+        $filename = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'atestfile.txt';
+        \files::putContent($filename, $content);
+        $this
+            ->exception(function() use($filename) {
+                chmod($filename, 0400); // Read only
+                \files::putContent($filename, 'unwritable');
+            })
+            ->hasMessage('File is not writable.');
+        chmod($filename, 0700);
+        unlink($filename);
     }
 
     public function testSize()
@@ -273,11 +320,11 @@ class files extends atoum
             ->isEqualTo('1 MB');
 
         $this
-            ->string(\files::size(1024 * 1024 *1024))
+            ->string(\files::size(1024 * 1024 * 1024))
             ->isEqualTo('1 GB');
 
         $this
-            ->string(\files::size(1024 * 1024 *1024 * 3))
+            ->string(\files::size(1024 * 1024 * 1024 * 3))
             ->isEqualTo('3 GB');
 
         $this
@@ -289,23 +336,23 @@ class files extends atoum
     {
         $this
             ->float(\files::str2bytes('512B'))
-            ->isEqualTo((float)512);
+            ->isEqualTo((float) 512);
 
         $this
             ->float(\files::str2bytes('512 B'))
-            ->isEqualTo((float)512);
+            ->isEqualTo((float) 512);
 
         $this
             ->float(\files::str2bytes('1k'))
-            ->isEqualTo((float)1024);
+            ->isEqualTo((float) 1024);
 
         $this
             ->float(\files::str2bytes('1M'))
-            ->isEqualTo((float)1024*1024);
+            ->isEqualTo((float) 1024 * 1024);
         // Max int limit reached, we have a float here
         $this
             ->float(\files::str2bytes('2G'))
-            ->isEqualTo((float)2* 1024 *1024*1024);
+            ->isEqualTo((float) 2 * 1024 * 1024 * 1024);
     }
 
     /**
@@ -317,11 +364,11 @@ class files extends atoum
     {
         // Create a false $_FILES global without error
         $file = array(
-            'name' => 'test.jpg',
-            'size' => ini_get('post_max_size'),
+            'name'     => 'test.jpg',
+            'size'     => ini_get('post_max_size'),
             'tmp_name' => 'temptestname.jpg',
-            'error' => UPLOAD_ERR_OK,
-            'type' => 'image/jpeg'
+            'error'    => UPLOAD_ERR_OK,
+            'type'     => 'image/jpeg'
         );
 
         $this
@@ -330,27 +377,27 @@ class files extends atoum
 
         // Simulate error
         $file['error'] = UPLOAD_ERR_INI_SIZE;
-        $this ->exception(function() use ($file) { \files::uploadStatus($file); });
+        $this->exception(function () use ($file) {\files::uploadStatus($file);});
 
         $file['error'] = UPLOAD_ERR_FORM_SIZE;
-        $this ->exception(function() use ($file) { \files::uploadStatus($file); });
+        $this->exception(function () use ($file) {\files::uploadStatus($file);});
 
         $file['error'] = UPLOAD_ERR_PARTIAL;
-        $this ->exception(function() use ($file) { \files::uploadStatus($file); });
+        $this->exception(function () use ($file) {\files::uploadStatus($file);});
 
         $file['error'] = UPLOAD_ERR_NO_TMP_DIR; // Since PHP 5.0.3
-        $this ->exception(function() use ($file) { \files::uploadStatus($file); });
+        $this->exception(function () use ($file) {\files::uploadStatus($file);});
 
         $file['error'] = UPLOAD_ERR_NO_FILE;
-        $this ->exception(function() use ($file) { \files::uploadStatus($file); });
+        $this->exception(function () use ($file) {\files::uploadStatus($file);});
 
         $file['error'] = UPLOAD_ERR_CANT_WRITE;
-        $this ->exception(function() use ($file) { \files::uploadStatus($file); });
+        $this->exception(function () use ($file) {\files::uploadStatus($file);});
 
         // This part might fail
         if (version_compare(phpversion(), '5.2.0', '>')) {
-            $file['error'] = UPLOAD_ERR_EXTENSION;  // Since PHP 5.2
-            $this ->exception(function() use ($file) { \files::uploadStatus($file); });
+            $file['error'] = UPLOAD_ERR_EXTENSION; // Since PHP 5.2
+            $this->exception(function () use ($file) {\files::uploadStatus($file);});
         }
     }
 
@@ -369,6 +416,33 @@ class files extends atoum
         $this
             ->array($arr['dirs'])
             ->isNotEmpty();
+
+        $this
+            ->exception(function() {
+                \files::getDirList(sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'void', $arr);
+            })
+            ->hasMessage(sprintf('%s is not a directory.', sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'void'));
+
+        // Deep structure read
+        $dirstructure = join(DIRECTORY_SEPARATOR, array(".", "temp", "tests", "are", "good", "for", "you"));
+        mkdir($dirstructure, 0700, true);
+        \files::getDirList(join(DIRECTORY_SEPARATOR, array(".", "temp")), $arr);
+        $this
+            ->array($arr['dirs'])
+            ->isNotEmpty();
+        \files::deltree(join(DIRECTORY_SEPARATOR, array(".", "temp")));
+
+        // Unreadable dir
+        $dirname = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'void';
+        mkdir($dirname);
+        $this
+            ->exception(function() use ($dirname) {
+                chmod($dirname, 0200);
+                \files::getDirList($dirname, $arr);
+            })
+            ->hasMessage('Unable to open directory.');
+        chmod($dirname, 0700);
+        \files::deltree($dirname);
     }
 
     public function testTidyFilename()
@@ -383,32 +457,38 @@ class path extends atoum
 {
     public function testRealUnstrict()
     {
-        if (DIRECTORY_SEPARATOR == '\\')
-        {
+        if (DIRECTORY_SEPARATOR == '\\') {
             // Hack to make it works under Windows
             $this
                 ->string(str_replace('/', '\\', \path::real(__DIR__ . '/../fixtures/files', false)))
                 ->isEqualTo(TEST_DIRECTORY);
-        }
-        else
-        {
+            $this
+                ->string(str_replace('/', '\\', \path::real('tests/unit/fixtures/files', false)))
+                ->isEqualTo('/tests/unit/fixtures/files');
+            $this
+                ->string(str_replace('/', '\\', \path::real('tests/./unit/fixtures/files', false)))
+                ->isEqualTo('/tests/unit/fixtures/files');
+        } else {
             $this
                 ->string(\path::real(__DIR__ . '/../fixtures/files', false))
                 ->isEqualTo(TEST_DIRECTORY);
+            $this
+                ->string(\path::real('tests/unit/fixtures/files', false))
+                ->isEqualTo('/tests/unit/fixtures/files');
+            $this
+                ->string(\path::real('tests/./unit/fixtures/files', false))
+                ->isEqualTo('/tests/unit/fixtures/files');
         }
     }
 
     public function testRealStrict()
     {
-        if (DIRECTORY_SEPARATOR == '\\')
-        {
+        if (DIRECTORY_SEPARATOR == '\\') {
             // Hack to make it works under Windows
             $this
                 ->string(str_replace('/', '\\', \path::real(__DIR__ . '/../fixtures/files', true)))
                 ->isEqualTo(TEST_DIRECTORY);
-        }
-        else
-        {
+        } else {
             $this
                 ->string(\path::real(__DIR__ . '/../fixtures/files', true))
                 ->isEqualTo(TEST_DIRECTORY);
@@ -418,7 +498,7 @@ class path extends atoum
     public function testClean()
     {
         $this
-            ->string(\path::clean( '..' . DIRECTORY_SEPARATOR . 'testDirectory'))
+            ->string(\path::clean('..' . DIRECTORY_SEPARATOR . 'testDirectory'))
             ->isEqualTo(DIRECTORY_SEPARATOR . 'testDirectory');
     }
 

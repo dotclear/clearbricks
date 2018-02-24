@@ -21,7 +21,7 @@ class files
 {
     public static $dir_mode = null; ///< Default directories mode
 
-    public static $mimeType =       ///< MIME types
+    public static $mimeType = ///< MIME types
     array(
         'odt'  => 'application/vnd.oasis.opendocument.text',
         'odp'  => 'application/vnd.oasis.opendocument.presentation',
@@ -215,6 +215,7 @@ class files
         } elseif (is_dir($f)) {
             return (is_writable(dirname($f)) && count(files::scandir($f)) <= 2);
         }
+        return false;
     }
 
     /**
@@ -461,12 +462,7 @@ class files
         }
 
         $exclude_list = array('.', '..', '.svn');
-
-        if (empty($res)) {
-            $res = array();
-        }
-
-        $dirName = preg_replace('|/$|', '', $dirName);
+        $dirName      = preg_replace('|/$|', '', $dirName);
 
         if (!is_dir($dirName)) {
             throw new Exception(sprintf(__('%s is not a directory.'), $dirName));
@@ -475,7 +471,6 @@ class files
         $contents['dirs'][] = $dirName;
 
         $d = @dir($dirName);
-
         if ($d === false) {
             throw new Exception(__('Unable to open directory.'));
         }
