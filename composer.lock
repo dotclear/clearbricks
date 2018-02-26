@@ -96,18 +96,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/atoum/reports-extension.git",
-                "reference": "e49cb5ee816ab5f6c1affad92de5544199bfacde"
+                "reference": "3bbaf96c240086cb5944b2cb90f11d1b41f82c54"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atoum/reports-extension/zipball/e49cb5ee816ab5f6c1affad92de5544199bfacde",
-                "reference": "e49cb5ee816ab5f6c1affad92de5544199bfacde",
+                "url": "https://api.github.com/repos/atoum/reports-extension/zipball/3bbaf96c240086cb5944b2cb90f11d1b41f82c54",
+                "reference": "3bbaf96c240086cb5944b2cb90f11d1b41f82c54",
                 "shasum": ""
             },
             "require": {
                 "atoum/atoum": "^2.9 || ^3.0",
                 "php": "^5.4.0 || ^7.0.0",
-                "symfony/filesystem": "^2.6 | ^3.0",
+                "symfony/filesystem": "^2.6 | ^3.0 | ^4.0",
                 "twig/twig": "^1.18 | ^2.0"
             },
             "require-dev": {
@@ -142,7 +142,7 @@
                 "test",
                 "unit testing"
             ],
-            "time": "2017-10-02T22:35:54+00:00"
+            "time": "2018-02-08T08:02:15+00:00"
         },
         {
             "name": "fzaninotto/faker",
@@ -150,12 +150,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/fzaninotto/Faker.git",
-                "reference": "d15bf1dc252f61427bb247c31dcd4df6b1c9f07c"
+                "reference": "5dce1159142a1ba0fcab4672cb295bf7d8f98824"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fzaninotto/Faker/zipball/d15bf1dc252f61427bb247c31dcd4df6b1c9f07c",
-                "reference": "d15bf1dc252f61427bb247c31dcd4df6b1c9f07c",
+                "url": "https://api.github.com/repos/fzaninotto/Faker/zipball/5dce1159142a1ba0fcab4672cb295bf7d8f98824",
+                "reference": "5dce1159142a1ba0fcab4672cb295bf7d8f98824",
                 "shasum": ""
             },
             "require": {
@@ -192,7 +192,7 @@
                 "faker",
                 "fixtures"
             ],
-            "time": "2018-01-16T09:36:14+00:00"
+            "time": "2018-02-14T13:50:47+00:00"
         },
         {
             "name": "symfony/filesystem",
