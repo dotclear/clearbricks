@@ -80,6 +80,35 @@ class http
     }
 
     /**
+     * Prepare a full redirect URI from a relative or absolute URL
+     *
+     * @param      string $page Relative URL
+     * @return     string full URI
+     */
+    public static function prepareRedirect($page)
+    {
+        if (preg_match('%^http[s]?://%', $page)) {
+            $redir = $page;
+        } else {
+            $host = self::getHost();
+
+            if (substr($page, 0, 1) == '/') {
+                $redir = $host . $page;
+            } else {
+                $dir  = str_replace(DIRECTORY_SEPARATOR, '/', dirname($_SERVER['PHP_SELF']));
+                if (substr($dir, -1) == '/') {
+                    $dir = substr($dir, 0, -1);
+                }
+                if ($dir == '.') {
+                    $dir = '';
+                }
+                $redir = $host . $dir . '/' . $page;
+            }
+        }
+        return $redir;
+    }
+
+    /**
      * Redirect
      *
      * Performs a conforming HTTP redirect for a relative URL.
@@ -88,28 +117,12 @@ class http
      */
     public static function redirect($page)
     {
-        if (preg_match('%^http[s]?://%', $page)) {
-            $redir = $page;
-        } else {
-            $host = self::getHost();
-            $dir  = str_replace(DIRECTORY_SEPARATOR, '/', dirname($_SERVER['PHP_SELF']));
-
-            if (substr($page, 0, 1) == '/') {
-                $redir = $host . $page;
-            } else {
-                if (substr($dir, -1) == '/') {
-                    $dir = substr($dir, 0, -1);
-                }
-                $redir = $host . $dir . '/' . $page;
-            }
-        }
-
         # Close session if exists
         if (session_id()) {
             session_write_close();
         }
 
-        header('Location: ' . $redir);
+        header('Location: ' . self::prepareRedirect($page));
         exit;
     }
 
