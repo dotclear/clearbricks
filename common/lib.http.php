@@ -85,7 +85,7 @@ class http
      * @param      string $page Relative URL
      * @return     string full URI
      */
-    public static function prepareRedirect($page)
+    protected static function prepareRedirect($page)
     {
         if (preg_match('%^http[s]?://%', $page)) {
             $redir = $page;

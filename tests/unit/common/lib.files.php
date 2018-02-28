@@ -277,6 +277,7 @@ class files extends atoum
     {
         $content  = 'A Content';
         $filename = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'atestfile.txt';
+        @unlink($filename);
         \files::putContent($filename, $content);
         $this
             ->string(file_get_contents($filename))
