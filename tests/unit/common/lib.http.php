@@ -102,25 +102,28 @@ class http extends atoum
         $_SERVER['HTTP_HOST'] = 'localhost';
         $_SERVER['SERVER_PORT'] = 80;
         $_SERVER['REQUEST_URI'] = '/test.html';
+
+        $prepareRedirect = new \ReflectionMethod('\http' ,'prepareRedirect');
+        $prepareRedirect->setAccessible(true);
         $this
-            ->string(\http::prepareRedirect('http://www.dotclear.org/auth.html'))
+            ->string($prepareRedirect->invokeArgs(null, array('http://www.dotclear.org/auth.html')))
             ->isEqualTo('http://www.dotclear.org/auth.html');
 
         $this
-            ->string(\http::prepareRedirect('https://www.dotclear.org/auth.html'))
+            ->string($prepareRedirect->invokeArgs(null, array('https://www.dotclear.org/auth.html')))
             ->isEqualTo('https://www.dotclear.org/auth.html');
 
         $this
-            ->string(\http::prepareRedirect('auth.html'))
+            ->string($prepareRedirect->invokeArgs(null, array('auth.html')))
             ->isEqualTo('http://localhost/auth.html');
 
         $this
-            ->string(\http::prepareRedirect('/admin/auth.html'))
+            ->string($prepareRedirect->invokeArgs(null, array('/admin/auth.html')))
             ->isEqualTo('http://localhost/admin/auth.html');
 
         $_SERVER['PHP_SELF'] = '/test.php';
         $this
-            ->string(\http::prepareRedirect('auth.html'))
+            ->string($prepareRedirect->invokeArgs(null, array('auth.html')))
             ->isEqualTo('http://localhost/auth.html');
     }
 
