@@ -59,7 +59,7 @@ $ doxygen .doxygen.conf
 
 ## Tests
 
-Clearbricks classes are tested using [atoum][3].
+Clearbricks classes are tested using [atoum][3] (see [doc][4]).
 To run tests,
 
 Clone this repository:
@@ -94,4 +94,4 @@ You can also get code coverage report (in `coverage/html`) for tests by runing:
 [1]: http://mercurial.selenic.com/wiki/Subrepository
 [2]: http://www.selenic.com/hg/help/subrepos
 [3]: https://github.com/atoum/atoum
-
+[4]: http://docs.atoum.org/en/latest/index.html

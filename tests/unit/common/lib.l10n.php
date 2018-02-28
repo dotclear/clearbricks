@@ -33,6 +33,12 @@ class l10n extends atoum
 {
 	private $l10n_dir = '/../fixtures/l10n';
 
+    public function testWithEmpty() {
+        $this
+            ->string(__(''))
+            ->isEqualTo('');
+    }
+
 	public function testWithoutTranslation() {
 		$faker	= Faker\Factory::create();
 		$text = $faker->text(50);

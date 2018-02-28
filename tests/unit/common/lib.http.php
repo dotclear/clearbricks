@@ -37,7 +37,7 @@ class http extends atoum
     public function testGetHost()
     {
         // Normal
-        $_SERVER['HTTP_HOST'] = 'localhost';
+        $_SERVER['HTTP_HOST']   = 'localhost';
         $_SERVER['SERVER_PORT'] = 80;
         $this
             ->string(\http::getHost())
@@ -62,7 +62,7 @@ class http extends atoum
             ->isEqualTo('https://localhost');
 
         // On sercure port with enforcing TLS
-        $_SERVER['SERVER_PORT'] = 443;
+        $_SERVER['SERVER_PORT']     = 443;
         \http::$https_scheme_on_443 = true;
         $this
             ->string(\http::getHost())
@@ -83,7 +83,7 @@ class http extends atoum
 
     public function testGetSelfURI()
     {
-        $_SERVER['HTTP_HOST'] = 'localhost';
+        $_SERVER['HTTP_HOST']   = 'localhost';
         $_SERVER['SERVER_PORT'] = 80;
         $_SERVER['REQUEST_URI'] = '/test.html';
         $this
@@ -99,11 +99,11 @@ class http extends atoum
 
     public function testPrepareRedirect()
     {
-        $_SERVER['HTTP_HOST'] = 'localhost';
+        $_SERVER['HTTP_HOST']   = 'localhost';
         $_SERVER['SERVER_PORT'] = 80;
         $_SERVER['REQUEST_URI'] = '/test.html';
 
-        $prepareRedirect = new \ReflectionMethod('\http' ,'prepareRedirect');
+        $prepareRedirect = new \ReflectionMethod('\http', 'prepareRedirect');
         $prepareRedirect->setAccessible(true);
         $this
             ->string($prepareRedirect->invokeArgs(null, array('http://www.dotclear.org/auth.html')))
@@ -164,7 +164,6 @@ class http extends atoum
         $this
             ->string(\http::concatURL('http://localhost/admin', '/page/index.html'))
             ->isEqualTo('http://localhost/page/index.html');
-
 
         $this
             ->string(\http::concatURL('http://localhost/admin/', 'index.html'))
@@ -233,15 +232,15 @@ class http extends atoum
         unset($_SERVER['HTTP_ACCEPT_LANGUAGE']);
         $this
             ->array(\http::getAcceptLanguages())
-                ->isEmpty();
+            ->isEmpty();
 
         $_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7';
         $this
             ->array(\http::getAcceptLanguages())
-                ->string[0]->isEqualTo('fr-fr')
-                ->string[1]->isEqualTo('fr')
-                ->string[2]->isEqualTo('en-us')
-                ->string[3]->isEqualTo('en');
+            ->string[0]->isEqualTo('fr-fr')
+            ->string[1]->isEqualTo('fr')
+            ->string[2]->isEqualTo('en-us')
+            ->string[3]->isEqualTo('en');
     }
 
     public function testCache()
@@ -288,13 +287,13 @@ class http extends atoum
 
     public function testTrimRequest()
     {
-        $_GET['single'] = 'single';
+        $_GET['single']      = 'single';
         $_GET['trim_single'] = ' trim_single ';
-        $_GET['multiple'] = array('one ', 'two', ' three', ' four ', array(' five '));
+        $_GET['multiple']    = array('one ', 'two', ' three', ' four ', array(' five '));
 
-        $_POST['post'] = ' test  ';
+        $_POST['post']       = ' test  ';
         $_REQUEST['request'] = ' test  ';
-        $_COOKIE['cookie'] = ' test  ';
+        $_COOKIE['cookie']   = ' test  ';
 
         \http::trimRequest();
         $this
