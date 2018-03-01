@@ -15,6 +15,7 @@ namespace tests\unit;
 require_once __DIR__ . '/../bootstrap.php';
 
 require_once CLEARBRICKS_PATH . '/common/lib.text.php';
+require_once CLEARBRICKS_PATH . '/common/lib.html.php';
 
 use atoum;
 use Faker;
@@ -107,9 +108,86 @@ class text extends atoum
             ->string(\text::cutString('https:-domaincom-AAAECDEEIINOOOOESUUYZaaaecdeeiinooooesuuyyzss-eehtml', 20))
             ->isIdenticalTo('https:-domaincom-AAA');
 
-
         $this
             ->string(\text::cutString('https domaincom AAAECDEEIINOOOOESUUYZaaaecdeeiinooooesuuyyzss eehtml', 20))
             ->isIdenticalTo('https domaincom');
+    }
+
+    public function testSplitWords()
+    {
+        $this
+            ->array(\text::splitWords('Étrange et curieux/=À vous !'))
+            ->hasSize(3)
+            ->string[0]->isEqualTo('étrange')
+            ->string[1]->isEqualTo('curieux')
+            ->string[2]->isEqualTo('vous');
+
+        $this
+            ->array(\text::splitWords(' '))
+            ->hasSize(0);
+    }
+
+    public function testDetectEncoding()
+    {
+        $this
+            ->string(\text::detectEncoding('Étrange et curieux/=À vous !'))
+            ->isEqualTo('utf-8');
+
+        $test = mb_convert_encoding('Étrange et curieux/=À vous !', 'ISO-8859-1');
+        $this
+            ->string(\text::detectEncoding($test))
+            ->isEqualTo('iso-8859-1');
+    }
+
+    public function testToUTF8()
+    {
+        $this
+            ->string(\text::toUTF8('Étrange et curieux/=À vous !'))
+            ->isEqualTo('Étrange et curieux/=À vous !');
+
+        $test = mb_convert_encoding('Étrange et curieux/=À vous !', 'ISO-8859-1');
+        $this
+            ->string(\text::toUTF8($test))
+            ->isEqualTo('Étrange et curieux/=À vous !');
+    }
+
+    public function testUtf8badFind()
+    {
+        $this
+            ->variable(\text::utf8badFind('Étrange et curieux/=À vous !'))
+            ->isEqualTo(false);
+
+        $this
+            ->variable(\text::utf8badFind('Étrange et ' . chr(0xE0A0BF) . ' curieux/=À vous' . chr(0xC280)  . ' !'))
+            ->isEqualTo(12);
+    }
+
+    public function testCleanUTF8()
+    {
+        $this
+            ->string(\text::cleanUTF8('Étrange et curieux/=À vous !'))
+            ->isEqualTo('Étrange et curieux/=À vous !');
+
+        $this
+            ->string(\text::cleanUTF8('Étrange et ' . chr(0xE0A0BF) . ' curieux/=À vous' . chr(0xC280)  . ' !'))
+            ->isEqualTo('Étrange et ? curieux/=À vous? !');
+    }
+
+    public function testRemoveBOM()
+    {
+        $this
+            ->string(\text::removeBOM('Étrange et curieux/=À vous !'))
+            ->isEqualTo('Étrange et curieux/=À vous !');
+
+        $this
+            ->string(\text::removeBOM('﻿' . 'Étrange et curieux/=À vous !'))
+            ->isEqualTo('Étrange et curieux/=À vous !');
+    }
+
+    public function testQPEncode()
+    {
+        $this
+            ->string(\text::QPEncode('Étrange et curieux/=À vous !'))
+            ->isEqualTo('=C3=89trange et curieux/=3D=C3=80 vous !' . "\r\n");
     }
 }
