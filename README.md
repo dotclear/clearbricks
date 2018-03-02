@@ -23,6 +23,15 @@ Take a look at the _common.php file.
 
 Of course, you're encouraged to use the `$__autoload` magic for your own classes.
 
+## Requirements
+
+In order to use Clearbricks you need:
+
+ * PHP 5.3 with the following modules:
+    * mbstring
+    * iconv
+    * simplexml
+
 ## Use it with Mercurial
 
 You may think that all this subdirectories is a mess. You're quite right. But
