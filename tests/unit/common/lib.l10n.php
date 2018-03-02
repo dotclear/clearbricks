@@ -11,12 +11,12 @@
 #
 # Clearbricks is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.    See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
 # along with Clearbricks; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA	02111-1307	USA
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111-1307    USA
 #
 # ***** END LICENSE BLOCK *****
 
@@ -25,66 +25,87 @@ namespace tests\unit;
 use atoum;
 use Faker;
 
-require_once __DIR__.'/../bootstrap.php';
-$f = str_replace('\\',  '/', __FILE__);
-require_once(str_replace('tests/unit/',	 '', $f));
+require_once __DIR__ . '/../bootstrap.php';
+$f = str_replace('\\', '/', __FILE__);
+require_once str_replace('tests/unit/', '', $f);
 
 class l10n extends atoum
 {
-	private $l10n_dir = '/../fixtures/l10n';
+    private $l10n_dir = '/../fixtures/l10n';
 
-    public function testWithEmpty() {
+    public function testWithEmpty()
+    {
         $this
             ->string(__(''))
             ->isEqualTo('');
     }
 
-	public function testWithoutTranslation() {
-		$faker	= Faker\Factory::create();
-		$text = $faker->text(50);
+    public function testWithoutTranslation()
+    {
+        $faker = Faker\Factory::create();
+        $text  = $faker->text(50);
 
-		$this
-			->string(__($text))
-			->isEqualTo($text);
-	}
-
-	public function testSimpleSingular() {
-		\l10n::init();
-		\l10n::set(__DIR__.'/../fixtures/l10n/fr/core');
-
-		$this
-			->string(__('Dotclear has been upgraded.'))
-			->isEqualTo('Dotclear a été mis à jour.');
-	}
-
-	public function testZeroForCountEn() {
-		\l10n::init();
-
-		$this
-			->string(__('singular', 'plural', 0))
-			->isEqualTo('plural');
+        $this
+            ->string(__($text))
+            ->isEqualTo($text);
     }
 
-	public function testZeroForCountFr() {
-		\l10n::init();
-		\l10n::set(__DIR__.'/../fixtures/l10n/fr/main');
+    public function testSimpleSingular()
+    {
+        \l10n::init();
+        \l10n::set(__DIR__ . '/../fixtures/l10n/fr/core');
 
-		$this
-			->string(__('The category has been successfully removed.', 'The categories have been successfully removed.', 0))
-			->isEqualTo('Catégories supprimées avec succès.');
+        $this
+            ->string(__('Dotclear has been upgraded.'))
+            ->isEqualTo('Dotclear a été mis à jour.');
     }
 
-	public function testZeroForCountFrUsingLang() {
-		\l10n::init();
-		\l10n::set(__DIR__.'/../fixtures/l10n/fr/main');
+    public function testZeroForCountEn()
+    {
+        \l10n::init();
+
+        $this
+            ->string(__('singular', 'plural', 0))
+            ->isEqualTo('plural');
+    }
+
+    public function testZeroForCountFr()
+    {
+        \l10n::init();
+        \l10n::set(__DIR__ . '/../fixtures/l10n/fr/main');
+
+        $this
+            ->string(__('The category has been successfully removed.', 'The categories have been successfully removed.', 0))
+            ->isEqualTo('Catégories supprimées avec succès.');
+
+        $this
+            ->string(__('Time: %1 second', 'Time: %1 seconds and Next', 2))
+            ->isEqualTo('Temps: %1 secondes');
+    }
+
+    public function testZeroForCountFrUsingLang()
+    {
+        \l10n::init();
+        \l10n::set(__DIR__ . '/../fixtures/l10n/fr/main');
         \l10n::lang('fr');
 
-		$this
-			->string(__('The category has been successfully removed.', 'The categories have been successfully removed.', 0))
-			->isEqualTo('Catégorie supprimée avec succès.');
+        $this
+            ->string(__('The category has been successfully removed.', 'The categories have been successfully removed.', 0))
+            ->isEqualTo('Catégorie supprimée avec succès.');
     }
 
-	public function testCodeLang() {
+    public function testPluralWithSingularOnly()
+    {
+        \l10n::init();
+        \l10n::set(__DIR__ . '/../fixtures/l10n/fr/main');
+
+        $this
+            ->string(__('Dotclear has been upgraded.', 'Dotclear has been upgraded (plural).', 0))
+            ->isEqualTo('Dotclear a été mis à jour (pluriel).');
+    }
+
+    public function testCodeLang()
+    {
         \l10n::init();
 
         $this
@@ -96,23 +117,26 @@ class l10n extends atoum
             ->isEqualTo(true);
     }
 
-	public function testChangeNonExistingLangShouldUseDefaultOne() {
+    public function testChangeNonExistingLangShouldUseDefaultOne()
+    {
         \l10n::init('en');
 
         $this
             ->string(\l10n::lang('xx'))
             ->isEqualTo('en');
-	}
+    }
 
-	public function testgetLanguageName() {
+    public function testgetLanguageName()
+    {
         \l10n::init();
 
         $this
             ->string(\l10n::getLanguageName('fr'))
             ->isEqualTo('Français');
-	}
+    }
 
-	public function testgetCode() {
+    public function testgetCode()
+    {
         \l10n::init();
 
         $this
@@ -122,166 +146,299 @@ class l10n extends atoum
         $this
             ->string(\l10n::getCode(\l10n::getLanguageName('es')))
             ->isEqualTo('es');
-	}
+    }
 
-	public function testPhpFormatSingular() {
-		$faker	= Faker\Factory::create();
-		$text = $faker->text(20);
+    public function testPhpFormatSingular()
+    {
+        $faker = Faker\Factory::create();
+        $text  = $faker->text(20);
 
-		\l10n::init();
-		\l10n::set(__DIR__.'/../fixtures/l10n/fr/php-format');
+        \l10n::init();
+        \l10n::set(__DIR__ . '/../fixtures/l10n/fr/php-format');
 
-		$this
-			->string(sprintf(__('The e-mail was sent successfully to %s.'), $text))
-			->isEqualTo(sprintf('Message envoyé avec succès à %s.', $text));
-	}
+        $this
+            ->string(sprintf(__('The e-mail was sent successfully to %s.'), $text))
+            ->isEqualTo(sprintf('Message envoyé avec succès à %s.', $text));
+    }
 
-	public function testPluralWithoutTranslation() {
-		\l10n::init();
-		\l10n::set(__DIR__.'/../fixtures/l10n/dummy');
+    public function testPluralWithoutTranslation()
+    {
+        \l10n::init();
+        \l10n::set(__DIR__ . '/../fixtures/l10n/dummy');
 
-		$this
-			->string(__('The category has been successfully removed.', 'The categories have been successfully removed.', 1))
-			->isEqualTo('The category has been successfully removed.');
+        $this
+            ->string(__('The category has been successfully removed.', 'The categories have been successfully removed.', 1))
+            ->isEqualTo('The category has been successfully removed.');
 
-		$this
-			->string(__('The category has been successfully removed.', 'The categories have been successfully removed.', 2))
-			->isEqualTo('The categories have been successfully removed.');
-	}
+        $this
+            ->string(__('The category has been successfully removed.', 'The categories have been successfully removed.', 2))
+            ->isEqualTo('The categories have been successfully removed.');
+    }
 
-    public function testPluralForLanguageWithoutPluralForms() {
-		\l10n::init();
+    public function testPluralWithEmptyTranslation()
+    {
+        \l10n::init();
+        \l10n::set(__DIR__ . '/../fixtures/l10n/empty');
 
-		$this
-			->integer(\l10n::getLanguagePluralsNumber('aa'))
-			->isEqualTo(\l10n::getLanguagePluralsNumber('en'));
+        $this
+            ->string(__('The category has been successfully removed.', 'The categories have been successfully removed.', 1))
+            ->isEqualTo('The category has been successfully removed.');
 
-		$this
-			->string(\l10n::getLanguagePluralExpression('aa'))
-			->isEqualTo(\l10n::getLanguagePluralExpression('en'));
+        $this
+            ->string(__('The category has been successfully removed.', 'The categories have been successfully removed.', 2))
+            ->isEqualTo('The categories have been successfully removed.');
+    }
+
+    public function testPluralForLanguageWithoutPluralForms()
+    {
+        \l10n::init();
+
+        $this
+            ->integer(\l10n::getLanguagePluralsNumber('aa'))
+            ->isEqualTo(\l10n::getLanguagePluralsNumber('en'));
+
+        $this
+            ->string(\l10n::getLanguagePluralExpression('aa'))
+            ->isEqualTo(\l10n::getLanguagePluralExpression('en'));
 
     }
 
-	public function testSimplePlural() {
-		\l10n::init();
-		\l10n::set(__DIR__.'/../fixtures/l10n/fr/main');
+    public function testSimplePlural()
+    {
+        \l10n::init();
+        \l10n::set(__DIR__ . '/../fixtures/l10n/fr/main');
 
-		/*
-		  msgid "The category has been successfully removed."
-		  msgid_plural "The categories have been successfully removed."
-		  msgstr[0] "Catégorie supprimée avec succès."
-		  msgstr[1] "Catégories supprimées avec succès."
-		*/
+        /*
+        msgid "The category has been successfully removed."
+        msgid_plural "The categories have been successfully removed."
+        msgstr[0] "Catégorie supprimée avec succès."
+        msgstr[1] "Catégories supprimées avec succès."
+         */
 
-		$this
-			->string(__('The category has been successfully removed.', 'The categories have been successfully removed.', 1))
-			->isEqualTo('Catégorie supprimée avec succès.');
+        $this
+            ->string(__('The category has been successfully removed.', 'The categories have been successfully removed.', 1))
+            ->isEqualTo('Catégorie supprimée avec succès.');
 
-		$this
-			->string(__('The category has been successfully removed.', 'The categories have been successfully removed.', 2))
-			->isEqualTo('Catégories supprimées avec succès.');
-	}
+        $this
+            ->string(__('The category has been successfully removed.', 'The categories have been successfully removed.', 2))
+            ->isEqualTo('Catégories supprimées avec succès.');
+    }
 
-	public function testNotExistingPhpAndPoFiles() {
-		\l10n::init();
-		\l10n::set(__DIR__.'/../fixtures/l10n/dummy');
+    public function testNotExistingPhpAndPoFiles()
+    {
+        \l10n::init();
+        \l10n::set(__DIR__ . '/../fixtures/l10n/dummy');
 
-		$this
-			->string(__('Dotclear has been upgraded.'))
-			->isEqualTo('Dotclear has been upgraded.');
-	}
+        $this
+            ->string(__('Dotclear has been upgraded.'))
+            ->isEqualTo('Dotclear has been upgraded.');
+    }
 
-	public function testGetFilePath() {
-		\l10n::init();
+    public function testNotExistingPoFile()
+    {
+        \l10n::init();
+        \l10n::set(__DIR__ . '/../fixtures/l10n/fr/nopo');
 
-		$this
-			->string(\l10n::getFilePath(__DIR__.$this->l10n_dir, 'main.po', 'fr'))
-			->isEqualTo(__DIR__.$this->l10n_dir.'/fr/main.po');
+        $this
+            ->string(__('Dotclear has been upgraded.'))
+            ->isEqualTo('Dotclear a été mis à jour.');
+    }
 
-		$this
-			->boolean(\l10n::getFilePath(__DIR__.$this->l10n_dir, 'dummy.po', 'fr'))
-			->isEqualTo(false);
-	}
+    public function testUnreadableLangFile()
+    {
+        \l10n::init();
+        chmod(__DIR__ . '/../fixtures/l10n/fr/nopo.lang', 0200); // Write only
+        \l10n::set(__DIR__ . '/../fixtures/l10n/fr/nopo');
+        chmod(__DIR__ . '/../fixtures/l10n/fr/nopo.lang', 0644); // Restore permissions
 
-	public function testMultiLineIdString() {
-		\l10n::init();
+        $this
+            ->string(__('Dotclear has been upgraded.'))
+            ->isEqualTo('Dotclear has been upgraded.');
+    }
 
-		$en_str = 'Not a real long sentence';
-		$content = 'msgid ""'."\n".'"';
-		$content .= implode('"'."\n".'" ', explode(' ', $en_str));
-		$content .= '"'."\n";
-		$content .= 'msgstr "Pas vraiment une très longue phrase"'."\n";
+    public function testGetFilePath()
+    {
+        \l10n::init();
 
-		$tmp_file = $this->tempPoFile($content);
-		\l10n::set(str_replace('.po', '', $tmp_file));
+        $this
+            ->string(\l10n::getFilePath(__DIR__ . $this->l10n_dir, 'main.po', 'fr'))
+            ->isEqualTo(__DIR__ . $this->l10n_dir . '/fr/main.po');
 
-		$this
-			->string(__($en_str))
-			->isEqualTo("Pas vraiment une très longue phrase");
+        $this
+            ->boolean(\l10n::getFilePath(__DIR__ . $this->l10n_dir, 'dummy.po', 'fr'))
+            ->isEqualTo(false);
+    }
 
-		if (file_exists($tmp_file)) {
-			unlink($tmp_file);
-		}
-	}
+    public function testMultiLineIdString()
+    {
+        \l10n::init();
 
-	public function testMultiLineValueString() {
-		\l10n::init();
+        $en_str  = 'Not a real long sentence';
+        $content = 'msgid ""' . "\n" . '"';
+        $content .= implode('"' . "\n" . '" ', explode(' ', $en_str));
+        $content .= '"' . "\n";
+        $content .= 'msgstr "Pas vraiment une très longue phrase"' . "\n";
 
-		$en_str = 'Not a real long sentence';
-		$fr_str = "Pas vraiment une très longue phrase";
-		$content = 'msgid "'.$en_str.'"'."\n";
-		$content .= 'msgstr ""'."\n".'"';
-		$content .= implode('"'."\n".'" ', explode(' ', $fr_str));
-		$content .= '"'."\n";
+        $tmp_file = $this->tempPoFile($content);
+        \l10n::set(str_replace('.po', '', $tmp_file));
 
-		$tmp_file = $this->tempPoFile($content);
-		\l10n::set(str_replace('.po', '', $tmp_file));
+        $this
+            ->string(__($en_str))
+            ->isEqualTo("Pas vraiment une très longue phrase");
 
-		$this
-			->string(__($en_str))
-			->isEqualTo($fr_str);
+        if (file_exists($tmp_file)) {
+            unlink($tmp_file);
+        }
+    }
 
-		if (file_exists($tmp_file)) {
-			unlink($tmp_file);
-		}
-	}
+    public function testMultiLineValueString()
+    {
+        \l10n::init();
 
-	public function testSimpleStringInPhpFile() {
-		\l10n::init();
+        $en_str  = 'Not a real long sentence';
+        $fr_str  = "Pas vraiment une très longue phrase";
+        $content = 'msgid "' . $en_str . '"' . "\n";
+        $content .= 'msgstr ""' . "\n" . '"';
+        $content .= implode('"' . "\n" . '" ', explode(' ', $fr_str));
+        $content .= '"' . "\n";
 
-		$file = __DIR__.'/../fixtures/l10n/fr/simple';
-		if (file_exists("$file.lang.php")) {
-			unlink("$file.lang.php");
-		}
-		\l10n::generatePhpFileFromPo($file);
-		\l10n::set($file);
+        $tmp_file = $this->tempPoFile($content);
+        \l10n::set(str_replace('.po', '', $tmp_file));
 
-		$this
-			->array($GLOBALS['__l10n'])
-			->isIdenticalTo(array('Dotclear has been upgraded.' => 'Dotclear a été mis à jour.'));
-	}
+        $this
+            ->string(__($en_str))
+            ->isEqualTo($fr_str);
 
-	public function testPluralStringsInPhpFile() {
-		\l10n::init();
+        if (file_exists($tmp_file)) {
+            unlink($tmp_file);
+        }
+    }
 
-		$file = __DIR__.'/../fixtures/l10n/fr/plurals';
-		if (file_exists("$file.lang.php")) {
-			unlink("$file.lang.php");
-		}
-		\l10n::generatePhpFileFromPo($file);
-		\l10n::set($file);
+    public function testSimpleStringInPhpFile()
+    {
+        \l10n::init();
 
-		$this
-			->array($GLOBALS['__l10n'])
-			->isIdenticalTo(array('The category has been successfully removed.' => array('Catégorie supprimée avec succès.', 'Catégories supprimées avec succès.')));
-	}
+        $file = __DIR__ . '/../fixtures/l10n/fr/simple';
+        if (file_exists("$file.lang.php")) {
+            unlink("$file.lang.php");
+        }
+        \l10n::generatePhpFileFromPo($file);
+        \l10n::set($file);
 
-	/*
-	**/
-	protected function tempPoFile($content) {
-		$filename = sys_get_temp_dir() . '/temp.po';
+        $this
+            ->array($GLOBALS['__l10n'])
+            ->isIdenticalTo(array('Dotclear has been upgraded.' => 'Dotclear a été mis à jour.'));
+    }
 
-		file_put_contents($filename, $content);
-		return $filename;
-	}
+    public function testPluralStringsInPhpFile()
+    {
+        \l10n::init();
+
+        $file = __DIR__ . '/../fixtures/l10n/fr/plurals';
+        if (file_exists("$file.lang.php")) {
+            unlink("$file.lang.php");
+        }
+        \l10n::generatePhpFileFromPo($file);
+        \l10n::set($file);
+
+        $this
+            ->array($GLOBALS['__l10n'])
+            ->isIdenticalTo(array('The category has been successfully removed.' => array('Catégorie supprimée avec succès.', 'Catégories supprimées avec succès.')));
+    }
+
+    public function testParsePluralExpression()
+    {
+        $this
+            ->array(\l10n::parsePluralExpression('nplurals=2; plural=(n > 1)'))
+            ->hasSize(2)
+            ->containsValues(array(2, '(n > 1)'));
+
+        $this
+            ->array(\l10n::parsePluralExpression('nplurals=6; plural=(n == 0 ? 0 : n == 1 ? 1 : n == 2 ? 2 : n % 100 >= 3 && n % 100 <= 10 ? 3 : n % 100 >= 11 ? 4 : 5)'))
+            ->hasSize(2)
+            ->containsValues(array(6, '(n == 0  ? ( 0 ) : ( n == 1  ? ( 1 ) : ( n == 2  ? ( 2 ) : ( n % 100 >= 3 && n % 100 <= 10  ? ( 3 ) : ( n % 100 >= 11  ? ( 4 ) : ( 5))))))'));
+    }
+
+    public function testGetISOcodes()
+    {
+        $this
+            ->array(\l10n::getISOcodes())
+            ->string['fr']->isEqualTo('Français');
+
+        $this
+            ->array(\l10n::getISOcodes(true))
+            ->string['Français']->isEqualTo('fr');
+
+        $this
+            ->array(\l10n::getISOcodes(false, true))
+            ->string['fr']->isEqualTo('fr - Français');
+
+        $this
+            ->array(\l10n::getISOcodes(true, true))
+            ->string['fr - Français']->isEqualTo('fr');
+    }
+
+    public function testGetTextDirection()
+    {
+        $this
+            ->string(\l10n::getTextDirection('fr'))
+            ->isEqualTo('ltr');
+
+        $this
+            ->string(\l10n::getTextDirection('ar'))
+            ->isEqualTo('rtl');
+    }
+
+    public function testGetLanguagesDefinitions()
+    {
+        $getLangDefs = new \ReflectionMethod('\l10n', 'getLanguagesDefinitions');
+        $getLangDefs->setAccessible(true);
+
+        $this
+            ->array($getLangDefs->invokeArgs(null, array(0)))
+            ->isNotEmpty();
+
+        $this
+            ->array($getLangDefs->invokeArgs(null, array(13)))
+            ->isEmpty();
+
+        $this
+            ->array($getLangDefs->invokeArgs(null, array(0)))
+            ->string['fr']->isEqualTo('fr');
+
+        $this
+            ->array($getLangDefs->invokeArgs(null, array(1)))
+            ->string['fr']->isEqualTo('fre');
+
+        $this
+            ->array($getLangDefs->invokeArgs(null, array(2)))
+            ->string['fr']->isEqualTo('French');
+
+        $this
+            ->array($getLangDefs->invokeArgs(null, array(3)))
+            ->string['fr']->isEqualTo('Français');
+
+        $this
+            ->array($getLangDefs->invokeArgs(null, array(4)))
+            ->string['fr']->isEqualTo('ltr');
+
+        $this
+            ->array($getLangDefs->invokeArgs(null, array(5)))
+            ->integer['fr']->isEqualTo(2);
+
+        $this
+            ->array($getLangDefs->invokeArgs(null, array(6)))
+            ->string['fr']->isEqualTo('n > 1');
+
+    }
+
+    /*
+     **/
+    protected function tempPoFile($content)
+    {
+        $filename = sys_get_temp_dir() . '/temp.po';
+
+        file_put_contents($filename, $content);
+        return $filename;
+    }
 }

@@ -23,6 +23,9 @@ msgstr ""
 msgid "Dotclear has been upgraded."
 msgstr "Dotclear a été mis à jour."
 
+msgid "Dotclear has been upgraded (plural)."
+msgstr "Dotclear a été mis à jour (pluriel)."
+
 msgid "The category has been successfully created."
 msgstr "Catégorie créée avec succès."
 
@@ -35,3 +38,31 @@ msgstr[1] "Catégories supprimées avec succès."
 msgid "The e-mail was sent successfully to %s."
 msgstr "Message envoyé avec succès à %s."
 
+#: kstarsinit.cpp:444
+#, fuzzy
+#| msgid "Solar System"
+msgctxt "Toggle Solar System objects in the display"
+msgid "Solar System"
+msgstr "Sunčev sistem"
+⁠
+#: finddialog.cpp:102
+#, fuzzy
+#| msgctxt "object name (optional)"
+#| msgid "Andromeda Galaxy"
+msgid "Andromeda Galaxy"
+msgstr "Andromeda, galaksija"
+
+#. Tag: title
+#. not translated
+#: skycoords.docbook:73
+msgid "The Horizontal Coordinate System"
+msgstr ""
+
+#: mainwindow.cpp:127
+#, kde-format
+msgid "Time: %1 second"
+msgid_plural "Time: %1 seconds"
+" and Next"
+msgstr[0] "Temps: %1 seconde"
+msgstr[1] "Temps: %1"
+" secondes"
