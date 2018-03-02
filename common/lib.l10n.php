@@ -212,7 +212,6 @@ class l10n
             $GLOBALS['__l10n']         = $tmp + $GLOBALS['__l10n']; // "+" erase numeric keys unlike array_merge
 
         } else {
-
             return false;
         }
 
@@ -263,7 +262,7 @@ class l10n
 
             # Original text
             if (substr($l, 0, 1) == ';' && ($t = fgets($fp)) !== false && trim($t) != '') {
-                $res[$l] = trim($t);
+                $res[substr($l, 1)] = trim($t);
             }
         }
         fclose($fp);
@@ -284,12 +283,10 @@ class l10n
     public static function getPoFile($file)
     {
         if (($m = self::parsePoFile($file)) === false) {
-
             return false;
         }
 
         if (empty($m[1])) {
-
             return array();
         }
 
@@ -359,13 +356,11 @@ class l10n
     {
         // stop if file not exists
         if (!file_exists($file)) {
-
             return false;
         }
 
         // read file per line in array (without ending new line)
         if (false === ($lines = file($file, FILE_IGNORE_NEW_LINES))) {
-
             return false;
         }
 
@@ -383,8 +378,8 @@ class l10n
             // there are more headers but these ones are default
         );
         $headers_searched = $headers_found = false;
-        $h_line           = $h_val           = $h_key           = '';
-        $entries          = $entry          = $desc          = array();
+        $h_line           = $h_val         = $h_key           = '';
+        $entries          = $entry         = $desc            = array();
         $i                = 0;
 
         // read through lines
@@ -643,7 +638,7 @@ class l10n
     public static function createPluralFunction($nplurals, $expression)
     {
         return function ($n) use ($nplurals, $expression) {
-            $i = eval('return (integer) ('.str_replace('n', $n, $expression).');');
+            $i = eval('return (integer) (' . str_replace('n', $n, $expression) . ');');
             return ($i < $nplurals) ? $i : $nplurals - 1;
         };
     }
