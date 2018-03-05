@@ -377,11 +377,16 @@ class netHttp extends netSocket
         }
 
         # X-Forwarded-For
-        $xforward = array($_SERVER['REMOTE_ADDR']);
-        if ($this->proxy_host) {
+        $xforward = array();
+        if (isset($_SERVER['REMOTE_ADDR'])) {
+            $xforward[] = $_SERVER['REMOTE_ADDR'];
+        }
+        if ($this->proxy_host && isset($_SERVER['SERVER_ADDR'])) {
             $xforward[] = $_SERVER['SERVER_ADDR'];
         }
-        $headers[] = 'X-Forwarded-For: ' . implode(', ', $xforward);
+        if (count($xforward)) {
+            $headers[] = 'X-Forwarded-For: ' . implode(', ', $xforward);
+        }
 
         # Basic authentication
         if ($this->username && $this->password) {

@@ -22,55 +22,55 @@
 namespace tests\unit;
 
 use atoum;
-use Faker;
 
-require_once __DIR__.'/../bootstrap.php';
+require_once __DIR__ . '/../bootstrap.php';
 
-$f = str_replace('\\',  '/', __FILE__);
-require_once(str_replace('tests/unit/',  '', $f));
-require_once(__DIR__.'/../../../common/lib.files.php');
-require_once(__DIR__.'/../../../template/class.tplnode.php');
-require_once(__DIR__.'/../../../template/class.tplnodeblock.php');
-require_once(__DIR__.'/../../../template/class.tplnodeblockdef.php');
-require_once(__DIR__.'/../../../template/class.tplnodevalue.php');
-require_once(__DIR__.'/../../../template/class.tplnodevalueparent.php');
-require_once(__DIR__.'/../../../template/class.tplnodetext.php');
+$f = str_replace('\\', '/', __FILE__);
+require_once str_replace('tests/unit/', '', $f);
+require_once __DIR__ . '/../../../common/lib.files.php';
+require_once __DIR__ . '/../../../template/class.tplnode.php';
+require_once __DIR__ . '/../../../template/class.tplnodeblock.php';
+require_once __DIR__ . '/../../../template/class.tplnodeblockdef.php';
+require_once __DIR__ . '/../../../template/class.tplnodevalue.php';
+require_once __DIR__ . '/../../../template/class.tplnodevalueparent.php';
+require_once __DIR__ . '/../../../template/class.tplnodetext.php';
 
 class template extends atoum
 {
-	protected $fixturesDir;
-	/**
-	 * @dataProvider getTestTemplates
-	 */
-	public function testTemplate($file) {
-		echo "being tested with : ".$file."\n";
+    protected $fixturesDir;
+    /**
+     * @dataProvider getTestTemplates
+     */
+    public function testTemplate($file)
+    {
+        echo "being tested with : " . $file . "\n";
         \tplNodeBlockDefinition::reset();
-		$t = $this->parse($file);
-		$dir = sys_get_temp_dir().'/tpl';
-        $cachedir = sys_get_temp_dir().'/cbtpl';
-        @mkdir ($dir);
-        @mkdir ($cachedir);
+        $t        = $this->parse($file);
+        $dir      = sys_get_temp_dir() . '/tpl';
+        $cachedir = sys_get_temp_dir() . '/cbtpl';
+        @mkdir($dir);
+        @mkdir($cachedir);
 
-        $basetpl="";
-        foreach ($t['templates'] as $name=>$content) {
-            $targetdir = $dir."/".dirname($name);
+        $basetpl = "";
+        foreach ($t['templates'] as $name => $content) {
+            $targetdir  = $dir . "/" . dirname($name);
             $targetfile = basename($name);
             if (!is_dir($targetdir)) {
-                @mkdir ($targetdir,0777,true);
+                @mkdir($targetdir, 0777, true);
             }
-            if ($basetpl=='') {
-                $basetpl=$targetfile;
+            if ($basetpl == '') {
+                $basetpl = $targetfile;
             }
-            file_put_contents($targetdir.'/'.$targetfile,$content);
+            file_put_contents($targetdir . '/' . $targetfile, $content);
         }
-        $GLOBALS['tpl'] = new \template($cachedir,'$tpl');
-        $GLOBALS['tpl']->use_cache=false;
+        $GLOBALS['tpl']            = new \template($cachedir, '$tpl');
+        $GLOBALS['tpl']->use_cache = false;
         if (empty($t['path'])) {
             $GLOBALS['tpl']->setPath($dir);
         } else {
-            $path=array();
+            $path = array();
             foreach ($t['path'] as $p) {
-                $path[] = $dir.'/'.trim($p);
+                $path[] = $dir . '/' . trim($p);
             }
             $GLOBALS['tpl']->setPath($path);
         }
@@ -83,42 +83,42 @@ class template extends atoum
         } else {
 
             $this
-                ->exception(function() use($basetpl) {
+                ->exception(function () use ($basetpl) {
                     $result = $GLOBALS['tpl']->getData($basetpl);
                 })
                 ->hasMessage(trim($t['exception']));
         }
-        foreach ($t['templates'] as $name=>$content) {
-            unlink($dir.'/'.$name);
+        foreach ($t['templates'] as $name => $content) {
+            unlink($dir . '/' . $name);
         }
         unset($GLOBALS['tpl']);
 
-	}
+    }
 
-
-	public function parse($file) {
-		$test = file_get_contents($file);
-		if (preg_match('/--TEST--\s*(.*?)\s*(?:--CONDITION--\s*(.*))?\s*((?:--TEMPLATE(?:\(.*?\))?--(?:.*?))+)(?:--PATH--\s*(.*))?--EXCEPTION--\s*(.*)/s', $test, $match)) {
-            $message = $match[1];
+    public function parse($file)
+    {
+        $test = file_get_contents($file);
+        if (preg_match('/--TEST--\s*(.*?)\s*(?:--CONDITION--\s*(.*))?\s*((?:--TEMPLATE(?:\(.*?\))?--(?:.*?))+)(?:--PATH--\s*(.*))?--EXCEPTION--\s*(.*)/s', $test, $match)) {
+            $message   = $match[1];
             $condition = $match[2];
             $templates = $this->parseTemplates($match[3]);
-            $path = isset($match[4])?explode(';',$match[4]):array();
+            $path      = isset($match[4]) ? explode(';', $match[4]) : array();
             $exception = $match[5];
             //$outputs = array(array(null, $match[4], null, ''));
-            $outputs=array();
+            $outputs = array();
         } elseif (preg_match('/--TEST--\s*(.*?)\s*(?:--CONDITION--\s*(.*))?\s*((?:--TEMPLATE(?:\(.*?\))?--(?:.*?))+)(?:--PATH--\s*(.*))?--EXPECT--.*/s', $test, $match)) {
-            $message = $match[1];
+            $message   = $match[1];
             $condition = $match[2];
             $templates = $this->parseTemplates($match[3]);
-            $path = isset($match[4])?explode(';',$match[4]):array();
+            $path      = isset($match[4]) ? explode(';', $match[4]) : array();
             $exception = false;
             preg_match_all('/--EXPECT--\s*(.*?)$/s', $test, $outputs, PREG_SET_ORDER);
         } else {
-            throw new \Exception(sprintf('Test "%s" is not valid.', str_replace($this->fixturesDir.'/', '', $file)));
+            throw new \Exception(sprintf('Test "%s" is not valid.', str_replace($this->fixturesDir . '/', '', $file)));
         }
 
-        $ret= array(
-            "name"      => str_replace($this->fixturesDir.'/', '', $file),
+        $ret = array(
+            "name"      => str_replace($this->fixturesDir . '/', '', $file),
             "msg"       => $message,
             "condition" => $condition,
             "templates" => $templates,
@@ -127,7 +127,7 @@ class template extends atoum
             "outputs"   => $outputs
         );
         return $ret;
-	}
+    }
     protected static function parseTemplates($test)
     {
         $templates = array();
@@ -139,54 +139,57 @@ class template extends atoum
         return $templates;
     }
 
-	public function getTestTemplates() {
-        $this->fixturesDir = __DIR__.'/../fixtures/templates';
-        $tests = array();
+    public function getTestTemplates()
+    {
+        $this->fixturesDir = __DIR__ . '/../fixtures/templates';
+        $tests             = array();
 
         foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($this->fixturesDir), \RecursiveIteratorIterator::LEAVES_ONLY) as $file) {
             if (preg_match('/\.test$/', $file)) {
                 $tests[] = $file->getRealpath();
             }
         }
-		return $tests;
-	}
+        return $tests;
+    }
 
 }
 
-
 class testTpls
 {
-    public static function register($tpl) {
-        $tpl->addValue("echo",array('tests\\unit\\testTpls','tplecho'));
-        $tpl->addBlock("loop",array('tests\\unit\\testTpls','tplloop'));
+    public static function register($tpl)
+    {
+        $tpl->addValue("echo", array('tests\\unit\\testTpls', 'tplecho'));
+        $tpl->addBlock("loop", array('tests\\unit\\testTpls', 'tplloop'));
     }
 
-    public static function tplecho($attr,$str) {
+    public static function tplecho($attr, $str)
+    {
         $ret = '';
-        $txt=array();
-        foreach ($attr as $k=>$v) {
-            $txt[] = '"'.$k.'":"'.$v.'"';
+        $txt = array();
+        foreach ($attr as $k => $v) {
+            $txt[] = '"' . $k . '":"' . $v . '"';
         }
         if (!empty($txt)) {
-            $ret .= '{'.join(',',$txt)."}";
+            $ret .= '{' . join(',', $txt) . "}";
         }
         if (empty($attr)) {
-            $ret .= '['.$str.']';
+            $ret .= '[' . $str . ']';
         }
         return $ret;
     }
 
-    public static function tplloop($attr,$content){
-        $ret='';
+    public static function tplloop($attr, $content)
+    {
+        $ret = '';
         if (isset($attr['times'])) {
-            $times = (integer)$attr['times'];
-            for ($i=0;$i<$times; $i++) {
+            $times = (integer) $attr['times'];
+            for ($i = 0; $i < $times; $i++) {
                 $ret .= $content;
             }
             unset($attr['times']);
         }
         if (!empty($attr)) {
-            $ret = self::tplecho($attr).$ret;
+            $ret = self::tplecho($attr) . $ret;
         }
         return $ret;
     }
