@@ -397,11 +397,21 @@ class netHttp extends netSocket
 
         # If this is a POST, set the content type and length
         if ($this->postdata) {
-            $content_type = 'Content-Type: application/x-www-form-urlencoded';
-            if ($this->post_charset) {
-                $content_type .= '; charset=' . $this->post_charset;
+            $needed = true;
+            foreach ($headers as $value) {
+                if (preg_match('/^Content-Type: /', $value)) {
+                    // Content-Type already set in headers, ignore
+                    $needed = false;
+                    break;
+                }
             }
-            $headers[] = $content_type;
+            if ($needed) {
+                $content_type = 'Content-Type: application/x-www-form-urlencoded';
+                if ($this->post_charset) {
+                    $content_type .= '; charset=' . $this->post_charset;
+                }
+                $headers[] = $content_type;
+            }
             $headers[] = 'Content-Length: ' . strlen($this->postdata);
             $headers[] = '';
             $headers[] = $this->postdata;

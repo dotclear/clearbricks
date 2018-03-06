@@ -26,8 +26,9 @@ if (class_exists('netHttp')) {
 
     class htmlValidator extends netHttp
     {
-        protected $host       = 'www.htmlhelp.com';
-        protected $path       = '/cgi-bin/validate.cgi';
+        protected $host       = 'validator.w3.org';
+        protected $path       = '/nu/';
+        protected $use_ssl    = true;
         protected $user_agent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.3a) Gecko/20021207';
         protected $timeout    = 2;
 
@@ -38,7 +39,7 @@ if (class_exists('netHttp')) {
          */
         public function __construct()
         {
-            parent::__construct($this->host, 80, $this->timeout);
+            parent::__construct($this->host, 443, $this->timeout);
         }
 
         /**
@@ -52,9 +53,8 @@ if (class_exists('netHttp')) {
         public function getDocument($fragment)
         {
             return
-                '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" ' .
-                '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">' . "\n" .
-                '<html xmlns="http://www.w3.org/1999/xhtml">' . "\n" .
+                '<!DOCTYPE html>' . "\n" .
+                '<html>' . "\n" .
                 '<head>' . "\n" .
                 '<title>validation</title>' . "\n" .
                 '</head>' . "\n" .
@@ -75,8 +75,8 @@ if (class_exists('netHttp')) {
          */
         public function perform($html, $charset = 'UTF-8')
         {
-            $data = array('area' => $html, 'charset' => $charset);
-            $this->post($this->path, $data);
+            $this->setMoreHeader('Content-Type: text/html; charset=' . strtolower($charset));
+            $this->post($this->path, $html);
 
             if ($this->getStatus() != 200) {
                 throw new Exception('Status code line invalid.');
@@ -84,11 +84,11 @@ if (class_exists('netHttp')) {
 
             $result = $this->getContent();
 
-            if (strpos($result, '<p class=congratulations><strong>Congratulations, no errors!</strong></p>')) {
+            if (strpos($result, '<p class="success">The document validates according to the specified schema(s).</p>')) {
                 return true;
             } else {
-                if ($errors = preg_match('#<h2>Errors</h2>[\s]*(<ul>.*</ul>)#msU', $result, $matches)) {
-                    $this->html_errors = strip_tags($matches[1], '<ul><li><pre><b>');
+                if ($errors = preg_match('#(<ol>.*</ol>)<p class="failure">There were errors.</p>#msU', $result, $matches)) {
+                    $this->html_errors = strip_tags($matches[1], '<ol><li><p><code><strong>');
                 }
                 return false;
             }
