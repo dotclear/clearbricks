@@ -291,6 +291,7 @@ class files extends atoum
         // Test exceptions
         $content  = 'A Content';
         $filename = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'atestfile.txt';
+        @unlink($filename);
         \files::putContent($filename, $content);
         $this
             ->exception(function() use($filename) {
