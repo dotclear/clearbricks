@@ -32,8 +32,8 @@ class htmlValidator extends atoum
 <p>Hello</p>
 EODTIDY;
         $doc = <<<EODTIDYV
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
 <head>
 <title>validation</title>
 </head>
@@ -55,20 +55,7 @@ EODTIDYV;
 <p>Hello</b>
 EODTIDYE;
         $err    = <<<EODTIDYF
-<ul>
-<li>Line 7, character 12:
-<pre>&lt;p&gt;Hello&lt;/b&gt;
-           ^</pre>
-Error: end tag for element  b which is not open; try removing the end tag or check for  improper nesting of elements</li>
-<li>Line 8, character 7:
-<pre>&lt;/body&gt;
-      ^</pre>
-Error: end tag for  p omitted; end tags are required in  XML for  non-empty elements;  empty elements require an end tag or the start tag must end with /&gt;</li>
-<li>Line 7, character 1:
-<pre>&lt;p&gt;Hello&lt;/b&gt;
-^</pre>
- start tag was here</li>
-</ul>
+<ol><li class="error"><p><strong>Error</strong>: Stray end tag <code>b</code>.</p><p class="location">From line 7, column 9; to line 7, column 12</p><p class="extract"><code>&gt;↩&lt;p&gt;Hello&lt;/b&gt;↩&lt;/bod</code></p></li></ol>
 EODTIDYF;
 
         $this
