@@ -25,10 +25,25 @@ use atoum;
  */
 class htmlValidator extends atoum
 {
+    public function testNetworkError()
+    {
+        $mockValidator = new \mock\htmlValidator();
+        // Always return service unavailable HTTP status code
+        $this->calling($mockValidator)->getStatus = 500;
+
+        $doc = $mockValidator->getDocument('<p>Hello</p>');
+
+        $this
+            ->exception(function () use ($mockValidator, $doc) {
+                $result = $mockValidator->perform($doc);
+            })
+            ->hasMessage('Status code line invalid.');
+    }
+
     public function testGetDocument()
     {
         $validator = new \htmlValidator();
-        $str    = <<<EODTIDY
+        $str       = <<<EODTIDY
 <p>Hello</p>
 EODTIDY;
         $doc = <<<EODTIDYV
@@ -51,10 +66,10 @@ EODTIDYV;
     public function testGetErrors()
     {
         $validator = new \htmlValidator();
-        $str    = <<<EODTIDYE
+        $str       = <<<EODTIDYE
 <p>Hello</b>
 EODTIDYE;
-        $err    = <<<EODTIDYF
+        $err = <<<EODTIDYF
 <ol><li class="error"><p><strong>Error</strong>: Stray end tag <code>b</code>.</p><p class="location">From line 7, column 9; to line 7, column 12</p><p class="extract"><code>&gt;↩&lt;p&gt;Hello&lt;/b&gt;↩&lt;/bod</code></p></li></ol>
 EODTIDYF;
 

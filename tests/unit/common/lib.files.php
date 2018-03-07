@@ -29,21 +29,60 @@ use atoum;
  */
 class files extends atoum
 {
+    protected function cleanTemp()
+    {
+        // Look for test*, temp*, void* directories and files in TEST_DIRECTORY and destroys them
+        $items = \files::scandir(TEST_DIRECTORY);
+        if (is_array($items)) {
+            foreach ($items as $value) {
+                if (in_array(substr($value, 0, 4), array('test', 'temp', 'void'))) {
+                    $name = TEST_DIRECTORY . DIRECTORY_SEPARATOR . $value;
+                    if (is_dir($name)) {
+                        \files::deltree($name);
+                    } else {
+                        @unlink($name);
+                    }
+                }
+            }
+        }
+    }
+    public function setUp()
+    {
+        $counter = 0;
+        $this->cleanTemp();
+        // Check if everything is clean (as OS may have a filesystem cache for dir list)
+        while (($items = \files::scandir(TEST_DIRECTORY, true)) !== array('.', '..', '02-two.txt', '1-one.txt', '30-three.txt')) {
+            $counter++;
+            if ($counter < 10) {
+                // Wait 1 second, then clean again
+                var_dump($items);
+                sleep(1);
+                $this->cleanTemp();
+            } else {
+                // Can't do more then let's go
+                break;
+            }
+        }
+    }
+    public function tearDown()
+    {
+        $this->cleanTemp();
+    }
+
     /**
      * Scan a directory. For that we use the /../fixtures/files which contains
      * know files
      */
     public function testScanDir()
     {
-        // Normal
+        // Normal (sorted)
         $this
             ->array(\files::scandir(TEST_DIRECTORY))
-            ->containsValues(array('.', '..', '1-one.txt', '02-two.txt', '30-three.txt'));
-
-        // Sorted
-        $this
-            ->array(\files::scandir(TEST_DIRECTORY, true))
             ->isIdenticalTo(array('.', '..', '02-two.txt', '1-one.txt', '30-three.txt'));
+        // Not sorted
+        $this
+            ->array(\files::scandir(TEST_DIRECTORY, false))
+            ->containsValues(array('.', '..', '1-one.txt', '02-two.txt', '30-three.txt'));
 
         // DOn't exists
         $this
@@ -122,7 +161,7 @@ class files extends atoum
      */
     public function testFileIsDeletable()
     {
-        $tmpname = tempnam(sys_get_temp_dir(), "testfile.txt");
+        $tmpname = tempnam(TEST_DIRECTORY, "testfile_1.txt");
         $file    = fopen($tmpname, "w+");
         $this
             ->boolean(\files::isDeletable($tmpname))
@@ -137,7 +176,7 @@ class files extends atoum
      */
     public function testDirIsDeletable()
     {
-        $dirname = sys_get_temp_dir() . DIRECTORY_SEPARATOR . "testdirectory";
+        $dirname = TEST_DIRECTORY . DIRECTORY_SEPARATOR . 'testdirectory_2';
         mkdir($dirname);
         $this
             ->boolean(\files::isDeletable($dirname))
@@ -155,15 +194,15 @@ class files extends atoum
      */
     public function testDeltree()
     {
-        $dirstructure = join(DIRECTORY_SEPARATOR, array(".", "temp", "tests", "are", "good", "for", "you"));
+        $dirstructure = join(DIRECTORY_SEPARATOR, array(TEST_DIRECTORY, "temp_3", "tests", "are", "good", "for", "you"));
         mkdir($dirstructure, 0700, true);
         touch($dirstructure . DIRECTORY_SEPARATOR . "file.txt");
         $this
-            ->boolean(\files::deltree(join(DIRECTORY_SEPARATOR, array(".", "temp"))))
+            ->boolean(\files::deltree(join(DIRECTORY_SEPARATOR, array(TEST_DIRECTORY, "temp_3"))))
             ->isTrue();
 
         $this
-            ->boolean(is_dir('./temp'))
+            ->boolean(is_dir(TEST_DIRECTORY . DIRECTORY_SEPARATOR . 'temp_3'))
             ->isFalse();
     }
 
@@ -173,7 +212,7 @@ class files extends atoum
      */
     public function testTouch()
     {
-        $file_name = tempnam(sys_get_temp_dir(), "testfile.txt");
+        $file_name = tempnam(TEST_DIRECTORY, "testfile_4.txt");
         $fts       = filemtime($file_name);
         // Must keep at least one second of difference
         sleep(1);
@@ -183,6 +222,7 @@ class files extends atoum
         $this
             ->integer($sts)
             ->isGreaterThan($fts);
+        unlink($file_name);
     }
 
     /**
@@ -191,7 +231,7 @@ class files extends atoum
     public function testMakeDir()
     {
         // Test no parent
-        $dirPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'atestdirectory';
+        $dirPath = TEST_DIRECTORY . DIRECTORY_SEPARATOR . 'testdirectory_5';
         \files::makeDir($dirPath);
         $this
             ->boolean(is_dir($dirPath))
@@ -215,14 +255,14 @@ class files extends atoum
     public function testMakeDirWithParent()
     {
         // Test multitple parent
-        $dirPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'this/is/a/test/directory/';
+        $dirPath = TEST_DIRECTORY . DIRECTORY_SEPARATOR . 'temp_6/is/a/test/directory/';
         \files::makeDir($dirPath, true);
         $path = '';
-        foreach (array(sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'this', 'is', 'a', 'test', 'directory') as $p) {
+        foreach (array(TEST_DIRECTORY . DIRECTORY_SEPARATOR . 'temp_6', 'is', 'a', 'test', 'directory') as $p) {
             $path .= $p . DIRECTORY_SEPARATOR;
             $this->boolean(is_dir($path));
         }
-        \files::deltree($dirPath);
+        \files::deltree(TEST_DIRECTORY . DIRECTORY_SEPARATOR . 'temp_6');
     }
 
     /**
@@ -245,7 +285,7 @@ class files extends atoum
 
     public function testInheritChmod()
     {
-        $dirName    = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'atestdir2';
+        $dirName    = TEST_DIRECTORY . DIRECTORY_SEPARATOR . 'testdir_7';
         $sonDirName = $dirName . DIRECTORY_SEPARATOR . 'anotherDir';
         mkdir($dirName, 0777);
         mkdir($sonDirName);
@@ -276,25 +316,24 @@ class files extends atoum
     public function testPutContent()
     {
         $content  = 'A Content';
-        $filename = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'atestfile.txt';
+        $filename = TEST_DIRECTORY . DIRECTORY_SEPARATOR . 'testfile_8.txt';
         @unlink($filename);
         \files::putContent($filename, $content);
         $this
             ->string(file_get_contents($filename))
             ->isEqualTo($content);
         unlink($filename);
-
     }
 
     public function testPutContentException()
     {
         // Test exceptions
         $content  = 'A Content';
-        $filename = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'atestfile.txt';
+        $filename = TEST_DIRECTORY . DIRECTORY_SEPARATOR . 'testfile_9.txt';
         @unlink($filename);
         \files::putContent($filename, $content);
         $this
-            ->exception(function() use($filename) {
+            ->exception(function () use ($filename) {
                 chmod($filename, 0400); // Read only
                 \files::putContent($filename, 'unwritable');
             })
@@ -420,25 +459,25 @@ class files extends atoum
             ->isNotEmpty();
 
         $this
-            ->exception(function() {
-                \files::getDirList(sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'void', $arr);
+            ->exception(function () {
+                \files::getDirList(TEST_DIRECTORY . DIRECTORY_SEPARATOR . 'void', $arr);
             })
-            ->hasMessage(sprintf('%s is not a directory.', sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'void'));
+            ->hasMessage(sprintf('%s is not a directory.', TEST_DIRECTORY . DIRECTORY_SEPARATOR . 'void'));
 
         // Deep structure read
-        $dirstructure = join(DIRECTORY_SEPARATOR, array(".", "temp", "tests", "are", "good", "for", "you"));
+        $dirstructure = join(DIRECTORY_SEPARATOR, array(TEST_DIRECTORY, "temp_10", "tests", "are", "good", "for", "you"));
         mkdir($dirstructure, 0700, true);
-        \files::getDirList(join(DIRECTORY_SEPARATOR, array(".", "temp")), $arr);
+        \files::getDirList(join(DIRECTORY_SEPARATOR, array(TEST_DIRECTORY, "temp_10")), $arr);
         $this
             ->array($arr['dirs'])
             ->isNotEmpty();
-        \files::deltree(join(DIRECTORY_SEPARATOR, array(".", "temp")));
+        \files::deltree(join(DIRECTORY_SEPARATOR, array(TEST_DIRECTORY, "temp_10")));
 
         // Unreadable dir
-        $dirname = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'void';
+        $dirname = TEST_DIRECTORY . DIRECTORY_SEPARATOR . 'void_11';
         mkdir($dirname);
         $this
-            ->exception(function() use ($dirname) {
+            ->exception(function () use ($dirname) {
                 chmod($dirname, 0200);
                 \files::getDirList($dirname, $arr);
             })
