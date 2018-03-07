@@ -115,7 +115,7 @@ class files
      * @param boolean    $order    Order results
      * @return array
      */
-    public static function scandir($d, $order = false)
+    public static function scandir($d, $order = true)
     {
         $res = array();
         $dh  = @opendir($d);
@@ -129,7 +129,6 @@ class files
         }
         closedir($dh);
 
-        sort($res);
         if ($order) {
             sort($res);
         }
