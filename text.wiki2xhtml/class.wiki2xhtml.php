@@ -239,6 +239,11 @@ class wiki2xhtml
     public function setOpt($option, $value)
     {
         $this->opt[$option] = $value;
+
+        if ($option == 'acronyms_file' && isset($this->opt[$option]) && file_exists($this->opt[$option])) {
+            // Parse and merge new acronyms
+            $this->acro_table = array_merge($this->acro_table, $this->__getAcronyms());
+        }
     }
 
     public function setOpts($options)
