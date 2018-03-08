@@ -43,17 +43,17 @@ class wiki2xhtml extends atoum
     {
         $wiki2xhtml = new \wiki2xhtml();
 
-        $faker  = Faker\Factory::create();
-        $email  = 'contact@dotclear.org';
+        $faker = Faker\Factory::create();
+        $email = 'contact@dotclear.org';
 
         $this
-            ->string($wiki2xhtml->transform('Email: [Email|mailto:'.$email.'].'))
+            ->string($wiki2xhtml->transform('Email: [Email|mailto:' . $email . '].'))
             ->isIdenticalTo('<p>Email: <a href="mailto:%63%6f%6e%74%61%63%74%40%64%6f%74%63%6c%65%61%72%2e%6f%72%67">Email</a>.</p>');
 
         $wiki2xhtml->setOpt('active_antispam', 0);
         $this
-            ->string($wiki2xhtml->transform('Email: [Email|mailto:'.$email.'].'))
-            ->isIdenticalTo('<p>Email: <a href="mailto:'.$email.'">Email</a>.</p>');
+            ->string($wiki2xhtml->transform('Email: [Email|mailto:' . $email . '].'))
+            ->isIdenticalTo('<p>Email: <a href="mailto:' . $email . '">Email</a>.</p>');
     }
 
     public function testOpt()
@@ -93,29 +93,29 @@ class wiki2xhtml extends atoum
             ->isIdenticalTo('<hr />');
 
         $wiki2xhtml->setOpts(array(
-            'active_urls' => 0,
-            'active_auto_urls' => 0,
-            'active_img' => 0,
-            'active_anchor' => 0,
-            'active_em' => 0,
-            'active_strong' => 0,
-            'active_q' => 0,
-            'active_code' => 0,
-            'active_acronym' => 0,
-            'active_ins' => 0,
-            'active_del' => 0,
+            'active_urls'        => 0,
+            'active_auto_urls'   => 0,
+            'active_img'         => 0,
+            'active_anchor'      => 0,
+            'active_em'          => 0,
+            'active_strong'      => 0,
+            'active_q'           => 0,
+            'active_code'        => 0,
+            'active_acronym'     => 0,
+            'active_ins'         => 0,
+            'active_del'         => 0,
             'active_inline_html' => 0,
-            'active_footnotes' => 0,
-            'active_wikiwords' => 0,
-            'active_mark' => 0,
-            'active_empty' => 0,
-            'active_title' => 0,
-            'active_hr' => 0,
-            'active_quote' => 0,
-            'active_lists' => 0,
-            'active_defl' => 0,
-            'active_pre' => 0,
-            'active_aside' => 0
+            'active_footnotes'   => 0,
+            'active_wikiwords'   => 0,
+            'active_mark'        => 0,
+            'active_empty'       => 0,
+            'active_title'       => 0,
+            'active_hr'          => 0,
+            'active_quote'       => 0,
+            'active_lists'       => 0,
+            'active_defl'        => 0,
+            'active_pre'         => 0,
+            'active_aside'       => 0
         ));
         $wiki = <<<EOW
 
@@ -419,6 +419,68 @@ EOH;
             ->isIdenticalTo($out);
     }
 
+    public function testAcronyms()
+    {
+        $wiki2xhtml = new \wiki2xhtml();
+
+        $in_html           = "Some __strong__ and ''em'' ??dc?? texts with {{citation}} and @@code@@ plus an ??cb?? ??ACME|american company manufacturing everything?? where we can ++insert++ and --delete-- texts, and with some ``<span class=\"focus\">focus</span>`` on specific part";
+        $out_html          = "<p>Some <strong>strong</strong> and <em>em</em> <abbr>dc</abbr> texts with <q>citation</q> and <code>code</code> plus an <abbr>cb</abbr> <abbr title=\"american company manufacturing everything\">ACME</abbr> where we can <ins>insert</ins> and <del>delete</del> texts, and with some <span class=\"focus\">focus</span> on specific part</p>";
+        $out_html_acronyms = "<p>Some <strong>strong</strong> and <em>em</em> <abbr title=\"dotclear\">dc</abbr> texts with <q>citation</q> and <code>code</code> plus an <abbr title=\"clearbicks\">cb</abbr> <abbr title=\"american company manufacturing everything\">ACME</abbr> where we can <ins>insert</ins> and <del>delete</del> texts, and with some <span class=\"focus\">focus</span> on specific part</p>";
+
+        $this
+            ->string($wiki2xhtml->transform($in_html))
+            ->isIdenticalTo($out_html);
+
+        $wiki2xhtml->setOpt('acronyms_file', __DIR__ . '/../fixtures/data/acronyms.txt');
+
+        $this
+            ->string($wiki2xhtml->transform($in_html))
+            ->isIdenticalTo($out_html_acronyms);
+    }
+
+    public function testWikiWords()
+    {
+        $wiki2xhtml = new \wiki2xhtml();
+
+        $in_html           = "Some __strong__ and ''em'' texts with {{citation}} and @@code@@ plus an ??ACME|american company manufacturing everything?? where we can ++insert++ and --delete-- texts, and with some ``<span class=\"focus\">focus</span>`` on specific WikiWord part";
+        $out_html          = "<p>Some <strong>strong</strong> and <em>em</em> texts with <q>citation</q> and <code>code</code> plus an <abbr title=\"american company manufacturing everything\">ACME</abbr> where we can <ins>insert</ins> and <del>delete</del> texts, and with some <span class=\"focus\">focus</span> on specific WikiWord part</p>";
+        $out_html_acronyms = "<p>Some <strong>strong</strong> and <em>em</em> texts with <q>citation</q> and <code>code</code> plus an <abbr title=\"american company manufacturing everything\">ACME</abbr> where we can <ins>insert</ins> and <del>delete</del> texts, and with some <span class=\"focus\">focus</span> on specific wikiword part</p>";
+
+        $this
+            ->string($wiki2xhtml->transform($in_html))
+            ->isIdenticalTo($out_html);
+
+        $wiki2xhtml->setOpt('active_wikiwords', 1);
+        $this
+            ->string($wiki2xhtml->transform($in_html))
+            ->isIdenticalTo($out_html);
+
+        $wiki2xhtml->registerFunction('wikiword', function ($str) {return strtolower($str);});
+        $this
+            ->string($wiki2xhtml->transform($in_html))
+            ->isIdenticalTo($out_html_acronyms);
+    }
+
+    public function testSpecialURLs()
+    {
+        $wiki2xhtml = new \wiki2xhtml();
+
+        $in_html          = "Test with an [Wiki first link|wiki:first_link] !";
+        $out_html         = "<p>Test with an <a href=\"wiki:first_link\">Wiki first link</a>&nbsp;!</p>";
+        $out_html_special = "<p>Test with an <a href=\"https://example.org/wiki/first_link\" title=\"Wiki\">Wiki first link</a>&nbsp;!</p>";
+
+        $this
+            ->string($wiki2xhtml->transform($in_html))
+            ->isIdenticalTo($out_html);
+
+        $wiki2xhtml->registerFunction('url:wiki', function ($url, $content) {
+            return array('url' => 'https://example.org/wiki/' . substr($url, 5), 'content' => $content, 'title' => 'Wiki');
+        });
+        $this
+            ->string($wiki2xhtml->transform($in_html))
+            ->isIdenticalTo($out_html_special);
+    }
+
     /*
      * DataProviders
      **/
@@ -447,6 +509,9 @@ EOH;
             array("* item 1\n** item 1.1\n** item 1.2\n* item 2\n* item 3\n*# item 3.1",
                 '<ul><li>item 1<ul><li>item 1.1</li><li>item 1.2</li></ul></li>' .
                 '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li></ul>', 1),
+            array("# item 1\n#* item 1.1\n#* item 1.2\n# item 2\n# item 3\n## item 3.1\n# item 4",
+                '<ol><li>item 1<ul><li>item 1.1</li><li>item 1.2</li></ul></li>' .
+                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li><li>item 4</li></ol>', 1),
 
             array('{{%s}}', '<p><q>%s</q></p>', 1),
             array('{{%s|%lang%}}', '<p><q lang="%lang%">%s</q></p>', 1),
@@ -459,6 +524,7 @@ EOH;
             array('----', '<hr />', 0),
             array(' %s', '<pre>%s</pre>', 1),
             array(') %s', '<aside><p>%s</p></aside>', 1),
+            array(") %s\n)\n) %s", '<aside><p>%s</p><p>%s</p></aside>', 2),
             array('!!!!%s', '<h2>%s</h2>', 1),
             array('!!!%s', '<h3>%s</h3>', 1),
             array('!!%s', '<h4>%s</h4>', 1),
@@ -482,7 +548,7 @@ EOH;
             array("= %s", "<dl><dt>%s</dt></dl>", 1),
             array(": %s", "<dl><dd>%s</dd></dl>", 1),
             array("= %s\n: %s", "<dl><dt>%s</dt><dd>%s</dd></dl>", 2),
-            array("= %s\n= %s\n: %s\n: %s", "<dl><dt>%s</dt><dt>%s</dt><dd>%s</dd><dd>%s</dd></dl>", 4),
+            array("= %s\n= %s\n: %s\n: %s", "<dl><dt>%s</dt><dt>%s</dt><dd>%s</dd><dd>%s</dd></dl>", 4)
         );
     }
 
