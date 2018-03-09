@@ -100,6 +100,19 @@ You can also get code coverage report (in `coverage/html`) for tests by runing:
 ./bin/atoum -c .atoum.coverage.php
 ```
 
+## License
+
+Copyright Olivier Meunier & Association Dotclear
+
+GPL-2.0-only (https://www.gnu.org/licenses/gpl-2.0.html)
+
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; version 2 of the License.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+
 [1]: http://mercurial.selenic.com/wiki/Subrepository
 [2]: http://www.selenic.com/hg/help/subrepos
 [3]: https://github.com/atoum/atoum
