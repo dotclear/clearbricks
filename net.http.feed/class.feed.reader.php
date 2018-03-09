@@ -1,15 +1,4 @@
 <?php
-# -- BEGIN LICENSE BLOCK ---------------------------------------
-#
-# This file is part of Clearbricks.
-#
-# Copyright (c) 2003-2013 Florent Cotton, Olivier Meunier & Association Dotclear
-# Licensed under the GPL version 2.0 license.
-# See LICENSE file or
-# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
-#
-# -- END LICENSE BLOCK -----------------------------------------
-
 /**
  * @class feedReader
  * @brief Feed Reader
@@ -22,6 +11,9 @@
  *
  * @package Clearbricks
  * @subpackage Feeds
+ *
+ * @copyright Olivier Meunier & Association Dotclear
+ * @copyright GPL-2.0-only
  */
 
 /** @cond ONCE */

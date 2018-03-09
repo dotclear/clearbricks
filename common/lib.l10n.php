@@ -1,14 +1,16 @@
 <?php
-# -- BEGIN LICENSE BLOCK ---------------------------------------
-#
-# This file is part of Clearbricks.
-#
-# Copyright (c) 2003-2013 Olivier Meunier & Association Dotclear
-# Licensed under the GPL version 2.0 license.
-# See LICENSE file or
-# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
-#
-# -- END LICENSE BLOCK -----------------------------------------
+/**
+ * @class l10n
+ * @brief Localization tools
+ *
+ * Localization utilities
+ *
+ * @package Clearbricks
+ * @subpackage Common
+ *
+ * @copyright Olivier Meunier & Association Dotclear
+ * @copyright GPL-2.0-only
+ */
 
 /** @cond ONCE */
 if (!function_exists('__')) {
@@ -32,16 +34,6 @@ if (!function_exists('__')) {
 /** @cond ONCE */
 }
 /** @endcond */
-
-/**
- * @class l10n
- * @brief Localization tools
- *
- * Localization utilities
- *
- * @package Clearbricks
- * @subpackage Common
- */
 
 class l10n
 {

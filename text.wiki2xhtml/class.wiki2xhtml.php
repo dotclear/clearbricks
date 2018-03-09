@@ -1,138 +1,119 @@
 <?php
-###########################################################
-#      /!\ /!\ /!\ EDIT THIS FILE IN UTF8 /!\ /!\ /!\     #
-###########################################################
-
-# ***** BEGIN LICENSE BLOCK *****
-# This file is part of Clearbricks.
-# Copyright (c) 2003-2013 Olivier Meunier & Association Dotclear
-# All rights reserved.
-#
-# Clearbricks is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-#
-# Clearbricks is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with Clearbricks; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
-# ***** END LICENSE BLOCK *****
-#
-# Contributor(s):
-# Stephanie Booth
-# Mathieu Pillard
-# Christophe Bonijol
-# Jean-Charles Bagneris
-# Nicolas Chachereau
-# Jérôme Lipowicz
-# Franck Paul
-#
-# Version : 3.2.14
-# Release date : 2018-03-08
-
-# History :
-#
-# 3.2.14 - Franck
-#             => Ajout de la gestion d'un fichier externe d'acronymes (fusionné avec le fichier existant)
-#
-# 3.2.13 - Franck
-#             => Added = <term>, : <definition> support (definition list)
-#
-# 3.2.12 - Franck
-#             => PHP 7.2 compliance
-#
-# 3.2.11 - Franck
-#             => Added ) aside block support (HTML5 only)
-#
-# 3.2.10 - Franck
-#             => Added ""marked text"" support (HTML5 only)
-#
-# 3.2.9 - Franck
-#             => <a name="anchor"></a> est remplacé par <a id="anchor"></a> pour assurer la compatibilité avec HTML5
-#
-# 3.2.8 - Franck
-#             => <acronym> est remplacé par <abbr> pour assurer la compatibilité avec HTML5
-#
-# 3.2.7 - Franck
-#            => Les styles d'alignement des images sont modifiables via les options
-#
-# 3.2.6 - Franck
-#            => Added ``inline html`` support
-#
-# 3.2.5 - Franck
-#            => Changed longdesc by title in images
-#
-# 3.2.4 - Olivier
-#            => Auto links
-#            => Code cleanup
-#
-# 3.2.3 - Olivier
-#            => PHP5 Strict
-#
-# 3.2.2 - Olivier
-#            => Changement de la gestion des URL spéciales
-#
-# 3.2.1 - Olivier
-#            => Changement syntaxe des macros
-#
-# 3.2 - Olivier
-#            => Changement de fonctionnement des macros
-#            => Passage de fonctions externes pour les macros et les mots wiki
-#
-# 3.1d - Jérôme Lipowicz
-#            => antispam
-#      - Olivier
-#            => centrage d'image
-#
-# 3.1c - Olivier
-#            => Possibilité d'échaper les | dans les marqueurs avec \
-#
-# 3.1b - Nicolas Chachereau
-#            => Changement de regexp pour la correction syntaxique
-#
-# 3.1a - Olivier
-#            => Bug du Call-time pass-by-reference
-#
-# 3.1 - Olivier
-#            => Ajout des macros «««..»»»
-#            => Ajout des blocs vides øøø
-#            => Ajout du niveau de titre paramétrable
-#            => Option de blocage du parseur dans les <pre>
-#            => Titres au format setext (experimental, désactivé)
-#
-# 3.0 - Olivier
-#            => Récriture du parseur inline, plus d'erreur XHTML
-#            => Ajout d'une vérification d'intégrité pour les listes
-#            => Les acronymes sont maintenant dans un fichier texte
-#            => Ajout d'un tag images ((..)), del --..-- et ins ++..++
-#            => Plus possible de faire des liens JS [lien|javascript:...]
-#            => Ajout des notes de bas de page §§...§§
-#            => Ajout des mots wiki
-#
-# 2.5 - Olivier
-#            => Récriture du code, plus besoin du saut de ligne entre blocs !=
-#
-# 2.0 - Stephanie
-#            => correction des PCRE et ajout de fonctionnalités
-#     - Mathieu
-#            => ajout du strip-tags, implementation des options, reconnaissance automatique d'url, etc.
-#     - Olivier
-#            => chagement de active_link en active_urls
-#            => ajout des options pour les blocs
-#            => intégration de l'aide dans le code, avec les options
-#            => début de quelque chose pour la reconnaissance auto d'url (avec Mat)
-
 /**
  * @class wiki2xhtml
  *
  * @package Clearbricks
+ *
+ * @copyright Olivier Meunier & Association Dotclear
+ * @copyright GPL-2.0-only
  */
+
+/*
+    Contributor(s):
+    Stephanie Booth
+    Mathieu Pillard
+    Christophe Bonijol
+    Jean-Charles Bagneris
+    Nicolas Chachereau
+    Jérôme Lipowicz
+    Franck Paul
+
+    Version : 3.2.14
+    Release date : 2018-03-08
+
+    History :
+
+    3.2.14 - Franck
+                => Ajout de la gestion d'un fichier externe d'acronymes (fusionné avec le fichier existant)
+
+    3.2.13 - Franck
+                => Added = <term>, : <definition> support (definition list)
+
+    3.2.12 - Franck
+                => PHP 7.2 compliance
+
+    3.2.11 - Franck
+                => Added ) aside block support (HTML5 only)
+
+    3.2.10 - Franck
+                => Added ""marked text"" support (HTML5 only)
+
+    3.2.9 - Franck
+                => <a name="anchor"></a> est remplacé par <a id="anchor"></a> pour assurer la compatibilité avec HTML5
+
+    3.2.8 - Franck
+                => <acronym> est remplacé par <abbr> pour assurer la compatibilité avec HTML5
+
+    3.2.7 - Franck
+               => Les styles d'alignement des images sont modifiables via les options
+
+    3.2.6 - Franck
+               => Added ``inline html`` support
+
+    3.2.5 - Franck
+               => Changed longdesc by title in images
+
+    3.2.4 - Olivier
+               => Auto links
+               => Code cleanup
+
+    3.2.3 - Olivier
+               => PHP5 Strict
+
+    3.2.2 - Olivier
+               => Changement de la gestion des URL spéciales
+
+    3.2.1 - Olivier
+               => Changement syntaxe des macros
+
+    3.2 - Olivier
+               => Changement de fonctionnement des macros
+               => Passage de fonctions externes pour les macros et les mots wiki
+
+    3.1d - Jérôme Lipowicz
+               => antispam
+         - Olivier
+               => centrage d'image
+
+    3.1c - Olivier
+               => Possibilité d'échaper les | dans les marqueurs avec \
+
+    3.1b - Nicolas Chachereau
+               => Changement de regexp pour la correction syntaxique
+
+    3.1a - Olivier
+               => Bug du Call-time pass-by-reference
+
+    3.1 - Olivier
+               => Ajout des macros «««..»»»
+               => Ajout des blocs vides øøø
+               => Ajout du niveau de titre paramétrable
+               => Option de blocage du parseur dans les <pre>
+               => Titres au format setext (experimental, désactivé)
+
+    3.0 - Olivier
+               => Récriture du parseur inline, plus d'erreur XHTML
+               => Ajout d'une vérification d'intégrité pour les listes
+               => Les acronymes sont maintenant dans un fichier texte
+               => Ajout d'un tag images ((..)), del --..-- et ins ++..++
+               => Plus possible de faire des liens JS [lien|javascript:...]
+               => Ajout des notes de bas de page §§...§§
+               => Ajout des mots wiki
+
+    2.5 - Olivier
+               => Récriture du code, plus besoin du saut de ligne entre blocs !=
+
+    2.0 - Stephanie
+               => correction des PCRE et ajout de fonctionnalités
+        - Mathieu
+               => ajout du strip-tags, implementation des options, reconnaissance automatique d'url, etc.
+        - Olivier
+               => changement de active_link en active_urls
+               => ajout des options pour les blocs
+               => intégration de l'aide dans le code, avec les options
+               => début de quelque chose pour la reconnaissance auto d'url (avec Mat)
+*/
+
 class wiki2xhtml
 {
     public $__version__ = '3.2.14';

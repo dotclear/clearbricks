@@ -1,15 +1,4 @@
 <?php
-# -- BEGIN LICENSE BLOCK ---------------------------------------
-#
-# This file is a mysqlimb4 driver for Clearbrick.
-#
-# Copyright (c) 2017 Franck Paul
-# Licensed under the GPL version 2.0 license.
-# See LICENSE file or
-# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
-#
-# -- END LICENSE BLOCK -----------------------------------------
-
 /**
  * @class mysqlimb4Connection
  * @brief MySQLi utf8-mb4 Database Driver
@@ -18,6 +7,9 @@
  *
  * @package Clearbricks
  * @subpackage DBLayer
+ *
+ * @copyright Olivier Meunier & Association Dotclear
+ * @copyright GPL-2.0-only
  */
 
 /** @cond ONCE */
