@@ -9,114 +9,117 @@
  */
 
 /*
-    Contributor(s):
-    Stephanie Booth
-    Mathieu Pillard
-    Christophe Bonijol
-    Jean-Charles Bagneris
-    Nicolas Chachereau
-    Jérôme Lipowicz
-    Franck Paul
+Contributor(s):
+Stephanie Booth
+Mathieu Pillard
+Christophe Bonijol
+Jean-Charles Bagneris
+Nicolas Chachereau
+Jérôme Lipowicz
+Franck Paul
 
-    Version : 3.2.14
-    Release date : 2018-03-08
+Version : 3.2.15
+Release date : 2018-03-15
 
-    History :
+History :
 
-    3.2.14 - Franck
-                => Ajout de la gestion d'un fichier externe d'acronymes (fusionné avec le fichier existant)
+3.2.15 - Franck
+=> Added ^exponant^ support
 
-    3.2.13 - Franck
-                => Added = <term>, : <definition> support (definition list)
+3.2.14 - Franck
+=> Ajout de la gestion d'un fichier externe d'acronymes (fusionné avec le fichier existant)
 
-    3.2.12 - Franck
-                => PHP 7.2 compliance
+3.2.13 - Franck
+=> Added = <term>, : <definition> support (definition list)
 
-    3.2.11 - Franck
-                => Added ) aside block support (HTML5 only)
+3.2.12 - Franck
+=> PHP 7.2 compliance
 
-    3.2.10 - Franck
-                => Added ""marked text"" support (HTML5 only)
+3.2.11 - Franck
+=> Added ) aside block support (HTML5 only)
 
-    3.2.9 - Franck
-                => <a name="anchor"></a> est remplacé par <a id="anchor"></a> pour assurer la compatibilité avec HTML5
+3.2.10 - Franck
+=> Added ""marked text"" support (HTML5 only)
 
-    3.2.8 - Franck
-                => <acronym> est remplacé par <abbr> pour assurer la compatibilité avec HTML5
+3.2.9 - Franck
+=> <a name="anchor"></a> est remplacé par <a id="anchor"></a> pour assurer la compatibilité avec HTML5
 
-    3.2.7 - Franck
-               => Les styles d'alignement des images sont modifiables via les options
+3.2.8 - Franck
+=> <acronym> est remplacé par <abbr> pour assurer la compatibilité avec HTML5
 
-    3.2.6 - Franck
-               => Added ``inline html`` support
+3.2.7 - Franck
+=> Les styles d'alignement des images sont modifiables via les options
 
-    3.2.5 - Franck
-               => Changed longdesc by title in images
+3.2.6 - Franck
+=> Added ``inline html`` support
 
-    3.2.4 - Olivier
-               => Auto links
-               => Code cleanup
+3.2.5 - Franck
+=> Changed longdesc by title in images
 
-    3.2.3 - Olivier
-               => PHP5 Strict
+3.2.4 - Olivier
+=> Auto links
+=> Code cleanup
 
-    3.2.2 - Olivier
-               => Changement de la gestion des URL spéciales
+3.2.3 - Olivier
+=> PHP5 Strict
 
-    3.2.1 - Olivier
-               => Changement syntaxe des macros
+3.2.2 - Olivier
+=> Changement de la gestion des URL spéciales
 
-    3.2 - Olivier
-               => Changement de fonctionnement des macros
-               => Passage de fonctions externes pour les macros et les mots wiki
+3.2.1 - Olivier
+=> Changement syntaxe des macros
 
-    3.1d - Jérôme Lipowicz
-               => antispam
-         - Olivier
-               => centrage d'image
+3.2 - Olivier
+=> Changement de fonctionnement des macros
+=> Passage de fonctions externes pour les macros et les mots wiki
 
-    3.1c - Olivier
-               => Possibilité d'échaper les | dans les marqueurs avec \
+3.1d - Jérôme Lipowicz
+=> antispam
+- Olivier
+=> centrage d'image
 
-    3.1b - Nicolas Chachereau
-               => Changement de regexp pour la correction syntaxique
+3.1c - Olivier
+=> Possibilité d'échaper les | dans les marqueurs avec \
 
-    3.1a - Olivier
-               => Bug du Call-time pass-by-reference
+3.1b - Nicolas Chachereau
+=> Changement de regexp pour la correction syntaxique
 
-    3.1 - Olivier
-               => Ajout des macros «««..»»»
-               => Ajout des blocs vides øøø
-               => Ajout du niveau de titre paramétrable
-               => Option de blocage du parseur dans les <pre>
-               => Titres au format setext (experimental, désactivé)
+3.1a - Olivier
+=> Bug du Call-time pass-by-reference
 
-    3.0 - Olivier
-               => Récriture du parseur inline, plus d'erreur XHTML
-               => Ajout d'une vérification d'intégrité pour les listes
-               => Les acronymes sont maintenant dans un fichier texte
-               => Ajout d'un tag images ((..)), del --..-- et ins ++..++
-               => Plus possible de faire des liens JS [lien|javascript:...]
-               => Ajout des notes de bas de page §§...§§
-               => Ajout des mots wiki
+3.1 - Olivier
+=> Ajout des macros «««..»»»
+=> Ajout des blocs vides øøø
+=> Ajout du niveau de titre paramétrable
+=> Option de blocage du parseur dans les <pre>
+=> Titres au format setext (experimental, désactivé)
 
-    2.5 - Olivier
-               => Récriture du code, plus besoin du saut de ligne entre blocs !=
+3.0 - Olivier
+=> Récriture du parseur inline, plus d'erreur XHTML
+=> Ajout d'une vérification d'intégrité pour les listes
+=> Les acronymes sont maintenant dans un fichier texte
+=> Ajout d'un tag images ((..)), del --..-- et ins ++..++
+=> Plus possible de faire des liens JS [lien|javascript:...]
+=> Ajout des notes de bas de page §§...§§
+=> Ajout des mots wiki
 
-    2.0 - Stephanie
-               => correction des PCRE et ajout de fonctionnalités
-        - Mathieu
-               => ajout du strip-tags, implementation des options, reconnaissance automatique d'url, etc.
-        - Olivier
-               => changement de active_link en active_urls
-               => ajout des options pour les blocs
-               => intégration de l'aide dans le code, avec les options
-               => début de quelque chose pour la reconnaissance auto d'url (avec Mat)
-*/
+2.5 - Olivier
+=> Récriture du code, plus besoin du saut de ligne entre blocs !=
+
+2.0 - Stephanie
+=> correction des PCRE et ajout de fonctionnalités
+- Mathieu
+=> ajout du strip-tags, implementation des options, reconnaissance automatique d'url, etc.
+- Olivier
+=> changement de active_link en active_urls
+=> ajout des options pour les blocs
+=> intégration de l'aide dans le code, avec les options
+=> début de quelque chose pour la reconnaissance auto d'url (avec Mat)
+ */
 
 class wiki2xhtml
 {
-    public $__version__ = '3.2.14';
+    public $__version__ = '3.2.15';
 
     public $T;
     public $opt;
@@ -167,6 +170,7 @@ class wiki2xhtml
         $this->setOpt('active_macros', 1); # Activation des macros /// ///
         $this->setOpt('active_mark', 1); # Activation des mark ""..""
         $this->setOpt('active_aside', 1); # Activation du <aside>
+        $this->setOpt('active_sup', 1); # Activation du sup ^..(saut de ligne, espace, …)
 
         $this->setOpt('parse_pre', 1); # Parser l'intérieur de blocs <pre> ?
 
@@ -355,7 +359,8 @@ class wiki2xhtml
             'inline' => array('``', '``'),
             'note'   => array('$$', '$$'),
             'word'   => array('¶¶¶', '¶¶¶'),
-            'mark'   => array('""', '""')
+            'mark'   => array('""', '""'),
+            'sup'    => array('^', '^')
         );
         $this->linetags = array(
             'empty' => 'øøø',
@@ -412,6 +417,9 @@ class wiki2xhtml
         }
         if (!$this->getOpt('active_mark')) {
             unset($this->tags['mark']);
+        }
+        if (!$this->getOpt('active_sup')) {
+            unset($this->tags['sup']);
         }
 
         # Suppression des tags de début de ligne selon les options
@@ -1173,6 +1181,11 @@ class wiki2xhtml
                 'Respecter le style de chaque niveau';
         }
 
+        if ($this->getOpt('active_defl')) {
+            $help['b'][] = '<strong>Liste de définitions</strong> : terme(s) débutant(s) par <code>=</code>, ' .
+                'définition(s) débutant(s) par <code>:</code>.';
+        }
+
         if ($this->getOpt('active_pre')) {
             $help['b'][] = '<strong>Texte préformaté</strong> : espace devant chaque ligne de texte';
         }
@@ -1180,6 +1193,10 @@ class wiki2xhtml
         if ($this->getOpt('active_quote')) {
             $help['b'][] = '<strong>Bloc de citation</strong> : <code>&gt;</code> ou ' .
                 '<code>;:</code> devant chaque ligne de texte';
+        }
+
+        if ($this->getOpt('active_aside')) {
+            $help['b'][] = '<aside>Note de côté</aside> : <code>)</code> devant chaque ligne de texte';
         }
 
         if ($this->getOpt('active_fr_syntax')) {
@@ -1210,6 +1227,10 @@ class wiki2xhtml
 
         if ($this->getOpt('active_mark')) {
             $help['i'][] = '<mark>Texte marqué</mark> : deux guillemets <code>""texte""</code>';
+        }
+
+        if ($this->getOpt('active_sup')) {
+            $help['i'][] = '<sup>Exposant</sup> : un accent circonflexe <code>^texte^</code>';
         }
 
         if ($this->getOpt('active_urls')) {

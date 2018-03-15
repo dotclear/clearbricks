@@ -108,6 +108,7 @@ class wiki2xhtml extends atoum
             'active_footnotes'   => 0,
             'active_wikiwords'   => 0,
             'active_mark'        => 0,
+            'active_sup'         => 0,
             'active_empty'       => 0,
             'active_title'       => 0,
             'active_hr'          => 0,
@@ -148,7 +149,7 @@ Another ""mark""
 = term
 : definition
 
-) And finally an aside paragraph
+) And finally an aside paragraph with a square^2 inside
 )
 ) End
 
@@ -195,7 +196,7 @@ Another code line</p>
 : definition</p>
 
 
-<p>) And finally an aside paragraph
+<p>) And finally an aside paragraph with a square^2 inside
 )
 ) End</p>
 EOH;
@@ -232,6 +233,10 @@ EOH;
         $faker  = Faker\Factory::create();
         $phrase = $faker->text(20);
         $url    = $faker->url();
+
+        $this
+            ->string($wiki2xhtml->transform(sprintf('Before %s%s%s After', $delimiters[0], $phrase, $delimiters[1])))
+            ->isIdenticalTo(sprintf('<p>Before <%1$s>%2$s</%1$s> After</p>', $tag, $phrase));
 
         $this
             ->string($wiki2xhtml->transform(sprintf('%s%s%s', $delimiters[0], $phrase, $delimiters[1])))
@@ -495,7 +500,8 @@ EOH;
             array('code', array('@@', '@@')),
             array('del', array('--', '--')),
             array('ins', array('++', '++')),
-            array('mark', array('""', '""'))
+            array('mark', array('""', '""')),
+            array('sup', array('^', '^'))
         );
     }
 
