@@ -28,6 +28,8 @@ require_once __DIR__ . '/../bootstrap.php';
 $f = str_replace('\\', '/', __FILE__);
 require_once str_replace('tests/unit/', '', $f);
 require_once __DIR__ . '/../../../common/lib.files.php';
+require_once CLEARBRICKS_PATH . '/common/lib.l10n.php';
+require_once CLEARBRICKS_PATH . '/common/lib.html.php';
 require_once __DIR__ . '/../../../template/class.tplnode.php';
 require_once __DIR__ . '/../../../template/class.tplnodeblock.php';
 require_once __DIR__ . '/../../../template/class.tplnodeblockdef.php';
@@ -43,7 +45,7 @@ class template extends atoum
      */
     public function testTemplate($file)
     {
-        echo "being tested with : " . $file . "\n";
+        $this->dump("being tested with : " . $file . "\n");
         \tplNodeBlockDefinition::reset();
         $t        = $this->parse($file);
         $dir      = sys_get_temp_dir() . '/tpl';
@@ -74,12 +76,13 @@ class template extends atoum
             }
             $GLOBALS['tpl']->setPath($path);
         }
+
         testTpls::register($GLOBALS['tpl']);
         if ($t['exception'] === false) {
             $result = $GLOBALS['tpl']->getData($basetpl);
             $this
-                ->string(trim($result))
-                ->isEqualTo(trim($t['outputs'][0][1]));
+                ->string(testTpls::trimHereDoc($result))
+                ->isEqualTo(testTpls::trimHereDoc($t['outputs'][0][1]));
         } else {
 
             $this
@@ -95,7 +98,7 @@ class template extends atoum
 
     }
 
-    public function parse($file)
+    protected function parse($file)
     {
         $test = file_get_contents($file);
         if (preg_match('/--TEST--\s*(.*?)\s*(?:--CONDITION--\s*(.*))?\s*((?:--TEMPLATE(?:\(.*?\))?--(?:.*?))+)(?:--PATH--\s*(.*))?--EXCEPTION--\s*(.*)/s', $test, $match)) {
@@ -128,7 +131,8 @@ class template extends atoum
         );
         return $ret;
     }
-    protected static function parseTemplates($test)
+
+    protected function parseTemplates($test)
     {
         $templates = array();
         preg_match_all('/--TEMPLATE(?:\((.*?)\))?--\s*(.*?)(?=\-\-TEMPLATE|$)/s', $test, $matches, PREG_SET_ORDER);
@@ -144,7 +148,9 @@ class template extends atoum
         $this->fixturesDir = __DIR__ . '/../fixtures/templates';
         $tests             = array();
 
-        foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($this->fixturesDir), \RecursiveIteratorIterator::LEAVES_ONLY) as $file) {
+        foreach (new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($this->fixturesDir),
+            \RecursiveIteratorIterator::LEAVES_ONLY) as $file) {
             if (preg_match('/\.test$/', $file)) {
                 $tests[] = $file->getRealpath();
             }
@@ -152,6 +158,21 @@ class template extends atoum
         return $tests;
     }
 
+    public function testGetPath()
+    {
+        $dir      = sys_get_temp_dir() . '/tpl';
+        $cachedir = sys_get_temp_dir() . '/cbtpl';
+        @mkdir($dir);
+        @mkdir($cachedir);
+
+        $GLOBALS['tpl']            = new \template($cachedir, '$tpl');
+        $GLOBALS['tpl']->use_cache = false;
+
+        $GLOBALS['tpl']->setPath($dir);
+        $this
+            ->array($GLOBALS['tpl']->getPath())
+            ->string[0]->isEqualTo($dir);
+    }
 }
 
 class testTpls
@@ -160,6 +181,17 @@ class testTpls
     {
         $tpl->addValue("echo", array('tests\\unit\\testTpls', 'tplecho'));
         $tpl->addBlock("loop", array('tests\\unit\\testTpls', 'tplloop'));
+        $tpl->addBlock("entity", array('tests\\unit\\testTpls', 'tplentity'));
+    }
+
+    public static function tplentity($attr, $content)
+    {
+        $ret = '<div';
+        foreach ($attr as $k => $v) {
+            $ret .= ' ' . $k . ($v ? '="' . $v . '"' : '');
+        }
+        $ret .= '>' . "\n" . $content . '</div>' . "\n";
+        return $ret;
     }
 
     public static function tplecho($attr, $str)
@@ -192,5 +224,10 @@ class testTpls
             $ret = self::tplecho($attr) . $ret;
         }
         return $ret;
+    }
+
+    public static function trimHereDoc($t)
+    {
+        return trim(implode("\n", array_map('trim', explode("\n", $t))));
     }
 }
