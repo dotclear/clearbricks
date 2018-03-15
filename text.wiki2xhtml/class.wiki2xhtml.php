@@ -476,16 +476,12 @@ class wiki2xhtml
         return array_values(array_unique($res));
     }
 
-    private function __getTagsPattern($escape = false)
+    private function __getTagsPattern()
     {
         $res = $this->all_tags;
         array_walk($res, function (&$a) {$a = preg_quote($a, "/");});
 
-        if (!$escape) {
-            return '/(?<!\\\)(' . implode('|', $res) . ')/';
-        } else {
-            return '(' . implode('|', $res) . ')';
-        }
+        return '/(?<!\\\)(' . implode('|', $res) . ')/';
     }
 
     /* Blocs
