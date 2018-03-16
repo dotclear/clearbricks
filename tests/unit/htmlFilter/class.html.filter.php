@@ -14,8 +14,8 @@ namespace tests\unit;
 
 require_once __DIR__ . '/../bootstrap.php';
 
-require_once __DIR__ . '/../../../html.filter/class.html.filter.php';
-require_once __DIR__ . '/../../../common/lib.html.php';
+require_once CLEARBRICKS_PATH . '/html.filter/class.html.filter.php';
+require_once CLEARBRICKS_PATH . '/common/lib.html.php';
 
 use atoum;
 

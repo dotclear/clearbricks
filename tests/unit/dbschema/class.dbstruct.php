@@ -26,7 +26,7 @@ use atoum;
 
 require_once __DIR__ . '/../bootstrap.php';
 
-require_once str_replace('tests/unit/', '', __FILE__);
+require_once CLEARBRICKS_PATH . '/dbschema/class.dbstruct.php';
 
 class dbStruct extends atoum
 {

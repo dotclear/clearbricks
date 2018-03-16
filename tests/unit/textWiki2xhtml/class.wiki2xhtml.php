@@ -26,7 +26,8 @@ use atoum;
 use Faker;
 
 require_once __DIR__ . '/../bootstrap.php';
-require_once __DIR__ . '/../../../text.wiki2xhtml/class.wiki2xhtml.php';
+
+require_once CLEARBRICKS_PATH . '/text.wiki2xhtml/class.wiki2xhtml.php';
 
 class wiki2xhtml extends atoum
 {
