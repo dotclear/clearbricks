@@ -14,9 +14,9 @@ namespace tests\unit;
 
 require_once __DIR__ . '/../bootstrap.php';
 
-require_once __DIR__ . '/../../../net/class.net.socket.php';
-require_once __DIR__ . '/../../../net.http/class.net.http.php';
-require_once __DIR__ . '/../../../html.validator/class.html.validator.php';
+require_once CLEARBRICKS_PATH . '/net/class.net.socket.php';
+require_once CLEARBRICKS_PATH . '/net.http/class.net.http.php';
+require_once CLEARBRICKS_PATH . '/html.validator/class.html.validator.php';
 
 use atoum;
 

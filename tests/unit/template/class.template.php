@@ -25,17 +25,18 @@ use atoum;
 
 require_once __DIR__ . '/../bootstrap.php';
 
-$f = str_replace('\\', '/', __FILE__);
-require_once str_replace('tests/unit/', '', $f);
-require_once __DIR__ . '/../../../common/lib.files.php';
+require_once CLEARBRICKS_PATH . '/template/class.template.php';
+
+require_once CLEARBRICKS_PATH . '/template/class.tplnode.php';
+require_once CLEARBRICKS_PATH . '/template/class.tplnodeblock.php';
+require_once CLEARBRICKS_PATH . '/template/class.tplnodeblockdef.php';
+require_once CLEARBRICKS_PATH . '/template/class.tplnodevalue.php';
+require_once CLEARBRICKS_PATH . '/template/class.tplnodevalueparent.php';
+require_once CLEARBRICKS_PATH . '/template/class.tplnodetext.php';
+
+require_once CLEARBRICKS_PATH . '/common/lib.files.php';
 require_once CLEARBRICKS_PATH . '/common/lib.l10n.php';
 require_once CLEARBRICKS_PATH . '/common/lib.html.php';
-require_once __DIR__ . '/../../../template/class.tplnode.php';
-require_once __DIR__ . '/../../../template/class.tplnodeblock.php';
-require_once __DIR__ . '/../../../template/class.tplnodeblockdef.php';
-require_once __DIR__ . '/../../../template/class.tplnodevalue.php';
-require_once __DIR__ . '/../../../template/class.tplnodevalueparent.php';
-require_once __DIR__ . '/../../../template/class.tplnodetext.php';
 
 class template extends atoum
 {

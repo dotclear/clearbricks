@@ -26,8 +26,8 @@ use atoum;
 use Faker;
 
 require_once __DIR__ . '/../bootstrap.php';
-$f = str_replace('\\', '/', __FILE__);
-require_once str_replace('tests/unit/', '', $f);
+
+require_once CLEARBRICKS_PATH . '/common/lib.l10n.php';
 
 class l10n extends atoum
 {
