@@ -170,7 +170,7 @@ class wiki2xhtml
         $this->setOpt('active_macros', 1); # Activation des macros /// ///
         $this->setOpt('active_mark', 1); # Activation des mark ""..""
         $this->setOpt('active_aside', 1); # Activation du <aside>
-        $this->setOpt('active_sup', 1); # Activation du sup ^..(saut de ligne, espace, …)
+        $this->setOpt('active_sup', 1); # Activation du sup ^..^
 
         $this->setOpt('parse_pre', 1); # Parser l'intérieur de blocs <pre> ?
 
