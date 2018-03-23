@@ -28,17 +28,27 @@
 require dirname(__FILE__).'/common/_main.php';
 
 # Database Abstraction Layer
-$__autoload['dbLayer']                   = dirname(__FILE__).'/dblayer/dblayer.php';
-$__autoload['dbStruct']                  = dirname(__FILE__).'/dbschema/class.dbstruct.php';
-$__autoload['dbSchema']                  = dirname(__FILE__).'/dbschema/class.dbschema.php';
+$__autoload['dbLayer']                   = dirname(__FILE__) .'/dblayer/dblayer.php';
+$__autoload['dbStruct']                  = dirname(__FILE__) .'/dbschema/class.dbstruct.php';
+$__autoload['dbSchema']                  = dirname(__FILE__) .'/dbschema/class.dbschema.php';
+
+# Database Query Builder
+$__autoload['dbQuery']                   = dirname(__FILE__) .'/dbquery/class.dbquery.php';
+$__autoload['dbQueryAlias']              = dirname(__FILE__) .'/dbquery/class.dbquery.php';
+$__autoload['dbQueryConditions']         = dirname(__FILE__) .'/dbquery/class.dbquery.php';
+$__autoload['dbQueryExpression']         = dirname(__FILE__) .'/dbquery/class.dbquery.php';
+$__autoload['dbQueryHelper']             = dirname(__FILE__) .'/dbquery/class.dbquery.php';
+$__autoload['dbQueryLikeValue']          = dirname(__FILE__) .'/dbquery/class.dbquery.php';
+$__autoload['dbQueryReference']          = dirname(__FILE__) .'/dbquery/class.dbquery.php';
+$__autoload['dbQueryValueList']          = dirname(__FILE__) .'/dbquery/class.dbquery.php';
 
 # Files Manager
-$__autoload['filemanager']               = dirname(__FILE__).'/filemanager/class.filemanager.php';
-$__autoload['fileItem']                  = dirname(__FILE__).'/filemanager/class.filemanager.php';
+$__autoload['filemanager']               = dirname(__FILE__) .'/filemanager/class.filemanager.php';
+$__autoload['fileItem']                  = dirname(__FILE__) .'/filemanager/class.filemanager.php';
 
 # Feed Reader
-$__autoload['feedParser']                = dirname(__FILE__).'/net.http.feed/class.feed.parser.php';
-$__autoload['feedReader']                = dirname(__FILE__).'/net.http.feed/class.feed.reader.php';
+$__autoload['feedParser']                = dirname(__FILE__) .'/net.http.feed/class.feed.parser.php';
+$__autoload['feedReader']                = dirname(__FILE__) .'/net.http.feed/class.feed.reader.php';
 
 # HTML Filter
 $__autoload['htmlFilter']                = dirname(__FILE__).'/html.filter/class.html.filter.php';
