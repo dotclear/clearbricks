@@ -50,6 +50,7 @@ class dbQueryValueList extends atoum
     public function testList()
     {
         $values = \dbQueryValueList::make(array(1, 2, 3));
+        \dbQueryHelper::setPdoBinding(true);
 
         $this
             ->string($values->sql())
@@ -58,11 +59,17 @@ class dbQueryValueList extends atoum
             ->array($values->params())
             ->hasSize(3)
             ->containsValues(array(1, 2, 3));
+
+        \dbQueryHelper::setPdoBinding(false);
+        $this
+            ->string($values->sql())
+            ->isIdenticalTo('(1, 2, 3)');
     }
 
     public function testPlaceholders($driver)
     {
         $query = $this->getQuery($driver);
+        \dbQueryHelper::setPdoBinding(true);
 
         $values = \dbQueryValueList::make(array(
             true,
@@ -92,6 +99,7 @@ class dbQueryValueList extends atoum
     public function testMap()
     {
         $values = \dbQueryValueList::make(array('a' => 'A', 'b' => 'B', 'c' => 'C'));
+        \dbQueryHelper::setPdoBinding(true);
 
         $this
             ->string($values->sql())
@@ -103,6 +111,11 @@ class dbQueryValueList extends atoum
         $this
             ->integer($values->count())
             ->isEqualTo(3);
+
+        \dbQueryHelper::setPdoBinding(false);
+        $this
+            ->string($values->sql())
+            ->isIdenticalTo("('A', 'B', 'C')");
     }
 }
 
@@ -128,6 +141,7 @@ class dbQueryExpression extends atoum
     public function testExpression($driver, $result1, $result2)
     {
         $query = $this->getQuery($driver);
+        \dbQueryHelper::setPdoBinding(true);
 
         $expression = \dbQueryExpression::make($query, 'COUNT(*) AS %s', 'total');
 
@@ -182,6 +196,7 @@ class dbQueryReference extends atoum
     {
         $query = $this->getQuery($driver)
             ->from('users');
+        \dbQueryHelper::setPdoBinding(true);
 
         $ref = \dbQueryReference::make($query, $query);
 
@@ -209,6 +224,7 @@ class dbQueryReference extends atoum
     public function testReference($driver, $result)
     {
         $query = $this->getQuery($driver);
+        \dbQueryHelper::setPdoBinding(true);
 
         $ref = \dbQueryReference::make($query, 'users');
 
@@ -236,6 +252,7 @@ class dbQueryReference extends atoum
     public function testAlias($driver, $result)
     {
         $query = $this->getQuery($driver);
+        \dbQueryHelper::setPdoBinding(true);
 
         $alias = \dbQueryAlias::make($query, 'users', 'u');
         $ref   = \dbQueryReference::make($query, $alias);
@@ -253,11 +270,11 @@ class dbQueryReference extends atoum
     protected function testAliasDataProvider()
     {
         return array(
-            array('mysql', '`users` AS u'),
-            array('mysqli', '`users` AS u'),
-            array('mysqlimb4', '`users` AS u'),
-            array('pgsql', '"users" AS u'),
-            array('sqlite', '"users" AS u')
+            array('mysql', '`users` AS `u`'),
+            array('mysqli', '`users` AS `u`'),
+            array('mysqlimb4', '`users` AS `u`'),
+            array('pgsql', '"users" AS "u"'),
+            array('sqlite', '"users" AS "u"')
         );
     }
 }
@@ -284,6 +301,7 @@ class dbQueryAlias extends atoum
     public function testAlias($driver, $result)
     {
         $query = $this->getQuery($driver);
+        \dbQueryHelper::setPdoBinding(true);
 
         $alias_from    = \dbQueryAlias::make($query, 'users', 'u');
         $alias_columns = \dbQueryAlias::make($query, 'user_id', 'id');
@@ -303,11 +321,11 @@ class dbQueryAlias extends atoum
     protected function testAliasDataProvider()
     {
         return array(
-            array('mysql', 'SELECT `user_id` AS id FROM `users` AS u'),
-            array('mysqli', 'SELECT `user_id` AS id FROM `users` AS u'),
-            array('mysqlimb4', 'SELECT `user_id` AS id FROM `users` AS u'),
-            array('pgsql', 'SELECT "user_id" AS id FROM "users" AS u'),
-            array('sqlite', 'SELECT "user_id" AS id FROM "users" AS u')
+            array('mysql', 'SELECT `user_id` AS `id` FROM `users` AS `u`'),
+            array('mysqli', 'SELECT `user_id` AS `id` FROM `users` AS `u`'),
+            array('mysqlimb4', 'SELECT `user_id` AS `id` FROM `users` AS `u`'),
+            array('pgsql', 'SELECT "user_id" AS "id" FROM "users" AS "u"'),
+            array('sqlite', 'SELECT "user_id" AS "id" FROM "users" AS "u"')
         );
     }
 }
@@ -334,6 +352,7 @@ class dbQueryConditions extends atoum
     public function testBasic($driver)
     {
         $query = $this->getQuery($driver);
+        \dbQueryHelper::setPdoBinding(true);
 
         $conditions = \dbQueryConditions::make($query, 'id = ?', 2);
 
@@ -344,6 +363,11 @@ class dbQueryConditions extends atoum
         $this
             ->array($conditions->params())
             ->containsValues(array(2));
+
+        \dbQueryHelper::setPdoBinding(false);
+        $this
+            ->string($conditions->sql())
+            ->isIdenticalTo('id = 2');
     }
     protected function testBasicDataProvider()
     {
@@ -359,6 +383,7 @@ class dbQueryConditions extends atoum
     public function testBasicAndOr($driver)
     {
         $query = $this->getQuery($driver);
+        \dbQueryHelper::setPdoBinding(true);
 
         $conditions = \dbQueryConditions::make($query)
             ->with('id = ?', 1)
@@ -372,6 +397,11 @@ class dbQueryConditions extends atoum
         $this
             ->array($conditions->params())
             ->containsValues(array(1, 'today'));
+
+        \dbQueryHelper::setPdoBinding(false);
+        $this
+            ->string($conditions->sql())
+            ->isIdenticalTo('id = 1 AND last_login > \'today\' OR last_login IS NULL');
     }
     protected function testBasicAndOrDataProvider()
     {
@@ -387,10 +417,12 @@ class dbQueryConditions extends atoum
     public function testLogicalIn($driver)
     {
         $query = $this->getQuery($driver);
+        \dbQueryHelper::setPdoBinding(true);
 
         $conditions = \dbQueryConditions::make($query)
             ->with('role_id IN ?', \dbQueryValueList::make(array(1, 2, 3)))
             ->orWith('user_id IN ?', \dbQueryValueList::make(array(100)));
+
         $this
             ->string($conditions->sql())
             ->isIdenticalTo('role_id IN (?, ?, ?) OR user_id IN (?)');
@@ -398,15 +430,26 @@ class dbQueryConditions extends atoum
             ->array($conditions->params())
             ->containsValues(array(1, 2, 3, 100));
 
+        \dbQueryHelper::setPdoBinding(false);
+        $this
+            ->string($conditions->sql())
+            ->isIdenticalTo('role_id IN (1, 2, 3) OR user_id IN (100)');
+
         $conditions = \dbQueryConditions::make($query)
             ->with('role_id IN ?', \dbQueryValueList::make(array(4, 5, 6)));
 
+        \dbQueryHelper::setPdoBinding(true);
         $this
             ->string($conditions->sql())
             ->isIdenticalTo('role_id IN (?, ?, ?)');
         $this
             ->array($conditions->params())
             ->containsValues(array(4, 5, 6));
+
+        \dbQueryHelper::setPdoBinding(false);
+        $this
+            ->string($conditions->sql())
+            ->isIdenticalTo('role_id IN (4, 5, 6)');
     }
     protected function testLogicalInDataProvider()
     {
@@ -422,6 +465,7 @@ class dbQueryConditions extends atoum
     public function testCombinedStatement($driver)
     {
         $query = $this->getQuery($driver);
+        \dbQueryHelper::setPdoBinding(true);
 
         $conditions = \dbQueryConditions::make($query)
             ->with('id IN ? OR id = ?', \dbQueryValueList::make(array(5, 10)), 1);
@@ -432,6 +476,11 @@ class dbQueryConditions extends atoum
         $this
             ->array($conditions->params())
             ->containsValues(array(5, 10, 1));
+
+        \dbQueryHelper::setPdoBinding(false);
+        $this
+            ->string($conditions->sql())
+            ->isIdenticalTo('id IN (5, 10) OR id = 1');
     }
     protected function testCombinedStatementDataProvider()
     {
@@ -447,6 +496,7 @@ class dbQueryConditions extends atoum
     public function testGroupingWithAnd($driver)
     {
         $query = $this->getQuery($driver);
+        \dbQueryHelper::setPdoBinding(true);
 
         $conditions = \dbQueryConditions::make($query)
             ->with('id = ?', 1);
@@ -470,6 +520,15 @@ class dbQueryConditions extends atoum
         $this
             ->array($conditions->params())
             ->containsValues(array(1, 'today'));
+
+        \dbQueryHelper::setPdoBinding(false);
+        $this
+            ->string($group->sql())
+            ->isIdenticalTo('last_login > \'today\' OR last_login IS NULL');
+
+        $this
+            ->string($conditions->sql())
+            ->isIdenticalTo('id = 1 AND (' . $group->sql() . ')');
     }
     protected function testGroupingWithAndDataProvider()
     {
@@ -485,6 +544,7 @@ class dbQueryConditions extends atoum
     public function testGroupingWithOr($driver)
     {
         $query = $this->getQuery($driver);
+        \dbQueryHelper::setPdoBinding(true);
 
         $conditions = \dbQueryConditions::make($query)
             ->group()
@@ -502,6 +562,11 @@ class dbQueryConditions extends atoum
         $this
             ->array($conditions->params())
             ->containsValues(array(5, 'banned'));
+
+        \dbQueryHelper::setPdoBinding(false);
+        $this
+            ->string($conditions->sql())
+            ->isIdenticalTo('(failed_logins > 5 AND last_login IS NULL) OR (role = \'banned\')');
     }
     protected function testGroupingWithOrDataProvider()
     {
@@ -517,6 +582,7 @@ class dbQueryConditions extends atoum
     public function testGroupParent($driver)
     {
         $query = $this->getQuery($driver);
+        \dbQueryHelper::setPdoBinding(true);
 
         $conditions = \dbQueryConditions::make($query);
 
@@ -544,6 +610,7 @@ class dbQueryConditions extends atoum
     public function testSubConditionIdentifier($driver, $result)
     {
         $query = $this->getQuery($driver);
+        \dbQueryHelper::setPdoBinding(true);
 
         $conditions = \dbQueryConditions::make($query)
             ->with('u.id = ?')
@@ -617,6 +684,32 @@ class dbQueryHelper extends atoum
         return \dbQuery::make($this->getConnection($driver));
     }
 
+    public function testpdoBinding()
+    {
+        // Default value
+        $this
+            ->boolean(\dbQueryHelper::pdoBinding())
+            ->isEqualTo(false);
+
+        // False value
+        $this
+            ->boolean(\dbQueryHelper::setPdoBinding(false))
+            ->isEqualTo(false);
+
+        $this
+            ->boolean(\dbQueryHelper::pdoBinding())
+            ->isEqualTo(false);
+
+        // True value
+        $this
+            ->boolean(\dbQueryHelper::setPdoBinding(true))
+            ->isEqualTo(true);
+
+        $this
+            ->boolean(\dbQueryHelper::pdoBinding())
+            ->isEqualTo(true);
+    }
+
     public function testStringifyArray()
     {
         $this
@@ -630,9 +723,15 @@ class dbQueryHelper extends atoum
 
     public function testIsPlaceholderValue($value, $result)
     {
+        \dbQueryHelper::setPdoBinding(true);
         $this
             ->boolean(\dbQueryHelper::isPlaceholderValue($value))
             ->isEqualTo($result);
+
+        \dbQueryHelper::setPdoBinding(false);
+        $this
+            ->boolean(\dbQueryHelper::isPlaceholderValue($value))
+            ->isEqualTo(false);
     }
     protected function testIsPlaceholderValueDataProvider()
     {
@@ -648,6 +747,7 @@ class dbQueryHelper extends atoum
     public function testIsQuery()
     {
         $query = $this->getQuery('pgsql');
+        \dbQueryHelper::setPdoBinding(true);
 
         $this
             ->boolean(\dbQueryHelper::isQuery($query))
@@ -657,6 +757,7 @@ class dbQueryHelper extends atoum
     public function testIsStatement()
     {
         $query = $this->getQuery('pgsql');
+        \dbQueryHelper::setPdoBinding(true);
 
         $this
             ->boolean(\dbQueryHelper::isStatement($query))
@@ -666,6 +767,8 @@ class dbQueryHelper extends atoum
     public function testIsAlias()
     {
         $query = $this->getQuery('pgsql');
+        \dbQueryHelper::setPdoBinding(true);
+
         $alias = \dbQueryAlias::make($query, 'users', 'u');
 
         $this
@@ -676,6 +779,7 @@ class dbQueryHelper extends atoum
     public function testReference()
     {
         $query = $this->getQuery('pgsql');
+        \dbQueryHelper::setPdoBinding(true);
 
         $ref = \dbQueryHelper::reference($query, $query->from('users'));
         $this
@@ -696,7 +800,7 @@ class dbQueryHelper extends atoum
             ->object($ref)
             ->isInstanceOf('\dbQueryAlias')
             ->string($ref->sql())
-            ->isIdenticalTo('"users" AS u');
+            ->isIdenticalTo('"users" AS "u"');
     }
 
     public function testFlatten()
@@ -713,6 +817,40 @@ class dbQueryHelper extends atoum
             ->array(\dbQueryHelper::flatten(array('a' => 1, array('b' => 2, 'c' => 3)), true))
             ->containsValues(array(1, 2, 3))
             ->hasKeys(array('a', 'b', 'c'));
+    }
+
+    public function testEscapeValue($value, $noquote, $quote)
+    {
+        if (is_numeric($value)) {
+            $this
+                ->integer(\dbQueryHelper::escapeValue($value, false))
+                ->isIdenticalTo($noquote);
+
+            $this
+                ->integer(\dbQueryHelper::escapeValue($value))
+                ->isIdenticalTo($quote);
+        } else {
+            $this
+                ->string(\dbQueryHelper::escapeValue($value, false))
+                ->isIdenticalTo($noquote);
+
+            $this
+                ->string(\dbQueryHelper::escapeValue($value))
+                ->isIdenticalTo($quote);
+        }
+    }
+    protected function testEscapeValueDataProvider()
+    {
+        return array(
+            array(1, 1, 1),
+            array(null, 'NULL', 'NULL'),
+            array(true, 'TRUE', 'TRUE'),
+            array(false, 'FALSE', 'FALSE'),
+            array('null', 'NULL', 'NULL'),
+            array('true', 'TRUE', 'TRUE'),
+            array('false', 'FALSE', 'FALSE'),
+            array('void', "void", "'void'")
+        );
     }
 }
 
@@ -776,6 +914,7 @@ class dbQuery extends atoum
         );
 
         $query = $this->getQuery($driver);
+        \dbQueryHelper::setPdoBinding(true);
 
         foreach ($aliases as $alias) {
             $this
@@ -800,11 +939,11 @@ class dbQuery extends atoum
     protected function testEscapeAliasDataProvider()
     {
         return array(
-            array('mysql', '`id` AS `userId`', '`users`.`id` AS `userId`', '`user` AS u'),
-            array('mysqli', '`id` AS `userId`', '`users`.`id` AS `userId`', '`user` AS u'),
-            array('mysqlimb4', '`id` AS `userId`', '`users`.`id` AS `userId`', '`user` AS u'),
-            array('pgsql', '"id" AS "userId"', '"users"."id" AS "userId"', '"user" AS u'),
-            array('sqlite', '"id" AS "userId"', '"users"."id" AS "userId"', '"user" AS u')
+            array('mysql', '`id` AS `userId`', '`users`.`id` AS `userId`', '`user` AS `u`'),
+            array('mysqli', '`id` AS `userId`', '`users`.`id` AS `userId`', '`user` AS `u`'),
+            array('mysqlimb4', '`id` AS `userId`', '`users`.`id` AS `userId`', '`user` AS `u`'),
+            array('pgsql', '"id" AS "userId"', '"users"."id" AS "userId"', '"user" AS "u"'),
+            array('sqlite', '"id" AS "userId"', '"users"."id" AS "userId"', '"user" AS "u"')
         );
     }
 
@@ -818,6 +957,7 @@ class dbQuery extends atoum
 
         $ids   = array('users');
         $query = $this->getQuery($driver);
+        \dbQueryHelper::setPdoBinding(true);
 
         foreach ($ids as $id) {
             $eids[] = $escape->invokeArgs($query, array($id));
@@ -846,6 +986,7 @@ class dbQuery extends atoum
 
         $ids   = array('users', 'users.id');
         $query = $this->getQuery($driver);
+        \dbQueryHelper::setPdoBinding(true);
 
         $eids = array_map(array($query, 'escapeQualified'), $ids);
         $aids = $allQualified->invokeArgs($query, array($ids));
@@ -875,6 +1016,7 @@ class dbQuery extends atoum
 
         $ids   = array('users u', 'users.id userId');
         $query = $this->getQuery($driver);
+        \dbQueryHelper::setPdoBinding(true);
 
         foreach ($ids as $id) {
             $eids[] = $escapeAlias->invokeArgs($query, array($id));
@@ -903,6 +1045,7 @@ class dbQuery extends atoum
 
         $driver = 'pgsql';
         $query  = $this->getQuery($driver);
+        \dbQueryHelper::setPdoBinding(true);
 
         $this
             ->when(function () use ($escape, $query, $id) {
@@ -923,6 +1066,7 @@ class dbQuery extends atoum
     public function testEscapeExpression($driver, $result)
     {
         $query = $this->getQuery($driver);
+        \dbQueryHelper::setPdoBinding(true);
 
         $this
             ->string($query->escapeExpression('table.col = other.col'))
@@ -942,6 +1086,7 @@ class dbQuery extends atoum
     public function testEscapeQualified($driver, $result1, $result2, $result3)
     {
         $query = $this->getQuery($driver);
+        \dbQueryHelper::setPdoBinding(true);
 
         $expr = \dbQueryExpression::make($query, 'COUNT(*)');
         $this
@@ -964,11 +1109,11 @@ class dbQuery extends atoum
     protected function testEscapeQualifiedDataProvider()
     {
         return array(
-            array('mysql', '`user` AS u', '`user`', '`users`.`id`'),
-            array('mysqli', '`user` AS u', '`user`', '`users`.`id`'),
-            array('mysqlimb4', '`user` AS u', '`user`', '`users`.`id`'),
-            array('pgsql', '"user" AS u', '"user"', '"users"."id"'),
-            array('sqlite', '"user" AS u', '"user"', '"users"."id"')
+            array('mysql', '`user` AS `u`', '`user`', '`users`.`id`'),
+            array('mysqli', '`user` AS `u`', '`user`', '`users`.`id`'),
+            array('mysqlimb4', '`user` AS `u`', '`user`', '`users`.`id`'),
+            array('pgsql', '"user" AS "u"', '"user"', '"users"."id"'),
+            array('sqlite', '"user" AS "u"', '"user"', '"users"."id"')
         );
     }
 
@@ -978,6 +1123,7 @@ class dbQuery extends atoum
         $escape->setAccessible(true);
 
         $query = $this->getQuery($driver);
+        \dbQueryHelper::setPdoBinding(true);
 
         $this
             ->string($escape->invokeArgs($query, array('user')))
@@ -1018,6 +1164,7 @@ class dbQuery extends atoum
     {
         $driver = 'pgsql';
         $query  = $this->getQuery($driver);
+        \dbQueryHelper::setPdoBinding(true);
 
         $this
             ->string($query->mode)
@@ -1037,6 +1184,14 @@ class dbQuery extends atoum
             ->error()
             ->withMessage('Unknown property ' . 'unknown')
             ->exists();
+
+        $this
+            ->when(function () use ($query) {
+                $query->unknown = 'unknown';
+            })
+            ->error()
+            ->withMessage('Unknown property ' . 'unknown')
+            ->exists();
     }
 
     public function testSql()
@@ -1044,6 +1199,7 @@ class dbQuery extends atoum
         $driver = 'pgsql';
         $query  = $this->getQuery($driver)
             ->from('users');
+        \dbQueryHelper::setPdoBinding(true);
 
         $this
             ->string($query->sql())
@@ -1055,6 +1211,7 @@ class dbQuery extends atoum
         $driver = 'pgsql';
         $query  = $this->getQuery($driver)
             ->table('users');
+        \dbQueryHelper::setPdoBinding(true);
 
         $this
             ->string($query->table)
@@ -1065,6 +1222,7 @@ class dbQuery extends atoum
     {
         $driver = 'pgsql';
         $query  = $this->getQuery($driver, 'update');
+        \dbQueryHelper::setPdoBinding(true);
 
         $table = 'users';
         $map   = array('username' => 'mr-smith');
@@ -1083,12 +1241,18 @@ class dbQuery extends atoum
         $this
             ->array($query->params())
             ->containsValues(array('mr-smith', 'jsmith'));
+
+        \dbQueryHelper::setPdoBinding(false);
+        $this
+            ->string($query->sql())
+            ->isEqualTo('UPDATE "users" SET "username" = \'mr-smith\' WHERE username = \'jsmith\'');
     }
 
     public function testUpdateBooleanAndNull($value, $expect)
     {
         $driver = 'pgsql';
         $query  = $this->getQuery($driver);
+        \dbQueryHelper::setPdoBinding(true);
 
         $table = 'users';
         $map   = array(
@@ -1123,6 +1287,7 @@ class dbQuery extends atoum
         $this
             ->when(function () {
                 $query = $this->getQuery('pgsql', 'update');
+                \dbQueryHelper::setPdoBinding(true);
                 $sql   = $query->sql();
             })
             ->error()
@@ -1134,6 +1299,7 @@ class dbQuery extends atoum
     {
         $driver = 'pgsql';
         $query  = $this->getQuery($driver, 'delete');
+        \dbQueryHelper::setPdoBinding(true);
 
         $table = 'users';
 
@@ -1157,6 +1323,7 @@ class dbQuery extends atoum
         $this
             ->when(function () {
                 $query = $this->getQuery('pgsql', 'delete');
+                \dbQueryHelper::setPdoBinding(true);
                 $sql   = $query->sql();
             })
             ->error()
@@ -1168,6 +1335,7 @@ class dbQuery extends atoum
     {
         $driver = 'pgsql';
         $query  = $this->getQuery($driver, 'insert');
+        \dbQueryHelper::setPdoBinding(true);
 
         $table = 'users';
         $map   = array(
@@ -1185,12 +1353,18 @@ class dbQuery extends atoum
         $this
             ->array($query->params())
             ->containsValues(array_values($map));
+
+        \dbQueryHelper::setPdoBinding(false);
+        $this
+            ->string($query->insert())
+            ->isEqualTo('INSERT INTO "users" ("username", "password") VALUES (\'jsmith\', \'i-should-be-a-hash\')');
     }
 
     public function testInsertBooleanAndNull($value, $expect)
     {
         $driver = 'pgsql';
         $query  = $this->getQuery($driver);
+        \dbQueryHelper::setPdoBinding(true);
 
         $table = 'users';
         $map   = array(
@@ -1208,6 +1382,11 @@ class dbQuery extends atoum
         $this
             ->array($query->params())
             ->containsValues(array('jsmith'));
+
+        \dbQueryHelper::setPdoBinding(false);
+        $this
+            ->string($query->insert())
+            ->contains("VALUES ('jsmith', $expect)");
     }
     protected function testInsertBooleanAndNullDataProvider()
     {
@@ -1223,6 +1402,7 @@ class dbQuery extends atoum
     {
         $driver = 'pgsql';
         $query  = $this->getQuery($driver, 'insert');
+        \dbQueryHelper::setPdoBinding(true);
 
         $table = 'users';
         $map   = array(
@@ -1240,12 +1420,18 @@ class dbQuery extends atoum
         $this
             ->array($query->params())
             ->containsValues(array('jsmith'));
+
+        \dbQueryHelper::setPdoBinding(false);
+        $this
+            ->string($query->insert())
+            ->isEqualTo('INSERT INTO "users" ("username", "created_at") VALUES (\'jsmith\', NOW())');
     }
 
     public function testMultipleCompile()
     {
         $driver = 'pgsql';
         $query  = $this->getQuery($driver, 'insert');
+        \dbQueryHelper::setPdoBinding(true);
 
         $table = 'users';
         $map   = [
@@ -1277,12 +1463,18 @@ class dbQuery extends atoum
         $this
             ->array($query->params())
             ->isIdenticalTo($params);
+
+        \dbQueryHelper::setPdoBinding(false);
+        $this
+            ->string($query->sql())
+            ->contains('(\'jdoe\', FALSE, TRUE, NOW(), NULL)');
     }
 
     public function testInsertMultiple()
     {
         $driver = 'pgsql';
         $query  = $this->getQuery($driver, 'insert');
+        \dbQueryHelper::setPdoBinding(true);
 
         $query
             ->table('tokens')
@@ -1299,12 +1491,18 @@ class dbQuery extends atoum
         $this
             ->array($query->params())
             ->containsValues(array('a', 'b', 'c'));
+
+        \dbQueryHelper::setPdoBinding(false);
+        $this
+            ->string($query->insert())
+            ->isEqualTo('INSERT INTO "tokens" ("token") VALUES (\'a\'), (\'b\'), (\'c\')');
     }
 
     public function testInsertQualified()
     {
         $driver = 'pgsql';
         $query  = $this->getQuery($driver, 'insert');
+        \dbQueryHelper::setPdoBinding(true);
 
         $table = 'public.users';
         $map   = array(
@@ -1323,6 +1521,7 @@ class dbQuery extends atoum
     {
         $driver = 'pgsql';
         $query  = $this->getQuery($driver, 'insert');
+        \dbQueryHelper::setPdoBinding(true);
 
         $query
             ->table('tokens')
@@ -1349,6 +1548,7 @@ class dbQuery extends atoum
     {
         $driver = 'pgsql';
         $query  = $this->getQuery($driver);
+        \dbQueryHelper::setPdoBinding(true);
 
         $query
             ->from('users');
@@ -1365,6 +1565,7 @@ class dbQuery extends atoum
     {
         $driver = 'pgsql';
         $query  = $this->getQuery($driver);
+        \dbQueryHelper::setPdoBinding(true);
 
         $query
             ->distinct(true)
@@ -1382,6 +1583,7 @@ class dbQuery extends atoum
     {
         $driver = 'pgsql';
         $query  = $this->getQuery($driver);
+        \dbQueryHelper::setPdoBinding(true);
 
         $query
             ->distinct(false)
@@ -1399,6 +1601,7 @@ class dbQuery extends atoum
     {
         $driver = 'pgsql';
         $query  = $this->getQuery($driver);
+        \dbQueryHelper::setPdoBinding(true);
 
         $query
             ->from('users', 'roles');
@@ -1412,6 +1615,7 @@ class dbQuery extends atoum
     {
         $driver = 'pgsql';
         $query  = $this->getQuery($driver);
+        \dbQueryHelper::setPdoBinding(true);
 
         $query
             ->from('users')
@@ -1429,6 +1633,7 @@ class dbQuery extends atoum
     {
         $driver = 'pgsql';
         $query  = $this->getQuery($driver);
+        \dbQueryHelper::setPdoBinding(true);
 
         $query
             ->from('employees e')
@@ -1444,16 +1649,22 @@ class dbQuery extends atoum
 
         $this
             ->string($query->sql())
-            ->isEqualTo('SELECT "e"."id", "e"."first_name", "e"."last_name", COUNT("s"."id") AS "shift_count" FROM "employees" AS "e" JOIN "shifts" AS s ON "s"."type" = ? OR "s"."day" = ? WHERE "e"."id" > ? HAVING shift_count > ?');
+            ->isEqualTo('SELECT "e"."id", "e"."first_name", "e"."last_name", COUNT("s"."id") AS "shift_count" FROM "employees" AS "e" JOIN "shifts" AS "s" ON "s"."type" = ? OR "s"."day" = ? WHERE "e"."id" > ? HAVING shift_count > ?');
         $this
             ->array($query->params())
             ->containsValues(array(1, 2, 3, 4));
+
+        \dbQueryHelper::setPdoBinding(false);
+        $this
+            ->string($query->sql())
+            ->isEqualTo('SELECT "e"."id", "e"."first_name", "e"."last_name", COUNT("s"."id") AS "shift_count" FROM "employees" AS "e" JOIN "shifts" AS "s" ON "s"."type" = 1 OR "s"."day" = 2 WHERE "e"."id" > 3 HAVING shift_count > 4');
     }
 
     public function testSelectJoin($method, $type)
     {
         $driver = 'pgsql';
         $query  = $this->getQuery($driver);
+        \dbQueryHelper::setPdoBinding(true);
 
         $query
             ->from('users')
@@ -1484,6 +1695,7 @@ class dbQuery extends atoum
     {
         $driver = 'pgsql';
         $query  = $this->getQuery($driver);
+        \dbQueryHelper::setPdoBinding(true);
 
         $query
             ->from('users')
@@ -1495,12 +1707,18 @@ class dbQuery extends atoum
         $this
             ->array($query->params())
             ->containsValues(array(1));
+
+        \dbQueryHelper::setPdoBinding(false);
+        $this
+            ->string($query->sql())
+            ->isEqualTo('SELECT * FROM "users" WHERE id = 1');
     }
 
     public function testSelectGroupByHaving()
     {
         $driver = 'pgsql';
         $query  = $this->getQuery($driver);
+        \dbQueryHelper::setPdoBinding(true);
 
         $query
             ->from('users')
@@ -1514,12 +1732,18 @@ class dbQuery extends atoum
         $this
             ->array($query->params())
             ->containsValues(array(5));
+
+        \dbQueryHelper::setPdoBinding(false);
+        $this
+            ->string($query->sql())
+            ->isEqualTo('SELECT COUNT(*) AS "total" FROM "users" GROUP BY "role_id" HAVING total > 5');
     }
 
     public function testSelectGroupByWithExpression()
     {
         $driver = 'pgsql';
         $query  = $this->getQuery($driver);
+        \dbQueryHelper::setPdoBinding(true);
 
         $query
             ->from('users')
@@ -1538,6 +1762,7 @@ class dbQuery extends atoum
     {
         $driver = 'pgsql';
         $query  = $this->getQuery($driver);
+        \dbQueryHelper::setPdoBinding(true);
 
         $query
             ->from('users')
@@ -1552,6 +1777,7 @@ class dbQuery extends atoum
     {
         $driver = 'pgsql';
         $query  = $this->getQuery($driver);
+        \dbQueryHelper::setPdoBinding(true);
 
         $query
             ->from('users u')
@@ -1613,6 +1839,7 @@ class dbQuery extends atoum
     public function testSelectSubSelect()
     {
         $driver = 'pgsql';
+        \dbQueryHelper::setPdoBinding(true);
 
         $sub_query = $this->getQuery($driver);
         $sub_query
@@ -1644,11 +1871,21 @@ class dbQuery extends atoum
                 '2016-12-15',
                 '2016-12-25'
             ));
+
+        $expected = 'SELECT * FROM "users" WHERE id IN (' .
+            'SELECT "user_id" FROM "orders" WHERE placed_at BETWEEN \'2017-01-01\' AND \'2017-12-31\'' .
+            ') AND deleted_at IS NULL AND created_at BETWEEN \'2016-12-15\' AND \'2016-12-25\'';
+
+        \dbQueryHelper::setPdoBinding(false);
+        $this
+            ->string($query->sql())
+            ->isEqualTo($expected);
     }
 
     public function testSelectSubSelectJoin()
     {
         $driver = 'pgsql';
+        \dbQueryHelper::setPdoBinding(true);
 
         $join = $this->getQuery($driver);
         $join
@@ -1676,7 +1913,7 @@ class dbQuery extends atoum
 
         $expected = 'SELECT "a"."fullname", "a"."id", "a"."score" FROM "scores" AS "a" INNER JOIN (' .
             'SELECT "fullname", MAX("score") FROM "scores" WHERE fullname = ? GROUP BY "fullname") ' .
-            'AS b ON "a"."fullname" = "b"."fullname" AND "a"."score" = "b"."score" WHERE "a"."score" > ?';
+            'AS "b" ON "a"."fullname" = "b"."fullname" AND "a"."score" = "b"."score" WHERE "a"."score" > ?';
 
         $this
             ->string($query->sql())
@@ -1684,11 +1921,21 @@ class dbQuery extends atoum
         $this
             ->array($query->params())
             ->containsValues(array('Jane Doe', 50));
+
+        $expected = 'SELECT "a"."fullname", "a"."id", "a"."score" FROM "scores" AS "a" INNER JOIN (' .
+            'SELECT "fullname", MAX("score") FROM "scores" WHERE fullname = \'Jane Doe\' GROUP BY "fullname") ' .
+            'AS "b" ON "a"."fullname" = "b"."fullname" AND "a"."score" = "b"."score" WHERE "a"."score" > 50';
+
+        \dbQueryHelper::setPdoBinding(false);
+        $this
+            ->string($query->sql())
+            ->isEqualTo($expected);
     }
 
     public function testSurround($driver, $expected)
     {
         $query = $this->getQuery($driver);
+        \dbQueryHelper::setPdoBinding(true);
 
         $this
             ->string($query->surround('user'))
@@ -1708,6 +1955,7 @@ class dbQuery extends atoum
     public function testSurroundCommon()
     {
         $query = new \dbQuery(null);
+        \dbQueryHelper::setPdoBinding(true);
 
         $this
             ->string($query->surround('user'))

@@ -97,6 +97,8 @@ class dbQuery implements dbQueryStatement
     {
         if (property_exists($this, $property)) {
             $this->$property = $value;
+        } else {
+            trigger_error('Unknown property ' . $property, E_USER_ERROR);
         }
         return $this;
     }
@@ -479,7 +481,8 @@ class dbQuery implements dbQueryStatement
         }
 
         // null -> "NULL", true -> "TRUE", etc
-        return strtoupper(var_export($value, true));
+        $result = var_export($value, true);
+        return dbQueryHelper::pdoBinding() ? strtoupper($result) : $result;
     }
 
     /**
@@ -691,7 +694,8 @@ class dbQueryValueList implements Countable, dbQueryStatement
         }
 
         // null -> "NULL", true -> "TRUE", etc
-        return strtoupper(var_export($value, true));
+        $result = var_export($value, true);
+        return dbQueryHelper::pdoBinding() ? strtoupper($result) : dbQueryHelper::escapeValue($result, false);
     }
 
     /**
@@ -798,7 +802,7 @@ class dbQueryAlias implements dbQueryStatement
         return sprintf(
             dbQueryHelper::isQuery($this->statement) ? '(%s) AS %s' : '%s AS %s',
             $this->statement->sql(),
-            $this->alias
+            $this->db_query->escapeQualified($this->alias)
         );
     }
 
@@ -1048,7 +1052,9 @@ class dbQueryConditions implements dbQueryStatement
     protected function replaceStatementParams($statement, $params)
     {
         if ($this->hasStatementParam($params) === false) {
-            return $statement;
+            if (dbQueryHelper::pdoBinding()) {
+                return $statement;
+            }
         }
         $list = is_array($params) ? $params : array($params);
         // Maintain an offset position, as preg_replace_callback() does not provide one
@@ -1061,7 +1067,7 @@ class dbQueryConditions implements dbQueryStatement
                 return $list[$idx]->sql();
             } else {
                 // And leave all other placeholders intact
-                return $matches[0];
+                return dbQueryHelper::pdoBinding() ? $matches[0] : dbQueryHelper::escapeValue($list[$idx]);
             }
         }, $statement);
     }
@@ -1115,6 +1121,24 @@ class dbQueryLikeValue
 
 class dbQueryHelper
 {
+    private static $pdo_binding = false;
+
+    /**
+     * Enable or disable use of binding values (useful with PDO::execute())
+     *
+     * @param      boolean  $enable New value of pdo_binding flag
+     */
+    public static function setPdoBinding($enable = true)
+    {
+        self::$pdo_binding = $enable;
+        return self::$pdo_binding;
+    }
+
+    public static function pdoBinding()
+    {
+        return self::$pdo_binding;
+    }
+
     /**
      * Convert an array to a string.
      */
@@ -1128,6 +1152,11 @@ class dbQueryHelper
      */
     public static function isPlaceholderValue($value)
     {
+        // No binding values
+        if (!self::$pdo_binding) {
+            return false;
+        }
+
         if (in_array($value, array(true, false, null), true)) {
             return false;
         }
@@ -1181,5 +1210,16 @@ class dbQueryHelper
             $table = array($array);
         }
         return $table;
+    }
+
+    public static function escapeValue($v, $quote = true)
+    {
+        return is_numeric($v) || in_array($v, array(null, true, false), true) ?
+            (is_numeric($v) ?
+                $v :    // numeric value
+                strtoupper(var_export($v, true))) : // null -> NULL, true -> TRUE, false -> FALSE
+            (in_array(strtoupper($v), array('NULL', 'TRUE', 'FALSE'), true) ? // string value
+                strtoupper($v) :
+                ($quote ? "'" . $v . "'" : $v));
     }
 }
