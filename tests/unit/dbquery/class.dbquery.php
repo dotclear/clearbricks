@@ -1961,4 +1961,84 @@ class dbQuery extends atoum
             ->string($query->surround('user'))
             ->isEqualTo('user');
     }
+
+    public function testWrapperList()
+    {
+        $query = $this->getQuery('pgsql');
+        \dbQueryHelper::setPdoBinding(true);
+
+        $values = $query->valueList(array(1, 2, 3));
+        $this
+            ->string($values->sql())
+            ->isIdenticalTo('(?, ?, ?)');
+    }
+
+    public function testWrapperCondition()
+    {
+        $query = $this->getQuery('pgsql');
+        \dbQueryHelper::setPdoBinding(true);
+
+        $cond = $query->condition()
+            ->with('u.id = ?')
+            ->orGroup()
+            ->with('u.username = ?')
+            ->end();
+        $this
+            ->string($cond->sql())
+            ->isIdenticalTo('"u"."id" = ? OR ("u"."username" = ?)');
+
+        $cond = $query->cond()
+            ->with('u.id = ?')
+            ->orGroup()
+            ->with('u.username = ?')
+            ->end();
+        $this
+            ->string($cond->sql())
+            ->isIdenticalTo('"u"."id" = ? OR ("u"."username" = ?)');
+    }
+
+    public function testWrapperExpression()
+    {
+        $query = $this->getQuery('pgsql');
+        \dbQueryHelper::setPdoBinding(true);
+
+        $expr = $query->expression('COUNT(*) AS %s', 'total');
+        $this
+            ->string($expr->sql())
+            ->isIdenticalTo('COUNT(*) AS "total"');
+
+        $expr = $query->expr('COUNT(*) AS %s', 'total');
+        $this
+            ->string($expr->sql())
+            ->isIdenticalTo('COUNT(*) AS "total"');
+    }
+
+    public function testWrapperReference()
+    {
+        $query = $this->getQuery('pgsql');
+        \dbQueryHelper::setPdoBinding(true);
+
+        $alias = \dbQueryAlias::make($query, 'users', 'u');
+
+        $ref = $query->reference($alias);
+        $this
+            ->string($ref->sql())
+            ->isIdenticalTo('"users" AS "u"');
+
+        $ref = $query->ref($alias);
+        $this
+            ->string($ref->sql())
+            ->isIdenticalTo('"users" AS "u"');
+    }
+
+    public function testWrapperAlias()
+    {
+        $query = $this->getQuery('pgsql');
+        \dbQueryHelper::setPdoBinding(true);
+
+        $alias = $query->alias('users', 'u');
+        $this
+            ->string($alias->sql())
+            ->isIdenticalTo('"users" AS "u"');
+    }
 }
