@@ -1,9 +1,7 @@
 <?php
 /**
- * @class dbQuery
- * @brief Database SQL Query builder
- *
- * Database driver is an helper class to build SQL queries.
+ * @class dbQueryStatement
+ * @brief Database Abstraction SQL Query builder interface
  *
  * @package Clearbricks
  * @subpackage DBQuery
@@ -24,6 +22,20 @@ interface dbQueryStatement
      */
     public function params();
 }
+
+/**
+ * @class dbQuery
+ * @brief Database SQL Query builder
+ *
+ * Database driver is an helper class to build SQL queries.
+ * implements {@link dbQueryStatement} interface.
+ *
+ * @package Clearbricks
+ * @subpackage DBQuery
+ *
+ * @copyright Franck Paul & Association Dotclear
+ * @copyright GPL-2.0-only
+ */
 
 class dbQuery implements dbQueryStatement
 {
@@ -275,6 +287,8 @@ class dbQuery implements dbQueryStatement
         return $this;
     }
 
+    // SQL queries
+
     public function select()
     {
         $this->mode = 'select';
@@ -382,6 +396,50 @@ class dbQuery implements dbQueryStatement
             $this->where->sql()
         );
     }
+
+    // Query component's wrappers
+
+    public function valueList($params)
+    {
+        return dbQueryValueList::make($params);
+    }
+
+    public function expression($template, $identifiers = null)
+    {
+        return dbQueryExpression::make($this, $template, $identifiers);
+    }
+
+    public function expr($template, $identifiers = null)
+    {
+        return $this->expression($template, $identifiers);
+    }
+
+    public function reference($reference)
+    {
+        return dbQueryReference::make($this, $reference);
+    }
+
+    public function ref($reference)
+    {
+        return $this->reference($reference);
+    }
+
+    public function alias($statement, $alias)
+    {
+        return dbQueryAlias::make($this, $statement, $alias);
+    }
+
+    public function condition($condition = null, $params = null)
+    {
+        return dbQueryConditions::make($this, $condition, $params);
+    }
+
+    public function cond($condition = null, $params = null)
+    {
+        return $this->condition($condition, $params);
+    }
+
+    // Helpers
 
     /**
      * Surround the identifier with escape characters.
