@@ -32,9 +32,6 @@ interface dbQueryStatement
  *
  * @package Clearbricks
  * @subpackage DBQuery
- *
- * @copyright Franck Paul & Association Dotclear
- * @copyright GPL-2.0-only
  */
 
 class dbQuery implements dbQueryStatement
@@ -42,7 +39,7 @@ class dbQuery implements dbQueryStatement
     const IDENTIFIER_REGEX         = '/^[a-zA-Z](?:[a-zA-Z0-9_]+)?$/';
     const IDENTIFIER_CAPTURE_REGEX = '/([a-zA-Z](?:[a-zA-Z0-9_]+)?\.[a-zA-Z](?:[a-zA-Z0-9_]+)?)/';
 
-    private $con;
+    private $driver;
     private $mode;
 
     protected $table    = null;
@@ -59,15 +56,28 @@ class dbQuery implements dbQueryStatement
     protected $limit    = null;
     protected $offset   = null;
 
-    public function __construct($con, $mode = 'select')
+    /**
+     * Constructor
+     *
+     * @param      string  $driver DB driver name
+     * @param      string  $mode   SQL query type
+     */
+    public function __construct($driver, $mode = 'select')
     {
-        $this->con  = &$con;
-        $this->mode = $mode;
+        $this->driver = $driver;
+        $this->mode   = $mode;
     }
 
-    public static function make($con, $mode = 'select')
+    /**
+     * Static method to construct a new instance of dbQuery
+     *
+     * @param      string  $driver  DB driver name
+     * @param      string  $mode    SQL query type
+     *
+     * @return     dbQuery
+     */
+    public static function make($driver, $mode = 'select')
     {
-        $driver       = $con->driver();
         $driver_class = $driver . 'Query';
 
         if (!class_exists($driver_class)) {
@@ -78,7 +88,7 @@ class dbQuery implements dbQueryStatement
                 return;
             }
         }
-        return new $driver_class($con, $mode);
+        return new $driver_class($driver, $mode);
     }
 
     /**
@@ -289,6 +299,11 @@ class dbQuery implements dbQueryStatement
 
     // SQL queries
 
+    /**
+     * Get SELECT SQL query
+     *
+     * @return     string  select query
+     */
     public function select()
     {
         $this->mode = 'select';
@@ -352,6 +367,11 @@ class dbQuery implements dbQueryStatement
         return implode(' ', $parts);
     }
 
+    /**
+     * Get UPDATE SQL query
+     *
+     * @return     string  update query
+     */
     public function update()
     {
         $this->mode = 'update';
@@ -369,6 +389,11 @@ class dbQuery implements dbQueryStatement
         );
     }
 
+    /**
+     * Get INSERT SQL query
+     *
+     * @return     string  insert query
+     */
     public function insert()
     {
         $this->mode = 'insert';
@@ -381,6 +406,11 @@ class dbQuery implements dbQueryStatement
         );
     }
 
+    /**
+     * Get DELETE SQL query
+     *
+     * @return     string  delete query
+     */
     public function delete()
     {
         $this->mode = 'delete';
@@ -399,41 +429,88 @@ class dbQuery implements dbQueryStatement
 
     // Query component's wrappers
 
+    /**
+     * Create and returns a List of values object (used in conditions)
+     *
+     * @param      mixed  $params  The query parameters
+     *
+     * @return     dbQueryValueList
+     */
     public function valueList($params)
     {
         return dbQueryValueList::make($params);
     }
 
+    /**
+     * Create and returns an expression object
+     *
+     * @param      string  $template     The expression template
+     * @param      mixed   $identifiers  The identifiers
+     *
+     * @return     dbQueryExpression
+     */
     public function expression($template, $identifiers = null)
     {
         return dbQueryExpression::make($this, $template, $identifiers);
     }
 
+    /**
+     * Alias for expression() method
+     */
     public function expr($template, $identifiers = null)
     {
         return $this->expression($template, $identifiers);
     }
 
+    /**
+     * Create and returns a reference object
+     *
+     * @param      mixed  $reference  The reference
+     *
+     * @return     dbQueryReference
+     */
     public function reference($reference)
     {
         return dbQueryReference::make($this, $reference);
     }
 
+    /**
+     * Alias for reference() method
+     */
     public function ref($reference)
     {
         return $this->reference($reference);
     }
 
+    /**
+     * Create and returns an alias object
+     *
+     * @param      mixed   $statement  The statement (string, query, …)
+     * @param      string  $alias      The alias
+     *
+     * @return     dbQueryAlias
+     */
     public function alias($statement, $alias)
     {
         return dbQueryAlias::make($this, $statement, $alias);
     }
 
+    /**
+     * Create and returns a condition object
+     *
+     * @param      string  $condition  The condition
+     * @param      mixed   $params     The parameters
+     *
+     * @return     dbQueryCondition
+     */
     public function condition($condition = null, $params = null)
     {
         return dbQueryConditions::make($this, $condition, $params);
     }
 
+    /**
+     * Alias for condition() method
+     */
     public function cond($condition = null, $params = null)
     {
         return $this->condition($condition, $params);
@@ -481,11 +558,21 @@ class dbQuery implements dbQueryStatement
         return dbQueryHelper::flatten($params);
     }
 
+    /**
+     * Returns a LIMIT SQL fragment
+     *
+     * @return     string
+     */
     protected function limitAsSql()
     {
         return sprintf('LIMIT %d', $this->limit);
     }
 
+    /**
+     * Returns an ORDER BY SQL fragment
+     *
+     * @return     string
+     */
     protected function orderByAsSql()
     {
         return sprintf('ORDER BY %s', dbQueryHelper::stringifyArray($this->generateOrderBy()));
@@ -493,6 +580,8 @@ class dbQuery implements dbQueryStatement
 
     /**
      * Generate a list of ORDER BY statements.
+     *
+     * @return     array
      */
     protected function generateOrderBy()
     {
@@ -509,6 +598,8 @@ class dbQuery implements dbQueryStatement
 
     /**
      * Generate a column and placeholder pair.
+     *
+     * @return     array
      */
     protected function generateSetList()
     {
@@ -525,6 +616,8 @@ class dbQuery implements dbQueryStatement
      * PDO treats indexed parameters as strings when the type is not bound.
      * This will fail for null and boolean values. By replacing the values
      * directly more consistent queries can be built.
+     *
+     * @return     string
      */
     protected function placeholderValue($index)
     {
@@ -545,6 +638,8 @@ class dbQuery implements dbQueryStatement
 
     /**
      * Get all parameters that can be placeholders.
+     *
+     * @return     array
      */
     protected function placeholderParams($params)
     {
@@ -557,6 +652,8 @@ class dbQuery implements dbQueryStatement
 
     /**
      * Convert all parameters to an array for flattening.
+     *
+     * @return     array
      */
     protected function paramLister()
     {
@@ -567,6 +664,8 @@ class dbQuery implements dbQueryStatement
 
     /**
      * Generate a list of insert lines.
+     *
+     * @return     array
      */
     protected function insertLines()
     {
@@ -579,6 +678,8 @@ class dbQuery implements dbQueryStatement
 
     /**
      * Escape an unqualified identifier.
+     *
+     * @return     string
      */
     protected function escape($identifier)
     {
@@ -592,6 +693,8 @@ class dbQuery implements dbQueryStatement
 
     /**
      * Escape a (possibly) qualified identifier.
+     *
+     * @return     string
      */
     public function escapeQualified($identifier)
     {
@@ -613,6 +716,8 @@ class dbQuery implements dbQueryStatement
 
     /**
      * Escape a identifier alias.
+     *
+     * @return     string
      */
     protected function escapeAlias($alias)
     {
@@ -630,14 +735,18 @@ class dbQuery implements dbQueryStatement
 
     /**
      * Escape a list of identifiers.
+     *
+     * @return     array
      */
-    protected function all(array $identifiers)
+    protected function all($identifiers)
     {
         return array_map(array($this, 'escape'), is_array($identifiers) ? $identifiers : array($identifiers));
     }
 
     /**
      * Escape a list of (possibly) qualified identifiers.
+     *
+     * @return     array
      */
     public function allQualified($identifiers)
     {
@@ -646,6 +755,8 @@ class dbQuery implements dbQueryStatement
 
     /**
      * Escape a list of identifier aliases.
+     *
+     * @return     array
      */
     protected function allAliases($aliases)
     {
@@ -654,6 +765,8 @@ class dbQuery implements dbQueryStatement
 
     /**
      * Escape all qualified identifiers in an expression.
+     *
+     * @return     string
      */
     public function escapeExpression($expression)
     {
@@ -671,6 +784,8 @@ class dbQuery implements dbQueryStatement
 
     /**
      * Check if the identifier is an identifier expression.
+     *
+     * @return     boolean
      */
     protected function isExpression($identifier)
     {
@@ -686,8 +801,90 @@ class dbQuery implements dbQueryStatement
             trigger_error('Invalid SQL identifier: ' . $identifier, E_USER_ERROR);
         }
     }
+
+    /**
+     * Escape input for a LIKE condition value.
+     *
+     * @return     string
+     */
+    protected function escapeLike($value)
+    {
+        // Backslash is used to escape wildcards.
+        $value = str_replace('\\', '\\\\', $value);
+        // Standard wildcards are underscore and percent sign.
+        $value = str_replace('%', '\\%', $value);
+        $value = str_replace('_', '\\_', $value);
+
+        return $value;
+    }
+
+    /**
+     * Escape input for a LIKE condition, surrounding with wildcards.
+     *
+     * @return     string
+     */
+    public function anyLike($value)
+    {
+        $value = $this->escapeLike($value);
+        return "%$value%";
+    }
+
+    /**
+     * Escape input for a LIKE condition, ends with wildcards.
+     *
+     * @return     string
+     */
+    public function startsLike($value)
+    {
+        $value = $this->escapeLike($value);
+        return "$value%";
+    }
+
+    /**
+     * Escape input for a LIKE condition, starts with wildcards.
+     *
+     * @return     string
+     */
+    public function endsLike($value)
+    {
+        $value = $this->escapeLike($value);
+        return "%$value";
+    }
+
+    // Wrappers for some static helper class methods
+
+    /**
+     * Sets the pdo binding mode
+     *
+     * Set to:
+     * - true to use with PDOStatement::execute()
+     * - false to use directly with another database abstraction layer
+     *
+     * @param      boolean  $enable
+     *
+     * @return     boolean  the new value
+     */
+    public function setPdoBinding($enable = true) {
+        return dbQueryHelper::setPdoBinding($enable);
+    }
+
+    /**
+     * Get current pdo binding mode
+     *
+     * @return     boolean
+     */
+    public function pdoBinding()
+    {
+        return dbQueryHelper::pdoBinding();
+    }
 }
 
+/**
+ * List of database query values.
+ *
+ * @package Clearbricks
+ * @subpackage DBQuery
+ */
 class dbQueryValueList implements Countable, dbQueryStatement
 {
     protected $params;
@@ -769,6 +966,12 @@ class dbQueryValueList implements Countable, dbQueryStatement
     }
 }
 
+/**
+ * Class for database query expression.
+ *
+ * @package Clearbricks
+ * @subpackage DBQuery
+ */
 class dbQueryExpression implements dbQueryStatement
 {
     protected $db_query;
@@ -806,6 +1009,12 @@ class dbQueryExpression implements dbQueryStatement
     }
 }
 
+/**
+ * Class for database query reference.
+ *
+ * @package Clearbricks
+ * @subpackage DBQuery
+ */
 class dbQueryReference implements dbQueryStatement
 {
     protected $db_query;
@@ -838,6 +1047,12 @@ class dbQueryReference implements dbQueryStatement
     }
 }
 
+/**
+ * Class for database query alias.
+ *
+ * @package Clearbricks
+ * @subpackage DBQuery
+ */
 class dbQueryAlias implements dbQueryStatement
 {
     protected $db_query;
@@ -878,6 +1093,12 @@ class dbQueryAlias implements dbQueryStatement
     }
 }
 
+/**
+ * Class for database query conditions.
+ *
+ * @package Clearbricks
+ * @subpackage DBQuery
+ */
 class dbQueryConditions implements dbQueryStatement
 {
     protected $db_query;
@@ -1131,60 +1352,26 @@ class dbQueryConditions implements dbQueryStatement
     }
 }
 
-// Helper (static) classes
-
-class dbQueryLikeValue
-{
-    /**
-     * Escape input for a LIKE condition value.
-     */
-    public static function escape($value)
-    {
-        // Backslash is used to escape wildcards.
-        $value = str_replace('\\', '\\\\', $value);
-        // Standard wildcards are underscore and percent sign.
-        $value = str_replace('%', '\\%', $value);
-        $value = str_replace('_', '\\_', $value);
-
-        return $value;
-    }
-
-    /**
-     * Escape input for a LIKE condition, surrounding with wildcards.
-     */
-    public static function any($value)
-    {
-        $value = self::escape($value);
-        return "%$value%";
-    }
-
-    /**
-     * Escape input for a LIKE condition, ends with wildcards.
-     */
-    public static function starts($value)
-    {
-        $value = self::escape($value);
-        return "$value%";
-    }
-
-    /**
-     * Escape input for a LIKE condition, starts with wildcards.
-     */
-    public static function ends($value)
-    {
-        $value = self::escape($value);
-        return "%$value";
-    }
-}
-
+/**
+ * Class for database query helper.
+ *
+ * @package Clearbricks
+ * @subpackage DBQuery
+ */
 class dbQueryHelper
 {
-    private static $pdo_binding = false;
+    private static $pdo_binding = false; ///< PDOStatement binding mode
 
     /**
-     * Enable or disable use of binding values (useful with PDO::execute())
+     * Sets the pdo binding mode
      *
-     * @param      boolean  $enable New value of pdo_binding flag
+     * Set to:
+     * - true to use with PDOStatement::execute()
+     * - false to use directly with another database abstraction layer
+     *
+     * @param      boolean  $enable
+     *
+     * @return     boolean  the new value
      */
     public static function setPdoBinding($enable = true)
     {
@@ -1192,6 +1379,11 @@ class dbQueryHelper
         return self::$pdo_binding;
     }
 
+    /**
+     * Get current pdo binding mode
+     *
+     * @return     boolean
+     */
     public static function pdoBinding()
     {
         return self::$pdo_binding;
@@ -1199,6 +1391,8 @@ class dbQueryHelper
 
     /**
      * Convert an array to a string.
+     *
+     * @return     string
      */
     public static function stringifyArray($values, $bind = ', ')
     {
@@ -1207,6 +1401,8 @@ class dbQueryHelper
 
     /**
      * Determine if a value can be represented by a placeholder.
+     *
+     * @return     boolean
      */
     public static function isPlaceholderValue($value)
     {
@@ -1226,16 +1422,37 @@ class dbQueryHelper
         return true;
     }
 
+    /**
+     * Determines if an object is a query.
+     *
+     * @param      mixed   $value
+     *
+     * @return     boolean  True if query, False otherwise.
+     */
     public static function isQuery($value)
     {
         return $value instanceof dbQuery;
     }
 
+    /**
+     * Determines if an object is a statement.
+     *
+     * @param      mixed   $value
+     *
+     * @return     boolean  True if statement, False otherwise.
+     */
     public static function isStatement($value)
     {
         return $value instanceof dbQueryStatement;
     }
 
+    /**
+     * Determines if an object if an alias.
+     *
+     * @param      mixed   $value
+     *
+     * @return     boolean  True if alias, False otherwise.
+     */
     public static function isAlias($value)
     {
         return $value instanceof dbQueryAlias;
@@ -1255,6 +1472,14 @@ class dbQueryHelper
         return dbQueryAlias::make($db_query, $parts[0], $parts[1]);
     }
 
+    /**
+     * Flatten an array preserving or not the keys
+     *
+     * @param      array    $array          The array
+     * @param      boolean  $preserve_keys  The preserve keys
+     *
+     * @return     array    flattened array
+     */
     public static function flatten($array, $preserve_keys = false)
     {
         $table = array();
@@ -1270,14 +1495,22 @@ class dbQueryHelper
         return $table;
     }
 
+    /**
+     * Escape a value
+     *
+     * @param      string   $v      the value
+     * @param      boolean  $quote  Quote the value if necessary (string)
+     *
+     * @return     mixed
+     */
     public static function escapeValue($v, $quote = true)
     {
         return is_numeric($v) || in_array($v, array(null, true, false), true) ?
-            (is_numeric($v) ?
-                $v :    // numeric value
-                strtoupper(var_export($v, true))) : // null -> NULL, true -> TRUE, false -> FALSE
-            (in_array(strtoupper($v), array('NULL', 'TRUE', 'FALSE'), true) ? // string value
-                strtoupper($v) :
-                ($quote ? "'" . $v . "'" : $v));
+        (is_numeric($v) ?
+            $v :                                                              // numeric value
+            strtoupper(var_export($v, true))) :                               // null -> NULL, true -> TRUE, false -> FALSE
+        (in_array(strtoupper($v), array('NULL', 'TRUE', 'FALSE'), true) ? // string value
+            strtoupper($v) :
+            ($quote ? "'" . $v . "'" : $v));
     }
 }
