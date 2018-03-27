@@ -13,7 +13,7 @@
 if (class_exists('dbQuery')) {
 /** @endcond */
 
-    class pgsqlQuery extends dbQuery
+    class pgsqlQuery extends dbQuery implements dbQueryStatement
     {
         public function surround($identifier)
         {

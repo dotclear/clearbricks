@@ -13,8 +13,12 @@
 if (class_exists('dbQuery')) {
 /** @endcond */
 
-    class mysqlimb4Query extends mysqlQuery
+    class mysqlimb4Query extends dbQuery implements dbQueryStatement
     {
+        public function surround($identifier)
+        {
+            return "`$identifier`";
+        }
     }
 
 /** @cond ONCE */
