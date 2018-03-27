@@ -30,21 +30,9 @@ require_once CLEARBRICKS_PATH . '/dbquery/class.dbquery.php';
 
 class dbQueryValueList extends atoum
 {
-    private function getConnection($driver)
-    {
-        $controller              = new \atoum\mock\controller();
-        $controller->__construct = function () {};
-
-        $class_name                  = sprintf('\mock\%sConnection', $driver);
-        $con                         = new $class_name($driver, $controller);
-        $this->calling($con)->driver = $driver;
-
-        return $con;
-    }
-
     private function getQuery($driver)
     {
-        return \dbQuery::make($this->getConnection($driver));
+        return \dbQuery::make($driver);
     }
 
     public function testList()
@@ -121,21 +109,9 @@ class dbQueryValueList extends atoum
 
 class dbQueryExpression extends atoum
 {
-    private function getConnection($driver)
-    {
-        $controller              = new \atoum\mock\controller();
-        $controller->__construct = function () {};
-
-        $class_name                  = sprintf('\mock\%sConnection', $driver);
-        $con                         = new $class_name($driver, $controller);
-        $this->calling($con)->driver = $driver;
-
-        return $con;
-    }
-
     private function getQuery($driver)
     {
-        return \dbQuery::make($this->getConnection($driver));
+        return \dbQuery::make($driver);
     }
 
     public function testExpression($driver, $result1, $result2)
@@ -175,21 +151,9 @@ class dbQueryExpression extends atoum
 
 class dbQueryReference extends atoum
 {
-    private function getConnection($driver)
-    {
-        $controller              = new \atoum\mock\controller();
-        $controller->__construct = function () {};
-
-        $class_name                  = sprintf('\mock\%sConnection', $driver);
-        $con                         = new $class_name($driver, $controller);
-        $this->calling($con)->driver = $driver;
-
-        return $con;
-    }
-
     private function getQuery($driver)
     {
-        return \dbQuery::make($this->getConnection($driver));
+        return \dbQuery::make($driver);
     }
 
     public function testStatement($driver, $result)
@@ -281,21 +245,9 @@ class dbQueryReference extends atoum
 
 class dbQueryAlias extends atoum
 {
-    private function getConnection($driver)
-    {
-        $controller              = new \atoum\mock\controller();
-        $controller->__construct = function () {};
-
-        $class_name                  = sprintf('\mock\%sConnection', $driver);
-        $con                         = new $class_name($driver, $controller);
-        $this->calling($con)->driver = $driver;
-
-        return $con;
-    }
-
     private function getQuery($driver)
     {
-        return \dbQuery::make($this->getConnection($driver));
+        return \dbQuery::make($driver);
     }
 
     public function testAlias($driver, $result)
@@ -332,21 +284,9 @@ class dbQueryAlias extends atoum
 
 class dbQueryConditions extends atoum
 {
-    private function getConnection($driver)
-    {
-        $controller              = new \atoum\mock\controller();
-        $controller->__construct = function () {};
-
-        $class_name                  = sprintf('\mock\%sConnection', $driver);
-        $con                         = new $class_name($driver, $controller);
-        $this->calling($con)->driver = $driver;
-
-        return $con;
-    }
-
     private function getQuery($driver)
     {
-        return \dbQuery::make($this->getConnection($driver));
+        return \dbQuery::make($driver);
     }
 
     public function testBasic($driver)
@@ -634,54 +574,11 @@ class dbQueryConditions extends atoum
     }
 }
 
-class dbQueryLikeValue extends atoum
-{
-    public function testEscape()
-    {
-        $this
-            ->string(\dbQueryLikeValue::escape('string_not%escaped'))
-            ->isEqualTo('string\\_not\\%escaped');
-    }
-
-    public function testAny()
-    {
-        $this
-            ->string(\dbQueryLikeValue::any('a % string'))
-            ->isEqualTo('%a \\% string%');
-    }
-
-    public function testStarts()
-    {
-        $this
-            ->string(\dbQueryLikeValue::starts('a % string'))
-            ->isEqualTo('a \\% string%');
-    }
-
-    public function testEnds()
-    {
-        $this
-            ->string(\dbQueryLikeValue::ends('a % string'))
-            ->isEqualTo('%a \\% string');
-    }
-}
-
 class dbQueryHelper extends atoum
 {
-    private function getConnection($driver)
-    {
-        $controller              = new \atoum\mock\controller();
-        $controller->__construct = function () {};
-
-        $class_name                  = sprintf('\mock\%sConnection', $driver);
-        $con                         = new $class_name($driver, $controller);
-        $this->calling($con)->driver = $driver;
-
-        return $con;
-    }
-
     private function getQuery($driver)
     {
-        return \dbQuery::make($this->getConnection($driver));
+        return \dbQuery::make($driver);
     }
 
     public function testpdoBinding()
@@ -856,28 +753,14 @@ class dbQueryHelper extends atoum
 
 class dbQuery extends atoum
 {
-    private function getConnection($driver)
-    {
-        $controller              = new \atoum\mock\controller();
-        $controller->__construct = function () {};
-
-        $class_name                  = sprintf('\mock\%sConnection', $driver);
-        $con                         = new $class_name($driver, $controller);
-        $this->calling($con)->driver = $driver;
-
-        return $con;
-    }
-
     private function getQuery($driver, $mode = 'select')
     {
-        return \dbQuery::make($this->getConnection($driver), $mode);
+        return \dbQuery::make($driver, $mode);
     }
 
     public function testSimpleSelect($driver, $result, $where)
     {
-        $con = $this->getConnection($driver);
-
-        $sql = \dbQuery::make($con)
+        $sql = \dbQuery::make($driver)
             ->from('mytable');
 
         $this
@@ -1144,16 +1027,12 @@ class dbQuery extends atoum
         );
     }
 
-    public function driver()
-    {
-        return 'void';
-    }
     public function testBadDriver()
     {
         $driver = 'void';
         $this
-            ->when(function () {
-                \dbQuery::make($this);
+            ->when(function () use ($driver) {
+                \dbQuery::make($driver);
             })
             ->error()
             ->withMessage('Unable to load DB query builder for ' . $driver)
@@ -2040,5 +1919,76 @@ class dbQuery extends atoum
         $this
             ->string($alias->sql())
             ->isIdenticalTo('"users" AS "u"');
+    }
+
+    public function testEscapeLike()
+    {
+        $query = $this->getQuery('pgsql');
+        \dbQueryHelper::setPdoBinding(true);
+
+        $escape = new \ReflectionMethod('\dbQuery', 'escapeLike');
+        $escape->setAccessible(true);
+
+        $this
+            ->string($escape->invokeArgs($query, array('string_not%escaped')))
+            ->isEqualTo('string\\_not\\%escaped');
+    }
+
+    public function testAny()
+    {
+        $query = $this->getQuery('pgsql');
+        \dbQueryHelper::setPdoBinding(true);
+
+        $this
+            ->string($query->anyLike('a % string'))
+            ->isEqualTo('%a \\% string%');
+    }
+
+    public function testStarts()
+    {
+        $query = $this->getQuery('pgsql');
+        \dbQueryHelper::setPdoBinding(true);
+
+        $this
+            ->string($query->startsLike('a % string'))
+            ->isEqualTo('a \\% string%');
+    }
+
+    public function testEnds()
+    {
+        $query = $this->getQuery('pgsql');
+        \dbQueryHelper::setPdoBinding(true);
+
+        $this
+            ->string($query->endsLike('a % string'))
+            ->isEqualTo('%a \\% string');
+    }
+
+    public function testpdoBinding()
+    {
+        $query = $this->getQuery('pgsql');
+
+        // Default value
+        $this
+            ->boolean($query->pdoBinding())
+            ->isEqualTo(false);
+
+        // False value
+        $this
+            ->boolean($query->setPdoBinding(false))
+            ->isEqualTo(false);
+
+        $this
+            ->boolean($query->pdoBinding())
+            ->isEqualTo(false);
+
+        // True value
+        $this
+            ->boolean($query->setPdoBinding(true))
+            ->isEqualTo(true);
+
+        $this
+            ->boolean($query->pdoBinding())
+            ->isEqualTo(true);
     }
 }
