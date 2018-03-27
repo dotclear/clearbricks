@@ -34,13 +34,12 @@ $__autoload['dbSchema']                  = dirname(__FILE__) .'/dbschema/class.d
 
 # Database Query Builder
 $__autoload['dbQuery']                   = dirname(__FILE__) .'/dbquery/class.dbquery.php';
+$__autoload['dbQueryValueList']          = dirname(__FILE__) .'/dbquery/class.dbquery.php';
+$__autoload['dbQueryExpression']         = dirname(__FILE__) .'/dbquery/class.dbquery.php';
+$__autoload['dbQueryReference']          = dirname(__FILE__) .'/dbquery/class.dbquery.php';
 $__autoload['dbQueryAlias']              = dirname(__FILE__) .'/dbquery/class.dbquery.php';
 $__autoload['dbQueryConditions']         = dirname(__FILE__) .'/dbquery/class.dbquery.php';
-$__autoload['dbQueryExpression']         = dirname(__FILE__) .'/dbquery/class.dbquery.php';
 $__autoload['dbQueryHelper']             = dirname(__FILE__) .'/dbquery/class.dbquery.php';
-$__autoload['dbQueryLikeValue']          = dirname(__FILE__) .'/dbquery/class.dbquery.php';
-$__autoload['dbQueryReference']          = dirname(__FILE__) .'/dbquery/class.dbquery.php';
-$__autoload['dbQueryValueList']          = dirname(__FILE__) .'/dbquery/class.dbquery.php';
 
 # Files Manager
 $__autoload['filemanager']               = dirname(__FILE__) .'/filemanager/class.filemanager.php';
