@@ -13,7 +13,7 @@
 if (class_exists('dbQuery')) {
 /** @endcond */
 
-    class sqliteQuery extends dbQuery
+    class sqliteQuery extends dbQuery implements dbQueryStatement
     {
         public function surround($identifier)
         {

@@ -46,7 +46,6 @@ $__autoload['dbQueryAlias']      = CLEARBRICKS_PATH . '/dbquery/class.dbquery.ph
 $__autoload['dbQueryConditions'] = CLEARBRICKS_PATH . '/dbquery/class.dbquery.php';
 $__autoload['dbQueryExpression'] = CLEARBRICKS_PATH . '/dbquery/class.dbquery.php';
 $__autoload['dbQueryHelper']     = CLEARBRICKS_PATH . '/dbquery/class.dbquery.php';
-$__autoload['dbQueryLikeValue']  = CLEARBRICKS_PATH . '/dbquery/class.dbquery.php';
 $__autoload['dbQueryReference']  = CLEARBRICKS_PATH . '/dbquery/class.dbquery.php';
 $__autoload['dbQueryValueList']  = CLEARBRICKS_PATH . '/dbquery/class.dbquery.php';
 
