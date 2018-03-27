@@ -15,11 +15,11 @@ Clearbricks is about "using what we need when we need it". Pick the module(s)
 you need and add it to your code. The only thing you'll always need is the
 "common" directory.
 
-Once you're ready, you have to create a _common.php file on top of your
+Once you're ready, you have to create a \_common.php file on top of your
 Clearbricks path (or wherever you want) and add `$__autoload` entries for your
 modules.
 
-Take a look at the _common.php file.
+Take a look at the \_common.php file.
 
 Of course, you're encouraged to use the `$__autoload` magic for your own classes.
 
@@ -27,10 +27,10 @@ Of course, you're encouraged to use the `$__autoload` magic for your own classes
 
 In order to use Clearbricks you need:
 
- * PHP 5.3 with the following modules:
-    * mbstring
-    * iconv
-    * simplexml
+* PHP 5.3 with the following modules:
+  * mbstring
+  * iconv
+  * simplexml
 
 ## Use it with Mercurial
 
@@ -63,7 +63,7 @@ You're done!
 A [doxygen configuration file](http://www.stack.nl/~dimitri/doxygen/manual/config.html) is provided to generate the Clearbricks API documentation which will be [readable](doxygen/index.html) in doxygen folder:
 
 ```
-$ doxygen .doxygen.conf
+doxygen .doxygen.conf
 ```
 
 ## Tests
@@ -72,6 +72,7 @@ Clearbricks classes are tested using [atoum][3] (see [doc][4]).
 To run tests,
 
 Clone this repository:
+
 ```sh
 hg clone https://hg.clearbricks.org/hg path/to/clearbricks
 ```
@@ -83,11 +84,13 @@ curl -sS https://getcomposer.org/installer | php
 ```
 
 Update dependencies via composer:
+
 ```sh
 composer.phar install
 ```
 
 And now can run tests:
+
 ```sh
 ./bin/atoum
 ```
@@ -104,14 +107,13 @@ You can also get code coverage report (in `coverage/html`) for tests by runing:
 
 Copyright Olivier Meunier & Association Dotclear
 
-GPL-2.0-only (https://www.gnu.org/licenses/gpl-2.0.html)
+[GPL-2.0-only](https://www.gnu.org/licenses/gpl-2.0.html)
 
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; version 2 of the License.
 
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-
 
 [1]: http://mercurial.selenic.com/wiki/Subrepository
 [2]: http://www.selenic.com/hg/help/subrepos
