@@ -41,14 +41,6 @@ $__autoload['mysqlimb4Connection'] = CLEARBRICKS_PATH . '/dblayer/class.mysqlimb
 $__autoload['pgsqlConnection']     = CLEARBRICKS_PATH . '/dblayer/class.pgsql.php';
 $__autoload['sqliteConnection']    = CLEARBRICKS_PATH . '/dblayer/class.sqlite.php';
 
-$__autoload['dbQuery']           = CLEARBRICKS_PATH . '/dbquery/class.dbquery.php';
-$__autoload['dbQueryAlias']      = CLEARBRICKS_PATH . '/dbquery/class.dbquery.php';
-$__autoload['dbQueryConditions'] = CLEARBRICKS_PATH . '/dbquery/class.dbquery.php';
-$__autoload['dbQueryExpression'] = CLEARBRICKS_PATH . '/dbquery/class.dbquery.php';
-$__autoload['dbQueryHelper']     = CLEARBRICKS_PATH . '/dbquery/class.dbquery.php';
-$__autoload['dbQueryReference']  = CLEARBRICKS_PATH . '/dbquery/class.dbquery.php';
-$__autoload['dbQueryValueList']  = CLEARBRICKS_PATH . '/dbquery/class.dbquery.php';
-
 function cb_autoload($name)
 {
     global $__autoload;
