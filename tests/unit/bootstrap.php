@@ -24,20 +24,30 @@ define('CLEARBRICKS_PATH', __DIR__ . '/../..');
 
 require_once CLEARBRICKS_PATH . '/vendor/autoload.php';
 
-$__autoload                        = array();
+$__autoload = array();
 
-$__autoload['dbStruct']            = CLEARBRICKS_PATH . '/dbschema/class.dbstruct.php';
-$__autoload['dbSchema']            = CLEARBRICKS_PATH . '/dbschema/class.dbschema.php';
-$__autoload['pgsqlSchema']         = CLEARBRICKS_PATH . '/dbschema/class.pgsql.dbschema.php';
-$__autoload['mysqlSchema']         = CLEARBRICKS_PATH . '/dbschema/class.mysql.dbschema.php';
-$__autoload['mysqliSchema']        = CLEARBRICKS_PATH . '/dbschema/class.mysqli.dbschema.php';
-$__autoload['mysqlimb4Schema']     = CLEARBRICKS_PATH . '/dbschema/class.mysqlimb4.dbschema.php';
+$__autoload['dbStruct']        = CLEARBRICKS_PATH . '/dbschema/class.dbstruct.php';
+$__autoload['dbSchema']        = CLEARBRICKS_PATH . '/dbschema/class.dbschema.php';
+$__autoload['mysqlSchema']     = CLEARBRICKS_PATH . '/dbschema/class.mysql.dbschema.php';
+$__autoload['mysqliSchema']    = CLEARBRICKS_PATH . '/dbschema/class.mysqli.dbschema.php';
+$__autoload['mysqlimb4Schema'] = CLEARBRICKS_PATH . '/dbschema/class.mysqlimb4.dbschema.php';
+$__autoload['pgsqlSchema']     = CLEARBRICKS_PATH . '/dbschema/class.pgsql.dbschema.php';
+$__autoload['sqliteSchema']    = CLEARBRICKS_PATH . '/dbschema/class.sqlite.dbschema.php';
 
 $__autoload['dbLayer']             = CLEARBRICKS_PATH . '/dblayer/dblayer.php';
 $__autoload['mysqlConnection']     = CLEARBRICKS_PATH . '/dblayer/class.mysql.php';
 $__autoload['mysqliConnection']    = CLEARBRICKS_PATH . '/dblayer/class.mysqli.php';
 $__autoload['mysqlimb4Connection'] = CLEARBRICKS_PATH . '/dblayer/class.mysqlimb4.php';
 $__autoload['pgsqlConnection']     = CLEARBRICKS_PATH . '/dblayer/class.pgsql.php';
+$__autoload['sqliteConnection']    = CLEARBRICKS_PATH . '/dblayer/class.sqlite.php';
+
+$__autoload['dbQuery']           = CLEARBRICKS_PATH . '/dbquery/class.dbquery.php';
+$__autoload['dbQueryAlias']      = CLEARBRICKS_PATH . '/dbquery/class.dbquery.php';
+$__autoload['dbQueryConditions'] = CLEARBRICKS_PATH . '/dbquery/class.dbquery.php';
+$__autoload['dbQueryExpression'] = CLEARBRICKS_PATH . '/dbquery/class.dbquery.php';
+$__autoload['dbQueryHelper']     = CLEARBRICKS_PATH . '/dbquery/class.dbquery.php';
+$__autoload['dbQueryReference']  = CLEARBRICKS_PATH . '/dbquery/class.dbquery.php';
+$__autoload['dbQueryValueList']  = CLEARBRICKS_PATH . '/dbquery/class.dbquery.php';
 
 function cb_autoload($name)
 {
