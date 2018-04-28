@@ -21,6 +21,7 @@ if (class_exists('dbLayer')) {
     class pgsqlConnection extends dbLayer implements i_dbLayer
     {
         protected $__driver        = 'pgsql';
+        protected $__syntax        = 'postgresql';
         protected $utf8_unicode_ci = null;
 
         private function get_connection_string($host, $user, $password, $database)

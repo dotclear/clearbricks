@@ -19,6 +19,7 @@ if (class_exists('dbLayer')) {
     class sqliteConnection extends dbLayer implements i_dbLayer
     {
         protected $__driver        = 'sqlite';
+        protected $__syntax        = 'sqlite';
         protected $utf8_unicode_ci = null;
 
         public function db_connect($host, $user, $password, $database)

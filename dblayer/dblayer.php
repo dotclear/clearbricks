@@ -218,6 +218,7 @@ interface i_dbLayer
 class dbLayer
 {
     protected $__driver  = null; ///< string: Driver name
+    protected $__syntax  = null; ///< string: SQL syntax name
     protected $__version = null; ///< string: Database version
     protected $__link;           ///< resource: Database resource link
     protected $__last_result;    ///< resource: Last result resource link
@@ -284,6 +285,16 @@ class dbLayer
     public function driver()
     {
         return $this->__driver;
+    }
+
+    /**
+     * Returns database SQL syntax name
+     *
+     * @return string
+     */
+    public function syntax()
+    {
+        return $this->__syntax;
     }
 
     /**
