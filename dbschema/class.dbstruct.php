@@ -170,7 +170,7 @@ class dbStruct
                 $db_keys = $this->tables[$tname]->getKeys();
 
                 foreach ($keys as $kname => $k) {
-                    if ($k['type'] == 'primary' && ($this->con->driver() == 'mysql' || $this->con->driver() == 'mysqli' || $this->con->driver() == 'mysqlimb4')) {
+                    if ($k['type'] == 'primary' && $this->con->syntax() == 'mysql') {
                         $kname = 'PRIMARY';
                     } else {
                         $kname = $this->prefix . $kname;
