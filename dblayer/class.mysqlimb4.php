@@ -21,6 +21,7 @@ if (class_exists('dbLayer')) {
         public static $weak_locks = true; ///< boolean: Enables weak locks if true
 
         protected $__driver = 'mysqlimb4';
+        protected $__syntax = 'mysql';
 
         public function db_connect($host, $user, $password, $database)
         {
