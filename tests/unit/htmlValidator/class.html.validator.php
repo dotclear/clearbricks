@@ -70,7 +70,7 @@ EODTIDYV;
 <p>Hello</b>
 EODTIDYE;
         $err = <<<EODTIDYF
-<ol><li class="error"><p><strong>Error</strong>: Stray end tag <code>b</code>.</p><p class="location">From line 7, column 9; to line 7, column 12</p><p class="extract"><code>&gt;↩&lt;p&gt;Hello&lt;/b&gt;↩&lt;/bod</code></p></li></ol>
+<ol><li class="error"><p><strong>Error</strong>: Stray end tag <code>b</code>.</p><p class="location">From line 7, column 9; to line 7, column 12</p><p class="extract"><code>&gt;↩&lt;p&gt;Hello&lt;/b&gt;↩&lt;/bod</code></p></li><li class="info warning"><p><strong>Warning</strong>: Consider adding a <code>lang</code> attribute to the <code>html</code> start tag to declare the language of this document.</p><p class="location">From line 1, column 16; to line 2, column 6</p><p class="extract"><code>TYPE html&gt;↩&lt;html&gt;↩&lt;head</code></p></li></ol>
 EODTIDYF;
 
         $this
