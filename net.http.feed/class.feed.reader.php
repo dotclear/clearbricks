@@ -53,7 +53,7 @@ if (class_exists('netHttp')) {
          */
         public function parse($url)
         {
-            $this->validators = array();
+            $this->validators = [];
             if ($this->cache_dir) {
                 return $this->withCache($url);
             } else {

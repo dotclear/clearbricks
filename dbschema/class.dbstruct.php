@@ -13,8 +13,8 @@ class dbStruct
 {
     protected $con;
     protected $prefix;
-    protected $tables     = array();
-    protected $references = array();
+    protected $tables     = [];
+    protected $references = [];
 
     public function __construct($con, $prefix = '')
     {
@@ -72,19 +72,19 @@ class dbStruct
                 array_unshift($args, $k['name']);
 
                 if ($k['primary']) {
-                    call_user_func_array(array($t, 'primary'), $args);
+                    call_user_func_array([$t, 'primary'], $args);
                 } elseif ($k['unique']) {
-                    call_user_func_array(array($t, 'unique'), $args);
+                    call_user_func_array([$t, 'unique'], $args);
                 }
             }
 
             # Get indexes
             $idx = $schema->getIndexes($t_name);
             foreach ($idx as $i) {
-                $args = array($i['name'], $i['type']);
+                $args = [$i['name'], $i['type']];
                 $args = array_merge($args, $i['cols']);
 
-                call_user_func_array(array($t, 'index'), $args);
+                call_user_func_array([$t, 'index'], $args);
             }
 
             # Get foreign keys
@@ -102,7 +102,7 @@ class dbStruct
      */
     public function synchronize($s)
     {
-        $this->tables = array();
+        $this->tables = [];
         $this->reverse();
 
         if (!($s instanceof self)) {
@@ -111,16 +111,16 @@ class dbStruct
 
         $tables = $s->getTables();
 
-        $table_create     = array();
-        $key_create       = array();
-        $index_create     = array();
-        $reference_create = array();
+        $table_create     = [];
+        $key_create       = [];
+        $index_create     = [];
+        $reference_create = [];
 
-        $field_create     = array();
-        $field_update     = array();
-        $key_update       = array();
-        $index_update     = array();
-        $reference_update = array();
+        $field_create     = [];
+        $field_update     = [];
+        $key_update       = [];
+        $index_update     = [];
+        $reference_update = [];
 
         $got_work = false;
 
@@ -183,7 +183,7 @@ class dbStruct
                         $got_work                   = true;
                     } elseif ($this->keysDiffer($db_kname, $db_keys[$db_kname]['cols'], $kname, $k['cols'])) {
                         # Key exists and differs from db version
-                        $key_update[$tname][$db_kname] = array_merge(array('name' => $kname), $k);
+                        $key_update[$tname][$db_kname] = array_merge(['name' => $kname], $k);
                         $got_work                      = true;
                     }
                 }
@@ -202,7 +202,7 @@ class dbStruct
                         $got_work                     = true;
                     } elseif ($this->indexesDiffer($db_iname, $db_idx[$db_iname], $iname, $i)) {
                         # Index exists and differs from db version
-                        $index_update[$tname][$db_iname] = array_merge(array('name' => $iname), $i);
+                        $index_update[$tname][$db_iname] = array_merge(['name' => $iname], $i);
                         $got_work                        = true;
                     }
                 }
@@ -221,7 +221,7 @@ class dbStruct
                         $reference_create[$tname][$rname] = $r;
                         $got_work                         = true;
                     } elseif ($this->referencesDiffer($db_rname, $db_ref[$db_rname], $rname, $r)) {
-                        $reference_update[$tname][$db_rname] = array_merge(array('name' => $rname), $r);
+                        $reference_update[$tname][$db_rname] = array_merge(['name' => $rname], $r);
                         $got_work                            = true;
                     }
                 }
@@ -312,7 +312,7 @@ class dbStruct
 
     public function getTables()
     {
-        $res = array();
+        $res = [];
         foreach ($this->tables as $t => $v) {
             $res[$this->prefix . $t] = $v;
         }
@@ -370,10 +370,10 @@ class dbStructTable
     protected $name;
     protected $has_primary = false;
 
-    protected $fields     = array();
-    protected $keys       = array();
-    protected $indexes    = array();
-    protected $references = array();
+    protected $fields     = [];
+    protected $keys       = [];
+    protected $indexes    = [];
+    protected $references = [];
 
     /**
     Universal data types supported by dbSchema
@@ -393,11 +393,11 @@ class dbStructTable
     VARCHAR    : A variable length character string
     TEXT        : A variable length of text
      */
-    protected $allowed_types = array(
+    protected $allowed_types = [
         'smallint', 'integer', 'bigint', 'real', 'float', 'numeric',
         'date', 'time', 'timestamp',
         'char', 'varchar', 'text'
-    );
+    ];
 
     public function __construct($name)
     {
@@ -495,12 +495,12 @@ class dbStructTable
             }
         }
 
-        $this->fields[$name] = array(
+        $this->fields[$name] = [
             'type'    => $type,
             'len'     => (integer) $len,
             'default' => $default,
             'null'    => (boolean) $null
-        );
+        ];
 
         return $this;
     }
@@ -508,7 +508,7 @@ class dbStructTable
     public function __call($name, $args)
     {
         array_unshift($args, $name);
-        return call_user_func_array(array($this, 'field'), $args);
+        return call_user_func_array([$this, 'field'], $args);
     }
 
     public function primary($name, $col)
@@ -539,10 +539,10 @@ class dbStructTable
 
         $this->checkCols($cols);
 
-        $this->indexes[$name] = array(
+        $this->indexes[$name] = [
             'type' => strtolower($type),
             'cols' => $cols
-        );
+        ];
 
         return $this;
     }
@@ -550,31 +550,31 @@ class dbStructTable
     public function reference($name, $c_cols, $p_table, $p_cols, $update = false, $delete = false)
     {
         if (!is_array($p_cols)) {
-            $p_cols = array($p_cols);
+            $p_cols = [$p_cols];
         }
         if (!is_array($c_cols)) {
-            $c_cols = array($c_cols);
+            $c_cols = [$c_cols];
         }
 
         $this->checkCols($c_cols);
 
-        $this->references[$name] = array(
+        $this->references[$name] = [
             'c_cols'  => $c_cols,
             'p_table' => $p_table,
             'p_cols'  => $p_cols,
             'update'  => $update,
             'delete'  => $delete
-        );
+        ];
     }
 
     protected function newKey($type, $name, $cols)
     {
         $this->checkCols($cols);
 
-        $this->keys[$name] = array(
+        $this->keys[$name] = [
             'type' => $type,
             'cols' => $cols
-        );
+        ];
 
         if ($type == 'primary') {
             $this->has_primary = true;

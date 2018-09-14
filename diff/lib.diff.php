@@ -38,8 +38,8 @@ class diff
         $cx = count($src);
         $cy = count($dst);
 
-        $stack       = array();
-        $V           = array(1 => 0);
+        $stack       = [];
+        $V           = [1 => 0];
         $end_reached = false;
 
         # Find LCS length
@@ -66,7 +66,7 @@ class diff
         $D--;
 
         # Recover edit path
-        $res = array();
+        $res = [];
         for ($D = $D; $D > 0; $D--) {
             $V  = array_pop($stack);
             $cx = $x;
@@ -88,7 +88,7 @@ class diff
                 $x = $V[$k];
                 $y = $x - $k;
 
-                $res[] = array('i', $x, $y);
+                $res[] = ['i', $x, $y];
                 continue;
             }
 
@@ -96,7 +96,7 @@ class diff
             $k -= 2;
             $x     = $V[$k];
             $y     = $x - $k;
-            $res[] = array('d', $x, $y);
+            $res[] = ['d', $x, $y];
         }
 
         return array_reverse($res);
@@ -112,7 +112,7 @@ class diff
      */
     public static function uniDiff($src, $dst, $ctx = 2)
     {
-        list($src, $dst) = array(explode("\n", $src), explode("\n", $dst));
+        list($src, $dst) = [explode("\n", $src), explode("\n", $dst)];
         $cx              = count($src);
         $cy              = count($dst);
 
@@ -126,7 +126,7 @@ class diff
         $buffer    = '';
 
         foreach ($ses as $cmd) {
-            list($cmd, $x, $y) = array($cmd[0], $cmd[1], $cmd[2]);
+            list($cmd, $x, $y) = [$cmd[0], $cmd[1], $cmd[2]];
 
             # New chunk
             if ($x - $pos_x > 2 * $ctx || $pos_x == 0 && $x > $ctx) {
@@ -206,7 +206,7 @@ class diff
      */
     public static function uniPatch($src, $diff)
     {
-        $dst  = array();
+        $dst  = [];
         $src  = explode("\n", $src);
         $diff = explode("\n", $diff);
 

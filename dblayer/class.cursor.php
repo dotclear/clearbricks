@@ -15,7 +15,7 @@
 class cursor
 {
     private $__con;
-    private $__data = array();
+    private $__data = [];
     private $__table;
 
     /**
@@ -56,7 +56,7 @@ class cursor
     public function setTable($table)
     {
         $this->__table = $table;
-        $this->__data  = array();
+        $this->__data  = [];
     }
 
     /**
@@ -143,12 +143,12 @@ class cursor
      */
     public function clean()
     {
-        $this->__data = array();
+        $this->__data = [];
     }
 
     private function formatFields()
     {
-        $data = array();
+        $data = [];
 
         foreach ($this->__data as $k => $v) {
             $k = $this->__con->escapeSystem($k);
@@ -196,7 +196,7 @@ class cursor
     public function getUpdate($where)
     {
         $data   = $this->formatFields();
-        $fields = array();
+        $fields = [];
 
         $updReq = 'UPDATE ' . $this->__con->escapeSystem($this->__table) . " SET \n";
 

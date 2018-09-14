@@ -81,7 +81,7 @@ if (class_exists('dbSchema')) {
             $sql = 'SHOW TABLES';
             $rs  = $this->con->select($sql);
 
-            $res = array();
+            $res = [];
             while ($rs->fetch()) {
                 $res[] = $rs->f(0);
             }
@@ -93,7 +93,7 @@ if (class_exists('dbSchema')) {
             $sql = 'SHOW COLUMNS FROM ' . $this->con->escapeSystem($table);
             $rs  = $this->con->select($sql);
 
-            $res = array();
+            $res = [];
             while ($rs->fetch()) {
                 $field   = trim($rs->f('Field'));
                 $type    = trim($rs->f('Type'));
@@ -113,12 +113,12 @@ if (class_exists('dbSchema')) {
                     $default = "'" . $default . "'";
                 }
 
-                $res[$field] = array(
+                $res[$field] = [
                     'type'    => $type,
                     'len'     => $len,
                     'null'    => $null,
                     'default' => $default
-                );
+                ];
             }
             return $res;
         }
@@ -128,8 +128,8 @@ if (class_exists('dbSchema')) {
             $sql = 'SHOW INDEX FROM ' . $this->con->escapeSystem($table);
             $rs  = $this->con->select($sql);
 
-            $t   = array();
-            $res = array();
+            $t   = [];
+            $res = [];
             while ($rs->fetch()) {
                 $key_name = $rs->f('Key_name');
                 $unique   = $rs->f('Non_unique') == 0;
@@ -145,12 +145,12 @@ if (class_exists('dbSchema')) {
             foreach ($t as $name => $idx) {
                 ksort($idx['cols']);
 
-                $res[] = array(
+                $res[] = [
                     'name'    => $name,
                     'primary' => $name == 'PRIMARY',
                     'unique'  => $idx['unique'],
                     'cols'    => array_values($idx['cols'])
-                );
+                ];
             }
 
             return $res;
@@ -161,8 +161,8 @@ if (class_exists('dbSchema')) {
             $sql = 'SHOW INDEX FROM ' . $this->con->escapeSystem($table);
             $rs  = $this->con->select($sql);
 
-            $t   = array();
-            $res = array();
+            $t   = [];
+            $res = [];
             while ($rs->fetch()) {
                 $key_name = $rs->f('Key_name');
                 $unique   = $rs->f('Non_unique') == 0;
@@ -179,11 +179,11 @@ if (class_exists('dbSchema')) {
             foreach ($t as $name => $idx) {
                 ksort($idx['cols']);
 
-                $res[] = array(
+                $res[] = [
                     'name' => $name,
                     'type' => $idx['type'],
                     'cols' => $idx['cols']
-                );
+                ];
             }
 
             return $res;
@@ -196,7 +196,7 @@ if (class_exists('dbSchema')) {
 
             $s = $rs->f(1);
 
-            $res = array();
+            $res = [];
 
             $n = preg_match_all('/^\s*CONSTRAINT\s+`(.+?)`\s+FOREIGN\s+KEY\s+\((.+?)\)\s+REFERENCES\s+`(.+?)`\s+\((.+?)\)(.*?)$/msi', $s, $match);
             if ($n > 0) {
@@ -220,14 +220,14 @@ if (class_exists('dbSchema')) {
                         }
                     }
 
-                    $res[] = array(
+                    $res[] = [
                         'name'    => $name,
                         'c_cols'  => $t_cols,
                         'p_table' => $match[3][$i],
                         'p_cols'  => $r_cols,
                         'update'  => $on_update,
                         'delete'  => $on_delete
-                    );
+                    ];
                 }
             }
             return $res;
@@ -235,7 +235,7 @@ if (class_exists('dbSchema')) {
 
         public function db_create_table($name, $fields)
         {
-            $a = array();
+            $a = [];
 
             foreach ($fields as $n => $f) {
                 $type    = $f['type'];
@@ -292,7 +292,7 @@ if (class_exists('dbSchema')) {
 
         public function db_create_primary($table, $name, $cols)
         {
-            $c = array();
+            $c = [];
             foreach ($cols as $v) {
                 $c[] = $this->con->escapeSystem($v);
             }
@@ -306,7 +306,7 @@ if (class_exists('dbSchema')) {
 
         public function db_create_unique($table, $name, $cols)
         {
-            $c = array();
+            $c = [];
             foreach ($cols as $v) {
                 $c[] = $this->con->escapeSystem($v);
             }
@@ -321,7 +321,7 @@ if (class_exists('dbSchema')) {
 
         public function db_create_index($table, $name, $type, $cols)
         {
-            $c = array();
+            $c = [];
             foreach ($cols as $v) {
                 $c[] = $this->con->escapeSystem($v);
             }
@@ -336,8 +336,8 @@ if (class_exists('dbSchema')) {
 
         public function db_create_reference($name, $c_table, $c_cols, $p_table, $p_cols, $update, $delete)
         {
-            $c = array();
-            $p = array();
+            $c = [];
+            $p = [];
             foreach ($c_cols as $v) {
                 $c[] = $this->con->escapeSystem($v);
             }
@@ -386,7 +386,7 @@ if (class_exists('dbSchema')) {
 
         public function db_alter_primary($table, $name, $newname, $cols)
         {
-            $c = array();
+            $c = [];
             foreach ($cols as $v) {
                 $c[] = $this->con->escapeSystem($v);
             }
@@ -401,7 +401,7 @@ if (class_exists('dbSchema')) {
 
         public function db_alter_unique($table, $name, $newname, $cols)
         {
-            $c = array();
+            $c = [];
             foreach ($cols as $v) {
                 $c[] = $this->con->escapeSystem($v);
             }
@@ -417,7 +417,7 @@ if (class_exists('dbSchema')) {
 
         public function db_alter_index($table, $name, $newname, $type, $cols)
         {
-            $c = array();
+            $c = [];
             foreach ($cols as $v) {
                 $c[] = $this->con->escapeSystem($v);
             }

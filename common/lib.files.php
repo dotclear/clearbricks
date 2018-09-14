@@ -15,7 +15,7 @@ class files
     public static $dir_mode = null; ///< Default directories mode
 
     public static $mimeType = ///< MIME types
-    array(
+    [
         'odt'  => 'application/vnd.oasis.opendocument.text',
         'odp'  => 'application/vnd.oasis.opendocument.presentation',
         'ods'  => 'application/vnd.oasis.opendocument.spreadsheet',
@@ -97,7 +97,7 @@ class files
         'flv'  => 'video/x-flv',
         'avi'  => 'video/x-msvideo',
         'wmv'  => 'video/x-ms-wmv'
-    );
+    ];
 
     /**
      * Directory scanning
@@ -110,7 +110,7 @@ class files
      */
     public static function scandir($d, $order = true)
     {
-        $res = array();
+        $res = [];
         $dh  = @opendir($d);
 
         if ($dh === false) {
@@ -280,7 +280,7 @@ class files
 
         if ($r) {
             $dir  = path::real($f, false);
-            $dirs = array();
+            $dirs = [];
 
             while (!is_dir($dir)) {
                 array_unshift($dirs, basename($dir));
@@ -450,10 +450,10 @@ class files
     public static function getDirList($dirName, &$contents = null)
     {
         if (!$contents) {
-            $contents = array('dirs' => array(), 'files' => array());
+            $contents = ['dirs' => [], 'files' => []];
         }
 
-        $exclude_list = array('.', '..', '.svn');
+        $exclude_list = ['.', '..', '.svn'];
         $dirName      = preg_replace('|/$|', '', $dirName);
 
         if (!is_dir($dirName)) {
@@ -555,7 +555,7 @@ class path
 
         # Go through
         $P   = explode('/', $p);
-        $res = array();
+        $res = [];
 
         for ($i = 0; $i < count($P); $i++) {
             if ($P[$i] == '.') {
@@ -609,7 +609,7 @@ class path
     public static function info($f)
     {
         $p   = pathinfo($f);
-        $res = array();
+        $res = [];
 
         $res['dirname']   = $p['dirname'];
         $res['basename']  = $p['basename'];

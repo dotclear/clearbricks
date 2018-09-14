@@ -12,7 +12,7 @@
 
 class tplNodeBlockDefinition extends tplNodeBlock
 {
-    protected static $stack         = array();
+    protected static $stack         = [];
     protected static $current_block = null;
     protected static $c             = 1;
 
@@ -33,7 +33,7 @@ class tplNodeBlockDefinition extends tplNodeBlock
      */
     public static function reset()
     {
-        self::$stack         = array();
+        self::$stack         = [];
         self::$current_block = null;
     }
 
@@ -96,9 +96,9 @@ class tplNodeBlockDefinition extends tplNodeBlock
     public function setClosing()
     {
         if (!isset(self::$stack[$this->name])) {
-            self::$stack[$this->name] = array(
+            self::$stack[$this->name] = [
                 'pos'    => 0, // pos is the pointer to the current block being rendered
-                'blocks' => array());
+                'blocks' => []];
         }
         parent::setClosing();
         self::$stack[$this->name]['blocks'][] = $this->children;

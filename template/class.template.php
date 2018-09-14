@@ -15,23 +15,23 @@ class template
 
     public $use_cache = true;
 
-    protected $blocks = array();
-    protected $values = array();
+    protected $blocks = [];
+    protected $values = [];
 
     protected $remove_php = true;
 
     protected $unknown_value_handler = null;
     protected $unknown_block_handler = null;
 
-    protected $tpl_path = array();
+    protected $tpl_path = [];
     protected $cache_dir;
     protected $parent_file;
 
-    protected $compile_stack = array();
-    protected $parent_stack  = array();
+    protected $compile_stack = [];
+    protected $parent_stack  = [];
 
     # Inclusion variables
-    protected static $superglobals = array('GLOBALS', '_SERVER', '_GET', '_POST', '_COOKIE', '_FILES', '_ENV', '_REQUEST', '_SESSION');
+    protected static $superglobals = ['GLOBALS', '_SERVER', '_GET', '_POST', '_COOKIE', '_FILES', '_ENV', '_REQUEST', '_SESSION'];
     protected static $_k;
     protected static $_n;
     protected static $_r;
@@ -41,8 +41,8 @@ class template
         $this->setCacheDir($cache_dir);
 
         $this->self_name = $self_name;
-        $this->addValue('include', array($this, 'includeFile'));
-        $this->addBlock('Block', array($this, 'blockSection'));
+        $this->addValue('include', [$this, 'includeFile']);
+        $this->addBlock('Block', [$this, 'blockSection']);
     }
 
     public function includeFile($attr)
@@ -68,7 +68,7 @@ class template
 
     public function setPath()
     {
-        $path = array();
+        $path = [];
 
         foreach (func_get_args() as $v) {
             if (is_array($v)) {
@@ -286,7 +286,7 @@ class template
         # Next : build semantic tree from tokens.
         $rootNode          = new tplNode();
         $node              = $rootNode;
-        $errors            = array();
+        $errors            = [];
         $this->parent_file = '';
         foreach ($blocks as $id => $block) {
             $isblock = preg_match('#<tpl:(\w+)(?:(\s+.*?)>|>)|</tpl:(\w+)>|{{tpl:(\w+)(\s(.*?))?}}#ms', $block, $match);
@@ -320,7 +320,7 @@ class template
                     // Value tag
                     $tag      = $match[4];
                     $str_attr = '';
-                    $attr     = array();
+                    $attr     = [];
                     if (isset($match[6])) {
                         $str_attr = $match[6];
                         $attr     = $this->getAttrs($match[6]);
@@ -338,9 +338,9 @@ class template
                     // Opening tag, create new node and dive into it
                     $tag = $match[1];
                     if ($tag == "Block") {
-                        $newnode = new tplNodeBlockDefinition($tag, isset($match[2]) ? $this->getAttrs($match[2]) : array());
+                        $newnode = new tplNodeBlockDefinition($tag, isset($match[2]) ? $this->getAttrs($match[2]) : []);
                     } else {
-                        $newnode = new tplNodeBlock($tag, isset($match[2]) ? $this->getAttrs($match[2]) : array());
+                        $newnode = new tplNodeBlock($tag, isset($match[2]) ? $this->getAttrs($match[2]) : []);
                     }
                     $node->addChild($newnode);
                     $node = $newnode;
@@ -428,7 +428,7 @@ class template
     protected function compileValue($match)
     {
         $v        = $match[1];
-        $attr     = isset($match[2]) ? $this->getAttrs($match[2]) : array();
+        $attr     = isset($match[2]) ? $this->getAttrs($match[2]) : [];
         $str_attr = isset($match[2]) ? $match[2] : null;
 
         return call_user_func($this->values[$v], $attr, ltrim($str_attr));
@@ -450,7 +450,7 @@ class template
 
     protected function getAttrs($str)
     {
-        $res = array();
+        $res = [];
         if (preg_match_all('|([a-zA-Z0-9_:-]+)="([^"]*)"|ms', $str, $m) > 0) {
             foreach ($m[1] as $i => $v) {
                 $res[$v] = $m[2][$i];

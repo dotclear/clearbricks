@@ -15,12 +15,12 @@ class mimeMessage
     protected $from_name        = null;
     protected $ctype_primary    = null;
     protected $ctype_secondary  = null;
-    protected $ctype_parameters = array();
-    protected $d_parameters     = array();
+    protected $ctype_parameters = [];
+    protected $d_parameters     = [];
     protected $disposition      = null;
-    protected $headers          = array();
+    protected $headers          = [];
     protected $body             = null;
-    protected $parts            = array();
+    protected $parts            = [];
 
     public function __construct($message)
     {
@@ -72,20 +72,20 @@ class mimeMessage
 
     public function getFrom()
     {
-        return array($this->from_email, $this->from_name);
+        return [$this->from_email, $this->from_name];
     }
 
     public function getAllFiles()
     {
-        $parts = array();
+        $parts = [];
         foreach ($this->parts as $part) {
             $body     = $part->getBody();
             $filename = $part->getFileName();
             if ($body && $filename) {
-                $parts[] = array(
+                $parts[] = [
                     'filename' => $filename,
                     'content'  => $part->getBody()
-                );
+                ];
             } else {
                 $parts = array_merge($parts, $part->getAllFiles());
             }
@@ -114,7 +114,7 @@ class mimeMessage
         foreach ($headers as $v) {
             if (isset($this->headers[strtolower($v['name'])]) &&
                 !is_array($this->headers[strtolower($v['name'])])) {
-                $this->headers[strtolower($v['name'])]   = array($this->headers[strtolower($v['name'])]);
+                $this->headers[strtolower($v['name'])]   = [$this->headers[strtolower($v['name'])]];
                 $this->headers[strtolower($v['name'])][] = $v['value'];
             } elseif (isset($this->headers[strtolower($v['name'])])) {
                 $this->headers[strtolower($v['name'])][] = $v['value'];
@@ -214,17 +214,17 @@ class mimeMessage
     protected function splitBodyHeader($input)
     {
         if (preg_match('/^(.*?)\r?\n\r?\n(.*)/s', $input, $match)) {
-            return array($match[1], $match[2]);
+            return [$match[1], $match[2]];
         } else {
             # No body found
-            return array($input, '');
+            return [$input, ''];
         }
     }
 
     protected function parseHeaders($input)
     {
         if (!$input) {
-            return array();
+            return [];
         }
 
         # Unfold the input
@@ -232,7 +232,7 @@ class mimeMessage
         $input   = preg_replace("/\r\n(\t| )+/", ' ', $input);
         $headers = explode("\r\n", trim($input));
 
-        $res = array();
+        $res = [];
 
         # Remove first From line if exists
         if (strpos($headers[0], 'From ') === 0) {
@@ -248,10 +248,10 @@ class mimeMessage
                 $hdr_value = substr($hdr_value, 1);
             }
 
-            $res[] = array(
+            $res[] = [
                 'name'  => $hdr_name,
                 'value' => $this->decodeHeader($hdr_value)
-            );
+            ];
         }
 
         return $res;
@@ -270,7 +270,7 @@ class mimeMessage
                 # the regex is already bordering on incomprehensible
                 $splitRegex = '/([^;\'"]*[\'"]([^\'"]*([^\'"]*)*)[\'"][^;\'"]*|([^;]+))(;|$)/';
                 preg_match_all($splitRegex, $input, $matches);
-                $parameters = array();
+                $parameters = [];
                 for ($i = 0; $i < count($matches[0]); $i++) {
                     $param = $matches[0][$i];
                     while (substr($param, -2) == '\;') {
@@ -312,7 +312,7 @@ class mimeMessage
 
     protected function boundarySplit($input, $boundary)
     {
-        $parts = array();
+        $parts = [];
 
         $bs_possible = substr($boundary, 2, -2);
         $bs_check    = '\"' . $bs_possible . '\"';
@@ -415,7 +415,7 @@ class mimeMessage
         $input = preg_replace("/=\r?\n/", '', $input);
 
         // Replace encoded characters
-        $input = preg_replace_callback('/=([a-f0-9]{2})/i', array($this, 'quotedPrintableDecodeHandler'), $input);
+        $input = preg_replace_callback('/=([a-f0-9]{2})/i', [$this, 'quotedPrintableDecodeHandler'], $input);
 
         return $input;
     }

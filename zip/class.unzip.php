@@ -12,8 +12,8 @@
 class fileUnzip
 {
     protected $file_name;
-    protected $compressed_list = array();
-    protected $eo_central      = array();
+    protected $compressed_list = [];
+    protected $eo_central      = [];
 
     protected $zip_sig   = "\x50\x4b\x03\x04"; # local file header signature
     protected $dir_sig   = "\x50\x4b\x01\x02"; # central dir header signature
@@ -119,7 +119,7 @@ class fileUnzip
             $this->getList();
         }
 
-        $res = array();
+        $res = [];
         foreach ($this->compressed_list as $k => $v) {
             if (!$v['is_dir']) {
                 $res[] = $k;
@@ -134,7 +134,7 @@ class fileUnzip
             $this->getList();
         }
 
-        $res = array();
+        $res = [];
         foreach ($this->compressed_list as $k => $v) {
             if ($v['is_dir']) {
                 $res[] = substr($k, 0, -1);
@@ -285,21 +285,21 @@ class fileUnzip
             $signature = fread($fp, 4);
 
             if ($signature == $this->dir_sig_e) {
-                $dir_list = array();
+                $dir_list = [];
 
-                $eodir = array(
+                $eodir = [
                     'disk_number_this'   => unpack('v', fread($fp, 2)),
                     'disk_number'        => unpack('v', fread($fp, 2)),
                     'total_entries_this' => unpack('v', fread($fp, 2)),
                     'total_entries'      => unpack('v', fread($fp, 2)),
                     'size_of_cd'         => unpack('V', fread($fp, 4)),
                     'offset_start_cd'    => unpack('V', fread($fp, 4))
-                );
+                ];
 
                 $zip_comment_len          = unpack('v', fread($fp, 2));
                 $eodir['zipfile_comment'] = $zip_comment_len[1] ? fread($fp, $zip_comment_len) : '';
 
-                $this->eo_central = array(
+                $this->eo_central = [
                     'disk_number_this'   => $eodir['disk_number_this'][1],
                     'disk_number'        => $eodir['disk_number'][1],
                     'total_entries_this' => $eodir['total_entries_this'][1],
@@ -307,13 +307,13 @@ class fileUnzip
                     'size_of_cd'         => $eodir['size_of_cd'][1],
                     'offset_start_cd'    => $eodir['offset_start_cd'][1],
                     'zipfile_comment'    => $eodir['zipfile_comment']
-                );
+                ];
 
                 fseek($fp, $this->eo_central['offset_start_cd']);
                 $signature = fread($fp, 4);
 
                 while ($signature == $this->dir_sig) {
-                    $dir                       = array();
+                    $dir                       = [];
                     $dir['version_madeby']     = unpack("v", fread($fp, 2)); # version made by
                     $dir['version_needed']     = unpack("v", fread($fp, 2)); # version needed to extract
                     $dir['general_bit_flag']   = unpack("v", fread($fp, 2)); # general purpose bit flag
@@ -337,7 +337,7 @@ class fileUnzip
                     $dir['extra_field']          = $extra_field_len[1] ? fread($fp, $extra_field_len[1]) : ''; # extra field
                     $dir['file_comment']         = $file_comment_len[1] ? fread($fp, $file_comment_len[1]) : ''; # file comment
 
-                    $dir_list[$dir['file_name']] = array(
+                    $dir_list[$dir['file_name']] = [
                         'version_madeby'       => $dir['version_madeby'][1],
                         'version_needed'       => $dir['version_needed'][1],
                         'general_bit_flag'     => str_pad(decbin($dir['general_bit_flag'][1]), 8, '0', STR_PAD_LEFT),
@@ -357,7 +357,7 @@ class fileUnzip
                         'file_name'            => $dir['file_name'],
                         'extra_field'          => $dir['extra_field'],
                         'file_comment'         => $dir['file_comment']
-                    );
+                    ];
                     $signature = fread($fp, 4);
                 }
 
@@ -433,7 +433,7 @@ class fileUnzip
         $signature = fread($fp, 4);
         if ($signature == $this->zip_sig) {
             # Get information about the zipped file
-            $file                       = array();
+            $file                       = [];
             $file['version_needed']     = unpack("v", fread($fp, 2)); # version needed to extract
             $file['general_bit_flag']   = unpack("v", fread($fp, 2)); # general purpose bit flag
             $file['compression_method'] = unpack("v", fread($fp, 2)); # compression method
@@ -454,7 +454,7 @@ class fileUnzip
             fseek($fp, $file['compressed_size'][1], SEEK_CUR);
 
             # Mount file table
-            $i = array(
+            $i = [
                 'file_name'             => $file['file_name'],
                 'is_dir'                => substr($file['file_name'], -1, 1) == '/',
                 'compression_method'    => $file['compression_method'][1],
@@ -469,7 +469,7 @@ class fileUnzip
                 'extra_field'           => $file['extra_field'],
                 'general_bit_flag'      => str_pad(decbin($file['general_bit_flag'][1]), 8, '0', STR_PAD_LEFT),
                 'contents_start_offset' => $file['contents_start_offset']
-            );
+            ];
             return $i;
         }
         return false;

@@ -182,12 +182,12 @@ class xmlrpcMessage
     public $faultCode;        ///< string Fault code
     public $faultString;      ///< string Fault string
     public $methodName;       ///< string Method name
-    public $params = array(); ///< array Method parameters
+    public $params = []; ///< array Method parameters
 
     # Currentstring variable stacks
-    protected $_arraystructs      = array(); ///< The stack used to keep track of the current array/struct
-    protected $_arraystructstypes = array(); ///< Stack keeping track of if things are structs or array
-    protected $_currentStructName = array(); ///< A stack as well
+    protected $_arraystructs      = []; ///< The stack used to keep track of the current array/struct
+    protected $_arraystructstypes = []; ///< Stack keeping track of if things are structs or array
+    protected $_currentStructName = []; ///< A stack as well
     protected $_param;
     protected $_value;
     protected $_currentTag;
@@ -227,7 +227,7 @@ class xmlrpcMessage
         if (strtoupper($root_tag) == '<!DOCTYPE') {
             throw new Exception('XML Parser Error.');
         }
-        if (!in_array($root_tag, array('<methodCall', '<methodResponse', '<fault'))) {
+        if (!in_array($root_tag, ['<methodCall', '<methodResponse', '<fault'])) {
             throw new Exception('XML Parser Error.');
         }
         try {
@@ -279,11 +279,11 @@ class xmlrpcMessage
             # Deal with stacks of arrays and structs
             case 'data': # data is to all intents and puposes more interesting than array
                 $this->_arraystructstypes[] = 'array';
-                $this->_arraystructs[]      = array();
+                $this->_arraystructs[]      = [];
                 break;
             case 'struct':
                 $this->_arraystructstypes[] = 'struct';
-                $this->_arraystructs[]      = array();
+                $this->_arraystructs[]      = [];
                 break;
         }
     }
@@ -648,7 +648,7 @@ if (class_exists('netHttp')) {
                 $path = $this->path;
             }
 
-            return array(
+            return [
                 'POST ' . $path . ' HTTP/1.0',
                 'Host: ' . $this->host,
                 'Content-Type: text/xml',
@@ -656,7 +656,7 @@ if (class_exists('netHttp')) {
                 'Content-Length: ' . $this->request->getLength(),
                 '',
                 $this->request->getXML()
-            );
+            ];
         }
     }
 
@@ -681,7 +681,7 @@ if (class_exists('xmlrpcClient')) {
 
     class xmlrpcClientMulticall extends xmlrpcClient
     {
-        protected $calls = array(); ///< array
+        protected $calls = []; ///< array
 
         public function __construct($url)
         {
@@ -712,10 +712,10 @@ if (class_exists('xmlrpcClient')) {
             $args       = func_get_args();
             $methodName = array_shift($args);
 
-            $struct = array(
+            $struct = [
                 'methodName' => $methodName,
                 'params'     => $args
-            );
+            ];
 
             $this->calls[] = $struct;
         }
@@ -755,7 +755,7 @@ if (class_exists('xmlrpcClient')) {
  */
 class xmlrpcServer
 {
-    protected $callbacks = array(); ///< array Server methods
+    protected $callbacks = []; ///< array Server methods
     protected $data;                ///< string Received data
     protected $encoding;            ///< string Server encoding
     protected $message;             ///< xmlrpcMessage Returned message
@@ -1000,20 +1000,20 @@ class xmlrpcServer
     protected function setCapabilities()
     {
         # Initialises capabilities array
-        $this->capabilities = array(
-            'xmlrpc'           => array(
+        $this->capabilities = [
+            'xmlrpc'           => [
                 'specUrl'     => 'http://www.xmlrpc.com/spec',
                 'specVersion' => 1
-            ),
-            'faults_interop'   => array(
+            ],
+            'faults_interop'   => [
                 'specUrl'     => 'http://xmlrpc-epi.sourceforge.net/specs/rfc.fault_codes.php',
                 'specVersion' => 20010516
-            ),
-            'system.multicall' => array(
+            ],
+            'system.multicall' => [
                 'specUrl'     => 'http://www.xmlrpc.com/discuss/msgReader$1208',
                 'specVersion' => 1
-            )
-        );
+            ]
+        ];
     }
 
     /**
@@ -1030,9 +1030,9 @@ class xmlrpcServer
      */
     protected function setCallbacks()
     {
-        $this->callbacks['system.getCapabilities'] = array($this, 'getCapabilities');
-        $this->callbacks['system.listMethods']     = array($this, 'listMethods');
-        $this->callbacks['system.multicall']       = array($this, 'multiCall');
+        $this->callbacks['system.getCapabilities'] = [$this, 'getCapabilities'];
+        $this->callbacks['system.listMethods']     = [$this, 'listMethods'];
+        $this->callbacks['system.multicall']       = [$this, 'multiCall'];
     }
 
     /**
@@ -1073,7 +1073,7 @@ class xmlrpcServer
      */
     protected function multiCall($methodcalls)
     {
-        $return = array();
+        $return = [];
         foreach ($methodcalls as $call) {
             $method = $call['methodName'];
             $params = $call['params'];
@@ -1085,12 +1085,12 @@ class xmlrpcServer
                 }
 
                 $result   = $this->call($method, $params);
-                $return[] = array($result);
+                $return[] = [$result];
             } catch (Exception $e) {
-                $return[] = array(
+                $return[] = [
                     'faultCode'   => $e->getCode(),
                     'faultString' => $e->getMessage()
-                );
+                ];
             }
         }
 
@@ -1137,43 +1137,43 @@ if (class_exists('xmlrpcServer')) {
             $this->setCallbacks();
             $this->setCapabilities();
 
-            $this->capabilities['introspection'] = array(
+            $this->capabilities['introspection'] = [
                 'specUrl'     => 'http://xmlrpc.usefulinc.com/doc/reserved.html',
                 'specVersion' => 1
-            );
+            ];
 
             $this->addCallback(
                 'system.methodSignature',
-                array($this, 'methodSignature'),
-                array('array', 'string'),
+                [$this, 'methodSignature'],
+                ['array', 'string'],
                 'Returns an array describing the return type and required parameters of a method'
             );
 
             $this->addCallback(
                 'system.getCapabilities',
-                array($this, 'getCapabilities'),
-                array('struct'),
+                [$this, 'getCapabilities'],
+                ['struct'],
                 'Returns a struct describing the XML-RPC specifications supported by this server'
             );
 
             $this->addCallback(
                 'system.listMethods',
-                array($this, 'listMethods'),
-                array('array'),
+                [$this, 'listMethods'],
+                ['array'],
                 'Returns an array of available methods on this server'
             );
 
             $this->addCallback(
                 'system.methodHelp',
-                array($this, 'methodHelp'),
-                array('string', 'string'),
+                [$this, 'methodHelp'],
+                ['string', 'string'],
                 'Returns a documentation string for the specified method'
             );
 
             $this->addCallback(
                 'system.multicall',
-                array($this, 'multiCall'),
-                array('struct', 'array'),
+                [$this, 'multiCall'],
+                ['struct', 'array'],
                 'Returns result of multiple methods calls'
             );
         }
@@ -1210,7 +1210,7 @@ if (class_exists('xmlrpcServer')) {
         {
             # Make sure it's in an array
             if ($args && !is_array($args)) {
-                $args = array($args);
+                $args = [$args];
             }
 
             # Over-rides default call method, adds signature check
@@ -1308,7 +1308,7 @@ if (class_exists('xmlrpcServer')) {
 
             # We should be returning an array of types
             $types  = $this->signatures[$method];
-            $return = array();
+            $return = [];
 
             foreach ($types as $type) {
                 switch ($type) {
@@ -1332,10 +1332,10 @@ if (class_exists('xmlrpcServer')) {
                         $return[] = new xmlrpcBase64('base64');
                         break;
                     case 'array':
-                        $return[] = array('array');
+                        $return[] = ['array'];
                         break;
                     case 'struct':
-                        $return[] = array('struct' => 'struct');
+                        $return[] = ['struct' => 'struct'];
                         break;
                 }
             }

@@ -15,13 +15,13 @@ if (class_exists('dbSchema')) {
 
     class pgsqlSchema extends dbSchema implements i_dbSchema
     {
-        protected $ref_actions_map = array(
+        protected $ref_actions_map = [
             'a' => 'no action',
             'r' => 'restrict',
             'c' => 'cascade',
             'n' => 'set null',
             'd' => 'set default'
-        );
+        ];
 
         public function dbt2udt($type, &$len, &$default)
         {
@@ -46,7 +46,7 @@ if (class_exists('dbSchema')) {
 
             $rs = $this->con->select($sql);
 
-            $res = array();
+            $res = [];
             while ($rs->fetch()) {
                 $res[] = $rs->f(0);
             }
@@ -63,7 +63,7 @@ if (class_exists('dbSchema')) {
 
             $rs = $this->con->select($sql);
 
-            $res = array();
+            $res = [];
             while ($rs->fetch()) {
                 $field   = trim($rs->column_name);
                 $type    = trim($rs->udt_name);
@@ -83,12 +83,12 @@ if (class_exists('dbSchema')) {
                     $default = null;
                 }
 
-                $res[$field] = array(
+                $res[$field] = [
                     'type'    => $type,
                     'len'     => $len,
                     'null'    => $null,
                     'default' => $default
-                );
+                ];
             }
 
             return $res;
@@ -115,14 +115,14 @@ if (class_exists('dbSchema')) {
 
             $rs = $this->con->select($sql);
 
-            $res = array();
+            $res = [];
             while ($rs->fetch()) {
-                $k = array(
+                $k = [
                     'name'    => $rs->idxname,
                     'primary' => (boolean) $rs->indisprimary,
                     'unique'  => (boolean) $rs->indisunique,
-                    'cols'    => array()
-                );
+                    'cols'    => []
+                ];
 
                 for ($i = 1; $i <= $rs->indnatts; $i++) {
                     $cols        = $this->con->select('SELECT pg_get_indexdef(' . $rs->oid . '::oid, ' . $i . ', true);');
@@ -156,13 +156,13 @@ if (class_exists('dbSchema')) {
 
             $rs = $this->con->select($sql);
 
-            $res = array();
+            $res = [];
             while ($rs->fetch()) {
-                $k = array(
+                $k = [
                     'name' => $rs->idxname,
                     'type' => $rs->amname,
-                    'cols' => array()
-                );
+                    'cols' => []
+                ];
 
                 for ($i = 1; $i <= $rs->indnatts; $i++) {
                     $cols        = $this->con->select('SELECT pg_get_indexdef(' . $rs->oid . '::oid, ' . $i . ', true);');
@@ -198,19 +198,19 @@ if (class_exists('dbSchema')) {
                 'WHERE a1.attrelid=%1$s::oid AND a1.attnum=%2$s ' .
                 'AND a2.attrelid=%3$s::oid AND a2.attnum=%4$s ';
 
-            $res = array();
+            $res = [];
             while ($rs->fetch()) {
                 $conkey  = preg_replace('/[^\d]/', '', $rs->conkey);
                 $confkey = preg_replace('/[^\d]/', '', $rs->confkey);
 
-                $k = array(
+                $k = [
                     'name'    => $rs->conname,
-                    'c_cols'  => array(),
+                    'c_cols'  => [],
                     'p_table' => $rs->reftab,
-                    'p_cols'  => array(),
+                    'p_cols'  => [],
                     'update'  => $this->ref_actions_map[$rs->confupdtype],
                     'delete'  => $this->ref_actions_map[$rs->confdeltype]
-                );
+                ];
 
                 $cols = $this->con->select(sprintf($cols_sql, $rs->conrelid, $conkey, $rs->confrelid, $confkey));
                 while ($cols->fetch()) {
@@ -226,7 +226,7 @@ if (class_exists('dbSchema')) {
 
         public function db_create_table($name, $fields)
         {
-            $a = array();
+            $a = [];
 
             foreach ($fields as $n => $f) {
                 $type    = $f['type'];

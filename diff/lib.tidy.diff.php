@@ -14,7 +14,7 @@
 
 class tidyDiff
 {
-    protected $__data = array(); ///< array: Chunks array
+    protected $__data = []; ///< array: Chunks array
 
     private $up_range = '/^@@ -([\d]+),([\d]+) \+([\d]+),([\d]+) @@/m';
     private $up_ctx   = '/^ (.*)$/';
@@ -52,18 +52,18 @@ class tidyDiff
             foreach (explode("\n", $chunk) as $line) {
                 # context
                 if (preg_match($this->up_ctx, $line, $m)) {
-                    $tidy_chunk->addLine('context', array($old_line, $new_line), $m[1]);
+                    $tidy_chunk->addLine('context', [$old_line, $new_line], $m[1]);
                     $old_line++;
                     $new_line++;
                 }
                 # insertion
                 if (preg_match($this->up_ins, $line, $m)) {
-                    $tidy_chunk->addLine('insert', array($old_line, $new_line), $m[1]);
+                    $tidy_chunk->addLine('insert', [$old_line, $new_line], $m[1]);
                     $new_line++;
                 }
                 # deletion
                 if (preg_match($this->up_del, $line, $m)) {
-                    $tidy_chunk->addLine('delete', array($old_line, $new_line), $m[1]);
+                    $tidy_chunk->addLine('delete', [$old_line, $new_line], $m[1]);
                     $old_line++;
                 }
             }
@@ -110,16 +110,16 @@ class tidyDiffChunk
      */
     public function __construct()
     {
-        $this->__info = array(
+        $this->__info = [
             'context' => 0,
             'delete'  => 0,
             'insert'  => 0,
-            'range'   => array(
-                'start' => array(),
-                'end'   => array()
-            )
-        );
-        $this->__data = array();
+            'range'   => [
+                'start' => [],
+                'end'   => []
+            ]
+        ];
+        $this->__data = [];
     }
 
     /**
@@ -135,8 +135,8 @@ class tidyDiffChunk
     public function setRange($line_start, $offest_start, $line_end, $offset_end)
     {
         if (is_int($line_start) && is_int($offest_start) && is_int($line_end) && is_int($offset_end)) {
-            $this->__info['range']['start'] = array($line_start, $offest_start);
-            $this->__info['range']['end']   = array($line_end, $offset_end);
+            $this->__info['range']['start'] = [$line_start, $offest_start];
+            $this->__info['range']['end']   = [$line_end, $offset_end];
         }
     }
 
@@ -224,8 +224,8 @@ class tidyDiffChunk
 
     private function getGroups()
     {
-        $res           = $group           = array();
-        $allowed_types = array('delete', 'insert');
+        $res           = $group           = [];
+        $allowed_types = ['delete', 'insert'];
         $delete        = $insert        = 0;
 
         foreach ($this->__data as $k => $line) {
@@ -237,7 +237,7 @@ class tidyDiffChunk
                     array_push($res, $group);
                 }
                 $delete = $insert = 0;
-                $group  = array();
+                $group  = [];
             }
         }
         if ($delete === $insert && count($group) > 0) {
@@ -262,7 +262,7 @@ class tidyDiffChunk
             $end--;
         }
 
-        return array('start' => $start, 'end' => $end + 1);
+        return ['start' => $start, 'end' => $end + 1];
     }
 }
 
@@ -294,7 +294,7 @@ class tidyDiffLine
      */
     public function __construct($type, $lines, $content)
     {
-        $allowed_type = array('context', 'delete', 'insert');
+        $allowed_type = ['context', 'delete', 'insert'];
 
         if (in_array($type, $allowed_type) && is_array($lines) && is_string($content)) {
             $this->type    = $type;

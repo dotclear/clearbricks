@@ -217,14 +217,14 @@ if (class_exists('dbLayer')) {
 
         public function dateFormat($field, $pattern)
         {
-            $rep = array(
+            $rep = [
                 '%d' => 'DD',
                 '%H' => 'HH24',
                 '%M' => 'MI',
                 '%m' => 'MM',
                 '%S' => 'SS',
                 '%Y' => 'YYYY'
-            );
+            ];
 
             $pattern = str_replace(array_keys($rep), array_values($rep), $pattern);
 
@@ -233,10 +233,10 @@ if (class_exists('dbLayer')) {
 
         public function orderBy()
         {
-            $default = array(
+            $default = [
                 'order'   => '',
                 'collate' => false
-            );
+            ];
             foreach (func_get_args() as $v) {
                 if (is_string($v)) {
                     $res[] = $v;

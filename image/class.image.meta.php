@@ -16,9 +16,9 @@
 
 class imageMeta
 {
-    protected $xmp = array(); ///< array: Internal XMP array
-    protected $iptc = array(); ///< array: Internal IPTC array
-    protected $exif = array(); ///< array: Internal EXIF array
+    protected $xmp = []; ///< array: Internal XMP array
+    protected $iptc = []; ///< array: Internal IPTC array
+    protected $exif = []; ///< array: Internal EXIF array
 
     /**
      * Read metadata
@@ -217,7 +217,7 @@ class imageMeta
     /**
      * array $properties Final properties array
      */
-    protected $properties = array(
+    protected $properties = [
         'Title'             => null,
         'Description'       => null,
         'Creator'           => null,
@@ -239,89 +239,89 @@ class imageMeta
         'State'             => null,
         'City'              => null,
         'Keywords'          => null
-    );
+    ];
 
     # XMP
-    protected $xmp_reg = array(
-        'Title'             => array(
+    protected $xmp_reg = [
+        'Title'             => [
             '%<dc:title>\s*<rdf:Alt>\s*<rdf:li.*?>(.+?)</rdf:li>%msu'
-        ),
-        'Description'       => array(
+        ],
+        'Description'       => [
             '%<dc:description>\s*<rdf:Alt>\s*<rdf:li.*?>(.+?)</rdf:li>%msu'
-        ),
-        'Creator'           => array(
+        ],
+        'Creator'           => [
             '%<dc:creator>\s*<rdf:Seq>\s*<rdf:li>(.+?)</rdf:li>%msu'
-        ),
-        'Rights'            => array(
+        ],
+        'Rights'            => [
             '%<dc:rights>\s*<rdf:Alt>\s*<rdf:li.*?>(.+?)</rdf:li>%msu'
-        ),
-        'Make'              => array(
+        ],
+        'Make'              => [
             '%<tiff:Make>(.+?)</tiff:Make>%msu',
             '%tiff:Make="(.+?)"%msu'
-        ),
-        'Model'             => array(
+        ],
+        'Model'             => [
             '%<tiff:Model>(.+?)</tiff:Model>%msu',
             '%tiff:Model="(.+?)"%msu'
-        ),
-        'Exposure'          => array(
+        ],
+        'Exposure'          => [
             '%<exif:ExposureTime>(.+?)</exif:ExposureTime>%msu',
             '%exif:ExposureTime="(.+?)"%msu'
-        ),
-        'FNumber'           => array(
+        ],
+        'FNumber'           => [
             '%<exif:FNumber>(.+?)</exif:FNumber>%msu',
             '%exif:FNumber="(.+?)"%msu'
-        ),
-        'MaxApertureValue'  => array(
+        ],
+        'MaxApertureValue'  => [
             '%<exif:MaxApertureValue>(.+?)</exif:MaxApertureValue>%msu',
             '%exif:MaxApertureValue="(.+?)"%msu'
-        ),
-        'ExposureProgram'   => array(
+        ],
+        'ExposureProgram'   => [
             '%<exif:ExposureProgram>(.+?)</exif:ExposureProgram>%msu',
             '%exif:ExposureProgram="(.+?)"%msu'
-        ),
-        'ISOSpeedRatings'   => array(
+        ],
+        'ISOSpeedRatings'   => [
             '%<exif:ISOSpeedRatings>\s*<rdf:Seq>\s*<rdf:li>(.+?)</rdf:li>%msu'
-        ),
-        'DateTimeOriginal'  => array(
+        ],
+        'DateTimeOriginal'  => [
             '%<exif:DateTimeOriginal>(.+?)</exif:DateTimeOriginal>%msu',
             '%exif:DateTimeOriginal="(.+?)"%msu'
-        ),
-        'ExposureBiasValue' => array(
+        ],
+        'ExposureBiasValue' => [
             '%<exif:ExposureBiasValue>(.+?)</exif:ExposureBiasValue>%msu',
             '%exif:ExposureBiasValue="(.+?)"%msu'
-        ),
-        'MeteringMode'      => array(
+        ],
+        'MeteringMode'      => [
             '%<exif:MeteringMode>(.+?)</exif:MeteringMode>%msu',
             '%exif:MeteringMode="(.+?)"%msu'
-        ),
-        'FocalLength'       => array(
+        ],
+        'FocalLength'       => [
             '%<exif:FocalLength>(.+?)</exif:FocalLength>%msu',
             '%exif:FocalLength="(.+?)"%msu'
-        ),
-        'Lens'              => array(
+        ],
+        'Lens'              => [
             '%<aux:Lens>(.+?)</aux:Lens>%msu',
             '%aux:Lens="(.+?)"%msu'
-        ),
-        'CountryCode'       => array(
+        ],
+        'CountryCode'       => [
             '%<Iptc4xmpCore:CountryCode>(.+?)</Iptc4xmpCore:CountryCode>%msu',
             '%Iptc4xmpCore:CountryCode="(.+?)"%msu'
-        ),
-        'Country'           => array(
+        ],
+        'Country'           => [
             '%<photoshop:Country>(.+?)</photoshop:Country>%msu',
             '%photoshop:Country="(.+?)"%msu'
-        ),
-        'State'             => array(
+        ],
+        'State'             => [
             '%<photoshop:State>(.+?)</photoshop:State>%msu',
             '%photoshop:State="(.+?)"%msu'
-        ),
-        'City'              => array(
+        ],
+        'City'              => [
             '%<photoshop:City>(.+?)</photoshop:City>%msu',
             '%photoshop:City="(.+?)"%msu'
-        )
-    );
+        ]
+    ];
 
     # IPTC
-    protected $iptc_ref = array(
+    protected $iptc_ref = [
         '1#090' => 'Iptc.Envelope.CharacterSet', // Character Set used (32 chars max)
         '2#005' => 'Iptc.ObjectName',            // Title (64 chars max)
         '2#015' => 'Iptc.Category',              // (3 chars max)
@@ -346,9 +346,9 @@ class imageMeta
         '2#118' => 'Iptc.Contact',               // (128 chars max)
         '2#120' => 'Iptc.Caption',               // Caption/Abstract (2000 chars max)
         '2#122' => 'Iptc.CaptionWriter'         // Caption Writer/Editor (32 chars max)
-    );
+    ];
 
-    protected $iptc_to_property = array(
+    protected $iptc_to_property = [
         'Iptc.ObjectName'    => 'Title',
         'Iptc.Caption'       => 'Description',
         'Iptc.ByLine'        => 'Creator',
@@ -358,10 +358,10 @@ class imageMeta
         'Iptc.ProvinceState' => 'State',
         'Iptc.City'          => 'City',
         'Iptc.Keywords'      => 'Keywords'
-    );
+    ];
 
     # EXIF
-    protected $exif_to_property = array(
+    protected $exif_to_property = [
         //'' => 'Title',
         'ImageDescription'  => 'Description',
         'Artist'            => 'Creator',
@@ -383,5 +383,5 @@ class imageMeta
         //'' => 'State',
         //'' => 'City',
         //'' => 'Keywords'
-    );
+    ];
 }

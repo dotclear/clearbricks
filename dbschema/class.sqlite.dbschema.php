@@ -15,10 +15,10 @@ if (class_exists('dbSchema')) {
 
     class sqliteSchema extends dbSchema implements i_dbSchema
     {
-        private $table_hist = array();
+        private $table_hist = [];
 
-        private $table_stack = array(); // Stack for tables creation
-        private $x_stack     = array(); // Execution stack
+        private $table_stack = []; // Stack for tables creation
+        private $x_stack     = []; // Execution stack
 
         public function dbt2udt($type, &$len, &$default)
         {
@@ -91,11 +91,11 @@ if (class_exists('dbSchema')) {
 
         public function db_get_tables()
         {
-            $res = array();
+            $res = [];
             $sql = "SELECT * FROM sqlite_master WHERE type = 'table'";
             $rs  = $this->con->select($sql);
 
-            $res = array();
+            $res = [];
             while ($rs->fetch()) {
                 $res[] = $rs->tbl_name;
             }
@@ -108,7 +108,7 @@ if (class_exists('dbSchema')) {
             $sql = 'PRAGMA table_info(' . $this->con->escapeSystem($table) . ')';
             $rs  = $this->con->select($sql);
 
-            $res = array();
+            $res = [];
             while ($rs->fetch()) {
                 $field   = trim($rs->name);
                 $type    = trim($rs->type);
@@ -121,27 +121,27 @@ if (class_exists('dbSchema')) {
                     $len  = (integer) $m[2];
                 }
 
-                $res[$field] = array(
+                $res[$field] = [
                     'type'    => $type,
                     'len'     => $len,
                     'null'    => $null,
                     'default' => $default
-                );
+                ];
             }
             return $res;
         }
 
         public function db_get_keys($table)
         {
-            $t   = array();
-            $res = array();
+            $t   = [];
+            $res = [];
 
             # Get primary keys first
             $sql = "SELECT sql FROM sqlite_master WHERE type='table' AND name='" . $this->con->escape($table) . "'";
             $rs  = $this->con->select($sql);
 
             if ($rs->isEmpty()) {
-                return array();
+                return [];
             }
 
             # Get primary keys
@@ -149,12 +149,12 @@ if (class_exists('dbSchema')) {
             if ($n > 0) {
                 foreach ($match[1] as $i => $name) {
                     $cols  = preg_split('/\s*,\s*/', $match[2][$i]);
-                    $res[] = array(
+                    $res[] = [
                         'name'    => $name,
                         'primary' => true,
                         'unique'  => false,
                         'cols'    => $cols
-                    );
+                    ];
                 }
             }
 
@@ -163,12 +163,12 @@ if (class_exists('dbSchema')) {
             if ($n > 0) {
                 foreach ($match[1] as $i => $name) {
                     $cols  = preg_split('/\s*,\s*/', $match[2][$i]);
-                    $res[] = array(
+                    $res[] = [
                         'name'    => $name,
                         'primary' => false,
                         'unique'  => true,
                         'cols'    => $cols
-                    );
+                    ];
                 }
             }
 
@@ -180,23 +180,23 @@ if (class_exists('dbSchema')) {
             $sql = 'PRAGMA index_list(' . $this->con->escapeSystem($table) . ')';
             $rs  = $this->con->select($sql);
 
-            $res = array();
+            $res = [];
             while ($rs->fetch()) {
                 if (preg_match('/^sqlite_/', $rs->name)) {
                     continue;
                 }
 
                 $idx  = $this->con->select('PRAGMA index_info(' . $this->con->escapeSystem($rs->name) . ')');
-                $cols = array();
+                $cols = [];
                 while ($idx->fetch()) {
                     $cols[] = $idx->name;
                 }
 
-                $res[] = array(
+                $res[] = [
                     'name' => $rs->name,
                     'type' => 'btree',
                     'cols' => $cols
-                );
+                ];
             }
 
             return $res;
@@ -205,7 +205,7 @@ if (class_exists('dbSchema')) {
         public function db_get_references($table)
         {
             $sql = 'SELECT * FROM sqlite_master WHERE type=\'trigger\' AND tbl_name = \'%1$s\' AND name LIKE \'%2$s_%%\' ';
-            $res = array();
+            $res = [];
 
             # Find constraints on table
             $bir = $this->con->select(sprintf($sql, $this->con->escape($table), 'bir'));
@@ -266,14 +266,14 @@ if (class_exists('dbSchema')) {
                     }
                 }
 
-                $res[] = array(
+                $res[] = [
                     'name'    => substr($bir->name, 4),
-                    'c_cols'  => array($c_col),
+                    'c_cols'  => [$c_col],
                     'p_table' => $p_table,
-                    'p_cols'  => array($p_col),
+                    'p_cols'  => [$p_col],
                     'update'  => $on_update,
                     'delete'  => $on_delete
-                );
+                ];
             }
 
             return $res;
@@ -281,7 +281,7 @@ if (class_exists('dbSchema')) {
 
         public function db_create_table($name, $fields)
         {
-            $a = array();
+            $a = [];
 
             foreach ($fields as $n => $f) {
                 $type    = $f['type'];

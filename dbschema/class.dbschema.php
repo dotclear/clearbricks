@@ -143,7 +143,7 @@ class dbSchema
      */
     public function dbt2udt($type, &$len, &$default)
     {
-        $c = array(
+        $c = [
             'bool'              => 'boolean',
             'int2'              => 'smallint',
             'int'               => 'integer',
@@ -155,7 +155,7 @@ class dbSchema
             'decimal'           => 'numeric',
             'character varying' => 'varchar',
             'character'         => 'char'
-        );
+        ];
 
         if (isset($c[$type])) {
             return $c[$type];

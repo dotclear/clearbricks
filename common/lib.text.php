@@ -101,7 +101,7 @@ class text
     public static function tidyURL($str, $keep_slashes = true, $keep_spaces = false)
     {
         $str = strip_tags($str);
-        $str = str_replace(array('?', '&', '#', '=', '+', '<', '>', '"', '%'), '', $str);
+        $str = str_replace(['?', '&', '#', '=', '+', '<', '>', '"', '%'], '', $str);
         $str = str_replace("'", ' ', $str);
         $str = preg_replace('/[\s]+/u', ' ', trim($str));
 
@@ -172,7 +172,7 @@ class text
             }
             return $match[1];
         }
-        return array();
+        return [];
     }
 
     /**
@@ -241,7 +241,7 @@ class text
         '|\xF4[\x80-\x8F][\x80-\xBF]{2}' . # plane 16
         '|(.{1}))'; # invalid byte
         $pos     = 0;
-        $badList = array();
+        $badList = [];
 
         while (preg_match('/' . $UTF8_BAD . '/S', $str, $matches)) {
             $bytes = strlen($matches[0]);

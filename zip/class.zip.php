@@ -11,17 +11,17 @@
 
 class fileZip
 {
-    protected $entries  = array();
+    protected $entries  = [];
     protected $root_dir = null;
 
-    protected $ctrl_dir     = array();
+    protected $ctrl_dir     = [];
     protected $eof_ctrl_dir = "\x50\x4b\x05\x06\x00\x00\x00\x00";
     protected $old_offset   = 0;
 
     protected $fp;
     protected $memory_limit = null;
 
-    protected $exclusions = array();
+    protected $exclusions = [];
 
     public function __construct($out_fp)
     {
@@ -29,7 +29,7 @@ class fileZip
             throw new Exception('Output file descriptor is not a resource');
         }
 
-        if (!in_array(get_resource_type($out_fp), array('stream', 'file'))) {
+        if (!in_array(get_resource_type($out_fp), ['stream', 'file'])) {
             throw new Exception('Output file descriptor is not a valid resource');
         }
 
@@ -75,12 +75,12 @@ class fileZip
 
         $info = stat($file);
 
-        $this->entries[$name] = array(
+        $this->entries[$name] = [
             'file'   => $file,
             'is_dir' => false,
             'mtime'  => $info['mtime'],
             'size'   => $info['size']
-        );
+        ];
     }
 
     public function addDirectory($dir, $name = null, $recursive = false)
@@ -106,12 +106,12 @@ class fileZip
             $name = $this->formatName($name);
 
             if ($name !== '') {
-                $this->entries[$name] = array(
+                $this->entries[$name] = [
                     'file'   => null,
                     'is_dir' => true,
                     'mtime'  => time(),
                     'size'   => 0
-                );
+                ];
             }
         }
 

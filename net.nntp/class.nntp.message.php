@@ -28,7 +28,7 @@ class nntpMessage extends mimeMessage
     public function getReferences()
     {
         if (!isset($this->headers['references'])) {
-            return array();
+            return [];
         }
 
         return explode(' ', $this->headers['references']);

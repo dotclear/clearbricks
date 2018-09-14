@@ -77,12 +77,12 @@ class sessionDB
     public function start()
     {
         session_set_save_handler(
-            array(&$this, '_open'),
-            array(&$this, '_close'),
-            array(&$this, '_read'),
-            array(&$this, '_write'),
-            array(&$this, '_destroy'),
-            array(&$this, '_gc')
+            [&$this, '_open'],
+            [&$this, '_close'],
+            [&$this, '_read'],
+            [&$this, '_write'],
+            [&$this, '_destroy'],
+            [&$this, '_gc']
         );
 
         if (isset($_SESSION) && session_name() != $this->cookie_name) {
@@ -104,7 +104,7 @@ class sessionDB
      */
     public function destroy()
     {
-        $_SESSION = array();
+        $_SESSION = [];
         session_unset();
         session_destroy();
         call_user_func_array('setcookie', $this->getCookieParameters(false, -600));
@@ -132,14 +132,14 @@ class sessionDB
      */
     public function getCookieParameters($value = null, $expire = 0)
     {
-        return array(
+        return [
             session_name(),
             $value,
             $expire,
             $this->cookie_path,
             $this->cookie_domain,
             $this->cookie_secure
-        );
+        ];
     }
 
     public function _open($path, $name)

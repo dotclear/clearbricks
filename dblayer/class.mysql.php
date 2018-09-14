@@ -210,10 +210,10 @@ if (class_exists('dbLayer')) {
 
         public function orderBy()
         {
-            $default = array(
+            $default = [
                 'order'   => '',
                 'collate' => false
-            );
+            ];
             foreach (func_get_args() as $v) {
                 if (is_string($v)) {
                     $res[] = $v;
