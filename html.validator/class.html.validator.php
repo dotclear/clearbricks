@@ -24,7 +24,7 @@ if (class_exists('netHttp')) {
         protected $user_agent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.3a) Gecko/20021207';
         protected $timeout    = 2;
 
-        protected $html_errors = array(); ///<    <b>array</b>        Validation errors list
+        protected $html_errors = []; ///<    <b>array</b>        Validation errors list
 
         /**
          * Constructor, no parameters.
@@ -115,9 +115,9 @@ if (class_exists('netHttp')) {
             $fragment = $o->getDocument($fragment, $charset);
 
             if ($o->perform($fragment, $charset)) {
-                return array('valid' => true, 'errors' => null);
+                return ['valid' => true, 'errors' => null];
             } else {
-                return array('valid' => false, 'errors' => $o->getErrors());
+                return ['valid' => false, 'errors' => $o->getErrors()];
             }
         }
     }

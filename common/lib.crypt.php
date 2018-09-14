@@ -63,7 +63,7 @@ class crypt
      */
     public static function createPassword($length = 8)
     {
-        $pwd    = array();
+        $pwd    = [];
         $chars  = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
         $chars2 = '$!@';
 

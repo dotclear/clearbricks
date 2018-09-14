@@ -45,7 +45,7 @@ class dt
             self::setTZ($T);
         }
 
-        $res = preg_replace_callback('/{{' . $hash . '__(a|A|b|B)([0-9]{1,2})__}}/', array('self', '_callback'), $res);
+        $res = preg_replace_callback('/{{' . $hash . '__(a|A|b|B)([0-9]{1,2})__}}/', ['self', '_callback'], $res);
 
         return $res;
     }
@@ -203,10 +203,10 @@ class dt
         if (is_null(self::$timezones)) {
             // Read timezones from file
             if (!is_readable($f = dirname(__FILE__) . '/tz.dat')) {
-                return array();
+                return [];
             }
             $tz = file(dirname(__FILE__) . '/tz.dat');
-            $res = array();
+            $res = [];
             foreach ($tz as $v) {
                 $v = trim($v);
                 if ($v) {
@@ -223,7 +223,7 @@ class dt
         if ($flip) {
             $res = array_flip($res);
             if ($groups) {
-                $tmp = array();
+                $tmp = [];
                 foreach ($res as $k => $v) {
                     $g              = explode('/', $k);
                     $tmp[$g[0]][$k] = $v;
@@ -237,7 +237,7 @@ class dt
 
     private static function _callback($args)
     {
-        $b = array(
+        $b = [
             1  => '_Jan',
             2  => '_Feb',
             3  => '_Mar',
@@ -249,9 +249,9 @@ class dt
             9  => '_Sep',
             10 => '_Oct',
             11 => '_Nov',
-            12 => '_Dec');
+            12 => '_Dec'];
 
-        $B = array(
+        $B = [
             1  => 'January',
             2  => 'February',
             3  => 'March',
@@ -263,25 +263,25 @@ class dt
             9  => 'September',
             10 => 'October',
             11 => 'November',
-            12 => 'December');
+            12 => 'December'];
 
-        $a = array(
+        $a = [
             1 => '_Mon',
             2 => '_Tue',
             3 => '_Wed',
             4 => '_Thu',
             5 => '_Fri',
             6 => '_Sat',
-            0 => '_Sun');
+            0 => '_Sun'];
 
-        $A = array(
+        $A = [
             1 => 'Monday',
             2 => 'Tuesday',
             3 => 'Wednesday',
             4 => 'Thursday',
             5 => 'Friday',
             6 => 'Saturday',
-            0 => 'Sunday');
+            0 => 'Sunday'];
 
         return __(${$args[1]}[(integer) $args[2]]);
     }

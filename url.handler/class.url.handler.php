@@ -10,9 +10,9 @@
 
 class urlHandler
 {
-    protected $types = array();
+    protected $types = [];
     protected $default_handler;
-    protected $error_handlers = array();
+    protected $error_handlers = [];
     public $mode;
     public $type = 'default';
 
@@ -23,11 +23,11 @@ class urlHandler
 
     public function register($type, $url, $representation, $handler)
     {
-        $this->types[$type] = array(
+        $this->types[$type] = [
             'url'            => $url,
             'representation' => $representation,
             'handler'        => $handler
-        );
+        ];
     }
 
     public function registerDefault($handler)
@@ -179,7 +179,7 @@ class urlHandler
     {
         if (!empty($_SERVER['QUERY_STRING'])) {
             $q = explode('&', $_SERVER['QUERY_STRING']);
-            $T = array();
+            $T = [];
             foreach ($q as $v) {
                 $t = explode('=', $v, 2);
 
@@ -193,7 +193,7 @@ class urlHandler
 
             return $T;
         }
-        return array();
+        return [];
     }
 
     protected function sortTypes()

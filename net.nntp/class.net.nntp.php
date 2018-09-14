@@ -95,10 +95,10 @@ class netNntp extends netSocket
                         if (stristr($v, '200 Connection established')) {
                             continue;
                         } else {
-                            $rsp = array(
+                            $rsp = [
                                 'status'  => self::NO_PERMISSION, # Assign it to something dummy
                                 'message' => "No permission"
-                            );
+                            ];
                             break;
                         }
                     }
@@ -164,23 +164,23 @@ class netNntp extends netSocket
 
         if ($r['status'] == self::INFORMATION_FOLLOWS) {
             # List groups
-            $result = array();
+            $result = [];
             foreach ($rsp as $buf) {
                 if (preg_match('/^\.\s*$/', $buf)) {
                     break;
                 }
 
                 list($group, $last, $first, $post) = preg_split('/\s+/', $buf, 4);
-                $result[$group]                    = array(
+                $result[$group]                    = [
                     'desc'  => '',
                     'last'  => trim($last),
                     'first' => trim($first),
                     'post'  => strtolower(trim($post))
-                );
+                ];
             }
 
             # Get groups descriptions
-            $rsp = $this->write(array('list newsgroups ' . $group_pattern));
+            $rsp = $this->write(['list newsgroups ' . $group_pattern]);
             $r   = $this->parseResponse($rsp->current());
 
             if ($r['status'] == self::INFORMATION_FOLLOWS) {
@@ -209,12 +209,12 @@ class netNntp extends netSocket
         if ($rsp['status'] == self::GROUP_SELECTED) {
             $result = preg_split("/\s/", $rsp['message']);
 
-            return array(
+            return [
                 'count'    => $result[0],
                 'start_id' => $result[1],
                 'end_id'   => $result[2],
                 'group'    => $result[3]
-            );
+            ];
         }
 
         throw new Exception($rsp['message'] . ' - (' . $rsp['status'] . ')');
@@ -226,7 +226,7 @@ class netNntp extends netSocket
         $r   = $this->parseResponse($rsp->current());
 
         if ($r['status'] == self::GROUP_SELECTED) {
-            $res = array();
+            $res = [];
             foreach ($rsp as $i => $buf) {
                 if (self::eot($buf)) {
                     break;
@@ -248,7 +248,7 @@ class netNntp extends netSocket
         $r   = $this->parseResponse($rsp->current());
 
         if ($r['status'] == self::NEW_ARTICLES) {
-            $res = array();
+            $res = [];
             $rsp->current(); # we don't want first matched article
             foreach ($rsp as $buf) {
                 if (self::eot($buf)) {
@@ -273,7 +273,7 @@ class netNntp extends netSocket
             if ($r['status'] == self::ARTICLE_HEAD) {
                 $ts = $ts + dt::getTimeOffset('UTC', $ts);
 
-                $res = array();
+                $res = [];
                 foreach ($rsp as $buf) {
                     if (self::eot($buf)) {
                         break;
@@ -329,7 +329,7 @@ class netNntp extends netSocket
         throw new Exception($r['message'] . ' - (' . $r['status'] . ')');
     }
 
-    public function postArticle($headers = array(), $content)
+    public function postArticle($headers = [], $content)
     {
         if (!is_array($headers)) {
             return false;
@@ -347,7 +347,7 @@ class netNntp extends netSocket
         $content = preg_replace('/^\./msu', '..$1', $content);
         $content = text::QPEncode($content);
 
-        $data = array();
+        $data = [];
         # Headers
         foreach ($headers as $k => $v) {
             $data[] = $k . ': ' . $v;
@@ -389,10 +389,10 @@ class netNntp extends netSocket
 
     protected function parseResponse($rsp)
     {
-        return array(
+        return [
             'status'  => substr($rsp, 0, 3),
             'message' => rtrim(substr($rsp, 4), "\r\n")
-        );
+        ];
     }
 
     protected function sendRequest($request)

@@ -7,10 +7,10 @@
  * @copyright GPL-2.0-only
  */
 
-define('CLEARBRICKS_VERSION', '1.0');
+define('CLEARBRICKS_VERSION', '1.1');
 
 # Autoload
-$__autoload = array(
+$__autoload = [
     'crypt'            => dirname(__FILE__) . '/lib.crypt.php',
     'dt'               => dirname(__FILE__) . '/lib.date.php',
     'files'            => dirname(__FILE__) . '/lib.files.php',
@@ -20,7 +20,7 @@ $__autoload = array(
     'html'             => dirname(__FILE__) . '/lib.html.php',
     'http'             => dirname(__FILE__) . '/lib.http.php',
     'text'             => dirname(__FILE__) . '/lib.text.php'
-);
+];
 
 # autoload for clearbricks
 function cb_autoload($name)

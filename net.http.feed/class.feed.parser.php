@@ -15,13 +15,13 @@
 
 class feedParser
 {
-    public $feed_type;       ///< string Feed type
-    public $title;           ///< string Feed title
-    public $link;            ///< string Feed link
-    public $description;     ///< string Feed description
-    public $pubdate;         ///< string Feed publication date
-    public $generator;       ///< string Feed generator
-    public $items = array(); ///< array Feed items
+    public $feed_type;   ///< string Feed type
+    public $title;       ///< string Feed title
+    public $link;        ///< string Feed link
+    public $description; ///< string Feed description
+    public $pubdate;     ///< string Feed publication date
+    public $generator;   ///< string Feed generator
+    public $items = [];  ///< array Feed items
 
     protected $xml; ///< SimpleXMLElement Feed XML content
 
@@ -257,10 +257,10 @@ class feedParser
     protected function nodes2array(&$node)
     {
         if (empty($node)) {
-            return array();
+            return [];
         }
 
-        $res = array();
+        $res = [];
         foreach ($node as $v) {
             $res[] = (string) $v;
         }

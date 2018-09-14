@@ -42,7 +42,7 @@ class socketMail
         $to_host = $to_host[1];
 
         if (self::$smtp_relay != null) {
-            $mx = array(gethostbyname(self::$smtp_relay) => 1);
+            $mx = [gethostbyname(self::$smtp_relay) => 1];
         } else {
             $mx = mail::getMX($to_host);
         }

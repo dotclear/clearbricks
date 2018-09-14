@@ -132,11 +132,11 @@ class wiki2xhtml
     public $tags;
     public $open_tags;
     public $close_tags;
-    public $custom_tags = array();
+    public $custom_tags = [];
     public $all_tags;
     public $tag_pattern;
     public $escape_table;
-    public $allowed_inline = array();
+    public $allowed_inline = [];
 
     public function __construct()
     {
@@ -194,11 +194,11 @@ class wiki2xhtml
         $this->setOpt('img_style_right', 'float:right; margin: 0 0 1em 1em;');
 
         $this->acro_table = $this->__getAcronyms();
-        $this->foot_notes = array();
-        $this->functions  = array();
-        $this->macros     = array();
+        $this->foot_notes = [];
+        $this->functions  = [];
+        $this->macros     = [];
 
-        $this->registerFunction('macro:html', array($this, '__macroHTML'));
+        $this->registerFunction('macro:html', [$this, '__macroHTML']);
     }
 
     public function setOpt($option, $value)
@@ -238,11 +238,11 @@ class wiki2xhtml
     {
         # Initialisation des tags
         $this->__initTags();
-        $this->foot_notes = array();
+        $this->foot_notes = [];
 
         # Récupération des macros
         if ($this->getOpt('active_macros')) {
-            $in = preg_replace_callback('#^///(.*?)///($|\r)#ms', array($this, '__getMacro'), $in);
+            $in = preg_replace_callback('#^///(.*?)///($|\r)#ms', [$this, '__getMacro'], $in);
         }
 
         # Vérification du niveau de titre
@@ -252,7 +252,7 @@ class wiki2xhtml
 
         $res = str_replace("\r", '', $in);
 
-        $escape_pattern = array();
+        $escape_pattern = [];
 
         # traitement des titres à la setext
         if ($this->getOpt('active_setext_title') && $this->getOpt('active_title')) {
@@ -318,12 +318,12 @@ class wiki2xhtml
 
         # On remet les macros
         if ($this->getOpt('active_macros')) {
-            $res = preg_replace_callback('/^##########MACRO#([0-9]+)#$/ms', array($this, '__putMacro'), $res);
+            $res = preg_replace_callback('/^##########MACRO#([0-9]+)#$/ms', [$this, '__putMacro'], $res);
         }
 
         # Auto line break dans les paragraphes
         if ($this->getOpt('active_auto_br')) {
-            $res = preg_replace_callback('%(<p>)(.*?)(</p>)%msu', array($this, '__autoBR'), $res);
+            $res = preg_replace_callback('%(<p>)(.*?)(</p>)%msu', [$this, '__autoBR'], $res);
         }
 
         # On ajoute les notes
@@ -345,24 +345,24 @@ class wiki2xhtml
 
     private function __initTags()
     {
-        $tags = array(
-            'em'     => array("''", "''"),
-            'strong' => array('__', '__'),
-            'abbr'   => array('??', '??'),
-            'a'      => array('[', ']'),
-            'img'    => array('((', '))'),
-            'q'      => array('{{', '}}'),
-            'code'   => array('@@', '@@'),
-            'anchor' => array('~', '~'),
-            'del'    => array('--', '--'),
-            'ins'    => array('++', '++'),
-            'inline' => array('``', '``'),
-            'note'   => array('$$', '$$'),
-            'word'   => array('¶¶¶', '¶¶¶'),
-            'mark'   => array('""', '""'),
-            'sup'    => array('^', '^')
-        );
-        $this->linetags = array(
+        $tags = [
+            'em'     => ["''", "''"],
+            'strong' => ['__', '__'],
+            'abbr'   => ['??', '??'],
+            'a'      => ['[', ']'],
+            'img'    => ['((', '))'],
+            'q'      => ['{{', '}}'],
+            'code'   => ['@@', '@@'],
+            'anchor' => ['~', '~'],
+            'del'    => ['--', '--'],
+            'ins'    => ['++', '++'],
+            'inline' => ['``', '``'],
+            'note'   => ['$$', '$$'],
+            'word'   => ['¶¶¶', '¶¶¶'],
+            'mark'   => ['""', '""'],
+            'sup'    => ['^', '^']
+        ];
+        $this->linetags = [
             'empty' => 'øøø',
             'title' => '([!]{1,4})',
             'hr'    => '[-]{4}[- ]',
@@ -371,7 +371,7 @@ class wiki2xhtml
             'defl'  => '([=|:]{1})',
             'pre'   => '[ ]{1}',
             'aside' => '[\)]{1}'
-        );
+        ];
 
         $this->tags = array_merge($tags, $this->custom_tags);
 
@@ -459,7 +459,7 @@ class wiki2xhtml
 
     private function __getTags($open = true)
     {
-        $res = array();
+        $res = [];
         foreach ($this->tags as $k => $v) {
             $res[$k] = ($open) ? $v[0] : $v[1];
         }
@@ -468,7 +468,7 @@ class wiki2xhtml
 
     private function __getAllTags()
     {
-        $res = array();
+        $res = [];
         foreach ($this->tags as $v) {
             $res[] = $v[0];
             $res[] = $v[1];
@@ -848,7 +848,7 @@ class wiki2xhtml
 
     private function __parseLink($str, &$tag, &$attr, &$type)
     {
-        $n_str    = $this->__inlineWalk($str, array('abbr', 'img', 'em', 'strong'));
+        $n_str    = $this->__inlineWalk($str, ['abbr', 'img', 'em', 'strong']);
         $data     = $this->__splitTagsAttr($n_str);
         $no_image = false;
 
@@ -1010,7 +1010,7 @@ class wiki2xhtml
 
     private function __parseInlineHTML($str)
     {
-        return str_replace(array('&gt;', '&lt;'), array('>', '<'), $str);
+        return str_replace(['&gt;', '&lt;'], ['>', '<'], $str);
     }
 
     # Obtenir un acronyme
@@ -1040,7 +1040,7 @@ class wiki2xhtml
     private function __getAcronyms()
     {
         $file = $this->getOpt('acronyms_file');
-        $res  = array();
+        $res  = [];
 
         if (file_exists($file)) {
             if (($fc = @file($file)) !== false) {
@@ -1081,7 +1081,7 @@ class wiki2xhtml
             return '';
         }
 
-        return str_replace(array("'", '"'), array('&#039;', '&quot;'), $str);
+        return str_replace(["'", '"'], ['&#039;', '&quot;'], $str);
     }
 
     /* Protection des urls */
@@ -1155,8 +1155,8 @@ class wiki2xhtml
     --------------------------------------------------- */
     public function help()
     {
-        $help['b'] = array();
-        $help['i'] = array();
+        $help['b'] = [];
+        $help['i'] = [];
 
         $help['b'][] = 'Laisser une ligne vide entre chaque bloc <em>de même nature</em>.';
         $help['b'][] = '<strong>Paragraphe</strong> : du texte et une ligne vide';

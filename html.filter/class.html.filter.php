@@ -139,7 +139,7 @@ class htmlFilter
      * <code>
      * <?php
      * $filter = new htmlFilter();
-     * $filter->removeAttributes(array('onload','onerror'));
+     * $filter->removeAttributes(['onload','onerror']);
      * ?>
      * </code>
      */
@@ -178,7 +178,7 @@ class htmlFilter
      * <code>
      * <?php
      * $filter = new htmlFilter();
-     * $filter->removeTagAttributes(array('a' => array('src','title')));
+     * $filter->removeTagAttributes(['a' => ['src','title']]);
      * ?>
      * </code>
      */
@@ -220,7 +220,7 @@ class htmlFilter
     public function apply($str, $tidy = true)
     {
         if ($tidy && extension_loaded('tidy') && class_exists('tidy')) {
-            $config = array(
+            $config = [
                 'doctype'                     => 'strict',
                 'drop-proprietary-attributes' => true,
                 'drop-font-tags'              => true,
@@ -232,7 +232,7 @@ class htmlFilter
                 'output-xhtml'                => true,
                 'show-body-only'              => true,
                 'wrap'                        => 80
-            );
+            ];
 
             $str = '<p>tt</p>' . $str; // Fixes a big issue
 
@@ -266,14 +266,14 @@ class htmlFilter
 
     private function miniTidy($str)
     {
-        $str = preg_replace_callback('%(<(?!(\s*?/|!)).*?>)%msu', array($this, 'miniTidyFixTag'), $str);
+        $str = preg_replace_callback('%(<(?!(\s*?/|!)).*?>)%msu', [$this, 'miniTidyFixTag'], $str);
         return $str;
     }
 
     private function miniTidyFixTag($m)
     {
         # Non quoted attributes
-        return preg_replace_callback('%(=")(.*?)(")%msu', array($this, 'miniTidyFixAttr'), $m[1]);
+        return preg_replace_callback('%(=")(.*?)(")%msu', [$this, 'miniTidyFixAttr'], $m[1]);
     }
 
     private function miniTidyFixAttr($m)
@@ -284,7 +284,7 @@ class htmlFilter
 
     private function argsArray($args)
     {
-        $A = array();
+        $A = [];
         foreach ($args as $v) {
             if (is_array($v)) {
                 $A = array_merge($A, $v);
@@ -413,23 +413,23 @@ class htmlFilter
     /* Tags and attributes definitions
      * Source: https://developer.mozilla.org/fr/docs/Web/HTML/
     ------------------------------------------------------- */
-    private $removed_tags          = array();
-    private $removed_attrs         = array();
-    private $removed_pattern_attrs = array();
-    private $removed_tag_attrs     = array();
-    private $removed_hosts         = array();
+    private $removed_tags          = [];
+    private $removed_attrs         = [];
+    private $removed_pattern_attrs = [];
+    private $removed_tag_attrs     = [];
+    private $removed_hosts         = [];
 
-    private $allowed_schemes = array(
+    private $allowed_schemes = [
         'data',
         'http',
         'https',
         'ftp',
         'mailto',
         'news'
-    );
+    ];
 
     // List of attributes which allow URL value
-    private $uri_attrs = array(
+    private $uri_attrs = [
         'action',
         'background',
         'cite',
@@ -444,10 +444,10 @@ class htmlFilter
         'profile',
         'src',
         'usemap'
-    );
+    ];
 
     // List of generic attributes
-    private $gen_attrs = array(
+    private $gen_attrs = [
         'accesskey',
         'class',
         'contenteditable',
@@ -471,10 +471,10 @@ class htmlFilter
         'title',
         'translate',
         'xml:base',
-        'xml:lang');
+        'xml:lang'];
 
     // List of events attributes
-    private $event_attrs = array(
+    private $event_attrs = [
         'onabort',
         'onafterprint',
         'onautocomplete',
@@ -551,16 +551,16 @@ class htmlFilter
         'onunload',
         'onvolumechange',
         'onwaiting'
-    );
+    ];
 
     // List of pattern'ed attributes
-    private $grep_attrs = array(
+    private $grep_attrs = [
         '^aria-[\-\w]+$',
         '^data-[\-\w].*$'
-    );
+    ];
 
     // List of single tags
-    private $single_tags = array(
+    private $single_tags = [
         'area',
         'base',
         'basefont',
@@ -579,176 +579,176 @@ class htmlFilter
         'source',
         'track',
         'wbr'
-    );
+    ];
 
-    private $tags = array(
+    private $tags = [
         // A
-        'a'          => array('charset', 'coords', 'download', 'href', 'hreflang', 'name', 'ping', 'referrerpolicy',
-            'rel', 'rev', 'shape', 'target', 'type'),
-        'abbr'       => array(),
-        'acronym'    => array(),
-        'address'    => array(),
-        'applet'     => array('align', 'alt', 'archive', 'code', 'codebase', 'datafld', 'datasrc', 'height', 'hspace',
-            'mayscript', 'name', 'object', 'vspace', 'width'),
-        'area'       => array('alt', 'coords', 'download', 'href', 'name', 'media', 'nohref', 'referrerpolicy', 'rel',
-            'shape', 'target', 'type'),
-        'article'    => array(),
-        'aside'      => array(),
-        'audio'      => array('autoplay', 'buffered', 'controls', 'loop', 'muted', 'played', 'preload', 'src', 'volume'),
+        'a'          => ['charset', 'coords', 'download', 'href', 'hreflang', 'name', 'ping', 'referrerpolicy',
+            'rel', 'rev', 'shape', 'target', 'type'],
+        'abbr'       => [],
+        'acronym'    => [],
+        'address'    => [],
+        'applet'     => ['align', 'alt', 'archive', 'code', 'codebase', 'datafld', 'datasrc', 'height', 'hspace',
+            'mayscript', 'name', 'object', 'vspace', 'width'],
+        'area'       => ['alt', 'coords', 'download', 'href', 'name', 'media', 'nohref', 'referrerpolicy', 'rel',
+            'shape', 'target', 'type'],
+        'article'    => [],
+        'aside'      => [],
+        'audio'      => ['autoplay', 'buffered', 'controls', 'loop', 'muted', 'played', 'preload', 'src', 'volume'],
         // B
-        'b'          => array(),
-        'base'       => array('href', 'target'),
-        'basefont'   => array('color', 'face', 'size'),
-        'bdi'        => array(),
-        'bdo'        => array(),
-        'big'        => array(),
-        'blockquote' => array('cite'),
-        'body'       => array('alink', 'background', 'bgcolor', 'bottommargin', 'leftmargin', 'link', 'text', 'rightmargin',
-            'text', 'topmargin', 'vlink'),
-        'br'         => array('clear'),
-        'button'     => array('autofocus', 'autocomplete', 'disabled', 'form', 'formaction', 'formenctype', 'formmethod', 'formnovalidate', 'formtarget', 'name', 'type', 'value'),
+        'b'          => [],
+        'base'       => ['href', 'target'],
+        'basefont'   => ['color', 'face', 'size'],
+        'bdi'        => [],
+        'bdo'        => [],
+        'big'        => [],
+        'blockquote' => ['cite'],
+        'body'       => ['alink', 'background', 'bgcolor', 'bottommargin', 'leftmargin', 'link', 'text', 'rightmargin',
+            'text', 'topmargin', 'vlink'],
+        'br'         => ['clear'],
+        'button'     => ['autofocus', 'autocomplete', 'disabled', 'form', 'formaction', 'formenctype', 'formmethod', 'formnovalidate', 'formtarget', 'name', 'type', 'value'],
         // C
-        'canvas'     => array('height', 'width'),
-        'caption'    => array('align'),
-        'center'     => array(),
-        'cite'       => array(),
-        'code'       => array(),
-        'col'        => array('align', 'bgcolor', 'char', 'charoff', 'span', 'valign', 'width'),
-        'colgroup'   => array('align', 'bgcolor', 'char', 'charoff', 'span', 'valign', 'width'),
+        'canvas'     => ['height', 'width'],
+        'caption'    => ['align'],
+        'center'     => [],
+        'cite'       => [],
+        'code'       => [],
+        'col'        => ['align', 'bgcolor', 'char', 'charoff', 'span', 'valign', 'width'],
+        'colgroup'   => ['align', 'bgcolor', 'char', 'charoff', 'span', 'valign', 'width'],
         // D
-        'data'       => array('value'),
-        'datalist'   => array(),
-        'dd'         => array('nowrap'),
-        'del'        => array('cite', 'datetime'),
-        'details'    => array('open'),
-        'dfn'        => array(),
-        'dialog'     => array('open'),
-        'dir'        => array('compact'),
-        'div'        => array('align'),
-        'dl'         => array(),
-        'dt'         => array(),
+        'data'       => ['value'],
+        'datalist'   => [],
+        'dd'         => ['nowrap'],
+        'del'        => ['cite', 'datetime'],
+        'details'    => ['open'],
+        'dfn'        => [],
+        'dialog'     => ['open'],
+        'dir'        => ['compact'],
+        'div'        => ['align'],
+        'dl'         => [],
+        'dt'         => [],
         // E
-        'em'         => array(),
-        'embed'      => array('height', 'src', 'type', 'width'),
+        'em'         => [],
+        'embed'      => ['height', 'src', 'type', 'width'],
         // F
-        'fieldset'   => array('disabled', 'form', 'name'),
-        'figcaption' => array(),
-        'figure'     => array(),
-        'font'       => array('color', 'face', 'size'),
-        'footer'     => array(),
-        'form'       => array('accept', 'accept-charset', 'action', 'autocapitalize', 'autocomplete', 'enctype', 'method',
-            'name', 'novalidate', 'target'),
-        'frame'      => array('frameborder', 'marginheight', 'marginwidth', 'name', 'noresize', 'scrolling', 'src'),
-        'frameset'   => array('cols', 'rows'),
+        'fieldset'   => ['disabled', 'form', 'name'],
+        'figcaption' => [],
+        'figure'     => [],
+        'font'       => ['color', 'face', 'size'],
+        'footer'     => [],
+        'form'       => ['accept', 'accept-charset', 'action', 'autocapitalize', 'autocomplete', 'enctype', 'method',
+            'name', 'novalidate', 'target'],
+        'frame'      => ['frameborder', 'marginheight', 'marginwidth', 'name', 'noresize', 'scrolling', 'src'],
+        'frameset'   => ['cols', 'rows'],
         // G
         // H
-        'h1'         => array('align'),
-        'h2'         => array('align'),
-        'h3'         => array('align'),
-        'h4'         => array('align'),
-        'h5'         => array('align'),
-        'h6'         => array('align'),
-        'head'       => array('profile'),
-        'hr'         => array('align', 'color', 'noshade', 'size', 'width'),
-        'html'       => array('manifest', 'version', 'xmlns'),
+        'h1'         => ['align'],
+        'h2'         => ['align'],
+        'h3'         => ['align'],
+        'h4'         => ['align'],
+        'h5'         => ['align'],
+        'h6'         => ['align'],
+        'head'       => ['profile'],
+        'hr'         => ['align', 'color', 'noshade', 'size', 'width'],
+        'html'       => ['manifest', 'version', 'xmlns'],
         // I
-        'i'          => array(),
-        'iframe'     => array('align', 'allowfullscreen', 'allowpaymentrequest', 'frameborder', 'height', 'longdesc',
-            'marginheight', 'marginwidth', 'name', 'referrerpolicy', 'sandbox', 'scrolling', 'src', 'srcdoc', 'width'),
-        'img'        => array('align', 'alt', 'border', 'crossorigin', 'decoding', 'height', 'hspace', 'ismap', 'longdesc',
-            'name', 'referrerpolicy', 'sizes', 'src', 'srcset', 'usemap', 'vspace', 'width'),
-        'input'      => array('accept', 'alt', 'autocomplete', 'autofocus', 'capture', 'checked', 'disabled', 'form',
+        'i'          => [],
+        'iframe'     => ['align', 'allowfullscreen', 'allowpaymentrequest', 'frameborder', 'height', 'longdesc',
+            'marginheight', 'marginwidth', 'name', 'referrerpolicy', 'sandbox', 'scrolling', 'src', 'srcdoc', 'width'],
+        'img'        => ['align', 'alt', 'border', 'crossorigin', 'decoding', 'height', 'hspace', 'ismap', 'longdesc',
+            'name', 'referrerpolicy', 'sizes', 'src', 'srcset', 'usemap', 'vspace', 'width'],
+        'input'      => ['accept', 'alt', 'autocomplete', 'autofocus', 'capture', 'checked', 'disabled', 'form',
             'formaction', 'formenctype', 'formmethod', 'formnovalidate', 'formtarget', 'height', 'inputmode', 'ismap',
             'list', 'max', 'maxlength', 'min', 'minlength', 'multiple', 'name', 'pattern', 'placeholder', 'readonly',
             'required', 'selectionDirection', 'selectionEnd', 'selectionStart', 'size', 'spellcheck', 'src', 'step', 'type',
-            'usemap', 'value', 'width'),
-        'ins'        => array('cite', 'datetime'),
-        'isindex'    => array('action', 'prompt'),
+            'usemap', 'value', 'width'],
+        'ins'        => ['cite', 'datetime'],
+        'isindex'    => ['action', 'prompt'],
         // J
         // K
-        'kbd'        => array(),
-        'keygen'     => array('autofocus', 'challenge', 'disabled', 'form', 'keytype', 'name'),
+        'kbd'        => [],
+        'keygen'     => ['autofocus', 'challenge', 'disabled', 'form', 'keytype', 'name'],
         // L
-        'label'      => array('for', 'form'),
-        'legend'     => array(),
-        'li'         => array('type', 'value'),
-        'link'       => array('as', 'crossorigin', 'charset', 'disabled', 'href', 'hreflang', 'integrity', 'media', 'methods', 'prefetch', 'referrerpolicy', 'rel', 'rev', 'sizes', 'target', 'type'),
+        'label'      => ['for', 'form'],
+        'legend'     => [],
+        'li'         => ['type', 'value'],
+        'link'       => ['as', 'crossorigin', 'charset', 'disabled', 'href', 'hreflang', 'integrity', 'media', 'methods', 'prefetch', 'referrerpolicy', 'rel', 'rev', 'sizes', 'target', 'type'],
         // M
-        'main'       => array(),
-        'map'        => array('name'),
-        'mark'       => array(),
-        'menu'       => array('label', 'type'),
-        'menuitem'   => array('checked', 'command', 'default', 'disabled', 'icon', 'label', 'radiogroup', 'type'),
-        'meta'       => array('charset', 'content', 'http-equiv', 'name', 'scheme'),
-        'meter'      => array('form', 'high', 'low', 'max', 'min', 'optimum', 'value'),
+        'main'       => [],
+        'map'        => ['name'],
+        'mark'       => [],
+        'menu'       => ['label', 'type'],
+        'menuitem'   => ['checked', 'command', 'default', 'disabled', 'icon', 'label', 'radiogroup', 'type'],
+        'meta'       => ['charset', 'content', 'http-equiv', 'name', 'scheme'],
+        'meter'      => ['form', 'high', 'low', 'max', 'min', 'optimum', 'value'],
         // N
-        'nav'        => array(),
-        'noframes'   => array(),
-        'noscript'   => array(),
+        'nav'        => [],
+        'noframes'   => [],
+        'noscript'   => [],
         // O
-        'object'     => array('archive', 'border', 'classid', 'codebase', 'codetype', 'data', 'declare', 'form', 'height',
-            'hspace', 'name', 'standby', 'type', 'typemustmatch', 'usemap', 'width'),
-        'ol'         => array('compact', 'reversed', 'start', 'type'),
-        'optgroup'   => array('disabled', 'label'),
-        'option'     => array('disabled', 'label', 'selected', 'value'),
-        'output'     => array('for', 'form', 'name'),
+        'object'     => ['archive', 'border', 'classid', 'codebase', 'codetype', 'data', 'declare', 'form', 'height',
+            'hspace', 'name', 'standby', 'type', 'typemustmatch', 'usemap', 'width'],
+        'ol'         => ['compact', 'reversed', 'start', 'type'],
+        'optgroup'   => ['disabled', 'label'],
+        'option'     => ['disabled', 'label', 'selected', 'value'],
+        'output'     => ['for', 'form', 'name'],
         // P
-        'p'          => array('align'),
-        'param'      => array('name', 'type', 'value', 'valuetype'),
-        'picture'    => array(),
-        'pre'        => array('cols', 'width', 'wrap'),
-        'progress'   => array('max', 'value'),
+        'p'          => ['align'],
+        'param'      => ['name', 'type', 'value', 'valuetype'],
+        'picture'    => [],
+        'pre'        => ['cols', 'width', 'wrap'],
+        'progress'   => ['max', 'value'],
         // Q
-        'q'          => array('cite'),
+        'q'          => ['cite'],
         // R
-        'rp'         => array(),
-        'rt'         => array(),
-        'rtc'        => array(),
-        'ruby'       => array(),
+        'rp'         => [],
+        'rt'         => [],
+        'rtc'        => [],
+        'ruby'       => [],
         // S
-        's'          => array(),
-        'samp'       => array(),
-        'script'     => array('async', 'charset', 'crossorigin', 'defer', 'integrity', 'language', 'nomodule', 'nonce',
-            'src', 'type'),
-        'section'    => array(),
-        'select'     => array('autofocus', 'disabled', 'form', 'multiple', 'name', 'required', 'size'),
-        'small'      => array(),
-        'source'     => array('media', 'sizes', 'src', 'srcset', 'type'),
-        'span'       => array(),
-        'strike'     => array(),
-        'strong'     => array(),
-        'style'      => array('media', 'nonce', 'scoped', 'type'),
-        'sub'        => array(),
-        'summary'    => array(),
-        'sup'        => array(),
+        's'          => [],
+        'samp'       => [],
+        'script'     => ['async', 'charset', 'crossorigin', 'defer', 'integrity', 'language', 'nomodule', 'nonce',
+            'src', 'type'],
+        'section'    => [],
+        'select'     => ['autofocus', 'disabled', 'form', 'multiple', 'name', 'required', 'size'],
+        'small'      => [],
+        'source'     => ['media', 'sizes', 'src', 'srcset', 'type'],
+        'span'       => [],
+        'strike'     => [],
+        'strong'     => [],
+        'style'      => ['media', 'nonce', 'scoped', 'type'],
+        'sub'        => [],
+        'summary'    => [],
+        'sup'        => [],
         // T
-        'table'      => array('align', 'bgcolor', 'border', 'cellpadding', 'cellspacing', 'frame', 'rules', 'summary', 'width'),
-        'tbody'      => array('align', 'bgcolor', 'char', 'charoff', 'valign'),
-        'td'         => array('abbr', 'align', 'axis', 'bgcolor', 'char', 'charoff', 'colspan', 'headers', 'nowrap',
-            'rowspan', 'scope', 'valign', 'width'),
-        'template'   => array(),
-        'textarea'   => array('autocomplete', 'autofocus', 'cols', 'disabled', 'form', 'maxlength', 'minlength', 'name',
-            'placeholder', 'readonly', 'rows', 'spellcheck', 'wrap'),
-        'tfoot'      => array('align', 'bgcolor', 'char', 'charoff', 'valign'),
-        'th'         => array('abbr', 'align', 'axis', 'bgcolor', 'char', 'charoff', 'colspan', 'headers', 'nowrap',
-            'rowspan', 'scope', 'valign', 'width'),
-        'thead'      => array('align', 'bgcolor', 'char', 'charoff', 'valign'),
-        'time'       => array('datetime'),
-        'title'      => array(),
-        'tr'         => array('align', 'bgcolor', 'char', 'charoff', 'valign'),
-        'track'      => array('default', 'kind', 'label', 'src', 'srclang'),
-        'tt'         => array(),
+        'table'      => ['align', 'bgcolor', 'border', 'cellpadding', 'cellspacing', 'frame', 'rules', 'summary', 'width'],
+        'tbody'      => ['align', 'bgcolor', 'char', 'charoff', 'valign'],
+        'td'         => ['abbr', 'align', 'axis', 'bgcolor', 'char', 'charoff', 'colspan', 'headers', 'nowrap',
+            'rowspan', 'scope', 'valign', 'width'],
+        'template'   => [],
+        'textarea'   => ['autocomplete', 'autofocus', 'cols', 'disabled', 'form', 'maxlength', 'minlength', 'name',
+            'placeholder', 'readonly', 'rows', 'spellcheck', 'wrap'],
+        'tfoot'      => ['align', 'bgcolor', 'char', 'charoff', 'valign'],
+        'th'         => ['abbr', 'align', 'axis', 'bgcolor', 'char', 'charoff', 'colspan', 'headers', 'nowrap',
+            'rowspan', 'scope', 'valign', 'width'],
+        'thead'      => ['align', 'bgcolor', 'char', 'charoff', 'valign'],
+        'time'       => ['datetime'],
+        'title'      => [],
+        'tr'         => ['align', 'bgcolor', 'char', 'charoff', 'valign'],
+        'track'      => ['default', 'kind', 'label', 'src', 'srclang'],
+        'tt'         => [],
         // U
-        'u'          => array(),
-        'ul'         => array('compact', 'type'),
+        'u'          => [],
+        'ul'         => ['compact', 'type'],
         // V
-        'var'        => array(),
-        'video'      => array('autoplay', 'buffered', 'controls', 'crossorigin', 'height', 'loop', 'muted', 'played',
-            'playsinline', 'preload', 'poster', 'src', 'width'),
+        'var'        => [],
+        'video'      => ['autoplay', 'buffered', 'controls', 'crossorigin', 'height', 'loop', 'muted', 'played',
+            'playsinline', 'preload', 'poster', 'src', 'width'],
         // W
-        'wbr'        => array()
+        'wbr'        => []
         // X
         // Y
         // Z
-    );
+    ];
 }

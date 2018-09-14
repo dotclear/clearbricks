@@ -15,7 +15,7 @@ class mysqlimb4Schema extends mysqlSchema
 {
     public function db_create_table($name, $fields)
     {
-        $a = array();
+        $a = [];
 
         foreach ($fields as $n => $f) {
             $type    = $f['type'];

@@ -223,10 +223,10 @@ if (class_exists('dbLayer')) {
 
         public function orderBy()
         {
-            $default = array(
+            $default = [
                 'order'   => '',
                 'collate' => false
-            );
+            ];
             foreach (func_get_args() as $v) {
                 if (is_string($v)) {
                     $res[] = $v;
@@ -265,7 +265,7 @@ if (class_exists('dbLayer')) {
 
         protected function _convert_types($id)
         {
-            $id2type = array(
+            $id2type = [
                 '1'   => 'int',
                 '2'   => 'int',
                 '3'   => 'int',
@@ -290,7 +290,7 @@ if (class_exists('dbLayer')) {
 
                 '252' => 'blob'
 
-            );
+            ];
             $type = 'unknown';
 
             if (isset($id2type[$id])) {

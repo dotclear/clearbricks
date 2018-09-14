@@ -341,11 +341,11 @@ class dbLayer
 
         $this->__last_result = &$result;
 
-        $info         = array();
+        $info         = [];
         $info['con']  = &$this;
         $info['cols'] = $this->db_num_fields($result);
         $info['rows'] = $this->db_num_rows($result);
-        $info['info'] = array();
+        $info['info'] = [];
 
         for ($i = 0; $i < $info['cols']; $i++) {
             $info['info']['name'][] = $this->db_field_name($result, $i);
@@ -366,11 +366,11 @@ class dbLayer
     {
         $result = false;
 
-        $info         = array();
+        $info         = [];
         $info['con']  = &$this;
         $info['cols'] = 0; // no fields
         $info['rows'] = 0; // no rows
-        $info['info'] = array('name' => array(), 'type' => array());
+        $info['info'] = ['name' => [], 'type' => []];
 
         return new record($result, $info);
     }
@@ -583,10 +583,10 @@ class dbLayer
      */
     public function orderBy()
     {
-        $default = array(
+        $default = [
             'order'   => '',
             'collate' => false
-        );
+        ];
         foreach (func_get_args() as $v) {
             if (is_string($v)) {
                 $res[] = $v;
@@ -700,7 +700,7 @@ class record implements Iterator, Countable
     protected $__link;             ///< resource: Database resource link
     protected $__result;           ///< resource: Query result resource
     protected $__info;             ///< array: Result information array
-    protected $__extend = array(); ///< array: List of static functions that extend record
+    protected $__extend = []; ///< array: List of static functions that extend record
     protected $__index  = 0;       ///< integer: Current result position
     protected $__row    = false;   ///< array: Current result row content
 
@@ -845,7 +845,7 @@ class record implements Iterator, Countable
         $c = new ReflectionClass($class);
         foreach ($c->getMethods() as $m) {
             if ($m->isStatic() && $m->isPublic()) {
-                $this->__extend[$m->name] = array($class, $m->name);
+                $this->__extend[$m->name] = [$class, $m->name];
             }
         }
     }
@@ -1031,7 +1031,7 @@ class record implements Iterator, Countable
      */
     protected function getData()
     {
-        $res = array();
+        $res = [];
 
         if ($this->count() == 0) {
             return $res;
@@ -1112,7 +1112,7 @@ class record implements Iterator, Countable
  */
 class staticRecord extends record
 {
-    public $__data = array(); ///< array: Data array
+    public $__data = []; ///< array: Data array
 
     private $__sortfield;
     private $__sortsign;
@@ -1142,7 +1142,7 @@ class staticRecord extends record
     public static function newFromArray($data)
     {
         if (!is_array($data)) {
-            $data = array();
+            $data = [];
         }
 
         $data = array_values($data);
@@ -1153,12 +1153,12 @@ class staticRecord extends record
             $cols = count($data[0]);
         }
 
-        $info = array(
+        $info = [
             'con'  => null,
             'info' => null,
             'cols' => $cols,
             'rows' => count($data)
-        );
+        ];
 
         return new self($data, $info);
     }
@@ -1222,7 +1222,7 @@ class staticRecord extends record
         $this->__sortfield = $field;
         $this->__sortsign  = strtolower($order) == 'asc' ? 1 : -1;
 
-        usort($this->__data, array($this, 'sortCallback'));
+        usort($this->__data, [$this, 'sortCallback']);
 
         $this->__sortfield = null;
         $this->__sortsign  = null;

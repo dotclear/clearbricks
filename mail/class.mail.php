@@ -60,7 +60,7 @@ class mail
             return false;
         }
 
-        $res = array();
+        $res = [];
 
         for ($i = 0; $i < count($mx_h); $i++) {
             $res[$mx_h[$i]] = $mx_w[$i];

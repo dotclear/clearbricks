@@ -40,7 +40,7 @@ if (class_exists('dbLayer')) {
                 throw new Exception('PDO SQLite class is not available');
             }
 
-            $link = new PDO('sqlite:' . $database, null, null, array(PDO::ATTR_PERSISTENT => true));
+            $link = new PDO('sqlite:' . $database, null, null, [PDO::ATTR_PERSISTENT => true]);
             $this->db_post_connect($link, $database);
 
             return $link;
@@ -51,10 +51,10 @@ if (class_exists('dbLayer')) {
             if ($handle instanceof PDO) {
                 $this->db_exec($handle, 'PRAGMA short_column_names = 1');
                 $this->db_exec($handle, 'PRAGMA encoding = "UTF-8"');
-                $handle->sqliteCreateFunction('now', array($this, 'now'), 0);
+                $handle->sqliteCreateFunction('now', [$this, 'now'], 0);
                 if (class_exists('Collator') && method_exists($handle, 'sqliteCreateCollation')) {
                     $this->utf8_unicode_ci = new Collator('root');
-                    if (!$handle->sqliteCreateCollation('utf8_unicode_ci', array($this->utf8_unicode_ci, 'compare'))) {
+                    if (!$handle->sqliteCreateCollation('utf8_unicode_ci', [$this->utf8_unicode_ci, 'compare'])) {
                         $this->utf8_unicode_ci = null;
                     }
                 }
@@ -82,19 +82,19 @@ if (class_exists('dbLayer')) {
             $result              = $this->db_query($this->__link, $sql);
             $this->__last_result = &$result;
 
-            $info         = array();
+            $info         = [];
             $info['con']  = &$this;
             $info['cols'] = $this->db_num_fields($result);
-            $info['info'] = array();
+            $info['info'] = [];
 
             for ($i = 0; $i < $info['cols']; $i++) {
                 $info['info']['name'][] = $this->db_field_name($result, $i);
                 $info['info']['type'][] = $this->db_field_type($result, $i);
             }
 
-            $data = array();
+            $data = [];
             while ($r = $result->fetch(PDO::FETCH_ASSOC)) {
-                $R = array();
+                $R = [];
                 foreach ($r as $k => $v) {
                     $k     = preg_replace('/^(.*)\./', '', $k);
                     $R[$k] = $v;
@@ -245,10 +245,10 @@ if (class_exists('dbLayer')) {
 
         public function orderBy()
         {
-            $default = array(
+            $default = [
                 'order'   => '',
                 'collate' => false
-            );
+            ];
             foreach (func_get_args() as $v) {
                 if (is_string($v)) {
                     $res[] = $v;

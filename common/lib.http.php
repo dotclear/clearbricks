@@ -31,7 +31,7 @@ class http
             $port   = '';
         } elseif (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
             $scheme = 'https';
-            $port   = !in_array($_SERVER['SERVER_PORT'], array('80', '443')) ? ':' . $_SERVER['SERVER_PORT'] : '';
+            $port   = !in_array($_SERVER['SERVER_PORT'], ['80', '443']) ? ':' . $_SERVER['SERVER_PORT'] : '';
         } else {
             $scheme = 'http';
             $port   = ($_SERVER['SERVER_PORT'] != '80') ? ':' . $_SERVER['SERVER_PORT'] : '';
@@ -200,7 +200,7 @@ class http
      */
     public static function getAcceptLanguages()
     {
-        $langs = array();
+        $langs = [];
         if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
 
             // break up string into pieces (languages and q factors)
@@ -235,7 +235,7 @@ class http
      * @param array        $files        Files on which check mtime
      * @param array        $mod_ts        List of timestamps
      */
-    public static function cache($files, $mod_ts = array())
+    public static function cache($files, $mod_ts = [])
     {
         if (empty($files) || !is_array($files)) {
             return;
@@ -318,7 +318,7 @@ class http
         $status_mode = preg_match('/cgi/', PHP_SAPI);
 
         if (!$msg) {
-            $msg_codes = array(
+            $msg_codes = [
                 100 => 'Continue',
                 101 => 'Switching Protocols',
                 200 => 'OK',
@@ -359,7 +359,7 @@ class http
                 503 => 'Service Unavailable',
                 504 => 'Gateway Timeout',
                 505 => 'HTTP Version Not Supported'
-            );
+            ];
 
             $msg = isset($msg_codes[$code]) ? $msg_codes[$code] : '-';
         }
@@ -380,16 +380,16 @@ class http
     public static function trimRequest()
     {
         if (!empty($_GET)) {
-            array_walk($_GET, array('self', 'trimRequestInVar'));
+            array_walk($_GET, ['self', 'trimRequestInVar']);
         }
         if (!empty($_POST)) {
-            array_walk($_POST, array('self', 'trimRequestInVar'));
+            array_walk($_POST, ['self', 'trimRequestInVar']);
         }
         if (!empty($_REQUEST)) {
-            array_walk($_REQUEST, array('self', 'trimRequestInVar'));
+            array_walk($_REQUEST, ['self', 'trimRequestInVar']);
         }
         if (!empty($_COOKIE)) {
-            array_walk($_COOKIE, array('self', 'trimRequestInVar'));
+            array_walk($_COOKIE, ['self', 'trimRequestInVar']);
         }
     }
 
@@ -431,11 +431,11 @@ class http
         }
 
         # Variables that shouldn't be unset
-        $no_unset = array('GLOBALS', '_GET', '_POST', '_COOKIE', '_REQUEST',
-            '_SERVER', '_ENV', '_FILES');
+        $no_unset = ['GLOBALS', '_GET', '_POST', '_COOKIE', '_REQUEST',
+            '_SERVER', '_ENV', '_FILES'];
 
         $input = array_merge($_GET, $_POST, $_COOKIE, $_SERVER, $_ENV, $_FILES,
-            (isset($_SESSION) && is_array($_SESSION) ? $_SESSION : array()));
+            (isset($_SESSION) && is_array($_SESSION) ? $_SESSION : []));
 
         foreach ($input as $k => $v) {
             if (!in_array($k, $no_unset) && isset($GLOBALS[$k])) {

@@ -92,7 +92,7 @@ class mailConvert
     {
         $str = $this->prepareString($str);
 
-        $tockens = array();
+        $tockens = [];
         $type    = null;
         $id      = -1;
 
@@ -142,10 +142,10 @@ class mailConvert
         $str = html::escapeHTML($str);
 
         # Transform links
-        $str = preg_replace_callback($this->url_pattern, array($this, 'htmlUrlHandler'), $str);
+        $str = preg_replace_callback($this->url_pattern, [$this, 'htmlUrlHandler'], $str);
 
         # Transform * / _ strings (does not work, may transform links href)
-        #$str = preg_replace_callback('%([\*_/])([\w\s]+?)([\*_/])%msu',array($this,'htmlFormatHandler'),$str);
+        #$str = preg_replace_callback('%([\*_/])([\w\s]+?)([\*_/])%msu',[$this,'htmlFormatHandler'],$str);
 
         return $str;
     }

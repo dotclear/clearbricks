@@ -44,7 +44,7 @@ class form
      */
     private static function getDefaults($class, $method)
     {
-        $options = array();
+        $options = [];
         $reflect = new ReflectionMethod($class, $method);
         foreach ($reflect->getParameters() as $param) {
             if ($param->isOptional()) {
@@ -66,7 +66,7 @@ class form
      * **$default** could be a string or an associative array of any of optional parameters:
      *
      * ```php
-     * form::combo(array('name', 'id'), $data, array('class' => 'maximal', 'extra_html' => 'data-language="php"'));
+     * form::combo(['name', 'id'], $data, ['class' => 'maximal', 'extra_html' => 'data-language="php"']);
      * ```
      *
      * @uses formSelectOption

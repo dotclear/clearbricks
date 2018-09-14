@@ -13,7 +13,7 @@
 class html
 {
     public static $url_root;
-    public static $absolute_regs = array(); ///< Array of regular expression for {@link absoluteURLs()}
+    public static $absolute_regs = []; ///< Array of regular expression for {@link absoluteURLs()}
 
     /**
      * HTML escape
@@ -41,15 +41,15 @@ class html
     {
         if ($keep_special) {
             $str = str_replace(
-                array('&amp;', '&gt;', '&lt;'),
-                array('&amp;amp;', '&amp;gt;', '&amp;lt;'),
+                ['&amp;', '&gt;', '&lt;'],
+                ['&amp;amp;', '&amp;gt;', '&amp;lt;'],
                 $str);
         }
 
         # Some extra replacements
-        $extra = array(
+        $extra = [
             '&apos;' => "'"
-        );
+        ];
 
         $str = str_replace(array_keys($extra), array_values($extra), $str);
 
@@ -139,10 +139,10 @@ class html
         self::$url_root = $root;
         $attr           = 'action|background|cite|classid|code|codebase|data|download|formaction|href|longdesc|profile|src|usemap';
 
-        $str = preg_replace_callback('/((?:' . $attr . ')=")(.*?)(")/msu', array('self', 'absoluteURLHandler'), $str);
+        $str = preg_replace_callback('/((?:' . $attr . ')=")(.*?)(")/msu', ['self', 'absoluteURLHandler'], $str);
 
         foreach (self::$absolute_regs as $r) {
-            $str = preg_replace_callback($r, array('self', 'absoluteURLHandler'), $str);
+            $str = preg_replace_callback($r, ['self', 'absoluteURLHandler'], $str);
         }
 
         self::$url_root = null;

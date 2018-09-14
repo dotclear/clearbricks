@@ -15,7 +15,7 @@
 class restServer
 {
     public $rsp;                 ///< xmlTag Server response
-    public $functions = array(); ///< array Server's functions
+    public $functions = []; ///< array Server's functions
 
     /**
      * Constructor
@@ -68,12 +68,12 @@ class restServer
      */
     public function serve($encoding = 'UTF-8')
     {
-        $get = array();
+        $get = [];
         if (isset($_GET)) {
             $get = $_GET;
         }
 
-        $post = array();
+        $post = [];
         if (isset($_POST)) {
             $post = $_POST;
         }
@@ -127,8 +127,8 @@ class restServer
 class xmlTag
 {
     private $_name;
-    private $_attr  = array();
-    private $_nodes = array();
+    private $_attr  = [];
+    private $_nodes = [];
 
     /**
      * Constructor

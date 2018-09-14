@@ -157,9 +157,9 @@ class netSocket
      * <?php
      * $s = new netSocket('www.google.com',80,2);
      * $s->open();
-     * $data = array(
+     * $data = [
      *     'GET / HTTP/1.0'
-     * );
+     * ];
      * foreach($s->write($data) as $v) {
      *     echo $v."\n";
      * }

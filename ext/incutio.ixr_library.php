@@ -131,10 +131,10 @@ class IXR_Message
     public $faultString;
     public $methodName;
     public $params;
-                                          // Current variable stacks
-    public $_arraystructs      = array(); // The stack used to keep track of the current array/struct
-    public $_arraystructstypes = array(); // Stack keeping track of if things are structs or array
-    public $_currentStructName = array(); // A stack as well
+                                     // Current variable stacks
+    public $_arraystructs      = []; // The stack used to keep track of the current array/struct
+    public $_arraystructstypes = []; // Stack keeping track of if things are structs or array
+    public $_currentStructName = []; // A stack as well
     public $_param;
     public $_value;
     public $_currentTag;
@@ -185,11 +185,11 @@ class IXR_Message
             /* Deal with stacks of arrays and structs */
             case 'data': // data is to all intents and puposes more interesting than array
                 $this->_arraystructstypes[] = 'array';
-                $this->_arraystructs[]      = array();
+                $this->_arraystructs[]      = [];
                 break;
             case 'struct':
                 $this->_arraystructstypes[] = 'struct';
-                $this->_arraystructs[]      = array();
+                $this->_arraystructs[]      = [];
                 break;
         }
     }
@@ -286,7 +286,7 @@ class IXR_Message
 class IXR_Server
 {
     public $data;
-    public $callbacks = array();
+    public $callbacks = [];
     public $message;
     public $capabilities;
     public function IXR_Server($callbacks = false, $data = false)
@@ -412,20 +412,20 @@ EOD;
     public function setCapabilities()
     {
         // Initialises capabilities array
-        $this->capabilities = array(
-            'xmlrpc'           => array(
+        $this->capabilities = [
+            'xmlrpc'           => [
                 'specUrl'     => 'http://www.xmlrpc.com/spec',
                 'specVersion' => 1
-            ),
-            'faults_interop'   => array(
+            ],
+            'faults_interop'   => [
                 'specUrl'     => 'http://xmlrpc-epi.sourceforge.net/specs/rfc.fault_codes.php',
                 'specVersion' => 20010516
-            ),
-            'system.multicall' => array(
+            ],
+            'system.multicall' => [
                 'specUrl'     => 'http://www.xmlrpc.com/discuss/msgReader$1208',
                 'specVersion' => 1
-            )
-        );
+            ]
+        ];
     }
     public function getCapabilities($args)
     {
@@ -446,7 +446,7 @@ EOD;
     public function multiCall($methodcalls)
     {
         // See http://www.xmlrpc.com/discuss/msgReader$1208
-        $return = array();
+        $return = [];
         foreach ($methodcalls as $call) {
             $method = $call['methodName'];
             $params = $call['params'];
@@ -456,12 +456,12 @@ EOD;
                 $result = $this->call($method, $params);
             }
             if ($result instanceof IXR_Error) {
-                $return[] = array(
+                $return[] = [
                     'faultCode'   => $result->code,
                     'faultString' => $result->message
-                );
+                ];
             } else {
-                $return[] = array($result);
+                $return[] = [$result];
             }
         }
         return $return;
@@ -732,32 +732,32 @@ class IXR_IntrospectionServer extends IXR_Server
     {
         $this->setCallbacks();
         $this->setCapabilities();
-        $this->capabilities['introspection'] = array(
+        $this->capabilities['introspection'] = [
             'specUrl'     => 'http://xmlrpc.usefulinc.com/doc/reserved.html',
             'specVersion' => 1
-        );
+        ];
         $this->addCallback(
             'system.methodSignature',
             'this:methodSignature',
-            array('array', 'string'),
+            ['array', 'string'],
             'Returns an array describing the return type and required parameters of a method'
         );
         $this->addCallback(
             'system.getCapabilities',
             'this:getCapabilities',
-            array('struct'),
+            ['struct'],
             'Returns a struct describing the XML-RPC specifications supported by this server'
         );
         $this->addCallback(
             'system.listMethods',
             'this:listMethods',
-            array('array'),
+            ['array'],
             'Returns an array of available methods on this server'
         );
         $this->addCallback(
             'system.methodHelp',
             'this:methodHelp',
-            array('string', 'string'),
+            ['string', 'string'],
             'Returns a documentation string for the specified method'
         );
     }
@@ -771,7 +771,7 @@ class IXR_IntrospectionServer extends IXR_Server
     {
         // Make sure it's in an array
         if ($args && !is_array($args)) {
-            $args = array($args);
+            $args = [$args];
         }
         // Over-rides default call method, adds signature check
         if (!$this->hasMethod($methodname)) {
@@ -836,7 +836,7 @@ class IXR_IntrospectionServer extends IXR_Server
         }
         // We should be returning an array of types
         $types  = $this->signatures[$method];
-        $return = array();
+        $return = [];
         foreach ($types as $type) {
             switch ($type) {
                 case 'string':
@@ -859,10 +859,10 @@ class IXR_IntrospectionServer extends IXR_Server
                     $return[] = new IXR_Base64('base64');
                     break;
                 case 'array':
-                    $return[] = array('array');
+                    $return[] = ['array'];
                     break;
                 case 'struct':
-                    $return[] = array('struct' => 'struct');
+                    $return[] = ['struct' => 'struct'];
                     break;
             }
         }
@@ -876,7 +876,7 @@ class IXR_IntrospectionServer extends IXR_Server
 
 class IXR_ClientMulticall extends IXR_Client
 {
-    public $calls = array();
+    public $calls = [];
     public function IXR_ClientMulticall($server, $path = false, $port = 80)
     {
         parent::IXR_Client($server, $path, $port);
@@ -886,10 +886,10 @@ class IXR_ClientMulticall extends IXR_Client
     {
         $args       = func_get_args();
         $methodName = array_shift($args);
-        $struct     = array(
+        $struct     = [
             'methodName' => $methodName,
             'params'     => $args
-        );
+        ];
         $this->calls[] = $struct;
     }
     public function query()

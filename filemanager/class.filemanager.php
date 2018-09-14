@@ -12,12 +12,12 @@
 
 class filemanager
 {
-    public $root;                                                              ///< string: Files manager root path
-    public $root_url;                                                          ///< string: Files manager root URL
-    protected $pwd;                                                            ///< string: Working (current) director
-    protected $exclude_list    = array();                                      ///< array: Array of regexps defining excluded items
-    protected $exclude_pattern = '';                                           ///< string: Files exclusion regexp pattern
-    public $dir                = array('dirs' => array(), 'files' => array()); ///< array: Current directory content array
+    public $root;                                               ///< string: Files manager root path
+    public $root_url;                                           ///< string: Files manager root URL
+    protected $pwd;                                             ///< string: Working (current) director
+    protected $exclude_list    = [];                            ///< array: Array of regexps defining excluded items
+    protected $exclude_pattern = '';                            ///< string: Files exclusion regexp pattern
+    public $dir                = ['dirs' => [], 'files' => []]; ///< array: Current directory content array
 
     /**
      * Constructor
@@ -207,7 +207,7 @@ class filemanager
             throw new Exception('Unable to read directory.');
         }
 
-        $d_res = $f_res = array();
+        $d_res = $f_res = [];
 
         while (($file = readdir($dh)) !== false) {
             $fname = $dir . '/' . $file;
@@ -228,9 +228,9 @@ class filemanager
         }
         closedir($dh);
 
-        $this->dir = array('dirs' => $d_res, 'files' => $f_res);
-        usort($this->dir['dirs'], array($this, 'sortHandler'));
-        usort($this->dir['files'], array($this, 'sortHandler'));
+        $this->dir = ['dirs' => $d_res, 'files' => $f_res];
+        usort($this->dir['dirs'], [$this, 'sortHandler']);
+        usort($this->dir['files'], [$this, 'sortHandler']);
     }
 
     /**
@@ -245,7 +245,7 @@ class filemanager
     {
         $d = files::getDirList($this->root);
 
-        $dir = array();
+        $dir = [];
 
         foreach ($d['dirs'] as $v) {
             $dir[] = new fileItem($v, $this->root, $this->root_url);
