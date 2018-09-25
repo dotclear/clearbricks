@@ -112,6 +112,7 @@ class imageTools
         if ($mem_limit && trim(strtolower($mem_limit)) === '-1') {
             // Cope with memory_limit set to -1 in PHP.ini
             $mem_limit = null;
+            $mem_used = null;
         }
         if ($mem_used || $mem_limit) {
             $mem_limit  = files::str2bytes($mem_limit);
