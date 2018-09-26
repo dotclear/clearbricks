@@ -333,7 +333,7 @@ class fileZip
     {
         $mem_used  = function_exists('memory_get_usage') ? @memory_get_usage() : 4000000;
         $mem_limit = @ini_get('memory_limit');
-        if ($mem_limit && trim(strtolower($mem_limit)) === '-1') {
+        if ($mem_limit && trim($mem_limit) === '-1' || !files::str2bytes($mem_limit)) {
             // Cope with memory_limit set to -1 in PHP.ini
             return;
         }
