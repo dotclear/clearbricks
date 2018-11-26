@@ -14,7 +14,7 @@
 
 /** @cond ONCE */
 if (!function_exists('__')) {
-/** @endcond */
+    /** @endcond */
 
     /**
      * Translated string
@@ -31,7 +31,7 @@ if (!function_exists('__')) {
         return l10n::trans($singular, $plural, $count);
     }
 
-/** @cond ONCE */
+    /** @cond ONCE */
 }
 /** @endcond */
 
@@ -123,13 +123,11 @@ class l10n
     {
         // If no string to translate, return no string
         if ($singular == '') {
-
             return '';
 
             // If no l10n translation loaded or exists
         } elseif ((!array_key_exists('__l10n', $GLOBALS) || empty($GLOBALS['__l10n'])
             || !array_key_exists($singular, $GLOBALS['__l10n'])) && is_null($count)) {
-
             return $singular;
 
             // If no $plural form or if current language has no plural form return $singular translation
@@ -153,12 +151,10 @@ class l10n
                 && is_array($GLOBALS['__l10n'][$singular])
                 && array_key_exists($i, $GLOBALS['__l10n'][$singular])
                 && !empty($GLOBALS['__l10n'][$singular][$i])) {
-
                 return $GLOBALS['__l10n'][$singular][$i];
 
                 // Else return input string according to "en" plural form
             } else {
-
                 return $i > 0 ? $plural : $singular;
             }
         }
@@ -194,15 +190,12 @@ class l10n
 
         if (file_exists($php_file)) {
             require $php_file;
-
         } elseif (($tmp = self::getPoFile($po_file)) !== false) {
             $GLOBALS['__l10n_files'][] = $po_file;
             $GLOBALS['__l10n']         = $tmp + $GLOBALS['__l10n']; // "+" erase numeric keys unlike array_merge
-
         } elseif (($tmp = self::getLangFile($lang_file)) !== false) {
             $GLOBALS['__l10n_files'][] = $lang_file;
             $GLOBALS['__l10n']         = $tmp + $GLOBALS['__l10n']; // "+" erase numeric keys unlike array_merge
-
         } else {
             return false;
         }
@@ -393,10 +386,8 @@ class l10n
                     || !preg_match('/^"(.*)"$/', trim($lines[$i + 2]))) {
                     $headers_searched = true;
                 } else {
-
                     $l = $i + 2;
                     while (false !== ($def = self::cleanPoLine('multi', $lines[$l++]))) {
-
                         $h_line = self::cleanPoString($def[1]);
 
                         // an header has key:val
@@ -440,7 +431,6 @@ class l10n
 
             // comments
             if (false !== ($def = self::cleanPoLine('comment', $line))) {
-
                 $str = self::cleanPoString($def[2]);
 
                 switch ($def[1]) {
@@ -524,7 +514,6 @@ class l10n
 
             // msgstr
             elseif (false !== ($def = self::cleanPoLine('msgstr', $line))) {
-
                 $str = self::cleanPoString($def[2]);
 
                 // plural forms
@@ -540,7 +529,6 @@ class l10n
 
             // multiline
             elseif (false !== ($def = self::cleanPoLine('multi', $line))) {
-
                 $str = self::cleanPoString($def[1]);
 
                 // msgid
@@ -594,7 +582,6 @@ class l10n
 
         if (array_key_exists($type, $patterns)
             && preg_match('/^' . $patterns[$type] . '$/i', trim($_), $m)) {
-
             return $m;
         }
 
@@ -876,7 +863,6 @@ class l10n
     protected static function getLanguagesDefinitions($type, $default = '')
     {
         if ($type < 0 || $type > 6) {
-
             return array();
         }
 
@@ -925,7 +911,7 @@ class l10n
                 array('el', 'gre', 'Greek', 'Ελληνικά', 'ltr', 2, 'n != 1'),
                 array('en', 'eng', 'English', 'English', 'ltr', 2, 'n != 1'),
                 array('eo', 'epo', 'Esperanto', 'Esperanto', 'ltr', 2, 'n != 1'),
-                array('es', 'spa', 'Spanish', 'español', 'ltr', 2, 'n != 1'),
+                array('es', 'spa', 'Spanish', 'Español', 'ltr', 2, 'n != 1'),
                 array('es-ar', null, 'Argentinean Spanish', 'Argentinean Spanish', 'ltr', 2, 'n != 1'),
                 array('et', 'est', 'Estonian', 'Eesti keel', 'ltr', 2, 'n != 1'),
                 array('eu', 'baq', 'Basque', 'Euskara', 'ltr', 2, 'n != 1'),
