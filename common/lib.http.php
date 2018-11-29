@@ -14,7 +14,7 @@ class http
 {
     public static $https_scheme_on_443 = false; ///< boolean: Force HTTPS scheme on server port 443 in {@link getHost()}
     public static $cache_max_age       = 0;     ///< integer: Cache max age for {@link cache()}
-
+    public static $reverse_proxy       = false; ///< bolean: use X-FORWARD headers on getHost();
     /**
      * Self root URI
      *
@@ -24,6 +24,28 @@ class http
      */
     public static function getHost()
     {
+
+        if(self::$reverse_proxy && isset($_SERVER['HTTP_X_FORWARDED_FOR'])){
+            //admin have choose to allow a reverse proxy,
+            //and HTTP_X_FORWARDED_FOR header means it's beeing using
+
+            if( !isset( $_SERVER['HTTP_X_FORWARDED_PROTO'] )){
+                throw new Exception('Reverse proxy parametter is setted, header HTTP_X_FORWARDED_FOR is found but not the X-Forwarded-Proto.'
+                    .' Please check your reverse proxy server settings');
+            }
+
+            $scheme = $_SERVER['HTTP_X_FORWARDED_PROTO'];
+            
+            $name_port_array = explode(":",$_SERVER['HTTP_HOST']);
+            $server_name = $name_port_array[0];
+
+            $port = isset($name_port_array[1])? ':' . $name_port_array[1] : '';
+            if ( ($port == ':80' && $scheme == 'http') || ($port == ':443' && $scheme == 'https') ){
+                $port = '';
+            }
+            return $scheme . '://' . $server_name . $port;
+        }
+
         $server_name = explode(':', $_SERVER['HTTP_HOST']);
         $server_name = $server_name[0];
         if (self::$https_scheme_on_443 && $_SERVER['SERVER_PORT'] == '443') {
@@ -444,4 +466,5 @@ class http
             }
         }
     }
+
 }
