@@ -15,6 +15,7 @@ class http
     public static $https_scheme_on_443 = false; ///< boolean: Force HTTPS scheme on server port 443 in {@link getHost()}
     public static $cache_max_age       = 0;     ///< integer: Cache max age for {@link cache()}
     public static $reverse_proxy       = false; ///< bolean: use X-FORWARD headers on getHost();
+
     /**
      * Self root URI
      *
@@ -24,23 +25,21 @@ class http
      */
     public static function getHost()
     {
-
-        if(self::$reverse_proxy && isset($_SERVER['HTTP_X_FORWARDED_FOR'])){
+        if (self::$reverse_proxy && isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
             //admin have choose to allow a reverse proxy,
             //and HTTP_X_FORWARDED_FOR header means it's beeing using
 
-            if( !isset( $_SERVER['HTTP_X_FORWARDED_PROTO'] )){
-                throw new Exception('Reverse proxy parametter is setted, header HTTP_X_FORWARDED_FOR is found but not the X-Forwarded-Proto.'
-                    .' Please check your reverse proxy server settings');
+            if (!isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
+                throw new Exception('Reverse proxy parametter is setted, header HTTP_X_FORWARDED_FOR is found but not the X-Forwarded-Proto. Please check your reverse proxy server settings');
             }
 
             $scheme = $_SERVER['HTTP_X_FORWARDED_PROTO'];
-            
-            $name_port_array = explode(":",$_SERVER['HTTP_HOST']);
-            $server_name = $name_port_array[0];
 
-            $port = isset($name_port_array[1])? ':' . $name_port_array[1] : '';
-            if ( ($port == ':80' && $scheme == 'http') || ($port == ':443' && $scheme == 'https') ){
+            $name_port_array = explode(":", $_SERVER['HTTP_HOST']);
+            $server_name     = $name_port_array[0];
+
+            $port = isset($name_port_array[1]) ? ':' . $name_port_array[1] : '';
+            if (($port == ':80' && $scheme == 'http') || ($port == ':443' && $scheme == 'https')) {
                 $port = '';
             }
             return $scheme . '://' . $server_name . $port;
@@ -110,7 +109,7 @@ class http
             if (substr($page, 0, 1) == '/') {
                 $redir = $host . $page;
             } else {
-                $dir  = str_replace(DIRECTORY_SEPARATOR, '/', dirname($_SERVER['PHP_SELF']));
+                $dir = str_replace(DIRECTORY_SEPARATOR, '/', dirname($_SERVER['PHP_SELF']));
                 if (substr($dir, -1) == '/') {
                     $dir = substr($dir, 0, -1);
                 }
@@ -226,8 +225,11 @@ class http
         if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
 
             // break up string into pieces (languages and q factors)
-            preg_match_all('/([a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*(1|0\.[0-9]+))?/i',
-                $_SERVER['HTTP_ACCEPT_LANGUAGE'], $lang_parse);
+            preg_match_all(
+                '/([a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*(1|0\.[0-9]+))?/i',
+                $_SERVER['HTTP_ACCEPT_LANGUAGE'],
+                $lang_parse
+            );
 
             if (count($lang_parse[1])) {
                 // create a list like "en" => 0.8
@@ -263,7 +265,9 @@ class http
             return;
         }
 
-        array_walk($files, function (&$v) {$v = filemtime($v);});
+        array_walk($files, function (&$v) {
+            $v = filemtime($v);
+        });
 
         $array_ts = array_merge($mod_ts, $files);
 
@@ -456,8 +460,15 @@ class http
         $no_unset = ['GLOBALS', '_GET', '_POST', '_COOKIE', '_REQUEST',
             '_SERVER', '_ENV', '_FILES'];
 
-        $input = array_merge($_GET, $_POST, $_COOKIE, $_SERVER, $_ENV, $_FILES,
-            (isset($_SESSION) && is_array($_SESSION) ? $_SESSION : []));
+        $input = array_merge(
+            $_GET,
+            $_POST,
+            $_COOKIE,
+            $_SERVER,
+            $_ENV,
+            $_FILES,
+            (isset($_SESSION) && is_array($_SESSION) ? $_SESSION : [])
+        );
 
         foreach ($input as $k => $v) {
             if (!in_array($k, $no_unset) && isset($GLOBALS[$k])) {
@@ -466,5 +477,4 @@ class http
             }
         }
     }
-
 }
