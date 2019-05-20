@@ -64,18 +64,29 @@ class imageTools
             );
 
             switch ($info[2]) {
-                case 3:
+                case 3: // PNG
                     $this->res = @imagecreatefrompng($f);
                     if (is_resource($this->res)) {
                         @imagealphablending($this->res, false);
                         @imagesavealpha($this->res, true);
                     }
                     break;
-                case 2:
+                case 2: // JPEG
                     $this->res = @imagecreatefromjpeg($f);
                     break;
-                case 1:
+                case 1: // GIF
                     $this->res = @imagecreatefromgif($f);
+                    break;
+                case 18: // WEBP
+                    if (function_exists('imagecreatefromwebp')) {
+                        $this->res = @imagecreatefromwebp($f);
+                        if (is_resource($this->res)) {
+                            @imagealphablending($this->res, false);
+                            @imagesavealpha($this->res, true);
+                        }
+                    } else {
+                        throw new Exception('WebP image format not supported');
+                    }
                     break;
             }
         }
@@ -154,6 +165,13 @@ class imageTools
                     header('Content-type: image/jpeg');
                     imagejpeg($this->res, null, $qual);
                     return true;
+                case 'wepb':
+                    if (function_exists('imagewebp')) {
+                        header('Content-type: image/webp');
+                        imagewebp($this->res, null, $qual);
+                        return true;
+                    }
+                    return false;
                 default:
                     return false;
             }
@@ -164,6 +182,11 @@ class imageTools
                 case 'jpeg':
                 case 'jpg':
                     return imagejpeg($this->res, $file, $qual);
+                case 'webp':
+                    if (function_exists('imagewebp')) {
+                        return imagewebp($this->res, $file, $qual);
+                    }
+                    return false;
                 default:
                     return false;
             }
