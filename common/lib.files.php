@@ -74,6 +74,7 @@ class files
         'svg'  => 'image/svg+xml',
         'tiff' => 'image/tiff',
         'tif'  => 'image/tiff',
+        'wepb' => 'image/webp',
         'xbm'  => 'image/x-xbitmap',
 
         'css'  => 'text/css',

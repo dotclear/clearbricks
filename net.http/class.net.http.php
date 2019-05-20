@@ -53,7 +53,7 @@ if (class_exists('netSocket')) {
         protected $cookies = [];  ///< array Cookies sent
         protected $referer;       ///< string HTTP referer
 
-        protected $accept = 'text/xml,application/xml,application/xhtml+xml,text/html,text/plain,image/png,image/jpeg,image/gif,*/*'; ///< string HTTP accept header
+        protected $accept = 'text/xml,application/xml,application/xhtml+xml,text/html,text/plain,image/png,image/jpeg,image/gif,image/webp,*/*'; ///< string HTTP accept header
 
         protected $accept_encoding  = 'gzip';                    ///< string HTTP accept encoding
         protected $accept_language  = 'en-us';                   ///< string HTTP accept language
