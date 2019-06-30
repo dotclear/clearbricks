@@ -110,6 +110,7 @@ class wiki2xhtml extends atoum
             'active_wikiwords'   => 0,
             'active_mark'        => 0,
             'active_sup'         => 0,
+            'active_sub'         => 0,
             'active_empty'       => 0,
             'active_title'       => 0,
             'active_hr'          => 0,
@@ -150,7 +151,7 @@ Another ""mark""
 = term
 : definition
 
-) And finally an aside paragraph with a square^2 inside
+) And finally an aside paragraph with a square^2 inside and some CO_2_
 )
 ) End
 
@@ -197,7 +198,7 @@ Another code line</p>
 : definition</p>
 
 
-<p>) And finally an aside paragraph with a square^2 inside
+<p>) And finally an aside paragraph with a square^2 inside and some CO_2_
 )
 ) End</p>
 EOH;
@@ -502,7 +503,8 @@ EOH;
             array('del', array('--', '--')),
             array('ins', array('++', '++')),
             array('mark', array('""', '""')),
-            array('sup', array('^', '^'))
+            array('sup', array('^', '^')),
+            array('sub', array('_', '_'))
         );
     }
 

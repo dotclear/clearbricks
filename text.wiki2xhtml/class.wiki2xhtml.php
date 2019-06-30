@@ -18,10 +18,13 @@ Nicolas Chachereau
 Jérôme Lipowicz
 Franck Paul
 
-Version : 3.2.15
-Release date : 2018-03-15
+Version : 3.2.16
+Release date : 2018-06-30
 
 History :
+
+3.2.16 - Franck
+=> Added _indice_ support
 
 3.2.15 - Franck
 => Added ^exponant^ support
@@ -171,6 +174,7 @@ class wiki2xhtml
         $this->setOpt('active_mark', 1); # Activation des mark ""..""
         $this->setOpt('active_aside', 1); # Activation du <aside>
         $this->setOpt('active_sup', 1); # Activation du sup ^..^
+        $this->setOpt('active_sub', 1); # Activation du sub _.._
 
         $this->setOpt('parse_pre', 1); # Parser l'intérieur de blocs <pre> ?
 
@@ -360,7 +364,8 @@ class wiki2xhtml
             'note'   => ['$$', '$$'],
             'word'   => ['¶¶¶', '¶¶¶'],
             'mark'   => ['""', '""'],
-            'sup'    => ['^', '^']
+            'sup'    => ['^', '^'],
+            'sub'    => ['_', '_']
         ];
         $this->linetags = [
             'empty' => 'øøø',
@@ -420,6 +425,9 @@ class wiki2xhtml
         }
         if (!$this->getOpt('active_sup')) {
             unset($this->tags['sup']);
+        }
+        if (!$this->getOpt('active_sub')) {
+            unset($this->tags['sub']);
         }
 
         # Suppression des tags de début de ligne selon les options
@@ -1227,6 +1235,10 @@ class wiki2xhtml
 
         if ($this->getOpt('active_sup')) {
             $help['i'][] = '<sup>Exposant</sup> : un accent circonflexe <code>^texte^</code>';
+        }
+
+        if ($this->getOpt('active_sub')) {
+            $help['i'][] = '<sub>Indice</sub> : un souligné <code>_texte_</code>';
         }
 
         if ($this->getOpt('active_urls')) {
