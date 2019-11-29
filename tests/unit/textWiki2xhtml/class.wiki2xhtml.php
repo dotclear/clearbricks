@@ -101,6 +101,7 @@ class wiki2xhtml extends atoum
             'active_em'          => 0,
             'active_strong'      => 0,
             'active_q'           => 0,
+            'active_i'           => 0,
             'active_code'        => 0,
             'active_acronym'     => 0,
             'active_ins'         => 0,
@@ -127,7 +128,7 @@ URL: https://dotclear.org/
 
 With an ~anchor~ here
 
-Some __strong__ and ''em'' texts with {{citation}} and @@code@@ plus an ??ACME|american company manufacturing everything?? where we can ++insert++ and --delete-- texts, and with some ``<span class="focus">focus</span>`` and a footnote\$\$Footnote content\$\$
+Some __strong__ and ''em'' texts with {{citation}} and ££text££ and @@code@@ plus an ??ACME|american company manufacturing everything?? where we can ++insert++ and --delete-- texts, and with some ``<span class="focus">focus</span>`` and a footnote\$\$Footnote content\$\$
 
 Another ""mark""
 
@@ -164,7 +165,7 @@ EOW;
 <p>With an ~anchor~ here</p>
 
 
-<p>Some __strong__ and ''em'' texts with {{citation}} and @@code@@ plus an ??ACME|american company manufacturing everything?? where we can ++insert++ and --delete-- texts, and with some ``&lt;span class="focus"&gt;focus&lt;/span&gt;`` and a footnote\$\$Footnote content\$\$</p>
+<p>Some __strong__ and ''em'' texts with {{citation}} and ££text££ and @@code@@ plus an ??ACME|american company manufacturing everything?? where we can ++insert++ and --delete-- texts, and with some ``&lt;span class="focus"&gt;focus&lt;/span&gt;`` and a footnote\$\$Footnote content\$\$</p>
 
 
 <p>Another ""mark""</p>
@@ -504,7 +505,8 @@ EOH;
             array('ins', array('++', '++')),
             array('mark', array('""', '""')),
             array('sup', array('^', '^')),
-            array('sub', array('_', '_'))
+            array('sub', array('_', '_')),
+            array('i', array('££', '££'))
         );
     }
 
@@ -525,6 +527,9 @@ EOH;
             array('{{%s}}', '<p><q>%s</q></p>', 1),
             array('{{%s|%lang%}}', '<p><q lang="%lang%">%s</q></p>', 1),
             array('{{%s|%lang%|%url%}}', '<p><q lang="%lang%" cite="%url%">%s</q></p>', 1),
+
+            array('££%s££', '<p><i>%s</i></p>', 1),
+            array('££%s|%lang%££', '<p><i lang="%lang%">%s</i></p>', 1),
 
             array(" %s\n %s\n %s", '<pre>%s%s%s</pre>', 3),
             array('??%1$s|%2$s??', '<p><abbr title="%2$s">%1$s</abbr></p>', 2),

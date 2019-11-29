@@ -18,10 +18,13 @@ Nicolas Chachereau
 Jérôme Lipowicz
 Franck Paul
 
-Version : 3.2.16
+Version : 3.2.17
 Release date : 2018-06-30
 
 History :
+
+3.2.17 - Franck
+=> Added ££text|lang££ support which gives an <i>…</i>
 
 3.2.16 - Franck
 => Added _indice_ support
@@ -122,7 +125,7 @@ History :
 
 class wiki2xhtml
 {
-    public $__version__ = '3.2.15';
+    public $__version__ = '3.2.17';
 
     public $T;
     public $opt;
@@ -165,16 +168,17 @@ class wiki2xhtml
         $this->setOpt('active_q', 1); # Activation du <q> {{...}}
         $this->setOpt('active_code', 1); # Activation du <code> @@...@@
         $this->setOpt('active_acronym', 1); # Activation des acronymes
-        $this->setOpt('active_ins', 1); # Activation des ins ++..++
-        $this->setOpt('active_del', 1); # Activation des del --..--
+        $this->setOpt('active_ins', 1); # Activation des <ins> ++..++
+        $this->setOpt('active_del', 1); # Activation des <del> --..--
         $this->setOpt('active_inline_html', 1); # Activation du HTML inline ``...``
         $this->setOpt('active_footnotes', 1); # Activation des notes de bas de page
         $this->setOpt('active_wikiwords', 0); # Activation des mots wiki
         $this->setOpt('active_macros', 1); # Activation des macros /// ///
-        $this->setOpt('active_mark', 1); # Activation des mark ""..""
+        $this->setOpt('active_mark', 1); # Activation des <mark> ""..""
         $this->setOpt('active_aside', 1); # Activation du <aside>
-        $this->setOpt('active_sup', 1); # Activation du sup ^..^
-        $this->setOpt('active_sub', 1); # Activation du sub _.._
+        $this->setOpt('active_sup', 1); # Activation du <sup> ^..^
+        $this->setOpt('active_sub', 1); # Activation du <sub> _.._
+        $this->setOpt('active_i', 1); # Activation du <i> ££..££
 
         $this->setOpt('parse_pre', 1); # Parser l'intérieur de blocs <pre> ?
 
@@ -365,7 +369,8 @@ class wiki2xhtml
             'word'   => ['¶¶¶', '¶¶¶'],
             'mark'   => ['""', '""'],
             'sup'    => ['^', '^'],
-            'sub'    => ['_', '_']
+            'sub'    => ['_', '_'],
+            'i'      => ['££', '££']
         ];
         $this->linetags = [
             'empty' => 'øøø',
@@ -428,6 +433,9 @@ class wiki2xhtml
         }
         if (!$this->getOpt('active_sub')) {
             unset($this->tags['sub']);
+        }
+        if (!$this->getOpt('active_i')) {
+            unset($this->tags['i']);
         }
 
         # Suppression des tags de début de ligne selon les options
@@ -800,6 +808,9 @@ class wiki2xhtml
                         case 'q':
                             $res = $this->__parseQ($res, $attr);
                             break;
+                        case 'i':
+                            $res = $this->__parseI($res, $attr);
+                            break;
                         case 'anchor':
                             $tag = 'a';
                             $res = $this->__parseAnchor($res, $attr);
@@ -994,6 +1005,19 @@ class wiki2xhtml
 
         $attr .= (!empty($lang)) ? ' lang="' . $lang . '"' : '';
         $attr .= (!empty($data[2])) ? ' cite="' . $this->protectAttr($this->protectUrls($data[2])) . '"' : '';
+
+        return $content;
+    }
+
+    private function __parseI($str, &$attr)
+    {
+        $str  = $this->__inlineWalk($str);
+        $data = $this->__splitTagsAttr($str);
+
+        $content = $data[0];
+        $lang    = (!empty($data[1])) ? $this->protectAttr($data[1], true) : '';
+
+        $attr .= (!empty($lang)) ? ' lang="' . $lang . '"' : '';
 
         return $content;
     }
@@ -1272,6 +1296,11 @@ class wiki2xhtml
         if ($this->getOpt('active_q')) {
             $help['i'][] = '<strong>Citation</strong> : <code>{{citation}}</code>, ' .
                 '<code>{{citation|langue}}</code> ou <code>{{citation|langue|url}}</code>';
+        }
+
+        if ($this->getOpt('active_i')) {
+            $help['i'][] = '<strong>texte différencié</strong> : <code>££texte différencié££</code>, ' .
+                '<code>££texte différencié|langue££</code>';
         }
 
         if ($this->getOpt('active_code')) {
