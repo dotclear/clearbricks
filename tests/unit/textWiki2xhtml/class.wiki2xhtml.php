@@ -152,6 +152,8 @@ Another ""mark""
 = term
 : definition
 
+:-)
+
 ) And finally an aside paragraph with a square^2 inside and some CO_2_
 )
 ) End
@@ -197,6 +199,9 @@ Another code line</p>
 
 <p>= term
 : definition</p>
+
+
+<p>:-)</p>
 
 
 <p>) And finally an aside paragraph with a square^2 inside and some CO_2_

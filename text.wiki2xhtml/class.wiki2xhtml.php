@@ -18,10 +18,13 @@ Nicolas Chachereau
 Jérôme Lipowicz
 Franck Paul
 
-Version : 3.2.17
-Release date : 2018-06-30
+Version : 3.2.18
+Release date : 2019-12-10
 
 History :
+
+3.2.18 - Franck
+=> Def lists required at least a space after : or =
 
 3.2.17 - Franck
 => Added ££text|lang££ support which gives an <i>…</i>
@@ -378,7 +381,7 @@ class wiki2xhtml
             'hr'    => '[-]{4}[- ]',
             'quote' => '(&gt;|;:)',
             'lists' => '([*#]+)',
-            'defl'  => '([=|:]{1})',
+            'defl'  => '([=|:]{1} )',
             'pre'   => '[ ]{1}',
             'aside' => '[\)]{1}'
         ];
@@ -607,7 +610,7 @@ class wiki2xhtml
             } else {
                 $line = trim($cap[2]);
             }
-        } elseif ($this->getOpt('active_defl') && preg_match('/^([=|:]{1})(.*)$/', $line, $cap)) {
+        } elseif ($this->getOpt('active_defl') && preg_match('/^([=|:]{1}) (.*)$/', $line, $cap)) {
             $type = 'defl';
             $mode = $cap[1];
             $line = trim($cap[2]);
