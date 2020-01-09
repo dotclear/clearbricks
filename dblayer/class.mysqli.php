@@ -68,7 +68,10 @@ if (class_exists('dbLayer')) {
                 $this->db_query($link, "SET COLLATION_CONNECTION = 'utf8_general_ci'");
                 $this->db_query($link, "SET COLLATION_SERVER = 'utf8_general_ci'");
                 $this->db_query($link, "SET CHARACTER_SET_SERVER = 'utf8'");
-                $this->db_query($link, "SET CHARACTER_SET_DATABASE = 'utf8'");
+                if (version_compare($this->db_version($link), '8.0', '<')) {
+                    // Setting CHARACTER_SET_DATABASE is obosolete for MySQL 8.0+
+                    $this->db_query($link, "SET CHARACTER_SET_DATABASE = 'utf8'");
+                }
                 $link->set_charset("utf8");
             }
         }
