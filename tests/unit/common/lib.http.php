@@ -72,8 +72,8 @@ class http extends atoum
     public function testGetHostFromURL()
     {
         $this
-            ->string(\http::getHostFromURL('http://www.dotclear.org/is-good-for-you/'))
-            ->isEqualTo('http://www.dotclear.org');
+            ->string(\http::getHostFromURL('https://www.dotclear.org/is-good-for-you/'))
+            ->isEqualTo('https://www.dotclear.org');
 
         // Note: An empty string might be confuse
         $this
