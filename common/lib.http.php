@@ -426,16 +426,10 @@ class http
                 if (is_array($v)) {
                     self::trimRequestInVar($v, $k);
                 } else {
-                    if (get_magic_quotes_gpc()) {
-                        $v = stripslashes($v);
-                    }
                     $v = trim($v);
                 }
             }
         } else {
-            if (get_magic_quotes_gpc()) {
-                $value = stripslashes($value);
-            }
             $value = trim($value);
         }
     }
