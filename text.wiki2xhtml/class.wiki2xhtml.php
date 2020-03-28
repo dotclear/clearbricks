@@ -870,7 +870,7 @@ class wiki2xhtml
 
     private function __parseLink($str, &$tag, &$attr, &$type)
     {
-        $n_str    = $this->__inlineWalk($str, ['abbr', 'img', 'em', 'strong']);
+        $n_str    = $this->__inlineWalk($str, ['abbr', 'img', 'em', 'strong', 'i', 'code', 'del', 'ins', 'mark', 'sup', 'sub']);
         $data     = $this->__splitTagsAttr($n_str);
         $no_image = false;
 
