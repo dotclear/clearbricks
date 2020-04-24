@@ -18,10 +18,13 @@ Nicolas Chachereau
 Jérôme Lipowicz
 Franck Paul
 
-Version : 3.2.18
-Release date : 2019-12-10
+Version : 3.2.19
+Release date : 2020-04-24
 
 History :
+
+3.2.19 - Franck
+=> abbr, img, em, strong, i, code, del, ins, mark, sup are only elements converted inside a link text
 
 3.2.18 - Franck
 => Def lists required at least a space after : or =
