@@ -1080,7 +1080,7 @@ class l10n
                 array('yo', 'yor', 'Yoruba', 'Yorùbá', 'ltr', 2, 'n != 1'),
 
                 array('za', 'zha', 'Chuang', 'Saɯ cueŋƅ', 'ltr', null, null),
-                array('zh', 'zhi', 'Chinese', '中文', 'ltr', 1, '0'),
+                array('zh-cn', 'zhi', 'Chinese', '中文', 'ltr', 1, '0'),
                 array('zh-hk', null, 'Honk Kong Chinese', '中文 (香港)', 'ltr', 1, '0'),
                 array('zh-tw', null, 'Taiwan Chinese', '中文 (臺灣)', 'ltr', 1, '0'),
                 array('zu', 'zul', 'Zulu', 'isiZulu', 'ltr', null, null)
