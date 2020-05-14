@@ -87,7 +87,7 @@ EODTIDYVMT;
                 ->isIdenticalTo($validStr . "\n");
         } else {
             $this->string($filter->apply($str), false)
-                ->isIdenticalTo($validStrMiniTidy . "\n");
+                ->isIdenticalTo($validStrMiniTidy);
         }
     }
 
