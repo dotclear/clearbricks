@@ -28,8 +28,13 @@ class htmlFilter extends atoum
     {
         $filter = new \htmlFilter();
 
-        $this->string($filter->apply('<p>test</I>'))
-            ->isIdenticalTo('<p>test</p>' . "\n");
+        if (extension_loaded('tidy') && class_exists('tidy')) {
+            $this->string($filter->apply('<p>test</I>'))
+                ->isIdenticalTo('<p>test</p>' . "\n");
+        } else {
+            $this->string($filter->apply('<p>test</I>'))
+            ->isIdenticalTo('<p>test');
+        }
     }
 
     public function testTidyComplex()
@@ -64,16 +69,39 @@ EODTIDY;
 </div>
 </div>
 EODTIDYV;
-        $this->string($filter->apply($str))
-            ->isIdenticalTo($validStr . "\n");
+        $validStrMiniTidy = <<<EODTIDYVMT
+<p>Hello</p>
+<div>
+ <a href="#">Bouh</a>
+ <p>bla</p>
+ <img src="/public/sample.jpg" />
+ <p>bla</p>
+</div>
+<div>
+ <p>Hi there!</p>
+ <div>
+  <p>Opps, a mistake
+EODTIDYVMT;
+        if (extension_loaded('tidy') && class_exists('tidy')) {
+            $this->string($filter->apply($str))
+                ->isIdenticalTo($validStr . "\n");
+        } else {
+            $this->string($filter->apply($str), false)
+                ->isIdenticalTo($validStrMiniTidy . "\n");
+        }
     }
 
     public function testTidyOnerror()
     {
         $filter = new \htmlFilter();
 
-        $this->string($filter->apply('<p onerror="alert(document.domain)">test</I>'))
-            ->isIdenticalTo('<p>test</p>' . "\n");
+        if (extension_loaded('tidy') && class_exists('tidy')) {
+            $this->string($filter->apply('<p onerror="alert(document.domain)">test</I>'))
+                ->isIdenticalTo('<p>test</p>' . "\n");
+        } else {
+            $this->string($filter->apply('<p onerror="alert(document.domain)">test</I>'))
+                ->isIdenticalTo('<p>test');
+        }
     }
 
     public function testSimple()

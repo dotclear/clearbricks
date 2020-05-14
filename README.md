@@ -74,13 +74,19 @@ To run tests,
 Clone this repository:
 
 ```sh
-hg clone https://hg.clearbricks.org/hg path/to/clearbricks
+git clone https://git.dotclear.org/dev/clearbricks.git
 ```
 
 Download the [`composer.phar`](https://getcomposer.org/composer.phar) executable or use the installer.
 
 ```sh
 curl -sS https://getcomposer.org/installer | php
+```
+
+You may also install composer with:
+
+```sh
+apt install composer
 ```
 
 Update dependencies via composer:
