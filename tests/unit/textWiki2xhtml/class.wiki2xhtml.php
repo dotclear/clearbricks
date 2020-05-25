@@ -347,13 +347,13 @@ EOH;
             ->isIdenticalTo(sprintf('<p><img src="%s" alt="%s" style="display:block; margin:0 auto;" title="%s" /></p>', $url, $alt, $title))
 
             ->string($wiki2xhtml->transform(sprintf('((%s|%s|R|%s|%s))', $url, $alt, $title, $legend)))
-            ->isIdenticalTo(sprintf('<p><figure style="float:right; margin: 0 0 1em 1em;"><img src="%s" alt="%s" title="%s" /><figcaption>%s</figcaption></figure></p>', $url, $alt, $title, $legend))
+            ->isIdenticalTo(sprintf('<figure style="float:right; margin: 0 0 1em 1em;"><img src="%s" alt="%s" title="%s" /><figcaption>%s</figcaption></figure>', $url, $alt, $title, $legend))
 
             ->string($wiki2xhtml->transform(sprintf('((%s|%s|G|%s|%s))', $url, $alt, $title, $legend)))
-            ->isIdenticalTo(sprintf('<p><figure style="float:left; margin: 0 1em 1em 0;"><img src="%s" alt="%s" title="%s" /><figcaption>%s</figcaption></figure></p>', $url, $alt, $title, $legend))
+            ->isIdenticalTo(sprintf('<figure style="float:left; margin: 0 1em 1em 0;"><img src="%s" alt="%s" title="%s" /><figcaption>%s</figcaption></figure>', $url, $alt, $title, $legend))
 
             ->string($wiki2xhtml->transform(sprintf('((%s|%s|C|%s|%s))', $url, $alt, $title, $legend)))
-            ->isIdenticalTo(sprintf('<p><figure style="display:block; margin:0 auto;"><img src="%s" alt="%s" title="%s" /><figcaption>%s</figcaption></figure></p>', $url, $alt, $title, $legend))
+            ->isIdenticalTo(sprintf('<figure style="display:block; margin:0 auto;"><img src="%s" alt="%s" title="%s" /><figcaption>%s</figcaption></figure>', $url, $alt, $title, $legend))
         ;
     }
 

@@ -18,10 +18,13 @@ Nicolas Chachereau
 Jérôme Lipowicz
 Franck Paul
 
-Version : 3.2.19
-Release date : 2020-04-24
+Version : 3.2.20
+Release date : 2020-05-26
 
 History :
+
+3.2.20 - Franck
+=> Suppression des p entourant les figures ou les liens incluants une figure
 
 3.2.19 - Franck
 => abbr, img, em, strong, i, code, del, ins, mark, sup are only elements converted inside a link text
@@ -131,7 +134,7 @@ History :
 
 class wiki2xhtml
 {
-    public $__version__ = '3.2.17';
+    public $__version__ = '3.2.20';
 
     public $T;
     public $opt;
@@ -338,6 +341,27 @@ class wiki2xhtml
         # Auto line break dans les paragraphes
         if ($this->getOpt('active_auto_br')) {
             $res = preg_replace_callback('%(<p>)(.*?)(</p>)%msu', [$this, '__autoBR'], $res);
+        }
+
+        # Remove wrapping p around figure
+        # Adapted from https://micahjon.com/2016/removing-wrapping-p-paragraph-tags-around-images-wordpress/
+        $ret = preg_replace_callback(
+            '/<p>((?:.(?!p>))*?)(<a[^>]*>)?\s*(<figure[^>]*>)(.*?)(<\/figure>)\s*(<\/a>)?(.*?)<\/p>/msu',
+            function($matches) {
+                $figure = $matches[2] . $matches[3] . $matches[4] . $matches[5] . $matches[6];
+                $before = trim($matches[1]);
+                if ($before) {
+                    $before = '<p>' . $before . '</p>';
+                }
+                $after = trim($matches[7]);
+                if ($after) {
+                    $after = '<p>' . $after . '</p>';
+                }
+                return $before . $figure . $after;
+            },
+            $res);
+        if (!is_null($ret)) {
+            $res = $ret;
         }
 
         # On ajoute les notes
