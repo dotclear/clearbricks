@@ -345,21 +345,24 @@ class wiki2xhtml
 
         # Remove wrapping p around figure
         # Adapted from https://micahjon.com/2016/removing-wrapping-p-paragraph-tags-around-images-wordpress/
-        $ret = preg_replace_callback(
-            '/<p>((?:.(?!p>))*?)(<a[^>]*>)?\s*(<figure[^>]*>)(.*?)(<\/figure>)\s*(<\/a>)?(.*?)<\/p>/msu',
-            function($matches) {
-                $figure = $matches[2] . $matches[3] . $matches[4] . $matches[5] . $matches[6];
-                $before = trim($matches[1]);
-                if ($before) {
-                    $before = '<p>' . $before . '</p>';
-                }
-                $after = trim($matches[7]);
-                if ($after) {
-                    $after = '<p>' . $after . '</p>';
-                }
-                return $before . $figure . $after;
-            },
-            $res);
+        $ret = $res;
+        while (preg_match('/<p>((?:.(?!p>))*?)(<a[^>]*>)?\s*(<figure[^>]*>)(.*?)(<\/figure>)\s*(<\/a>)?(.*?)<\/p>/msu', $ret)) {
+            $ret = preg_replace_callback(
+                '/<p>((?:.(?!p>))*?)(<a[^>]*>)?\s*(<figure[^>]*>)(.*?)(<\/figure>)\s*(<\/a>)?(.*?)<\/p>/msu',
+                function($matches) {
+                    $figure = $matches[2] . $matches[3] . $matches[4] . $matches[5] . $matches[6];
+                    $before = trim($matches[1]);
+                    if ($before) {
+                        $before = '<p>' . $before . '</p>';
+                    }
+                    $after = trim($matches[7]);
+                    if ($after) {
+                        $after = '<p>' . $after . '</p>';
+                    }
+                    return $before . $figure . $after;
+                },
+                $ret);
+        }
         if (!is_null($ret)) {
             $res = $ret;
         }
