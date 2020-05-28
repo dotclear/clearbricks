@@ -27,26 +27,29 @@ Of course, you're encouraged to use the `$__autoload` magic for your own classes
 
 In order to use Clearbricks you need:
 
-* PHP 5.4 with the following modules:
+* PHP 5.6 with the following modules:
   * mbstring
   * iconv
   * simplexml
 
-## Use it with Mercurial
+## Use it with Git
 
 You may think that all this subdirectories is a mess. You're quite right. But
-one day, you'll find it cool to use Clearbricks modules in your mercurial
-repository as [a subrepository][1]. This day, you'll love me :-)
+one day, you'll find it cool to use Clearbricks modules in your git
+repository as a submodule. This day, you'll love me :-)
 
 Here is an example of using Clearbricks and dbLayer in your own repository
-as an external property, using [subrepositories documentation][2]:
+as an external property, using [submodule documentation][2]:
 
 ```sh
-hg clone https://hg.clearbricks.org/hg path/to/clearbricks
-echo 'path/to/clearbricks https://hg.clearbricks.org/hg' >> .hgsub
+git submodule add git@git.dotclear.org:dev/clearbricks.git path/to/clearbricks
 ```
 
-Save and push.
+Commit and push, then pull the submodule:
+
+```sh
+git submodule update --init --recursive
+```
 
 Then, you can create a \_common.php file wich will contain:
 
@@ -68,7 +71,7 @@ doxygen .doxygen.conf
 
 ## Tests
 
-Clearbricks classes are tested using [atoum][3] (see [doc][4]).
+Clearbricks classes are tested using [atoum][2] (see [doc][3]).
 To run tests,
 
 Clone this repository:
@@ -121,7 +124,6 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-[1]: http://mercurial.selenic.com/wiki/Subrepository
-[2]: http://www.selenic.com/hg/help/subrepos
-[3]: https://github.com/atoum/atoum
-[4]: http://docs.atoum.org/en/latest/index.html
+[1]: https://git-scm.com/docs/git-submodule
+[2]: https://github.com/atoum/atoum
+[3]: http://docs.atoum.org/en/latest/index.html
