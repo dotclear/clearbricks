@@ -18,10 +18,13 @@ Nicolas Chachereau
 Jérôme Lipowicz
 Franck Paul
 
-Version : 3.2.20
+Version : 3.2.21
 Release date : 2020-05-26
 
 History :
+
+3.2.21 - Franck
+=> Suppression du support _indice_ (conflit fréquent avec les noms de fichier/URL/…)
 
 3.2.20 - Franck
 => Suppression des p entourant les figures ou les liens incluants une figure
@@ -186,7 +189,6 @@ class wiki2xhtml
         $this->setOpt('active_mark', 1); # Activation des <mark> ""..""
         $this->setOpt('active_aside', 1); # Activation du <aside>
         $this->setOpt('active_sup', 1); # Activation du <sup> ^..^
-        $this->setOpt('active_sub', 1); # Activation du <sub> _.._
         $this->setOpt('active_i', 1); # Activation du <i> ££..££
 
         $this->setOpt('parse_pre', 1); # Parser l'intérieur de blocs <pre> ?
@@ -402,7 +404,6 @@ class wiki2xhtml
             'word'   => ['¶¶¶', '¶¶¶'],
             'mark'   => ['""', '""'],
             'sup'    => ['^', '^'],
-            'sub'    => ['_', '_'],
             'i'      => ['££', '££']
         ];
         $this->linetags = [
@@ -463,9 +464,6 @@ class wiki2xhtml
         }
         if (!$this->getOpt('active_sup')) {
             unset($this->tags['sup']);
-        }
-        if (!$this->getOpt('active_sub')) {
-            unset($this->tags['sub']);
         }
         if (!$this->getOpt('active_i')) {
             unset($this->tags['i']);
@@ -1292,10 +1290,6 @@ class wiki2xhtml
 
         if ($this->getOpt('active_sup')) {
             $help['i'][] = '<sup>Exposant</sup> : un accent circonflexe <code>^texte^</code>';
-        }
-
-        if ($this->getOpt('active_sub')) {
-            $help['i'][] = '<sub>Indice</sub> : un souligné <code>_texte_</code>';
         }
 
         if ($this->getOpt('active_urls')) {

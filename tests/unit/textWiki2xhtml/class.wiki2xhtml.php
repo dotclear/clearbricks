@@ -510,7 +510,6 @@ EOH;
             array('ins', array('++', '++')),
             array('mark', array('""', '""')),
             array('sup', array('^', '^')),
-            array('sub', array('_', '_')),
             array('i', array('££', '££'))
         );
     }
