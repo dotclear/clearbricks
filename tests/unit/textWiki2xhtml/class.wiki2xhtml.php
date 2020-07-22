@@ -494,6 +494,47 @@ EOH;
             ->isIdenticalTo($out_html_special);
     }
 
+    public function testAttributes()
+    {
+        $wiki2xhtml = new \wiki2xhtml();
+
+        $in_html          = <<<EOW
+) lorem ipsum 1
+
+) lorem ipsum 2§§class="title"§§
+
+) lorem ipsum 3 §§class="title"§§
+
+) lorem ipsum 4§§class="title"§§
+) lorem ipsum 5
+
+) lorem ipsum 6
+) lorem ipsum 7§§class="title"§§
+EOW;
+
+        $out_html         = <<<EOH
+<aside><p>lorem ipsum 1</p></aside>
+
+
+<aside class="title"><p>lorem ipsum 2</p></aside>
+
+
+<aside class="title"><p>lorem ipsum 3</p></aside>
+
+
+<aside class="title"><p>lorem ipsum 4
+lorem ipsum 5</p></aside>
+
+
+<aside><p>lorem ipsum 6
+lorem ipsum 7</p></aside>
+EOH;
+
+        $this
+            ->string($wiki2xhtml->transform($in_html))
+            ->isIdenticalTo($out_html);
+    }
+
     /*
      * DataProviders
      **/
@@ -566,7 +607,59 @@ EOH;
             array("= %s", "<dl><dt>%s</dt></dl>", 1),
             array(": %s", "<dl><dd>%s</dd></dl>", 1),
             array("= %s\n: %s", "<dl><dt>%s</dt><dd>%s</dd></dl>", 2),
-            array("= %s\n= %s\n: %s\n: %s", "<dl><dt>%s</dt><dt>%s</dt><dd>%s</dd><dd>%s</dd></dl>", 4)
+            array("= %s\n= %s\n: %s\n: %s", "<dl><dt>%s</dt><dt>%s</dt><dd>%s</dd><dd>%s</dd></dl>", 4),
+
+            // With attributes
+
+            array("* item 1§§class=\"title\"§§\n** item 1.1\n** item 1.2\n* item 2\n* item 3\n*# item 3.1",
+                '<ul><li class="title">item 1<ul><li>item 1.1</li><li>item 1.2</li></ul></li>' .
+                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li></ul>', 1),
+            array("# item 1§§class=\"title\"§§\n#* item 1.1\n#* item 1.2\n# item 2\n# item 3\n## item 3.1\n# item 4",
+                '<ol><li class="title">item 1<ul><li>item 1.1</li><li>item 1.2</li></ul></li>' .
+                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li><li>item 4</li></ol>', 1),
+
+            array("* item 1§§class=\"title\"|class=\"parent\"§§\n** item 1.1\n** item 1.2\n* item 2\n* item 3\n*# item 3.1",
+                '<ul class="parent"><li class="title">item 1<ul><li>item 1.1</li><li>item 1.2</li></ul></li>' .
+                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li></ul>', 1),
+            array("# item 1§§class=\"title\"|class=\"parent\"§§\n#* item 1.1\n#* item 1.2\n# item 2\n# item 3\n## item 3.1\n# item 4",
+                '<ol class="parent"><li class="title">item 1<ul><li>item 1.1</li><li>item 1.2</li></ul></li>' .
+                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li><li>item 4</li></ol>', 1),
+
+            array("* item 1§§|class=\"parent\"§§\n** item 1.1\n** item 1.2\n* item 2\n* item 3\n*# item 3.1",
+                '<ul class="parent"><li>item 1<ul><li>item 1.1</li><li>item 1.2</li></ul></li>' .
+                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li></ul>', 1),
+            array("# item 1§§|class=\"parent\"§§\n#* item 1.1\n#* item 1.2\n# item 2\n# item 3\n## item 3.1\n# item 4",
+                '<ol class="parent"><li>item 1<ul><li>item 1.1</li><li>item 1.2</li></ul></li>' .
+                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li><li>item 4</li></ol>', 1),
+
+            array("* item 1§§class=\"title-1\"§§\n** item 1.1\n** item 1.2§§class=\"title-1-2\"§§\n* item 2\n* item 3\n*# item 3.1",
+                '<ul><li class="title-1">item 1<ul><li>item 1.1</li><li class="title-1-2">item 1.2</li></ul></li>' .
+                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li></ul>', 1),
+            array("# item 1§§class=\"title-1\"§§\n#* item 1.1\n#* item 1.2§§class=\"title-1-2\"§§\n# item 2\n# item 3\n## item 3.1\n# item 4",
+                '<ol><li class="title-1">item 1<ul><li>item 1.1</li><li class="title-1-2">item 1.2</li></ul></li>' .
+                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li><li>item 4</li></ol>', 1),
+
+            array('----§§class="title"§§', '<hr class="title" />', 0),
+            array(' %s§§class="title"§§', '<pre class="title">%s</pre>', 1),
+            array(') %s§§class="title"§§', '<aside class="title"><p>%s</p></aside>', 1),
+            array(") %s§§class=\"title\"§§\n)\n) %s", '<aside class="title"><p>%s</p><p>%s</p></aside>', 2),
+            array('!!!!%s§§class="title"§§', '<h2 class="title">%s</h2>', 1),
+            array('!!!%s§§class="title"§§', '<h3 class="title">%s</h3>', 1),
+            array('!!%s§§class="title"§§', '<h4 class="title">%s</h4>', 1),
+            array('!%s§§class="title"§§', '<h5 class="title">%s</h5>', 1),
+
+            array("= term§§class=\"title\"§§", "<dl><dt class=\"title\">term</dt></dl>", 0),
+            array(": definition§§class=\"title\"§§", "<dl><dd class=\"title\">definition</dd></dl>", 0),
+
+            array("= term§§class=\"title\"|class=\"parent\"§§", "<dl class=\"parent\"><dt class=\"title\">term</dt></dl>", 0),
+            array(": definition§§class=\"title\"|class=\"parent\"§§", "<dl class=\"parent\"><dd class=\"title\">definition</dd></dl>", 0),
+
+            array("= term§§|class=\"parent\"§§", "<dl class=\"parent\"><dt>term</dt></dl>", 0),
+            array(": definition§§|class=\"parent\"§§", "<dl class=\"parent\"><dd>definition</dd></dl>", 0),
+
+            array(">%s§§class=\"title\"§§\n>%s", '<blockquote class="title"><p>%s%s</p></blockquote>', 2),
+
+            array('%s§§class="title"§§', '<p class="title">%s</p>', 1),
         );
     }
 

@@ -23,6 +23,9 @@ Release date : 2020-05-26
 
 History :
 
+3.2.22 - Franck
+=> Ajout support attributs supplémentaires (§§attributs[|attributs parent]§§) pour les blocs
+
 3.2.21 - Franck
 => Suppression du support _indice_ (conflit fréquent avec les noms de fichier/URL/…)
 
@@ -137,7 +140,7 @@ History :
 
 class wiki2xhtml
 {
-    public $__version__ = '3.2.20';
+    public $__version__ = '3.2.22';
 
     public $T;
     public $opt;
@@ -535,7 +538,7 @@ class wiki2xhtml
     --------------------------------------------------- */
     private function __parseBlocks()
     {
-        $mode = $type = null;
+        $mode = $type = $attr = null;
         $res  = '';
         $max  = count($this->T);
 
@@ -544,14 +547,14 @@ class wiki2xhtml
             $pre_type = $type;
             $end      = ($i + 1 == $max);
 
-            $line = $this->__getLine($i, $type, $mode);
+            $line = $this->__getLine($i, $type, $mode, $attr);
 
             if ($type != 'pre' || $this->getOpt('parse_pre')) {
                 $line = $this->__inlineWalk($line);
             }
 
             $res .= $this->__closeLine($type, $mode, $pre_type, $pre_mode);
-            $res .= $this->__openLine($type, $mode, $pre_type, $pre_mode);
+            $res .= $this->__openLine($type, $mode, $pre_type, $pre_mode, $attr);
 
             # P dans les blockquotes et les asides
             if (($type == 'blockquote' || $type == 'aside') && trim($line) == '' && $pre_type == $type) {
@@ -572,11 +575,12 @@ class wiki2xhtml
         return trim($res);
     }
 
-    private function __getLine($i, &$type, &$mode)
+    private function __getLine($i, &$type, &$mode, &$attr)
     {
         $pre_type = $type;
         $pre_mode = $mode;
         $type     = $mode     = null;
+        $attr     = null;
 
         if (empty($this->T[$i])) {
             return false;
@@ -592,25 +596,37 @@ class wiki2xhtml
             $line = trim($cap[1]);
         }
         # Titre
-        elseif ($this->getOpt('active_title') && preg_match('/^([!]{1,4})(.*)$/', $line, $cap)) {
+        elseif ($this->getOpt('active_title') && preg_match('/^([!]{1,4})(.*?)(§§(.*)§§)?$/', $line, $cap)) {
             $type = 'title';
             $mode = strlen($cap[1]);
             $line = trim($cap[2]);
+            if (isset($cap[4])) {
+                $attr = $cap[4];
+            }
         }
         # Ligne HR
-        elseif ($this->getOpt('active_hr') && preg_match('/^[-]{4}[- ]*$/', $line)) {
+        elseif ($this->getOpt('active_hr') && preg_match('/^[-]{4}[- ]*?(§§(.*)§§)?$/', $line, $cap)) {
             $type = 'hr';
             $line = null;
+            if (isset($cap[2])) {
+                $attr = $cap[2];
+            }
         }
         # Blockquote
-        elseif ($this->getOpt('active_quote') && preg_match('/^(&gt;|;:)(.*)$/', $line, $cap)) {
+        elseif ($this->getOpt('active_quote') && preg_match('/^(&gt;|;:)(.*?)(§§(.*)§§)?$/', $line, $cap)) {
             $type = 'blockquote';
             $line = trim($cap[2]);
+            if (isset($cap[4])) {
+                $attr = $cap[4];
+            }
         }
         # Liste
-        elseif ($this->getOpt('active_lists') && preg_match('/^([*#]+)(.*)$/', $line, $cap)) {
+        elseif ($this->getOpt('active_lists') && preg_match('/^([*#]+)(.*?)(§§(.*)§§)?$/', $line, $cap)) {
             $type  = 'list';
             $mode  = $cap[1];
+            if (isset($cap[4])) {
+                $attr = $cap[4];
+            }
             $valid = true;
 
             # Vérification d'intégrité
@@ -638,20 +654,29 @@ class wiki2xhtml
             } else {
                 $line = trim($cap[2]);
             }
-        } elseif ($this->getOpt('active_defl') && preg_match('/^([=|:]{1}) (.*)$/', $line, $cap)) {
+        } elseif ($this->getOpt('active_defl') && preg_match('/^([=|:]{1}) (.*?)(§§(.*)§§)?$/', $line, $cap)) {
             $type = 'defl';
             $mode = $cap[1];
             $line = trim($cap[2]);
+            if (isset($cap[4])) {
+                $attr = $cap[4];
+            }
         }
         # Préformaté
-        elseif ($this->getOpt('active_pre') && preg_match('/^[ ]{1}(.*)$/', $line, $cap)) {
+        elseif ($this->getOpt('active_pre') && preg_match('/^[ ]{1}(.*?)(§§(.*)§§)?$/', $line, $cap)) {
             $type = 'pre';
             $line = $cap[1];
+            if (isset($cap[3])) {
+                $attr = trim($cap[3]);
+            }
         }
         # Aside
-        elseif ($this->getOpt('active_aside') && preg_match('/^[\)]{1}(.*)$/', $line, $cap)) {
+        elseif ($this->getOpt('active_aside') && preg_match('/^[\)]{1}(.*?)(§§(.*)§§)?$/', $line, $cap)) {
             $type = 'aside';
             $line = trim($cap[1]);
+            if (isset($cap[3])) {
+                $attr = $cap[3];
+            }
         }
         # Paragraphe
         else {
@@ -659,31 +684,45 @@ class wiki2xhtml
             if (preg_match('/^\\\((?:(' . implode('|', $this->linetags) . ')).*)$/', $line, $cap)) {
                 $line = $cap[1];
             }
+            if (preg_match('/^(.*?)(§§(.*)§§)?$/', $line, $cap)) {
+                $line = $cap[1];
+                if (isset($cap[3])) {
+                    $attr = $cap[3];
+                }
+            }
             $line = trim($line);
         }
 
         return $line;
     }
 
-    private function __openLine($type, $mode, $pre_type, $pre_mode)
+    private function __openLine($type, $mode, $pre_type, $pre_mode, $attr = null)
     {
         $open = ($type != $pre_type);
 
+        $attr_parent = $attr_child = '';
+        if ($attr) {
+            if ($attrs = $this->__splitTagsAttr($attr)) {
+                $attr_child = $attrs[0] ? ' ' . $attrs[0] : '';
+                $attr_parent = isset($attrs[1]) ? ' ' . $attrs[1] : '';
+            }
+        }
+
         if ($open && $type == 'p') {
-            return "\n<p>";
+            return "\n<p" . $attr_child . ">";
         } elseif ($open && $type == 'blockquote') {
-            return "\n<blockquote><p>";
+            return "\n<blockquote" . $attr_child . "><p>";
         } elseif (($open || $mode != $pre_mode) && $type == 'title') {
             $fl = $this->getOpt('first_title_level');
             $fl = $fl + 3;
             $l  = $fl - $mode;
-            return "\n<h" . ($l) . '>';
+            return "\n<h" . ($l) . $attr_child . '>';
         } elseif ($open && $type == 'pre') {
-            return "\n<pre>";
+            return "\n<pre" . $attr_child . ">";
         } elseif ($open && $type == 'aside') {
-            return "\n<aside><p>";
+            return "\n<aside" . $attr_child . "><p>";
         } elseif ($open && $type == 'hr') {
-            return "\n<hr />";
+            return "\n<hr" . $attr_child . " />";
         } elseif ($type == 'list') {
             $dl    = ($open) ? 0 : strlen($pre_mode);
             $d     = strlen($mode);
@@ -692,9 +731,9 @@ class wiki2xhtml
 
             if ($delta > 0) {
                 if (substr($mode, -1, 1) == '*') {
-                    $res .= "<ul>\n";
+                    $res .= "<ul" . $attr_parent . ">\n";
                 } else {
-                    $res .= "<ol>\n";
+                    $res .= "<ol" . $attr_parent . ">\n";
                 }
             } elseif ($delta < 0) {
                 $res .= "</li>\n";
@@ -708,18 +747,18 @@ class wiki2xhtml
             } else {
                 $res .= "</li>\n";
             }
-            return $res . "<li>";
+            return $res . "<li" . $attr_child . ">";
         } elseif ($type == 'defl') {
-            $res = ($pre_mode !== '=' && $pre_mode !== ':' ? "<dl>\n" : '');
+            $res = ($pre_mode !== '=' && $pre_mode !== ':' ? "<dl" . $attr_parent . ">\n" : '');
             if ($pre_mode == '=') {
                 $res .= "</dt>\n";
             } elseif ($pre_mode == ':') {
                 $res .= "</dd>\n";
             }
             if ($mode == '=') {
-                $res .= "<dt>";
+                $res .= "<dt" . $attr_child . ">";
             } else {
-                $res .= "<dd>";
+                $res .= "<dd" . $attr_child . ">";
             }
             return $res;
         } else {
