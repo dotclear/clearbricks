@@ -24,7 +24,8 @@ Release date : 2020-05-26
 History :
 
 3.2.22 - Franck
-=> Ajout support attributs supplémentaires (§§attributs[|attributs parent]§§) pour les blocs
+=> Ajout support attributs supplémentaires (§§attributs[|attributs parent]§§ en fin de 1re ligne) pour les blocs
+=> Ajout support ,,indice,,
 
 3.2.21 - Franck
 => Suppression du support _indice_ (conflit fréquent avec les noms de fichier/URL/…)
@@ -192,6 +193,7 @@ class wiki2xhtml
         $this->setOpt('active_mark', 1); # Activation des <mark> ""..""
         $this->setOpt('active_aside', 1); # Activation du <aside>
         $this->setOpt('active_sup', 1); # Activation du <sup> ^..^
+        $this->setOpt('active_sub', 1); # Activation du <sub> ,,..,,
         $this->setOpt('active_i', 1); # Activation du <i> ££..££
 
         $this->setOpt('parse_pre', 1); # Parser l'intérieur de blocs <pre> ?
@@ -407,6 +409,7 @@ class wiki2xhtml
             'word'   => ['¶¶¶', '¶¶¶'],
             'mark'   => ['""', '""'],
             'sup'    => ['^', '^'],
+            'sub'    => [',,', ',,'],
             'i'      => ['££', '££']
         ];
         $this->linetags = [
@@ -467,6 +470,9 @@ class wiki2xhtml
         }
         if (!$this->getOpt('active_sup')) {
             unset($this->tags['sup']);
+        }
+        if (!$this->getOpt('active_sub')) {
+            unset($this->tags['sub']);
         }
         if (!$this->getOpt('active_i')) {
             unset($this->tags['i']);
@@ -937,7 +943,7 @@ class wiki2xhtml
 
     private function __parseLink($str, &$tag, &$attr, &$type)
     {
-        $n_str    = $this->__inlineWalk($str, ['abbr', 'img', 'em', 'strong', 'i', 'code', 'del', 'ins', 'mark', 'sup']);
+        $n_str    = $this->__inlineWalk($str, ['abbr', 'img', 'em', 'strong', 'i', 'code', 'del', 'ins', 'mark', 'sup', 'sub']);
         $data     = $this->__splitTagsAttr($n_str);
         $no_image = false;
 
@@ -1329,6 +1335,10 @@ class wiki2xhtml
 
         if ($this->getOpt('active_sup')) {
             $help['i'][] = '<sup>Exposant</sup> : un accent circonflexe <code>^texte^</code>';
+        }
+
+        if ($this->getOpt('active_sub')) {
+            $help['i'][] = '<sub>Indice</sub> : un souligné <code>,,texte,,</code>';
         }
 
         if ($this->getOpt('active_urls')) {

@@ -154,7 +154,7 @@ Another ""mark""
 
 :-)
 
-) And finally an aside paragraph with a square^2 inside and some CO_2_
+) And finally an aside paragraph with a square^2 inside and some CO,,2,,
 )
 ) End
 
@@ -204,7 +204,7 @@ Another code line</p>
 <p>:-)</p>
 
 
-<p>) And finally an aside paragraph with a square^2 inside and some CO_2_
+<p>) And finally an aside paragraph with a square^2 inside and some CO,,2,,
 )
 ) End</p>
 EOH;
@@ -551,6 +551,7 @@ EOH;
             array('ins', array('++', '++')),
             array('mark', array('""', '""')),
             array('sup', array('^', '^')),
+            array('sub', array(',,', ',,')),
             array('i', array('££', '££'))
         );
     }
