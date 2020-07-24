@@ -119,7 +119,8 @@ class wiki2xhtml extends atoum
             'active_lists'       => 0,
             'active_defl'        => 0,
             'active_pre'         => 0,
-            'active_aside'       => 0
+            'active_aside'       => 0,
+            'active_span'        => 0
         ));
         $wiki = <<<EOW
 
@@ -128,7 +129,7 @@ URL: https://dotclear.org/
 
 With an ~anchor~ here
 
-Some __strong__ and ''em'' texts with {{citation}} and ££text££ and @@code@@ plus an ??ACME|american company manufacturing everything?? where we can ++insert++ and --delete-- texts, and with some ``<span class="focus">focus</span>`` and a footnote\$\$Footnote content\$\$
+Some __strong__ and ''em'' texts with {{citation}} and ££text££ and @@code@@ plus an ??ACME|american company manufacturing everything?? where we can ++insert++ and --delete-- texts, and ;;with;; some ``<span class="focus">focus</span>`` and a footnote\$\$Footnote content\$\$
 
 Another ""mark""
 
@@ -167,7 +168,7 @@ EOW;
 <p>With an ~anchor~ here</p>
 
 
-<p>Some __strong__ and ''em'' texts with {{citation}} and ££text££ and @@code@@ plus an ??ACME|american company manufacturing everything?? where we can ++insert++ and --delete-- texts, and with some ``&lt;span class="focus"&gt;focus&lt;/span&gt;`` and a footnote\$\$Footnote content\$\$</p>
+<p>Some __strong__ and ''em'' texts with {{citation}} and ££text££ and @@code@@ plus an ??ACME|american company manufacturing everything?? where we can ++insert++ and --delete-- texts, and ;;with;; some ``&lt;span class="focus"&gt;focus&lt;/span&gt;`` and a footnote\$\$Footnote content\$\$</p>
 
 
 <p>Another ""mark""</p>
@@ -552,7 +553,8 @@ EOH;
             array('mark', array('""', '""')),
             array('sup', array('^', '^')),
             array('sub', array(',,', ',,')),
-            array('i', array('££', '££'))
+            array('i', array('££', '££')),
+            array('span', array(';;', ';;'))
         );
     }
 
@@ -686,6 +688,8 @@ EOH;
 
             array('%s ??%s§class="inline"§?? %s', '<p>%s <abbr class="inline">%s</abbr> %s</p>', 3),
             array('%s ??%s|Title§class="inline"§?? %s', '<p>%s <abbr class="inline" title="Title">%s</abbr> %s</p>', 3),
+
+            array('%s ;;%s§class="inline"§;; %s', '<p>%s <span class="inline">%s</span> %s</p>', 3),
 
             array('~%word%§class="anchor"§~', '<p><a class="anchor" id="%word%"></a></p>', 1),
 

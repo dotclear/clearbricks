@@ -18,10 +18,14 @@ Nicolas Chachereau
 Jérôme Lipowicz
 Franck Paul
 
-Version : 3.2.21
-Release date : 2020-05-26
+Version : 3.2.23
+Release date : 2020-07-24
 
 History :
+
+3.3.23 - Franck
+=> Ajout support attributs supplémentaires (§attributs§) pour les éléments en ligne (sans d'imbrication)
+=> Ajout support ;;span;;
 
 3.2.22 - Franck
 => Ajout support attributs supplémentaires (§§attributs[|attributs parent]§§ en fin de 1re ligne) pour les blocs
@@ -195,6 +199,7 @@ class wiki2xhtml
         $this->setOpt('active_sup', 1); # Activation du <sup> ^..^
         $this->setOpt('active_sub', 1); # Activation du <sub> ,,..,,
         $this->setOpt('active_i', 1); # Activation du <i> ££..££
+        $this->setOpt('active_span', 1); # Activation du <span> ;;..;;
 
         $this->setOpt('parse_pre', 1); # Parser l'intérieur de blocs <pre> ?
 
@@ -410,7 +415,8 @@ class wiki2xhtml
             'mark'   => ['""', '""'],
             'sup'    => ['^', '^'],
             'sub'    => [',,', ',,'],
-            'i'      => ['££', '££']
+            'i'      => ['££', '££'],
+            'span'   => [';;', ';;']
         ];
         $this->linetags = [
             'empty' => 'øøø',
@@ -476,6 +482,9 @@ class wiki2xhtml
         }
         if (!$this->getOpt('active_i')) {
             unset($this->tags['i']);
+        }
+        if (!$this->getOpt('active_span')) {
+            unset($this->tags['span']);
         }
 
         # Suppression des tags de début de ligne selon les options
@@ -951,7 +960,7 @@ class wiki2xhtml
 
     private function __parseLink($str, &$tag, &$attr, &$type)
     {
-        $n_str    = $this->__inlineWalk($str, ['abbr', 'img', 'em', 'strong', 'i', 'code', 'del', 'ins', 'mark', 'sup', 'sub']);
+        $n_str    = $this->__inlineWalk($str, ['abbr', 'img', 'em', 'strong', 'i', 'code', 'del', 'ins', 'mark', 'sup', 'sub', 'span']);
         $data     = $this->__splitTagsAttr($n_str);
         $no_image = false;
 
