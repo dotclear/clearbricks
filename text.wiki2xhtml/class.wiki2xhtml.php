@@ -356,7 +356,7 @@ class wiki2xhtml
         while (preg_match('/<p>((?:.(?!p>))*?)(<a[^>]*>)?\s*(<figure[^>]*>)(.*?)(<\/figure>)\s*(<\/a>)?(.*?)<\/p>/msu', $ret)) {
             $ret = preg_replace_callback(
                 '/<p>((?:.(?!p>))*?)(<a[^>]*>)?\s*(<figure[^>]*>)(.*?)(<\/figure>)\s*(<\/a>)?(.*?)<\/p>/msu',
-                function($matches) {
+                function ($matches) {
                     $figure = $matches[2] . $matches[3] . $matches[4] . $matches[5] . $matches[6];
                     $before = trim($matches[1]);
                     if ($before) {
@@ -628,8 +628,8 @@ class wiki2xhtml
         }
         # Liste
         elseif ($this->getOpt('active_lists') && preg_match('/^([*#]+)(.*?)(§§(.*)§§)?$/', $line, $cap)) {
-            $type  = 'list';
-            $mode  = $cap[1];
+            $type = 'list';
+            $mode = $cap[1];
             if (isset($cap[4])) {
                 $attr = $cap[4];
             }
@@ -709,7 +709,7 @@ class wiki2xhtml
         $attr_parent = $attr_child = '';
         if ($attr) {
             if ($attrs = $this->__splitTagsAttr($attr)) {
-                $attr_child = $attrs[0] ? ' ' . $attrs[0] : '';
+                $attr_child  = $attrs[0] ? ' ' . $attrs[0] : '';
                 $attr_parent = isset($attrs[1]) ? ' ' . $attrs[1] : '';
             }
         }
@@ -913,6 +913,14 @@ class wiki2xhtml
                     $j = $i;
                     break;
                 }
+
+                # Recherche attributs
+                if (preg_match('/^(.*?)(§(.*)§)?$/', $res, $cap)) {
+                    $res = $cap[1];
+                    if (isset($cap[3])) {
+                        $attr .= ' ' . $cap[3];
+                    }
+                }
             }
 
             return $res;
@@ -981,7 +989,7 @@ class wiki2xhtml
                 $img_size = @getimagesize($path_img);
             }
 
-            $attr = ' src="' . $this->protectAttr($this->protectUrls($url)) . '"' .
+            $attr .= ' src="' . $this->protectAttr($this->protectUrls($url)) . '"' .
             $attr .= (count($data) > 1) ? ' alt="' . $this->protectAttr($content) . '"' : ' alt=""';
             $attr .= ($lang) ? ' lang="' . $lang . '"' : '';
             $attr .= ($title) ? ' title="' . $this->protectAttr($title) . '"' : '';
@@ -997,7 +1005,7 @@ class wiki2xhtml
 
             }
 
-            $attr = ' href="' . $this->protectAttr($this->protectUrls($url)) . '"';
+            $attr .= ' href="' . $this->protectAttr($this->protectUrls($url)) . '"';
             $attr .= ($lang) ? ' hreflang="' . $lang . '"' : '';
             $attr .= ($title) ? ' title="' . $this->protectAttr($title) . '"' : '';
 
@@ -1025,15 +1033,15 @@ class wiki2xhtml
     {
         $data = $this->__splitTagsAttr($str);
 
-        $alt        = '';
-        $attr       = '';
-        $align_attr = '';
-        $url        = $data[0];
+        $alt          = '';
+        $current_attr = $attr;
+        $align_attr   = '';
+        $url          = $data[0];
         if (!empty($data[1])) {
             $alt = $data[1];
         }
 
-        $attr = ' src="' . $this->protectAttr($this->protectUrls($url)) . '"';
+        $attr .= ' src="' . $this->protectAttr($this->protectUrls($url)) . '"';
         $attr .= ' alt="' . $this->protectAttr($alt) . '"';
 
         if (!empty($data[2])) {
@@ -1063,7 +1071,7 @@ class wiki2xhtml
             $img = '<img' . $attr . ' />';
             $img .= '<figcaption>' . $this->protectAttr($data[4]) . '</figcaption>';
 
-            $attr = $align_attr;
+            $attr = $current_attr . $align_attr;
 
             return $img;
         }
@@ -1103,7 +1111,7 @@ class wiki2xhtml
         $name = $this->protectAttr($str, true);
 
         if ($name != '') {
-            $attr = ' id="' . $name . '"';
+            $attr .= ' id="' . $name . '"';
         }
         return;
     }
@@ -1138,7 +1146,7 @@ class wiki2xhtml
             $title = $this->acro_table[$acronym];
         }
 
-        $attr = ($title) ? ' title="' . $this->protectAttr($title) . '"' : '';
+        $attr .= ($title) ? ' title="' . $this->protectAttr($title) . '"' : '';
         $attr .= ($lang) ? ' lang="' . $lang . '"' : '';
 
         return $acronym;
@@ -1173,7 +1181,8 @@ class wiki2xhtml
     # Mots wiki (pour héritage)
     private function parseWikiWord($str, &$tag, &$attr, &$type)
     {
-        $tag = $attr = '';
+        $tag = '';
+//        $attr = '';
 
         if (isset($this->functions['wikiword'])) {
             return call_user_func($this->functions['wikiword'], $str);

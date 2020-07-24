@@ -661,6 +661,50 @@ EOH;
             array(">%s§§class=\"title\"§§\n>%s", '<blockquote class="title"><p>%s%s</p></blockquote>', 2),
 
             array('%s§§class="title"§§', '<p class="title">%s</p>', 1),
+
+            array('%s __bold§class="bold"§__ lorem \'\'ipsum§class="italic"§\'\'§§class="title"§§', '<p class="title">%s <strong class="bold">bold</strong> lorem <em class="italic">ipsum</em></p>', 1),
+
+            array('%s \'\'%s§class="inline"§\'\' %s', '<p>%s <em class="inline">%s</em> %s</p>', 3),
+            array('%s __%s§class="inline"§__ %s', '<p>%s <strong class="inline">%s</strong> %s</p>', 3),
+
+            array('%s {{%s§class="inline"§}} %s', '<p>%s <q class="inline">%s</q> %s</p>', 3),
+            array('%s {{%s|fr§class="inline"§}} %s', '<p>%s <q class="inline" lang="fr">%s</q> %s</p>', 3),
+            array('%s {{%s|fr|https//dotclear.net/§class="inline"§}} %s', '<p>%s <q class="inline" lang="fr" cite="https//dotclear.net/">%s</q> %s</p>', 3),
+
+            array('%s @@%s§class="inline"§@@ %s', '<p>%s <code class="inline">%s</code> %s</p>', 3),
+
+            array('%s --%s§class="inline"§-- %s', '<p>%s <del class="inline">%s</del> %s</p>', 3),
+            array('%s ++%s§class="inline"§++ %s', '<p>%s <ins class="inline">%s</ins> %s</p>', 3),
+
+            array('%s ""%s§class="inline"§"" %s', '<p>%s <mark class="inline">%s</mark> %s</p>', 3),
+
+            array('%s ^%s§class="inline"§^ %s', '<p>%s <sup class="inline">%s</sup> %s</p>', 3),
+            array('%s ,,%s§class="inline"§,, %s', '<p>%s <sub class="inline">%s</sub> %s</p>', 3),
+
+            array('%s ££%s§class="inline"§££ %s', '<p>%s <i class="inline">%s</i> %s</p>', 3),
+            array('%s ££%s|fr§class="inline"§££ %s', '<p>%s <i class="inline" lang="fr">%s</i> %s</p>', 3),
+
+            array('%s ??%s§class="inline"§?? %s', '<p>%s <abbr class="inline">%s</abbr> %s</p>', 3),
+            array('%s ??%s|Title§class="inline"§?? %s', '<p>%s <abbr class="inline" title="Title">%s</abbr> %s</p>', 3),
+
+            array('~%word%§class="anchor"§~', '<p><a class="anchor" id="%word%"></a></p>', 1),
+
+            array('[%1$s§class="link"§]', '<p><a class="link" href="%1$s" title="%1$s">%1$s</a></p>', 1),
+            array('[%1$s|%2$s§class="link"§]', '<p><a class="link" href="%2$s">%1$s</a></p>', 2),
+            array('[%1$s|%2$s|fr§class="link"§]', '<p><a class="link" href="%2$s" hreflang="fr">%1$s</a></p>', 2),
+            array('[%1$s|%2$s|fr|%3$s§class="link"§]', '<p><a class="link" href="%2$s" hreflang="fr" title="%3$s">%1$s</a></p>', 2),
+
+            array('((%s|%s§class="img"§))', '<p><img class="img" src="%s" alt="%s" /></p>', 2),
+            array('((%s|§class="img"§))', '<p><img class="img" src="%s" alt="" /></p>', 1),
+            array('((%s|%s|C§class="img"§))', '<p><img class="img" src="%s" alt="%s" style="display:block; margin:0 auto;" /></p>', 2),
+            array('((%s|%s|C|%s§class="img"§))', '<p><img class="img" src="%s" alt="%s" style="display:block; margin:0 auto;" title="%s" /></p>', 3),
+            array('((%s|%s|C|%s|legend§class="img"§))', '<figure class="img" style="display:block; margin:0 auto;"><img class="img" src="%s" alt="%s" title="%s" /><figcaption>legend</figcaption></figure>', 3),
+
+            array('[((%s|%s))|https://dotclear.net/]', '<p><a href="https://dotclear.net/"><img src="%s" alt="%s" /></a></p>', 2),
+            array('[((%s|%s))|https://dotclear.net/§class="link"§]', '<p><a class="link" href="https://dotclear.net/"><img src="%s" alt="%s" /></a></p>', 2),
+
+            array('[text __bold§class="bold"§__|https://dotclear.net/§class="link"§]', '<p><a class="bold" class="link" href="https://dotclear.net/">text <strong>bold</strong></a></p>', 2),
+            array('[((%s|%s§class="img"§))|https://dotclear.net/§class="link"§]', '<p><a class="img" class="link" href="https://dotclear.net/"><img src="%s" alt="%s" /></a></p>', 2),
         );
     }
 
