@@ -281,7 +281,7 @@ class form
      * @static
      */
     public static function password($nid, $size, $max, $default = '', $class = '', $tabindex = '',
-        $disabled = false, $extra_html = '', $required = false, $autocomplete = '') {
+        $disabled = false, $extra_html = '', $required = false, $autocomplete = 'off') {
 
         if (func_num_args() > 3 && is_array($default)) {
             // Cope with associative array of optional parameters
