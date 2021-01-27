@@ -35,7 +35,7 @@ class imageTools
      */
     public function close()
     {
-        if (is_resource($this->res)) {
+        if (!empty($this->res)) {
             imagedestroy($this->res);
         }
 
