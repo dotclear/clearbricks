@@ -66,7 +66,7 @@ class imageTools
             switch ($info[2]) {
                 case 3: // PNG
                     $this->res = @imagecreatefrompng($f);
-                    if (is_resource($this->res)) {
+                    if (!empty($this->res)) {
                         @imagealphablending($this->res, false);
                         @imagesavealpha($this->res, true);
                     }
@@ -80,7 +80,7 @@ class imageTools
                 case 18: // WEBP
                     if (function_exists('imagecreatefromwebp')) {
                         $this->res = @imagecreatefromwebp($f);
-                        if (is_resource($this->res)) {
+                        if (!empty($this->res)) {
                             @imagealphablending($this->res, false);
                             @imagesavealpha($this->res, true);
                         }
@@ -91,7 +91,7 @@ class imageTools
             }
         }
 
-        if (!is_resource($this->res)) {
+        if (empty($this->res)) {
             throw new Exception('Unable to load image');
         }
     }
