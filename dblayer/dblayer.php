@@ -14,7 +14,6 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-
 require dirname(__FILE__) . '/class.cursor.php';
 
 interface i_dbLayer
@@ -45,7 +44,7 @@ interface i_dbLayer
      * @param string    $database        Database name
      * @return resource
      */
-    function db_pconnect($host, $user, $password, $database);
+    public function db_pconnect($host, $user, $password, $database);
 
     /**
      * Close connection
@@ -54,7 +53,7 @@ interface i_dbLayer
      *
      * @param resource    $handle        Resource link
      */
-    function db_close($handle);
+    public function db_close($handle);
 
     /**
      * Database version
@@ -64,7 +63,7 @@ interface i_dbLayer
      * @param resource    $handle        Resource link
      * @return string
      */
-    function db_version($handle);
+    public function db_version($handle);
 
     /**
      * Database query
@@ -75,7 +74,7 @@ interface i_dbLayer
      * @param string    $query        SQL query string
      * @return resource
      */
-    function db_query($handle, $query);
+    public function db_query($handle, $query);
 
     /**
      * Database exec query
@@ -86,7 +85,7 @@ interface i_dbLayer
      * @param string    $query        SQL query string
      * @return resource
      */
-    function db_exec($handle, $query);
+    public function db_exec($handle, $query);
 
     /**
      * Result columns count
@@ -96,7 +95,7 @@ interface i_dbLayer
      * @param resource    $res            Resource result
      * @return integer
      */
-    function db_num_fields($res);
+    public function db_num_fields($res);
 
     /**
      * Result rows count
@@ -106,7 +105,7 @@ interface i_dbLayer
      * @param resource    $res            Resource result
      * @return integer
      */
-    function db_num_rows($res);
+    public function db_num_rows($res);
 
     /**
      * Field name
@@ -118,7 +117,7 @@ interface i_dbLayer
      * @param integer    $position        Field position
      * @return string
      */
-    function db_field_name($res, $position);
+    public function db_field_name($res, $position);
 
     /**
      * Field type
@@ -130,7 +129,7 @@ interface i_dbLayer
      * @param integer    $position        Field position
      * @return string
      */
-    function db_field_type($res, $position);
+    public function db_field_type($res, $position);
 
     /**
      * Fetch result
@@ -141,7 +140,7 @@ interface i_dbLayer
      * @param resource    $res            Resource result
      * @return array
      */
-    function db_fetch_assoc($res);
+    public function db_fetch_assoc($res);
 
     /**
      * Move result cursor
@@ -153,7 +152,7 @@ interface i_dbLayer
      * @param integer    $row        Row position
      * @return boolean
      */
-    function db_result_seek($res, $row);
+    public function db_result_seek($res, $row);
 
     /**
      * Affected rows
@@ -165,7 +164,7 @@ interface i_dbLayer
      * @param resource    $res            Resource result
      * @return integer
      */
-    function db_changes($handle, $res);
+    public function db_changes($handle, $res);
 
     /**
      * Last error
@@ -175,7 +174,7 @@ interface i_dbLayer
      * @param resource    $handle        Resource link
      * @return string
      */
-    function db_last_error($handle);
+    public function db_last_error($handle);
 
     /**
      * Escape string
@@ -186,7 +185,7 @@ interface i_dbLayer
      * @param resource    $handle        Resource link
      * @return string
      */
-    function db_escape_string($str, $handle = null);
+    public function db_escape_string($str, $handle = null);
 
     /**
      * Acquiere Write lock
@@ -195,14 +194,14 @@ interface i_dbLayer
      *
      * @param string    $table        Table name
      */
-    function db_write_lock($table);
+    public function db_write_lock($table);
 
     /**
      * Release lock
      *
      * This method should releases an acquiered lock.
      */
-    function db_unlock();
+    public function db_unlock();
 }
 
 /**
@@ -239,6 +238,10 @@ class dbLayer
      */
     public static function init($driver, $host, $database, $user = '', $password = '', $persistent = false)
     {
+        // PHP 7.0 mysql driver is obsolete, map to mysqli
+        if ($driver === 'mysql') {
+            $driver = 'mysqli';
+        }
         if (file_exists(dirname(__FILE__) . '/class.' . $driver . '.php')) {
             require_once dirname(__FILE__) . '/class.' . $driver . '.php';
             $driver_class = $driver . 'Connection';
@@ -524,7 +527,7 @@ class dbLayer
     {
         if (is_array($arg1)) {
             $arg1 = array_values($arg1);
-            $arg2 = isset($arg1[1]) ? $arg1[1] : null;
+            $arg2 = $arg1[1] ?? null;
             $arg1 = $arg1[0];
         }
 
@@ -560,10 +563,11 @@ class dbLayer
                     $in[$i] = "'" . $this->escape($v) . "'";
                 }
             }
+
             return ' IN (' . implode(',', $in) . ') ';
-        } else {
-            return ' IN ( ' . (integer) $in . ') ';
         }
+
+        return ' IN ( ' . (integer) $in . ') ';
     }
 
     /**
@@ -596,6 +600,7 @@ class dbLayer
                 $res[]      = ($v['collate'] ? 'LOWER(' . $v['field'] . ')' : $v['field']) . ' ' . $v['order'];
             }
         }
+
         return empty($res) ? '' : ' ORDER BY ' . implode(',', $res) . ' ';
     }
 
@@ -619,6 +624,7 @@ class dbLayer
                 $res = array_map(function ($i) use ($fmt) {return sprintf($fmt, $i);}, $v);
             }
         }
+
         return empty($res) ? '' : implode(',', $res);
     }
 
@@ -633,6 +639,7 @@ class dbLayer
     public function concat()
     {
         $args = func_get_args();
+
         return implode(' || ', $args);
     }
 
@@ -650,6 +657,7 @@ class dbLayer
             foreach ($i as $k => $s) {
                 $i[$k] = $this->db_escape_string($s, $this->__link);
             }
+
             return $i;
         }
 
@@ -739,6 +747,7 @@ class record implements Iterator, Countable
         if ($this instanceof staticRecord) {
             return $this;
         }
+
         return new staticRecord($this->__result, $this->__info);
     }
 
@@ -754,6 +763,7 @@ class record implements Iterator, Countable
     {
         if (isset($this->__extend[$f])) {
             array_unshift($args, $this);
+
             return call_user_func_array($this->__extend[$f], $args);
         }
 
@@ -868,10 +878,11 @@ class record implements Iterator, Countable
             foreach ($this->__row as $k => $v) {
                 $this->__row[] = &$this->__row[$k];
             }
+
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -895,8 +906,10 @@ class record implements Iterator, Countable
             $this->__index = $row;
             $this->setRow();
             $this->__info['con']->db_result_seek($this->__result, (integer) $row);
+
             return true;
         }
+
         return false;
     }
 
@@ -927,6 +940,7 @@ class record implements Iterator, Countable
         if (!$this->index($i + 1)) {
             $this->__fetch = false;
             $this->__index = 0;
+
             return false;
         }
 
@@ -941,6 +955,7 @@ class record implements Iterator, Countable
     public function moveStart()
     {
         $this->__fetch = false;
+
         return $this->index(0);
     }
 
@@ -1098,7 +1113,6 @@ class record implements Iterator, Countable
     {
         return $this->__fetch;
     }
-
 }
 
 /**
@@ -1127,8 +1141,7 @@ class staticRecord extends record
             $this->__data = parent::getData();
         }
 
-        unset($this->__link);
-        unset($this->__result);
+        unset($this->__link, $this->__result);
     }
 
     /**
@@ -1184,6 +1197,7 @@ class staticRecord extends record
         }
 
         $this->__index = $row;
+
         return true;
     }
 
@@ -1237,6 +1251,7 @@ class staticRecord extends record
         if ($a == (string) (integer) $a && $b == (string) (integer) $b) {
             $a = (integer) $a;
             $b = (integer) $b;
+
             return ($a - $b) * $this->__sortsign;
         }
 
