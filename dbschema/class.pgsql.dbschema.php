@@ -9,10 +9,9 @@
  * @copyright GPL-2.0-only
  */
 
-/** @cond ONCE */
+/* @cond ONCE */
 if (class_exists('dbSchema')) {
-/** @endcond */
-
+    /** @endcond */
     class pgsqlSchema extends dbSchema implements i_dbSchema
     {
         protected $ref_actions_map = [
@@ -39,10 +38,9 @@ if (class_exists('dbSchema')) {
 
         public function db_get_tables()
         {
-            $sql =
-                'SELECT table_name ' .
+            $sql = 'SELECT table_name ' .
                 'FROM information_schema.tables ' .
-                "WHERE table_schema = current_schema() ";
+                'WHERE table_schema = current_schema() ';
 
             $rs = $this->con->select($sql);
 
@@ -50,13 +48,13 @@ if (class_exists('dbSchema')) {
             while ($rs->fetch()) {
                 $res[] = $rs->f(0);
             }
+
             return $res;
         }
 
         public function db_get_columns($table)
         {
-            $sql =
-            'SELECT column_name, udt_name, character_maximum_length, ' .
+            $sql = 'SELECT column_name, udt_name, character_maximum_length, ' .
             'is_nullable, column_default ' .
             'FROM information_schema.columns ' .
             "WHERE table_name = '" . $this->con->escape($table) . "' ";
@@ -96,8 +94,7 @@ if (class_exists('dbSchema')) {
 
         public function db_get_keys($table)
         {
-            $sql =
-            'SELECT DISTINCT ON(cls.relname) cls.oid, cls.relname as idxname, indisunique::integer, indisprimary::integer, ' .
+            $sql = 'SELECT DISTINCT ON(cls.relname) cls.oid, cls.relname as idxname, indisunique::integer, indisprimary::integer, ' .
             'indnatts, tab.relname as tabname, contype, amname ' .
             'FROM pg_index idx ' .
             'JOIN pg_class cls ON cls.oid=indexrelid ' .
@@ -137,8 +134,7 @@ if (class_exists('dbSchema')) {
 
         public function db_get_indexes($table)
         {
-            $sql =
-            'SELECT DISTINCT ON(cls.relname) cls.oid, cls.relname as idxname, n.nspname, ' .
+            $sql = 'SELECT DISTINCT ON(cls.relname) cls.oid, cls.relname as idxname, n.nspname, ' .
             'indnatts, tab.relname as tabname, contype, amname ' .
             'FROM pg_index idx ' .
             'JOIN pg_class cls ON cls.oid=indexrelid ' .
@@ -177,8 +173,7 @@ if (class_exists('dbSchema')) {
 
         public function db_get_references($table)
         {
-            $sql =
-            'SELECT ct.oid, conname, condeferrable, condeferred, confupdtype, ' .
+            $sql = 'SELECT ct.oid, conname, condeferrable, condeferred, confupdtype, ' .
             'confdeltype, confmatchtype, conkey, confkey, conrelid, confrelid, cl.relname as fktab, ' .
             'cr.relname as reftab ' .
             'FROM pg_constraint ct ' .
@@ -192,8 +187,7 @@ if (class_exists('dbSchema')) {
 
             $rs = $this->con->select($sql);
 
-            $cols_sql =
-                'SELECT a1.attname as conattname, a2.attname as confattname ' .
+            $cols_sql = 'SELECT a1.attname as conattname, a2.attname as confattname ' .
                 'FROM pg_attribute a1, pg_attribute a2 ' .
                 'WHERE a1.attrelid=%1$s::oid AND a1.attnum=%2$s ' .
                 'AND a2.attrelid=%3$s::oid AND a2.attnum=%4$s ';
@@ -246,13 +240,11 @@ if (class_exists('dbSchema')) {
                     $default = '';
                 }
 
-                $a[] =
-                    $n . ' ' .
+                $a[] = $n . ' ' .
                     $type . $len . ' ' . $null . ' ' . $default;
             }
 
-            $sql =
-            'CREATE TABLE ' . $this->con->escapeSystem($name) . " (\n" .
+            $sql = 'CREATE TABLE ' . $this->con->escapeSystem($name) . " (\n" .
             implode(",\n", $a) .
                 "\n)";
 
@@ -273,8 +265,7 @@ if (class_exists('dbSchema')) {
                 $default = '';
             }
 
-            $sql =
-                'ALTER TABLE ' . $table . ' ADD COLUMN ' . $name . ' ' .
+            $sql = 'ALTER TABLE ' . $table . ' ADD COLUMN ' . $name . ' ' .
                 $type . $len . ' ' . $null . ' ' . $default;
 
             $this->con->execute($sql);
@@ -282,17 +273,15 @@ if (class_exists('dbSchema')) {
 
         public function db_create_primary($table, $name, $cols)
         {
-            $sql =
-            'ALTER TABLE ' . $table . ' ' .
-            'ADD CONSTRAINT ' . $name . ' PRIMARY KEY (' . implode(",", $cols) . ') ';
+            $sql = 'ALTER TABLE ' . $table . ' ' .
+            'ADD CONSTRAINT ' . $name . ' PRIMARY KEY (' . implode(',', $cols) . ') ';
 
             $this->con->execute($sql);
         }
 
         public function db_create_unique($table, $name, $cols)
         {
-            $sql =
-            'ALTER TABLE ' . $table . ' ' .
+            $sql = 'ALTER TABLE ' . $table . ' ' .
             'ADD CONSTRAINT ' . $name . ' UNIQUE (' . implode(',', $cols) . ') ';
 
             $this->con->execute($sql);
@@ -300,8 +289,7 @@ if (class_exists('dbSchema')) {
 
         public function db_create_index($table, $name, $type, $cols)
         {
-            $sql =
-            'CREATE INDEX ' . $name . ' ON ' . $table . ' USING ' . $type .
+            $sql = 'CREATE INDEX ' . $name . ' ON ' . $table . ' USING ' . $type .
             '(' . implode(',', $cols) . ') ';
 
             $this->con->execute($sql);
@@ -309,8 +297,7 @@ if (class_exists('dbSchema')) {
 
         public function db_create_reference($name, $c_table, $c_cols, $p_table, $p_cols, $update, $delete)
         {
-            $sql =
-            'ALTER TABLE ' . $c_table . ' ' .
+            $sql = 'ALTER TABLE ' . $c_table . ' ' .
             'ADD CONSTRAINT ' . $name . ' FOREIGN KEY ' .
             '(' . implode(',', $c_cols) . ') ' .
             'REFERENCES ' . $p_table . ' ' .
@@ -389,6 +376,6 @@ if (class_exists('dbSchema')) {
         }
     }
 
-/** @cond ONCE */
+    /* @cond ONCE */
 }
-/** @endcond */
+/* @endcond */

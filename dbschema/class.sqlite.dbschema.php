@@ -9,10 +9,9 @@
  * @copyright GPL-2.0-only
  */
 
-/** @cond ONCE */
+/* @cond ONCE */
 if (class_exists('dbSchema')) {
-/** @endcond */
-
+    /** @endcond */
     class sqliteSchema extends dbSchema implements i_dbSchema
     {
         private $table_hist = [];
@@ -35,6 +34,7 @@ if (class_exists('dbSchema')) {
                         # Bad hack
                         $default = 'now()';
                     }
+
                     return 'timestamp';
                 case 'integer':
                 case 'mediumint':
@@ -71,6 +71,7 @@ if (class_exists('dbSchema')) {
                         # SQLite does not support now() default value...
                         $default = "'1970-01-01 00:00:00'";
                     }
+
                     return $type;
             }
 
@@ -128,6 +129,7 @@ if (class_exists('dbSchema')) {
                     'default' => $default
                 ];
             }
+
             return $res;
         }
 
@@ -236,12 +238,14 @@ if (class_exists('dbSchema')) {
                     if (preg_match('/UPDATE\s+' . $table . '\s+SET\s+' . $c_col . '\s*=\s*NEW.' . $p_col .
                         '\s+WHERE\s+' . $c_col . '\s*=\s*OLD\.' . $p_col . '/msi', $aur->sql)) {
                         $on_update = 'cascade';
+
                         break;
                     }
 
                     if (preg_match('/UPDATE\s+' . $table . '\s+SET\s+' . $c_col . '\s*=\s*NULL' .
                         '\s+WHERE\s+' . $c_col . '\s*=\s*OLD\.' . $p_col . '/msi', $aur->sql)) {
                         $on_update = 'set null';
+
                         break;
                     }
                 }
@@ -256,12 +260,14 @@ if (class_exists('dbSchema')) {
 
                     if (preg_match('/DELETE\s+FROM\s+' . $table . '\s+WHERE\s+' . $c_col . '\s*=\s*OLD\.' . $p_col . '/msi', $bdr->sql)) {
                         $on_delete = 'cascade';
+
                         break;
                     }
 
                     if (preg_match('/UPDATE\s+' . $table . '\s+SET\s+' . $c_col . '\s*=\s*NULL' .
                         '\s+WHERE\s+' . $c_col . '\s*=\s*OLD\.' . $p_col . '/msi', $bdr->sql)) {
                         $on_update = 'set null';
+
                         break;
                     }
                 }
@@ -322,8 +328,7 @@ if (class_exists('dbSchema')) {
                 $default = '';
             }
 
-            $sql =
-            'ALTER TABLE ' . $this->con->escapeSystem($table) . ' ' .
+            $sql = 'ALTER TABLE ' . $this->con->escapeSystem($table) . ' ' .
             'ADD COLUMN ' . $this->con->escapeSystem($name) . ' ' .
                 $type . $len . ' ' . $null . ' ' . $default;
 
@@ -364,8 +369,7 @@ if (class_exists('dbSchema')) {
             $cnull = $this->table_hist[$c_table][$c_col]['null'];
 
             # Create constraint
-            $this->x_stack[] =
-                'CREATE TRIGGER bir_' . $name . "\n" .
+            $this->x_stack[] = 'CREATE TRIGGER bir_' . $name . "\n" .
                 'BEFORE INSERT ON ' . $c_table . "\n" .
                 "FOR EACH ROW BEGIN\n" .
                 '  SELECT RAISE(ROLLBACK,\'insert on table "' . $c_table . '" violates foreign key constraint "' . $name . '"\')' . "\n" .
@@ -375,8 +379,7 @@ if (class_exists('dbSchema')) {
                 "END;\n";
 
             # Update constraint
-            $this->x_stack[] =
-                'CREATE TRIGGER bur_' . $name . "\n" .
+            $this->x_stack[] = 'CREATE TRIGGER bur_' . $name . "\n" .
                 'BEFORE UPDATE ON ' . $c_table . "\n" .
                 "FOR EACH ROW BEGIN\n" .
                 '  SELECT RAISE(ROLLBACK,\'update on table "' . $c_table . '" violates foreign key constraint "' . $name . '"\')' . "\n" .
@@ -387,23 +390,19 @@ if (class_exists('dbSchema')) {
 
             # ON UPDATE
             if ($update == 'cascade') {
-                $this->x_stack[] =
-                    'CREATE TRIGGER aur_' . $name . "\n" .
+                $this->x_stack[] = 'CREATE TRIGGER aur_' . $name . "\n" .
                     'AFTER UPDATE ON ' . $p_table . "\n" .
                     "FOR EACH ROW BEGIN\n" .
                     '  UPDATE ' . $c_table . ' SET ' . $c_col . ' = NEW.' . $p_col . ' WHERE ' . $c_col . ' = OLD.' . $p_col . ";\n" .
                     "END;\n";
             } elseif ($update == 'set null') {
-                $this->x_stack[] =
-                    'CREATE TRIGGER aur_' . $name . "\n" .
+                $this->x_stack[] = 'CREATE TRIGGER aur_' . $name . "\n" .
                     'AFTER UPDATE ON ' . $p_table . "\n" .
                     "FOR EACH ROW BEGIN\n" .
                     '  UPDATE ' . $c_table . ' SET ' . $c_col . ' = NULL WHERE ' . $c_col . ' = OLD.' . $p_col . ";\n" .
                     "END;\n";
-            } else # default on restrict
-            {
-                $this->x_stack[] =
-                    'CREATE TRIGGER burp_' . $name . "\n" .
+            } else { # default on restrict
+                $this->x_stack[] = 'CREATE TRIGGER burp_' . $name . "\n" .
                     'BEFORE UPDATE ON ' . $p_table . "\n" .
                     "FOR EACH ROW BEGIN\n" .
                     '  SELECT RAISE (ROLLBACK,\'update on table "' . $p_table . '" violates foreign key constraint "' . $name . '"\')' . "\n" .
@@ -413,22 +412,19 @@ if (class_exists('dbSchema')) {
 
             # ON DELETE
             if ($delete == 'cascade') {
-                $this->x_stack[] =
-                    'CREATE TRIGGER bdr_' . $name . "\n" .
+                $this->x_stack[] = 'CREATE TRIGGER bdr_' . $name . "\n" .
                     'BEFORE DELETE ON ' . $p_table . "\n" .
                     "FOR EACH ROW BEGIN\n" .
                     '  DELETE FROM ' . $c_table . ' WHERE ' . $c_col . ' = OLD.' . $p_col . ";\n" .
                     "END;\n";
             } elseif ($delete == 'set null') {
-                $this->x_stack[] =
-                    'CREATE TRIGGER bdr_' . $name . "\n" .
+                $this->x_stack[] = 'CREATE TRIGGER bdr_' . $name . "\n" .
                     'BEFORE DELETE ON ' . $p_table . "\n" .
                     "FOR EACH ROW BEGIN\n" .
                     '  UPDATE ' . $c_table . ' SET ' . $c_col . ' = NULL WHERE ' . $c_col . ' = OLD.' . $p_col . ";\n" .
                     "END;\n";
             } else {
-                $this->x_stack[] =
-                    'CREATE TRIGGER bdr_' . $name . "\n" .
+                $this->x_stack[] = 'CREATE TRIGGER bdr_' . $name . "\n" .
                     'BEFORE DELETE ON ' . $p_table . "\n" .
                     "FOR EACH ROW BEGIN\n" .
                     '  SELECT RAISE (ROLLBACK,\'delete on table "' . $p_table . '" violates foreign key constraint "' . $name . '"\')' . "\n" .
@@ -479,6 +475,6 @@ if (class_exists('dbSchema')) {
         }
     }
 
-/** @cond ONCE */
+    /* @cond ONCE */
 }
-/** @endcond */
+/* @endcond */

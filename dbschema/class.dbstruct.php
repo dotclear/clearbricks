@@ -8,7 +8,6 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-
 class dbStruct
 {
     protected $con;
@@ -30,6 +29,7 @@ class dbStruct
     public function table($name)
     {
         $this->tables[$name] = new dbStructTable($name);
+
         return $this->tables[$name];
     }
 
@@ -148,8 +148,7 @@ class dbStruct
                 }
 
                 $got_work = true;
-            } else # Table exists
-            {
+            } else { # Table exists
                 # Check new fields to create
                 $fields    = $t->getFields();
                 $db_fields = $this->tables[$tname]->getFields();
@@ -305,9 +304,7 @@ class dbStruct
         $schema->flushStack();
 
         return
-        count($table_create) + count($key_create) + count($index_create) +
-        count($reference_create) + count($field_create) + count($field_update) +
-        count($key_update) + count($index_update) + count($reference_update);
+        count($table_create) + count($key_create) + count($index_create) + count($reference_create) + count($field_create) + count($field_update) + count($key_update) + count($index_update) + count($reference_update);
     }
 
     public function getTables()
@@ -353,9 +350,9 @@ class dbStruct
     private function referencesDiffer($d_name, $d_r, $s_name, $s_r)
     {
         return
-            $d_name != $s_name || $d_r['c_cols'] != $s_r['c_cols']
-            || $d_r['p_table'] != $s_r['p_table'] || $d_r['p_cols'] != $s_r['p_cols']
-            || $d_r['update'] != $s_r['update'] || $d_r['delete'] != $s_r['delete'];
+            $d_name            != $s_name || $d_r['c_cols']            != $s_r['c_cols']
+                                          || $d_r['p_table'] != $s_r['p_table']                               || $d_r['p_cols'] != $s_r['p_cols']
+                                          || $d_r['update']  != $s_r['update']                               || $d_r['delete']  != $s_r['delete'];
     }
 }
 
@@ -402,6 +399,7 @@ class dbStructTable
     public function __construct($name)
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -508,6 +506,7 @@ class dbStructTable
     public function __call($name, $args)
     {
         array_unshift($args, $name);
+
         return call_user_func_array([$this, 'field'], $args);
     }
 

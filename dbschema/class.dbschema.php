@@ -8,7 +8,6 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-
 interface i_dbSchema
 {
     /**
@@ -31,7 +30,7 @@ interface i_dbSchema
      * @param      string $table Table name
      * @return     array
      */
-    function db_get_columns($table);
+    public function db_get_columns($table);
 
     /**
      * This method should return an array of keys in given table
@@ -45,7 +44,7 @@ interface i_dbSchema
      * @param      string $table Table name
      * @return     array
      */
-    function db_get_keys($table);
+    public function db_get_keys($table);
 
     /**
      * This method should return an array of indexes in given table
@@ -58,7 +57,7 @@ interface i_dbSchema
      * @param      string $table Table name
      * @return     array
      */
-    function db_get_indexes($table);
+    public function db_get_indexes($table);
 
     /**
      * This method should return an array of foreign keys in given table
@@ -74,31 +73,31 @@ interface i_dbSchema
      * @param      string $table Table name
      * @return     array
      */
-    function db_get_references($table);
+    public function db_get_references($table);
 
-    function db_create_table($name, $fields);
+    public function db_create_table($name, $fields);
 
-    function db_create_field($table, $name, $type, $len, $null, $default);
+    public function db_create_field($table, $name, $type, $len, $null, $default);
 
-    function db_create_primary($table, $name, $cols);
+    public function db_create_primary($table, $name, $cols);
 
-    function db_create_unique($table, $name, $cols);
+    public function db_create_unique($table, $name, $cols);
 
-    function db_create_index($table, $name, $type, $cols);
+    public function db_create_index($table, $name, $type, $cols);
 
-    function db_create_reference($name, $c_table, $c_cols, $p_table, $p_cols, $update, $delete);
+    public function db_create_reference($name, $c_table, $c_cols, $p_table, $p_cols, $update, $delete);
 
-    function db_alter_field($table, $name, $type, $len, $null, $default);
+    public function db_alter_field($table, $name, $type, $len, $null, $default);
 
-    function db_alter_primary($table, $name, $newname, $cols);
+    public function db_alter_primary($table, $name, $newname, $cols);
 
-    function db_alter_unique($table, $name, $newname, $cols);
+    public function db_alter_unique($table, $name, $newname, $cols);
 
-    function db_alter_index($table, $name, $newname, $type, $cols);
+    public function db_alter_index($table, $name, $newname, $type, $cols);
 
-    function db_alter_reference($name, $newname, $c_table, $c_cols, $p_table, $p_cols, $update, $delete);
+    public function db_alter_reference($name, $newname, $c_table, $c_cols, $p_table, $p_cols, $update, $delete);
 
-    function db_drop_unique($table, $name);
+    public function db_drop_unique($table, $name);
 }
 
 /**
