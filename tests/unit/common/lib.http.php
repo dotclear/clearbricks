@@ -106,24 +106,24 @@ class http extends atoum
         $prepareRedirect = new \ReflectionMethod('\http', 'prepareRedirect');
         $prepareRedirect->setAccessible(true);
         $this
-            ->string($prepareRedirect->invokeArgs(null, array('http://www.dotclear.org/auth.html')))
+            ->string($prepareRedirect->invokeArgs(null, ['http://www.dotclear.org/auth.html']))
             ->isEqualTo('http://www.dotclear.org/auth.html');
 
         $this
-            ->string($prepareRedirect->invokeArgs(null, array('https://www.dotclear.org/auth.html')))
+            ->string($prepareRedirect->invokeArgs(null, ['https://www.dotclear.org/auth.html']))
             ->isEqualTo('https://www.dotclear.org/auth.html');
 
         $this
-            ->string($prepareRedirect->invokeArgs(null, array('auth.html')))
+            ->string($prepareRedirect->invokeArgs(null, ['auth.html']))
             ->isEqualTo('http://localhost/auth.html');
 
         $this
-            ->string($prepareRedirect->invokeArgs(null, array('/admin/auth.html')))
+            ->string($prepareRedirect->invokeArgs(null, ['/admin/auth.html']))
             ->isEqualTo('http://localhost/admin/auth.html');
 
         $_SERVER['PHP_SELF'] = '/test.php';
         $this
-            ->string($prepareRedirect->invokeArgs(null, array('auth.html')))
+            ->string($prepareRedirect->invokeArgs(null, ['auth.html']))
             ->isEqualTo('http://localhost/auth.html');
     }
 
@@ -192,8 +192,8 @@ class http extends atoum
 
     public function testBrowserUID()
     {
-        unset($_SERVER['HTTP_USER_AGENT']);
-        unset($_SERVER['HTTP_ACCEPT_CHARSET']);
+        unset($_SERVER['HTTP_USER_AGENT'], $_SERVER['HTTP_ACCEPT_CHARSET']);
+
         $this
             ->string(\http::browserUID('dotclear'))
             ->isEqualTo('d82ae3c43cf5af4d0a8a8bc1f691ee5cc89332fd');
@@ -246,11 +246,11 @@ class http extends atoum
     public function testCache()
     {
         $this
-            ->variable(\http::cache(array()))
+            ->variable(\http::cache([]))
             ->isNull();
 
         \files::getDirList(TEST_DIRECTORY, $arr);
-        $fl = array();
+        $fl = [];
         foreach ($arr['files'] as $file) {
             if ($file != '.' && $file != '..') {
                 $fl[] = $file;
@@ -289,7 +289,7 @@ class http extends atoum
     {
         $_GET['single']      = 'single';
         $_GET['trim_single'] = ' trim_single ';
-        $_GET['multiple']    = array('one ', 'two', ' three', ' four ', array(' five '));
+        $_GET['multiple']    = ['one ', 'two', ' three', ' four ', [' five ']];
 
         $_POST['post']       = ' test  ';
         $_REQUEST['request'] = ' test\\\'n\\\'test  ';
@@ -323,7 +323,7 @@ class http extends atoum
     {
         $_GET['single']      = 'single';
         $_GET['trim_single'] = ' trim_single ';
-        $_GET['multiple']    = array('one ', 'two', ' three', ' four ', array(' five '));
+        $_GET['multiple']    = ['one ', 'two', ' three', ' four ', [' five ']];
 
         $_POST['post']       = ' test  ';
         $_REQUEST['request'] = ' test\\\'n\\\'test ';

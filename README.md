@@ -27,7 +27,7 @@ Of course, you're encouraged to use the `$__autoload` magic for your own classes
 
 In order to use Clearbricks you need:
 
-* PHP 5.6 with the following modules:
+* PHP 7.0 with the following modules:
   * mbstring
   * iconv
   * simplexml

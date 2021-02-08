@@ -15,25 +15,25 @@ class dbStruct
     protected $tables     = [];
     protected $references = [];
 
-    public function __construct($con, $prefix = '')
+    public function __construct($con, string $prefix = '')
     {
         $this->con    = &$con;
         $this->prefix = $prefix;
     }
 
-    public function driver()
+    public function driver(): string
     {
         return $this->con->driver();
     }
 
-    public function table($name)
+    public function table(string $name)
     {
         $this->tables[$name] = new dbStructTable($name);
 
         return $this->tables[$name];
     }
 
-    public function __get($name)
+    public function __get(string $name)
     {
         if (!isset($this->tables[$name])) {
             return $this->table($name);
@@ -307,7 +307,7 @@ class dbStruct
         count($table_create) + count($key_create) + count($index_create) + count($reference_create) + count($field_create) + count($field_update) + count($key_update) + count($index_update) + count($reference_update);
     }
 
-    public function getTables()
+    public function getTables(): array
     {
         $res = [];
         foreach ($this->tables as $t => $v) {
@@ -317,12 +317,12 @@ class dbStruct
         return $res;
     }
 
-    public function tableExists($name)
+    public function tableExists(string $name): bool
     {
         return isset($this->tables[$name]);
     }
 
-    private function fieldsDiffer($db_field, $schema_field)
+    private function fieldsDiffer($db_field, $schema_field): bool
     {
         $d_type    = $db_field['type'];
         $d_len     = (integer) $db_field['len'];
@@ -337,22 +337,19 @@ class dbStruct
         return $d_type != $s_type || $d_len != $s_len || $d_default != $s_default || $d_null != $s_null;
     }
 
-    private function keysDiffer($d_name, $d_cols, $s_name, $s_cols)
+    private function keysDiffer($d_name, $d_cols, $s_name, $s_cols): bool
     {
         return $d_name != $s_name || $d_cols != $s_cols;
     }
 
-    private function indexesDiffer($d_name, $d_i, $s_name, $s_i)
+    private function indexesDiffer($d_name, $d_i, $s_name, $s_i): bool
     {
         return $d_name != $s_name || $d_i['cols'] != $s_i['cols'] || $d_i['type'] != $s_i['type'];
     }
 
-    private function referencesDiffer($d_name, $d_r, $s_name, $s_r)
+    private function referencesDiffer($d_name, $d_r, $s_name, $s_r): bool
     {
-        return
-            $d_name            != $s_name || $d_r['c_cols']            != $s_r['c_cols']
-                                          || $d_r['p_table'] != $s_r['p_table']                               || $d_r['p_cols'] != $s_r['p_cols']
-                                          || $d_r['update']  != $s_r['update']                               || $d_r['delete']  != $s_r['delete'];
+        return $d_name != $s_name || $d_r['c_cols'] != $s_r['c_cols'] || $d_r['p_table'] != $s_r['p_table'] || $d_r['p_cols'] != $s_r['p_cols'] || $d_r['update'] != $s_r['update'] || $d_r['delete'] != $s_r['delete'];
     }
 }
 
@@ -396,39 +393,39 @@ class dbStructTable
         'char', 'varchar', 'text'
     ];
 
-    public function __construct($name)
+    public function __construct(string $name)
     {
         $this->name = $name;
 
         return $this;
     }
 
-    public function getFields()
+    public function getFields(): array
     {
         return $this->fields;
     }
 
-    public function getKeys($primary = null)
+    public function getKeys(bool $primary = null): array
     {
         return $this->keys;
     }
 
-    public function getIndexes()
+    public function getIndexes(): array
     {
         return $this->indexes;
     }
 
-    public function getReferences()
+    public function getReferences(): array
     {
         return $this->references;
     }
 
-    public function fieldExists($name)
+    public function fieldExists(string $name): bool
     {
         return isset($this->fields[$name]);
     }
 
-    public function keyExists($name, $type, $cols)
+    public function keyExists(string $name, string $type, $cols)
     {
         # Look for key with the same name
         if (isset($this->keys[$name])) {
@@ -446,7 +443,7 @@ class dbStructTable
         return false;
     }
 
-    public function indexExists($name, $type, $cols)
+    public function indexExists(string $name, string $type, array $cols)
     {
         # Look for key with the same name
         if (isset($this->indexes[$name])) {
@@ -464,7 +461,7 @@ class dbStructTable
         return false;
     }
 
-    public function referenceExists($name, $c_cols, $p_table, $p_cols)
+    public function referenceExists(string $name, array $c_cols, string $p_table, array $p_cols)
     {
         if (isset($this->references[$name])) {
             return $name;
@@ -481,7 +478,7 @@ class dbStructTable
         return false;
     }
 
-    public function field($name, $type, $len, $null = true, $default = false, $to_null = false)
+    public function field(string $name, string $type, int $len, bool $null = true, $default = false, bool $to_null = false)
     {
         $type = strtolower($type);
 
@@ -495,22 +492,22 @@ class dbStructTable
 
         $this->fields[$name] = [
             'type'    => $type,
-            'len'     => (integer) $len,
+            'len'     => (int) $len,
             'default' => $default,
-            'null'    => (boolean) $null
+            'null'    => (bool) $null
         ];
 
         return $this;
     }
 
-    public function __call($name, $args)
+    public function __call(string $name, $args)
     {
         array_unshift($args, $name);
 
         return call_user_func_array([$this, 'field'], $args);
     }
 
-    public function primary($name, $col)
+    public function primary(string $name, $col)
     {
         if ($this->has_primary) {
             throw new Exception(sprintf('Table %s already has a primary key', $this->name));
@@ -522,7 +519,7 @@ class dbStructTable
         return $this->newKey('primary', $name, $cols);
     }
 
-    public function unique($name, $col)
+    public function unique(string $name, $col)
     {
         $cols = func_get_args();
         array_shift($cols);
@@ -530,7 +527,7 @@ class dbStructTable
         return $this->newKey('unique', $name, $cols);
     }
 
-    public function index($name, $type, $col)
+    public function index(string $name, string $type, $col)
     {
         $cols = func_get_args();
         array_shift($cols);
@@ -546,7 +543,7 @@ class dbStructTable
         return $this;
     }
 
-    public function reference($name, $c_cols, $p_table, $p_cols, $update = false, $delete = false)
+    public function reference(string $name, $c_cols, string $p_table, $p_cols, bool $update = false, bool $delete = false)
     {
         if (!is_array($p_cols)) {
             $p_cols = [$p_cols];
@@ -566,7 +563,7 @@ class dbStructTable
         ];
     }
 
-    protected function newKey($type, $name, $cols)
+    protected function newKey(string $type, string $name, array $cols)
     {
         $this->checkCols($cols);
 
@@ -582,7 +579,7 @@ class dbStructTable
         return $this;
     }
 
-    protected function checkCols($cols)
+    protected function checkCols(array $cols)
     {
         foreach ($cols as $v) {
             if (!preg_match('/^\(.*?\)$/', $v) && !isset($this->fields[$v])) {

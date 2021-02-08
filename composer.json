@@ -1,28 +1,28 @@
 {
-    "name": "dotclear/clearbricks",
-    "description": "Clearbricks is not yet another framework.",
-    "license": "GPL-2.0-only",
-    "authors": [
-        {
-            "name": "Dotclear Team",
-            "email": "dev@dotclear.org"
-        }
-    ],
-    "minimum-stability": "dev",
-    "require": {
-        "php": ">=5.6.0"
-    },
-    "require-dev": {
-        "atoum/atoum": "dev-master",
-        "fzaninotto/faker": "dev-master",
-        "atoum/reports-extension": "dev-master"
-    },
-    "config": {
-        "bin-dir": "bin/"
-    },
-    "autoload": {
-        "psr-0": {
-            "": ""
-        }
+  "name": "dotclear/clearbricks",
+  "description": "Clearbricks is not yet another framework.",
+  "license": "GPL-2.0-only",
+  "authors": [
+    {
+      "name": "Dotclear Team",
+      "email": "dev@dotclear.org"
     }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=7.0.0"
+  },
+  "require-dev": {
+    "atoum/atoum": "dev-master",
+    "fzaninotto/faker": "dev-master",
+    "atoum/reports-extension": "dev-master"
+  },
+  "config": {
+    "bin-dir": "bin/"
+  },
+  "autoload": {
+    "psr-0": {
+      "": ""
+    }
+  }
 }

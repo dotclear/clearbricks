@@ -9,7 +9,6 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-
 class html
 {
     public static $url_root;
@@ -23,7 +22,7 @@ class html
      * @param string $str    String to escape
      * @return    string
      */
-    public static function escapeHTML($str)
+    public static function escapeHTML(string $str): string
     {
         return htmlspecialchars($str, ENT_COMPAT, 'UTF-8');
     }
@@ -33,11 +32,11 @@ class html
      *
      * Returns a string with all entities decoded.
      *
-     * @param string    $str            String to protect
-     * @param string    $keep_special    Keep special characters: &gt; &lt; &amp;
+     * @param string        $str            String to protect
+     * @param string|bool   $keep_special   Keep special characters: &gt; &lt; &amp;
      * @return    string
      */
-    public static function decodeEntities($str, $keep_special = false)
+    public static function decodeEntities(string $str, $keep_special = false): string
     {
         if ($keep_special) {
             $str = str_replace(
@@ -64,9 +63,10 @@ class html
      * @param string    $str        String to clean
      * @return    string
      */
-    public static function clean($str)
+    public static function clean(string $str): string
     {
         $str = strip_tags($str);
+
         return $str;
     }
 
@@ -78,11 +78,12 @@ class html
      * @param string    $str        String to protect
      * @return    string
      */
-    public static function escapeJS($str)
+    public static function escapeJS(string $str): string
     {
         $str = htmlspecialchars($str, ENT_NOQUOTES, 'UTF-8');
         $str = str_replace("'", "\'", $str);
         $str = str_replace('"', '\"', $str);
+
         return $str;
     }
 
@@ -94,7 +95,7 @@ class html
      * @param string    $str        String to escape
      * @return    string
      */
-    public static function escapeURL($str)
+    public static function escapeURL(string $str): string
     {
         return str_replace('&', '&amp;', $str);
     }
@@ -107,7 +108,7 @@ class html
      * @param string    $str        String to satinyze
      * @return    string
      */
-    public static function sanitizeURL($str)
+    public static function sanitizeURL(string $str): string
     {
         return str_replace('%2F', '/', rawurlencode($str));
     }
@@ -120,7 +121,7 @@ class html
      * @param string    $url        URL to transform
      * @return    string
      */
-    public static function stripHostURL($url)
+    public static function stripHostURL(string $url): string
     {
         return preg_replace('|^[a-z]{3,}://.*?(/.*$)|', '$1', $url);
     }
@@ -134,7 +135,7 @@ class html
      * @param string    $root    Base URL
      * @return    string
      */
-    public static function absoluteURLs($str, $root)
+    public static function absoluteURLs(string $str, string $root): string
     {
         self::$url_root = $root;
         $attr           = 'action|background|cite|classid|code|codebase|data|download|formaction|href|longdesc|profile|src|usemap';
@@ -146,10 +147,11 @@ class html
         }
 
         self::$url_root = null;
+
         return $str;
     }
 
-    private static function absoluteURLHandler($m)
+    private static function absoluteURLHandler(array $m): string
     {
         $url = $m[2];
 

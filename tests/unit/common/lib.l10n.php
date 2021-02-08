@@ -200,7 +200,6 @@ class l10n extends atoum
         $this
             ->string(\l10n::getLanguagePluralExpression('aa'))
             ->isEqualTo(\l10n::getLanguagePluralExpression('en'));
-
     }
 
     public function testSimplePlural()
@@ -284,7 +283,7 @@ class l10n extends atoum
 
         $this
             ->string(__($en_str))
-            ->isEqualTo("Pas vraiment une très longue phrase");
+            ->isEqualTo('Pas vraiment une très longue phrase');
 
         if (file_exists($tmp_file)) {
             unlink($tmp_file);
@@ -296,7 +295,7 @@ class l10n extends atoum
         \l10n::init();
 
         $en_str  = 'Not a real long sentence';
-        $fr_str  = "Pas vraiment une très longue phrase";
+        $fr_str  = 'Pas vraiment une très longue phrase';
         $content = 'msgid "' . $en_str . '"' . "\n";
         $content .= 'msgstr ""' . "\n" . '"';
         $content .= implode('"' . "\n" . '" ', explode(' ', $fr_str));
@@ -327,7 +326,7 @@ class l10n extends atoum
 
         $this
             ->array($GLOBALS['__l10n'])
-            ->isIdenticalTo(array('Dotclear has been upgraded.' => 'Dotclear a été mis à jour.'));
+            ->isIdenticalTo(['Dotclear has been upgraded.' => 'Dotclear a été mis à jour.']);
     }
 
     public function testPluralStringsInPhpFile()
@@ -343,7 +342,7 @@ class l10n extends atoum
 
         $this
             ->array($GLOBALS['__l10n'])
-            ->isIdenticalTo(array('The category has been successfully removed.' => array('Catégorie supprimée avec succès.', 'Catégories supprimées avec succès.')));
+            ->isIdenticalTo(['The category has been successfully removed.' => ['Catégorie supprimée avec succès.', 'Catégories supprimées avec succès.']]);
     }
 
     public function testParsePluralExpression()
@@ -351,12 +350,12 @@ class l10n extends atoum
         $this
             ->array(\l10n::parsePluralExpression('nplurals=2; plural=(n > 1)'))
             ->hasSize(2)
-            ->containsValues(array(2, '(n > 1)'));
+            ->containsValues([2, '(n > 1)']);
 
         $this
             ->array(\l10n::parsePluralExpression('nplurals=6; plural=(n == 0 ? 0 : n == 1 ? 1 : n == 2 ? 2 : n % 100 >= 3 && n % 100 <= 10 ? 3 : n % 100 >= 11 ? 4 : 5)'))
             ->hasSize(2)
-            ->containsValues(array(6, '(n == 0  ? ( 0 ) : ( n == 1  ? ( 1 ) : ( n == 2  ? ( 2 ) : ( n % 100 >= 3 && n % 100 <= 10  ? ( 3 ) : ( n % 100 >= 11  ? ( 4 ) : ( 5))))))'));
+            ->containsValues([6, '(n == 0  ? ( 0 ) : ( n == 1  ? ( 1 ) : ( n == 2  ? ( 2 ) : ( n % 100 >= 3 && n % 100 <= 10  ? ( 3 ) : ( n % 100 >= 11  ? ( 4 ) : ( 5))))))']);
     }
 
     public function testGetISOcodes()
@@ -395,41 +394,40 @@ class l10n extends atoum
         $getLangDefs->setAccessible(true);
 
         $this
-            ->array($getLangDefs->invokeArgs(null, array(0)))
+            ->array($getLangDefs->invokeArgs(null, [0]))
             ->isNotEmpty();
 
         $this
-            ->array($getLangDefs->invokeArgs(null, array(13)))
+            ->array($getLangDefs->invokeArgs(null, [13]))
             ->isEmpty();
 
         $this
-            ->array($getLangDefs->invokeArgs(null, array(0)))
+            ->array($getLangDefs->invokeArgs(null, [0]))
             ->string['fr']->isEqualTo('fr');
 
         $this
-            ->array($getLangDefs->invokeArgs(null, array(1)))
+            ->array($getLangDefs->invokeArgs(null, [1]))
             ->string['fr']->isEqualTo('fre');
 
         $this
-            ->array($getLangDefs->invokeArgs(null, array(2)))
+            ->array($getLangDefs->invokeArgs(null, [2]))
             ->string['fr']->isEqualTo('French');
 
         $this
-            ->array($getLangDefs->invokeArgs(null, array(3)))
+            ->array($getLangDefs->invokeArgs(null, [3]))
             ->string['fr']->isEqualTo('Français');
 
         $this
-            ->array($getLangDefs->invokeArgs(null, array(4)))
+            ->array($getLangDefs->invokeArgs(null, [4]))
             ->string['fr']->isEqualTo('ltr');
 
         $this
-            ->array($getLangDefs->invokeArgs(null, array(5)))
+            ->array($getLangDefs->invokeArgs(null, [5]))
             ->integer['fr']->isEqualTo(2);
 
         $this
-            ->array($getLangDefs->invokeArgs(null, array(6)))
+            ->array($getLangDefs->invokeArgs(null, [6]))
             ->string['fr']->isEqualTo('n > 1');
-
     }
 
     /*
@@ -439,6 +437,7 @@ class l10n extends atoum
         $filename = sys_get_temp_dir() . '/temp.po';
 
         file_put_contents($filename, $content);
+
         return $filename;
     }
 }

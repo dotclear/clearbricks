@@ -12,7 +12,7 @@ require_once 'class.mysqli.dbschema.php';
 
 class mysqlimb4Schema extends mysqliSchema
 {
-    public function db_create_table($name, $fields)
+    public function db_create_table(string $name, array $fields)
     {
         $a = [];
 

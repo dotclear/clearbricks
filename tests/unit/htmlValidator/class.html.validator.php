@@ -74,8 +74,8 @@ EODTIDYE;
 EODTIDYF;
 
         $this
-            ->array($validator->getErrors())
-            ->isEmpty();
+            ->string($validator->getErrors())
+            ->isEqualTo('');
 
         $this
             ->variable($validator->perform($validator->getDocument($str)))

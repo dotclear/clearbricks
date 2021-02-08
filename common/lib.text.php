@@ -9,7 +9,6 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-
 class text
 {
     /**
@@ -20,7 +19,7 @@ class text
      * @param string    $email    Email string
      * @return boolean
      */
-    public static function isEmail($email)
+    public static function isEmail(string $email): bool
     {
         return (filter_var($email, FILTER_VALIDATE_EMAIL) !== false);
     }
@@ -34,7 +33,7 @@ class text
      * @param    string    $str        String to deaccent
      * @return    string
      */
-    public static function deaccent($str)
+    public static function deaccent(string $str): string
     {
         $pattern['A']  = '\x{00C0}-\x{00C5}';
         $pattern['AE'] = '\x{00C6}';
@@ -82,7 +81,7 @@ class text
      * @param boolean    $with_slashes    Keep slashes in URL
      * @return string
      */
-    public static function str2URL($str, $with_slashes = true)
+    public static function str2URL(string $str, bool $with_slashes = true): string
     {
         $str = self::deaccent($str);
         $str = preg_replace('/[^A-Za-z0-9_\s\'\:\/[\]-]/', '', $str);
@@ -98,7 +97,7 @@ class text
      * @param boolean    $keep_spaces    Keep spaces in URL
      * @return string
      */
-    public static function tidyURL($str, $keep_slashes = true, $keep_spaces = false)
+    public static function tidyURL(string $str, bool $keep_slashes = true, bool $keep_spaces = false): string
     {
         $str = strip_tags($str);
         $str = str_replace(['?', '&', '#', '=', '+', '<', '>', '"', '%'], '', $str);
@@ -131,7 +130,7 @@ class text
      * @param    integer    $l        Length to keep
      * @return    string
      */
-    public static function cutString($str, $l)
+    public static function cutString(string $str, int $l): string
     {
         $s = preg_split('/([\s]+)/u', $str, -1, PREG_SPLIT_DELIM_CAPTURE);
 
@@ -147,9 +146,8 @@ class text
 
             if ($L > $l) {
                 break;
-            } else {
-                $res .= $v;
             }
+            $res .= $v;
         }
 
         return trim($res);
@@ -163,15 +161,17 @@ class text
      * @param string    $str        Words to split
      * @return array
      */
-    public static function splitWords($str)
+    public static function splitWords(string $str): array
     {
         $non_word = '\x{0000}-\x{002F}\x{003A}-\x{0040}\x{005b}-\x{0060}\x{007B}-\x{007E}\x{00A0}-\x{00BF}\s';
         if (preg_match_all('/([^' . $non_word . ']{3,})/msu', html::clean($str), $match)) {
             foreach ($match[1] as $i => $v) {
                 $match[1][$i] = mb_strtolower($v);
             }
+
             return $match[1];
         }
+
         return [];
     }
 
@@ -183,7 +183,7 @@ class text
      * @param string    $str        String
      * @return string
      */
-    public static function detectEncoding($str)
+    public static function detectEncoding(string $str): string
     {
         return strtolower(mb_detect_encoding($str . ' ',
             'UTF-8,ISO-8859-1,ISO-8859-2,ISO-8859-3,' .
@@ -201,7 +201,7 @@ class text
      * @param string    $encoding    Optionnal "from" encoding
      * @return string
      */
-    public static function toUTF8($str, $encoding = null)
+    public static function toUTF8(string $str, $encoding = null): string
     {
         if (!$encoding) {
             $encoding = self::detectEncoding($str);
@@ -228,10 +228,9 @@ class text
      * @param string    $str        String to search
      * @return integer|false
      */
-    public static function utf8badFind($str)
+    public static function utf8badFind(string $str)
     {
-        $UTF8_BAD =
-        '([\x00-\x7F]' . # ASCII (including control chars)
+        $UTF8_BAD = '([\x00-\x7F]' . # ASCII (including control chars)
         '|[\xC2-\xDF][\x80-\xBF]' . # non-overlong 2-byte
         '|\xE0[\xA0-\xBF][\x80-\xBF]' . # excluding overlongs
         '|[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}' . # straight 3-byte
@@ -251,6 +250,7 @@ class text
             $pos += $bytes;
             $str = substr($str, $bytes);
         }
+
         return false;
     }
 
@@ -265,7 +265,7 @@ class text
      * @param string    $repl    Replacement string
      * @return string
      */
-    public static function cleanUTF8($str, $repl = '?')
+    public static function cleanUTF8(string $str, string $repl = '?'): string
     {
         while (($bad_index = self::utf8badFind($str)) !== false) {
             $str = substr_replace($str, $repl, $bad_index, 1);
@@ -282,7 +282,7 @@ class text
      * @param string    $str        String to clean
      * @return string
      */
-    public static function removeBOM($str)
+    public static function removeBOM(string $str): string
     {
         if (substr_count($str, '﻿')) {
             return str_replace('﻿', '', $str);
@@ -299,7 +299,7 @@ class text
      * @param string    $str        String to encode
      * @return string
      */
-    public static function QPEncode($str)
+    public static function QPEncode(string $str): string
     {
         $res = '';
 
@@ -319,6 +319,7 @@ class text
 
             $res .= $l . "\r\n";
         }
+
         return $res;
     }
 }

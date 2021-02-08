@@ -9,7 +9,6 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-
 class http
 {
     public static $https_scheme_on_443 = false; ///< boolean: Force HTTPS scheme on server port 443 in {@link getHost()}
@@ -23,7 +22,7 @@ class http
      *
      * @return string
      */
-    public static function getHost()
+    public static function getHost(): string
     {
         if (self::$reverse_proxy && isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
             //admin have choose to allow a reverse proxy,
@@ -35,13 +34,14 @@ class http
 
             $scheme = $_SERVER['HTTP_X_FORWARDED_PROTO'];
 
-            $name_port_array = explode(":", $_SERVER['HTTP_HOST']);
+            $name_port_array = explode(':', $_SERVER['HTTP_HOST']);
             $server_name     = $name_port_array[0];
 
             $port = isset($name_port_array[1]) ? ':' . $name_port_array[1] : '';
             if (($port == ':80' && $scheme == 'http') || ($port == ':443' && $scheme == 'https')) {
                 $port = '';
             }
+
             return $scheme . '://' . $server_name . $port;
         }
 
@@ -70,10 +70,11 @@ class http
      *
      * @return string
      */
-    public static function getHostFromURL($url)
+    public static function getHostFromURL(string $url): string
     {
         preg_match('~^(?:((?:[a-z]+:)?//)|:(//))?(?:([^:\r\n]*?)/[^:\r\n]*|([^:\r\n]*))$~', $url, $matches);
         array_shift($matches);
+
         return join($matches);
     }
 
@@ -84,13 +85,13 @@ class http
      *
      * @return string
      */
-    public static function getSelfURI()
+    public static function getSelfURI(): string
     {
         if (substr($_SERVER['REQUEST_URI'], 0, 1) != '/') {
             return self::getHost() . '/' . $_SERVER['REQUEST_URI'];
-        } else {
-            return self::getHost() . $_SERVER['REQUEST_URI'];
         }
+
+        return self::getHost() . $_SERVER['REQUEST_URI'];
     }
 
     /**
@@ -99,7 +100,7 @@ class http
      * @param      string $page Relative URL
      * @return     string full URI
      */
-    protected static function prepareRedirect($page)
+    protected static function prepareRedirect(string $page): string
     {
         if (preg_match('%^http[s]?://%', $page)) {
             $redir = $page;
@@ -119,6 +120,7 @@ class http
                 $redir = $host . $dir . '/' . $page;
             }
         }
+
         return $redir;
     }
 
@@ -129,7 +131,7 @@ class http
      *
      * @param string    $page        Relative URL
      */
-    public static function redirect($page)
+    public static function redirect(string $page): string
     {
         # Close session if exists
         if (session_id()) {
@@ -150,7 +152,7 @@ class http
      * @param string    $path    Path to append
      * @return string
      */
-    public static function concatURL($url, $path)
+    public static function concatURL(string $url, string $path): string
     {
         if (substr($url, -1, 1) != '/') {
             $url .= '/';
@@ -170,9 +172,9 @@ class http
      *
      * @return string
      */
-    public static function realIP()
+    public static function realIP() //: ?string
     {
-        return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
+        return $_SERVER['REMOTE_ADDR'] ?? null;
     }
 
     /**
@@ -183,11 +185,11 @@ class http
      * @param string    $key        HMAC key
      * @return string
      */
-    public static function browserUID($key)
+    public static function browserUID(string $key): string
     {
         $uid = '';
-        $uid .= isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
-        $uid .= isset($_SERVER['HTTP_ACCEPT_CHARSET']) ? $_SERVER['HTTP_ACCEPT_CHARSET'] : '';
+        $uid .= $_SERVER['HTTP_USER_AGENT']     ?? '';
+        $uid .= $_SERVER['HTTP_ACCEPT_CHARSET'] ?? '';
 
         return crypt::hmac($key, $uid);
     }
@@ -199,7 +201,7 @@ class http
      *
      * @return string
      */
-    public static function getAcceptLanguage()
+    public static function getAcceptLanguage(): string
     {
         $dlang = '';
         if (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
@@ -219,7 +221,7 @@ class http
      *
      * @return array
      */
-    public static function getAcceptLanguages()
+    public static function getAcceptLanguages(): array
     {
         $langs = [];
         if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
@@ -247,6 +249,7 @@ class http
                 $langs = array_map('strtolower', array_keys($langs));
             }
         }
+
         return $langs;
     }
 
@@ -259,7 +262,7 @@ class http
      * @param array        $files        Files on which check mtime
      * @param array        $mod_ts        List of timestamps
      */
-    public static function cache($files, $mod_ts = [])
+    public static function cache(array $files, array $mod_ts = [])
     {
         if (empty($files) || !is_array($files)) {
             return;
@@ -294,11 +297,10 @@ class http
                 header($v);
             }
             exit;
-        } else {
-            header('Date: ' . gmdate('D, d M Y H:i:s', $now) . ' GMT');
-            foreach ($headers as $v) {
-                header($v);
-            }
+        }
+        header('Date: ' . gmdate('D, d M Y H:i:s', $now) . ' GMT');
+        foreach ($headers as $v) {
+            header($v);
         }
     }
 
@@ -339,7 +341,7 @@ class http
      * @param string    $code        HTTP code
      * @param string    $msg            Message
      */
-    public static function head($code, $msg = null)
+    public static function head(string $code, $msg = null)
     {
         $status_mode = preg_match('/cgi/', PHP_SAPI);
 
@@ -387,7 +389,7 @@ class http
                 505 => 'HTTP Version Not Supported'
             ];
 
-            $msg = isset($msg_codes[$code]) ? $msg_codes[$code] : '-';
+            $msg = $msg_codes[$code] ?? '-';
         }
 
         if ($status_mode) {
@@ -435,40 +437,9 @@ class http
     }
 
     /**
-     * Unset global variables
-     *
-     * If register_globals is on, removes every GET, POST, COOKIE, REQUEST, SERVER,
-     * ENV, FILES vars from GLOBALS.
+     * Unset global variables (obsolete)
      */
     public static function unsetGlobals()
     {
-        if (!ini_get('register_globals')) {
-            return;
-        }
-
-        if (isset($_REQUEST['GLOBALS'])) {
-            throw new Exception('GLOBALS overwrite attempt detected');
-        }
-
-        # Variables that shouldn't be unset
-        $no_unset = ['GLOBALS', '_GET', '_POST', '_COOKIE', '_REQUEST',
-            '_SERVER', '_ENV', '_FILES'];
-
-        $input = array_merge(
-            $_GET,
-            $_POST,
-            $_COOKIE,
-            $_SERVER,
-            $_ENV,
-            $_FILES,
-            (isset($_SESSION) && is_array($_SESSION) ? $_SESSION : [])
-        );
-
-        foreach ($input as $k => $v) {
-            if (!in_array($k, $no_unset) && isset($GLOBALS[$k])) {
-                $GLOBALS[$k] = null;
-                unset($GLOBALS[$k]);
-            }
-        }
     }
 }

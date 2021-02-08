@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * @class files
  * @brief Files manipulation utilities
@@ -9,25 +10,24 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-
 class files
 {
     public static $dir_mode = null; ///< Default directories mode
 
     public static $mimeType = ///< MIME types
     [
-        'odt'  => 'application/vnd.oasis.opendocument.text',
-        'odp'  => 'application/vnd.oasis.opendocument.presentation',
-        'ods'  => 'application/vnd.oasis.opendocument.spreadsheet',
+        'odt' => 'application/vnd.oasis.opendocument.text',
+        'odp' => 'application/vnd.oasis.opendocument.presentation',
+        'ods' => 'application/vnd.oasis.opendocument.spreadsheet',
 
-        'sxw'  => 'application/vnd.sun.xml.writer',
-        'sxc'  => 'application/vnd.sun.xml.calc',
-        'sxi'  => 'application/vnd.sun.xml.impress',
+        'sxw' => 'application/vnd.sun.xml.writer',
+        'sxc' => 'application/vnd.sun.xml.calc',
+        'sxi' => 'application/vnd.sun.xml.impress',
 
-        'ppt'  => 'application/mspowerpoint',
-        'doc'  => 'application/msword',
-        'xls'  => 'application/msexcel',
-        'rtf'  => 'application/rtf',
+        'ppt' => 'application/mspowerpoint',
+        'doc' => 'application/msword',
+        'xls' => 'application/msexcel',
+        'rtf' => 'application/rtf',
 
         'pdf'  => 'application/pdf',
         'ps'   => 'application/postscript',
@@ -36,18 +36,18 @@ class files
         'json' => 'application/json',
         'xml'  => 'application/xml',
 
-        'bin'  => 'application/octet-stream',
-        'exe'  => 'application/octet-stream',
+        'bin' => 'application/octet-stream',
+        'exe' => 'application/octet-stream',
 
-        'bz2'  => 'application/x-bzip',
-        'deb'  => 'application/x-debian-package',
-        'gz'   => 'application/x-gzip',
-        'jar'  => 'application/x-java-archive',
-        'rar'  => 'application/rar',
-        'rpm'  => 'application/x-redhat-package-manager',
-        'tar'  => 'application/x-tar',
-        'tgz'  => 'application/x-gtar',
-        'zip'  => 'application/zip',
+        'bz2' => 'application/x-bzip',
+        'deb' => 'application/x-debian-package',
+        'gz'  => 'application/x-gzip',
+        'jar' => 'application/x-java-archive',
+        'rar' => 'application/rar',
+        'rpm' => 'application/x-redhat-package-manager',
+        'tar' => 'application/x-tar',
+        'tgz' => 'application/x-gtar',
+        'zip' => 'application/zip',
 
         'aiff' => 'audio/x-aiff',
         'ua'   => 'audio/basic',
@@ -109,7 +109,7 @@ class files
      * @param boolean    $order    Order results
      * @return array
      */
-    public static function scandir($d, $order = true)
+    public static function scandir(string $d, bool $order = true): array
     {
         $res = [];
         $dh  = @opendir($d);
@@ -138,15 +138,17 @@ class files
      * @param string    $f    File name
      * @return string
      */
-    public static function getExtension($f)
+    public static function getExtension(string $f): string
     {
         if (function_exists('pathinfo')) {
             return strtolower(pathinfo($f, PATHINFO_EXTENSION));
-        } else {
-            $f = explode('.', basename($f));
-            if (count($f) <= 1) {return '';}
-            return strtolower($f[count($f) - 1]);
         }
+        $f = explode('.', basename($f));
+        if (count($f) <= 1) {
+            return '';
+        }
+
+        return strtolower($f[count($f) - 1]);
     }
 
     /**
@@ -157,16 +159,16 @@ class files
      * @param string    $f    File name
      * @return string
      */
-    public static function getMimeType($f)
+    public static function getMimeType(string $f): string
     {
         $ext   = self::getExtension($f);
         $types = self::mimeTypes();
 
         if (isset($types[$ext])) {
             return $types[$ext];
-        } else {
-            return 'application/octet-stream';
         }
+
+        return 'application/octet-stream';
     }
 
     /**
@@ -176,7 +178,7 @@ class files
      *
      * @return array
      */
-    public static function mimeTypes()
+    public static function mimeTypes(): array
     {
         return self::$mimeType;
     }
@@ -188,7 +190,7 @@ class files
      *
      * @param array        $tab        New MIME types.
      */
-    public static function registerMimeTypes($tab)
+    public static function registerMimeTypes(array $tab)
     {
         self::$mimeType = array_merge(self::$mimeType, $tab);
     }
@@ -201,13 +203,14 @@ class files
      * @param string    $f    File or directory
      * @return boolean
      */
-    public static function isDeletable($f)
+    public static function isDeletable(string $f): bool
     {
         if (is_file($f)) {
             return is_writable(dirname($f));
         } elseif (is_dir($f)) {
             return (is_writable(dirname($f)) && count(files::scandir($f)) <= 2);
         }
+
         return false;
     }
 
@@ -219,7 +222,7 @@ class files
      * @param string    $dir        Directory patch
      * @return boolean
      */
-    public static function deltree($dir)
+    public static function deltree(string $dir): bool
     {
         $current_dir = opendir($dir);
         while ($entryname = readdir($current_dir)) {
@@ -234,6 +237,7 @@ class files
             }
         }
         closedir($current_dir);
+
         return @rmdir($dir);
     }
 
@@ -244,7 +248,7 @@ class files
      *
      * @param string    $f        File to change
      */
-    public static function touch($f)
+    public static function touch(string $f)
     {
         if (is_writable($f)) {
             if (function_exists('touch')) {
@@ -265,7 +269,7 @@ class files
      * @param string    $f        Directory to create
      * @param boolean    $r        Create parent directories
      */
-    public static function makeDir($f, $r = false)
+    public static function makeDir(string $f, bool $r = false)
     {
         if (empty($f)) {
             return;
@@ -309,7 +313,7 @@ class files
      *
      * @param string    $file        File to change
      */
-    public static function inheritChmod($file)
+    public static function inheritChmod(string $file): bool
     {
         if (!function_exists('fileperms') || !function_exists('chmod')) {
             return false;
@@ -317,9 +321,9 @@ class files
 
         if (self::$dir_mode != null) {
             return @chmod($file, self::$dir_mode);
-        } else {
-            return @chmod($file, fileperms(dirname($file)));
         }
+
+        return @chmod($file, fileperms(dirname($file)));
     }
 
     /**
@@ -330,7 +334,7 @@ class files
      * @param string    $f            File to edit
      * @param string    $f_content    Content to write
      */
-    public static function putContent($f, $f_content)
+    public static function putContent(string $f, string $f_content): bool
     {
         if (file_exists($f) && !is_writable($f)) {
             throw new Exception(__('File is not writable.'));
@@ -344,6 +348,7 @@ class files
 
         fwrite($fp, $f_content, strlen($f_content));
         fclose($fp);
+
         return true;
     }
 
@@ -353,7 +358,7 @@ class files
      * @param integer    $size        Bytes
      * @return string
      */
-    public static function size($size)
+    public static function size(int $size): string
     {
         $kb = 1024;
         $mb = 1024 * $kb;
@@ -361,25 +366,25 @@ class files
         $tb = 1024 * $gb;
 
         if ($size < $kb) {
-            return $size . " B";
-        } else if ($size < $mb) {
-            return round($size / $kb, 2) . " KB";
-        } else if ($size < $gb) {
-            return round($size / $mb, 2) . " MB";
-        } else if ($size < $tb) {
-            return round($size / $gb, 2) . " GB";
-        } else {
-            return round($size / $tb, 2) . " TB";
+            return $size . ' B';
+        } elseif ($size < $mb) {
+            return round($size / $kb, 2) . ' KB';
+        } elseif ($size < $gb) {
+            return round($size / $mb, 2) . ' MB';
+        } elseif ($size < $tb) {
+            return round($size / $gb, 2) . ' GB';
         }
+
+        return round($size / $tb, 2) . ' TB';
     }
 
     /**
      * Converts a human readable file size to bytes.
      *
      * @param string    $v            Size
-     * @return integer
+     * @return float
      */
-    public static function str2bytes($v)
+    public static function str2bytes(string $v): float
     {
         $v    = trim($v);
         $last = strtolower(substr($v, -1, 1));
@@ -392,6 +397,7 @@ class files
             case 'k':
                 $v *= 1024;
         }
+
         return $v;
     }
 
@@ -403,7 +409,7 @@ class files
      * @param array        $file        File array as found in $_FILES
      * @return boolean
      */
-    public static function uploadStatus($file)
+    public static function uploadStatus(array $file): bool
     {
         if (!isset($file['error'])) {
             throw new Exception(__('Not an uploaded file.'));
@@ -415,21 +421,27 @@ class files
             case UPLOAD_ERR_INI_SIZE:
             case UPLOAD_ERR_FORM_SIZE:
                 throw new Exception(__('The uploaded file exceeds the maximum file size allowed.'));
+
                 return false;
             case UPLOAD_ERR_PARTIAL:
                 throw new Exception(__('The uploaded file was only partially uploaded.'));
+
                 return false;
             case UPLOAD_ERR_NO_FILE:
                 throw new Exception(__('No file was uploaded.'));
+
                 return false;
             case UPLOAD_ERR_NO_TMP_DIR:
                 throw new Exception(__('Missing a temporary folder.'));
+
                 return false;
             case UPLOAD_ERR_CANT_WRITE:
                 throw new Exception(__('Failed to write file to disk.'));
+
                 return false;
             case UPLOAD_ERR_EXTENSION:
                 throw new Exception(__('A PHP extension stopped the file upload.'));
+
                 return false;
             default:
                 return true;
@@ -448,7 +460,7 @@ class files
      * @param array        $contents        Contents array. Leave it empty
      * @return array
      */
-    public static function getDirList($dirName, &$contents = null)
+    public static function getDirList(string $dirName, array &$contents = null): array
     {
         if (!$contents) {
             $contents = ['dirs' => [], 'files' => []];
@@ -490,10 +502,11 @@ class files
      * @param string    $n        Filename
      * @return string
      */
-    public static function tidyFileName($n)
+    public static function tidyFileName(string $n): string
     {
         $n = text::deaccent($n);
         $n = preg_replace('/^[.]/u', '', $n);
+
         return preg_replace('/[^A-Za-z0-9._-]/u', '_', $n);
     }
 }
@@ -517,7 +530,7 @@ class path
      * @param boolean    $strict    File should exists
      * @return string
      */
-    public static function real($p, $strict = true)
+    public static function real(string $p, bool $strict = true)
     {
         $os = (DIRECTORY_SEPARATOR == '\\') ? 'win' : 'nix';
 
@@ -587,7 +600,7 @@ class path
      * @param string    $p        File path
      * @return string
      */
-    public static function clean($p)
+    public static function clean(string $p): string
     {
         $p = str_replace('..', '', $p);
         $p = preg_replace('|/{2,}|', '/', $p);
@@ -607,14 +620,14 @@ class path
      *
      * @param string    $f        File path
      */
-    public static function info($f)
+    public static function info(string $f): array
     {
         $p   = pathinfo($f);
         $res = [];
 
         $res['dirname']   = $p['dirname'];
         $res['basename']  = $p['basename'];
-        $res['extension'] = isset($p['extension']) ? $p['extension'] : '';
+        $res['extension'] = $p['extension'] ?? '';
         $res['base']      = preg_replace('/\.' . preg_quote($res['extension'], '/') . '$/', '', $res['basename']);
 
         return $res;
@@ -629,7 +642,7 @@ class path
      * @param string    $root    Root path
      * @return string
      */
-    public static function fullFromRoot($p, $root)
+    public static function fullFromRoot(string $p, string $root): string
     {
         if (substr($p, 0, 1) == '/') {
             return $p;

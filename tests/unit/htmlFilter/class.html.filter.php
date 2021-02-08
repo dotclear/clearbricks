@@ -141,7 +141,7 @@ EODTIDYVMT;
     public function testSimpleOwnTags()
     {
         $filter = new \htmlFilter();
-        $filter->setTags(array('span' => array()));
+        $filter->setTags(['span' => []]);
 
         $this->string($filter->apply('<p id="para">test<span id="sp">x</span></I>', false))
             ->isIdenticalTo('test<span id="sp">x</span>');
@@ -150,7 +150,7 @@ EODTIDYVMT;
     public function testRemovedAttr()
     {
         $filter = new \htmlFilter();
-        $filter->removeTagAttributes('a', array('href'));
+        $filter->removeTagAttributes('a', ['href']);
 
         $this->string($filter->apply('<a href="#" title="test" target="#">test</a>', false))
             ->isIdenticalTo('<a title="test" target="#">test</a>');
@@ -159,7 +159,7 @@ EODTIDYVMT;
     public function testRemovedAttrs()
     {
         $filter = new \htmlFilter();
-        $filter->removeTagAttributes('a', array('target', 'href'));
+        $filter->removeTagAttributes('a', ['target', 'href']);
 
         $this->string($filter->apply('<a href="#" title="test" target="#">test</a>', false))
             ->isIdenticalTo('<a title="test">test</a>');
@@ -253,6 +253,7 @@ EODVA;
     protected function testAllDataProvider()
     {
         require_once __DIR__ . '/../fixtures/data/class.html.filter.php';
+
         return array_values($dataTest);
     }
 

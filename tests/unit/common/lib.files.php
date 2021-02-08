@@ -35,7 +35,7 @@ class files extends atoum
         $items = \files::scandir(TEST_DIRECTORY);
         if (is_array($items)) {
             foreach ($items as $value) {
-                if (in_array(substr($value, 0, 4), array('test', 'temp', 'void'))) {
+                if (in_array(substr($value, 0, 4), ['test', 'temp', 'void'])) {
                     $name = TEST_DIRECTORY . DIRECTORY_SEPARATOR . $value;
                     if (is_dir($name)) {
                         \files::deltree($name);
@@ -51,7 +51,7 @@ class files extends atoum
         $counter = 0;
         $this->cleanTemp();
         // Check if everything is clean (as OS may have a filesystem cache for dir list)
-        while (($items = \files::scandir(TEST_DIRECTORY, true)) !== array('.', '..', '02-two.txt', '1-one.txt', '30-three.txt')) {
+        while (($items = \files::scandir(TEST_DIRECTORY, true)) !== ['.', '..', '02-two.txt', '1-one.txt', '30-three.txt']) {
             $counter++;
             if ($counter < 10) {
                 // Wait 1 second, then clean again
@@ -78,11 +78,11 @@ class files extends atoum
         // Normal (sorted)
         $this
             ->array(\files::scandir(TEST_DIRECTORY))
-            ->isIdenticalTo(array('.', '..', '02-two.txt', '1-one.txt', '30-three.txt'));
+            ->isIdenticalTo(['.', '..', '02-two.txt', '1-one.txt', '30-three.txt']);
         // Not sorted
         $this
             ->array(\files::scandir(TEST_DIRECTORY, false))
-            ->containsValues(array('.', '..', '1-one.txt', '02-two.txt', '30-three.txt'));
+            ->containsValues(['.', '..', '1-one.txt', '02-two.txt', '30-three.txt']);
 
         // DOn't exists
         $this
@@ -97,7 +97,7 @@ class files extends atoum
     public function testExtension()
     {
         $this
-            ->string(\files::getExtension("fichier.txt"))
+            ->string(\files::getExtension('fichier.txt'))
             ->isEqualTo('txt');
 
         $this
@@ -149,7 +149,7 @@ class files extends atoum
      */
     public function testRegisterMimeType()
     {
-        \files::registerMimeTypes(array('text/test'));
+        \files::registerMimeTypes(['text/test']);
         $this
             ->array(\files::mimeTypes())
             ->contains('text/test');
@@ -161,8 +161,8 @@ class files extends atoum
      */
     public function testFileIsDeletable()
     {
-        $tmpname = tempnam(TEST_DIRECTORY, "testfile_1.txt");
-        $file    = fopen($tmpname, "w+");
+        $tmpname = tempnam(TEST_DIRECTORY, 'testfile_1.txt');
+        $file    = fopen($tmpname, 'w+');
         $this
             ->boolean(\files::isDeletable($tmpname))
             ->isTrue();
@@ -194,11 +194,11 @@ class files extends atoum
      */
     public function testDeltree()
     {
-        $dirstructure = join(DIRECTORY_SEPARATOR, array(TEST_DIRECTORY, "temp_3", "tests", "are", "good", "for", "you"));
+        $dirstructure = join(DIRECTORY_SEPARATOR, [TEST_DIRECTORY, 'temp_3', 'tests', 'are', 'good', 'for', 'you']);
         mkdir($dirstructure, 0700, true);
-        touch($dirstructure . DIRECTORY_SEPARATOR . "file.txt");
+        touch($dirstructure . DIRECTORY_SEPARATOR . 'file.txt');
         $this
-            ->boolean(\files::deltree(join(DIRECTORY_SEPARATOR, array(TEST_DIRECTORY, "temp_3"))))
+            ->boolean(\files::deltree(join(DIRECTORY_SEPARATOR, [TEST_DIRECTORY, 'temp_3'])))
             ->isTrue();
 
         $this
@@ -212,7 +212,7 @@ class files extends atoum
      */
     public function testTouch()
     {
-        $file_name = tempnam(TEST_DIRECTORY, "testfile_4.txt");
+        $file_name = tempnam(TEST_DIRECTORY, 'testfile_4.txt');
         $fts       = filemtime($file_name);
         // Must keep at least one second of difference
         sleep(1);
@@ -258,7 +258,7 @@ class files extends atoum
         $dirPath = TEST_DIRECTORY . DIRECTORY_SEPARATOR . 'temp_6/is/a/test/directory/';
         \files::makeDir($dirPath, true);
         $path = '';
-        foreach (array(TEST_DIRECTORY . DIRECTORY_SEPARATOR . 'temp_6', 'is', 'a', 'test', 'directory') as $p) {
+        foreach ([TEST_DIRECTORY . DIRECTORY_SEPARATOR . 'temp_6', 'is', 'a', 'test', 'directory'] as $p) {
             $path .= $p . DIRECTORY_SEPARATOR;
             $this->boolean(is_dir($path));
         }
@@ -404,13 +404,13 @@ class files extends atoum
     public function testUploadStatus()
     {
         // Create a false $_FILES global without error
-        $file = array(
+        $file = [
             'name'     => 'test.jpg',
             'size'     => ini_get('post_max_size'),
             'tmp_name' => 'temptestname.jpg',
             'error'    => UPLOAD_ERR_OK,
             'type'     => 'image/jpeg'
-        );
+        ];
 
         $this
             ->boolean(\files::uploadStatus($file))
@@ -448,7 +448,7 @@ class files extends atoum
         $this
             ->array($arr)
             ->isNotEmpty()
-            ->hasKeys(array('files', 'dirs'));
+            ->hasKeys(['files', 'dirs']);
 
         $this
             ->array($arr['files'])
@@ -465,13 +465,13 @@ class files extends atoum
             ->hasMessage(sprintf('%s is not a directory.', TEST_DIRECTORY . DIRECTORY_SEPARATOR . 'void'));
 
         // Deep structure read
-        $dirstructure = join(DIRECTORY_SEPARATOR, array(TEST_DIRECTORY, "temp_10", "tests", "are", "good", "for", "you"));
+        $dirstructure = join(DIRECTORY_SEPARATOR, [TEST_DIRECTORY, 'temp_10', 'tests', 'are', 'good', 'for', 'you']);
         mkdir($dirstructure, 0700, true);
-        \files::getDirList(join(DIRECTORY_SEPARATOR, array(TEST_DIRECTORY, "temp_10")), $arr);
+        \files::getDirList(join(DIRECTORY_SEPARATOR, [TEST_DIRECTORY, 'temp_10']), $arr);
         $this
             ->array($arr['dirs'])
             ->isNotEmpty();
-        \files::deltree(join(DIRECTORY_SEPARATOR, array(TEST_DIRECTORY, "temp_10")));
+        \files::deltree(join(DIRECTORY_SEPARATOR, [TEST_DIRECTORY, 'temp_10']));
 
         // Unreadable dir
         $dirname = TEST_DIRECTORY . DIRECTORY_SEPARATOR . 'void_11';
@@ -549,7 +549,7 @@ class path extends atoum
         $this
             ->array($info)
             ->isNotEmpty()
-            ->hasKeys(array('dirname', 'basename', 'extension', 'base'));
+            ->hasKeys(['dirname', 'basename', 'extension', 'base']);
 
         $this
             ->string($info['dirname'])

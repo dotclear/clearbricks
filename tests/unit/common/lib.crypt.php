@@ -27,7 +27,8 @@ class crypt extends atoum
     const BIG_KEY_SIZE = 200;
     const DATA_SIZE    = 50;
 
-    private $big_key, $data;
+    private $big_key;
+    private $data;
 
     public function __construct()
     {

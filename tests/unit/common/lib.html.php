@@ -27,7 +27,7 @@ class html extends atoum
      */
     public function testEscapeHTML()
     {
-        $str = "\"<>&";
+        $str = '"<>&';
         $this
             ->string(\html::escapeHTML($str))
             ->isEqualTo('&quot;&lt;&gt;&amp;');
@@ -41,7 +41,6 @@ class html extends atoum
         $this
             ->string(\html::decodeEntities('&lt;body&gt;'))
             ->isEqualTo('<body>');
-
     }
 
     /**

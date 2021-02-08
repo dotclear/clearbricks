@@ -22,21 +22,21 @@ if (class_exists('dbSchema')) {
             'd' => 'set default'
         ];
 
-        public function dbt2udt($type, &$len, &$default)
+        public function dbt2udt(string $type, int &$len, &$default): string
         {
             $type = parent::dbt2udt($type, $len, $default);
 
             return $type;
         }
 
-        public function udt2dbt($type, &$len, &$default)
+        public function udt2dbt(string $type, int &$len, &$default): string
         {
             $type = parent::udt2dbt($type, $len, $default);
 
             return $type;
         }
 
-        public function db_get_tables()
+        public function db_get_tables(): array
         {
             $sql = 'SELECT table_name ' .
                 'FROM information_schema.tables ' .
@@ -52,7 +52,7 @@ if (class_exists('dbSchema')) {
             return $res;
         }
 
-        public function db_get_columns($table)
+        public function db_get_columns(string $table): array
         {
             $sql = 'SELECT column_name, udt_name, character_maximum_length, ' .
             'is_nullable, column_default ' .
@@ -92,7 +92,7 @@ if (class_exists('dbSchema')) {
             return $res;
         }
 
-        public function db_get_keys($table)
+        public function db_get_keys(string $table): array
         {
             $sql = 'SELECT DISTINCT ON(cls.relname) cls.oid, cls.relname as idxname, indisunique::integer, indisprimary::integer, ' .
             'indnatts, tab.relname as tabname, contype, amname ' .
@@ -132,7 +132,7 @@ if (class_exists('dbSchema')) {
             return $res;
         }
 
-        public function db_get_indexes($table)
+        public function db_get_indexes(string $table): array
         {
             $sql = 'SELECT DISTINCT ON(cls.relname) cls.oid, cls.relname as idxname, n.nspname, ' .
             'indnatts, tab.relname as tabname, contype, amname ' .
@@ -171,7 +171,7 @@ if (class_exists('dbSchema')) {
             return $res;
         }
 
-        public function db_get_references($table)
+        public function db_get_references(string $table): array
         {
             $sql = 'SELECT ct.oid, conname, condeferrable, condeferred, confupdtype, ' .
             'confdeltype, confmatchtype, conkey, confkey, conrelid, confrelid, cl.relname as fktab, ' .
@@ -218,7 +218,7 @@ if (class_exists('dbSchema')) {
             return $res;
         }
 
-        public function db_create_table($name, $fields)
+        public function db_create_table(string $name, array $fields)
         {
             $a = [];
 
@@ -251,11 +251,9 @@ if (class_exists('dbSchema')) {
             $this->con->execute($sql);
         }
 
-        public function db_create_field($table, $name, $type, $len, $null, $default)
+        public function db_create_field(string $table, string $name, string $type, int $len, bool $null, $default)
         {
             $type = $this->udt2dbt($type, $len, $default);
-            $len  = $len > 0 ? '(' . $len . ')' : '';
-            $null = $null ? 'NULL' : 'NOT NULL';
 
             if ($default === null) {
                 $default = 'DEFAULT NULL';
@@ -265,13 +263,12 @@ if (class_exists('dbSchema')) {
                 $default = '';
             }
 
-            $sql = 'ALTER TABLE ' . $table . ' ADD COLUMN ' . $name . ' ' .
-                $type . $len . ' ' . $null . ' ' . $default;
+            $sql = 'ALTER TABLE ' . $table . ' ADD COLUMN ' . $name . ' ' . $type . ($len > 0 ? '(' . $len . ')' : '') . ' ' . ($null ? 'NULL' : 'NOT NULL') . ' ' . $default;
 
             $this->con->execute($sql);
         }
 
-        public function db_create_primary($table, $name, $cols)
+        public function db_create_primary(string $table, string $name, array $cols)
         {
             $sql = 'ALTER TABLE ' . $table . ' ' .
             'ADD CONSTRAINT ' . $name . ' PRIMARY KEY (' . implode(',', $cols) . ') ';
@@ -279,7 +276,7 @@ if (class_exists('dbSchema')) {
             $this->con->execute($sql);
         }
 
-        public function db_create_unique($table, $name, $cols)
+        public function db_create_unique(string $table, string $name, array $cols)
         {
             $sql = 'ALTER TABLE ' . $table . ' ' .
             'ADD CONSTRAINT ' . $name . ' UNIQUE (' . implode(',', $cols) . ') ';
@@ -287,7 +284,7 @@ if (class_exists('dbSchema')) {
             $this->con->execute($sql);
         }
 
-        public function db_create_index($table, $name, $type, $cols)
+        public function db_create_index(string $table, string $name, string $type, array $cols)
         {
             $sql = 'CREATE INDEX ' . $name . ' ON ' . $table . ' USING ' . $type .
             '(' . implode(',', $cols) . ') ';
@@ -295,7 +292,7 @@ if (class_exists('dbSchema')) {
             $this->con->execute($sql);
         }
 
-        public function db_create_reference($name, $c_table, $c_cols, $p_table, $p_cols, $update, $delete)
+        public function db_create_reference(string $name, string $c_table, array $c_cols, string $p_table, array $p_cols, bool $update, bool $delete)
         {
             $sql = 'ALTER TABLE ' . $c_table . ' ' .
             'ADD CONSTRAINT ' . $name . ' FOREIGN KEY ' .
@@ -313,12 +310,11 @@ if (class_exists('dbSchema')) {
             $this->con->execute($sql);
         }
 
-        public function db_alter_field($table, $name, $type, $len, $null, $default)
+        public function db_alter_field(string $table, string $name, string $type, int $len, bool $null, $default)
         {
             $type = $this->udt2dbt($type, $len, $default);
-            $len  = (integer) $len > 0 ? '(' . (integer) $len . ')' : '';
 
-            $sql = 'ALTER TABLE ' . $table . ' ALTER COLUMN ' . $name . ' TYPE ' . $type . $len;
+            $sql = 'ALTER TABLE ' . $table . ' ALTER COLUMN ' . $name . ' TYPE ' . $type . ($len > 0 ? '(' . $len . ')' : '');
             $this->con->execute($sql);
 
             if ($default === null) {
@@ -337,7 +333,7 @@ if (class_exists('dbSchema')) {
             $this->con->execute($sql);
         }
 
-        public function db_alter_primary($table, $name, $newname, $cols)
+        public function db_alter_primary(string $table, string $name, string $newname, array $cols)
         {
             $sql = 'ALTER TABLE ' . $table . ' DROP CONSTRAINT ' . $name;
             $this->con->execute($sql);
@@ -345,7 +341,7 @@ if (class_exists('dbSchema')) {
             $this->createPrimary($table, $newname, $cols);
         }
 
-        public function db_alter_unique($table, $name, $newname, $cols)
+        public function db_alter_unique(string $table, string $name, string $newname, array $cols)
         {
             $sql = 'ALTER TABLE ' . $table . ' DROP CONSTRAINT ' . $name;
             $this->con->execute($sql);
@@ -353,7 +349,7 @@ if (class_exists('dbSchema')) {
             $this->createUnique($table, $newname, $cols);
         }
 
-        public function db_alter_index($table, $name, $newname, $type, $cols)
+        public function db_alter_index(string $table, string $name, string $newname, string $type, array $cols)
         {
             $sql = 'DROP INDEX ' . $name;
             $this->con->execute($sql);
@@ -361,7 +357,7 @@ if (class_exists('dbSchema')) {
             $this->createIndex($table, $newname, $type, $cols);
         }
 
-        public function db_alter_reference($name, $newname, $c_table, $c_cols, $p_table, $p_cols, $update, $delete)
+        public function db_alter_reference(string $name, string $newname, string $c_table, array $c_cols, string $p_table, array $p_cols, bool $update, bool $delete)
         {
             $sql = 'ALTER TABLE ' . $c_table . ' DROP CONSTRAINT ' . $name;
             $this->con->execute($sql);
@@ -369,7 +365,7 @@ if (class_exists('dbSchema')) {
             $this->createReference($newname, $c_table, $c_cols, $p_table, $p_cols, $update, $delete);
         }
 
-        public function db_drop_unique($table, $name)
+        public function db_drop_unique(string $table, string $name)
         {
             $sql = 'ALTER TABLE ' . $table . ' DROP CONSTRAINT ' . $name;
             $this->con->execute($sql);
