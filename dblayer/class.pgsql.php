@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * @class pgsqlConnection
  * @brief PostgreSQL Database Driver
@@ -14,10 +15,9 @@
  * @copyright GPL-2.0-only
  */
 
-/** @cond ONCE */
+/* @cond ONCE */
 if (class_exists('dbLayer')) {
-/** @endcond */
-
+    /** @endcond */
     class pgsqlConnection extends dbLayer implements i_dbLayer
     {
         protected $__driver        = 'pgsql';
@@ -113,7 +113,6 @@ if (class_exists('dbLayer')) {
             if (is_resource($handle)) {
                 return pg_parameter_status($handle, 'server_version');
             }
-            return;
         }
 
         public function db_query($handle, $query)
@@ -123,8 +122,10 @@ if (class_exists('dbLayer')) {
                 if ($res === false) {
                     $e      = new Exception($this->db_last_error($handle));
                     $e->sql = $query;
+
                     throw $e;
                 }
+
                 return $res;
             }
         }
@@ -139,6 +140,7 @@ if (class_exists('dbLayer')) {
             if (is_resource($res)) {
                 return pg_num_fields($res);
             }
+
             return 0;
         }
 
@@ -147,6 +149,7 @@ if (class_exists('dbLayer')) {
             if (is_resource($res)) {
                 return pg_num_rows($res);
             }
+
             return 0;
         }
 
@@ -176,6 +179,7 @@ if (class_exists('dbLayer')) {
             if (is_resource($res)) {
                 return pg_result_seek($res, (int) $row);
             }
+
             return false;
         }
 
@@ -191,6 +195,7 @@ if (class_exists('dbLayer')) {
             if (is_resource($handle)) {
                 return pg_last_error($handle);
             }
+
             return false;
         }
 
@@ -254,6 +259,7 @@ if (class_exists('dbLayer')) {
                     }
                 }
             }
+
             return empty($res) ? '' : ' ORDER BY ' . implode(',', $res) . ' ';
         }
 
@@ -267,6 +273,7 @@ if (class_exists('dbLayer')) {
                     $res = array_map(function ($i) use ($fmt) {return sprintf($fmt, $i);}, $v);
                 }
             }
+
             return empty($res) ? '' : implode(',', $res);
         }
 
@@ -298,8 +305,7 @@ if (class_exists('dbLayer')) {
                 }
             }
 
-            $req =
-            'SELECT ' . $name . "(\n" .
+            $req = 'SELECT ' . $name . "(\n" .
             implode(",\n", array_values($data)) .
                 "\n) ";
 
@@ -307,6 +313,6 @@ if (class_exists('dbLayer')) {
         }
     }
 
-/** @cond ONCE */
+    /* @cond ONCE */
 }
-/** @endcond */
+/* @endcond */

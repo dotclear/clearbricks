@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * @class wiki2xhtml
  *
@@ -567,7 +568,7 @@ class wiki2xhtml
             $line = $this->__getLine($i, $type, $mode, $attr);
 
             if ($type != 'pre' || $this->getOpt('parse_pre')) {
-                $line = $this->__inlineWalk($line);
+                $line = $line ? $this->__inlineWalk($line) : '';
             }
 
             $res .= $this->__closeLine($type, $mode, $pre_type, $pre_mode);
@@ -829,7 +830,7 @@ class wiki2xhtml
 
     /* Inline
     --------------------------------------------------- */
-    private function __inlineWalk($str, $allow_only = null): string
+    private function __inlineWalk(string $str, $allow_only = null): string
     {
         $tree = preg_split($this->tag_pattern, $str, -1, PREG_SPLIT_DELIM_CAPTURE);
 

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * @class http
  * @brief HTTP utilities
@@ -338,10 +339,10 @@ class http
      *
      * Sends an HTTP code and message to client.
      *
-     * @param string    $code        HTTP code
+     * @param int    $code        HTTP code
      * @param string    $msg            Message
      */
-    public static function head(string $code, $msg = null)
+    public static function head(int $code, $msg = null)
     {
         $status_mode = preg_match('/cgi/', PHP_SAPI);
 

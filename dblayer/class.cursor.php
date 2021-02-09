@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * @class cursor
  * @brief DBLayer Cursor
@@ -11,7 +12,6 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-
 class cursor
 {
     private $__con;
@@ -110,8 +110,6 @@ class cursor
         if (isset($this->__data[$n])) {
             return $this->__data[$n];
         }
-
-        return;
     }
 
     /**
@@ -201,7 +199,7 @@ class cursor
         $updReq = 'UPDATE ' . $this->__con->escapeSystem($this->__table) . " SET \n";
 
         foreach ($data as $k => $v) {
-            $fields[] = $k . ' = ' . $v . "";
+            $fields[] = $k . ' = ' . $v . '';
         }
 
         $updReq .= implode(",\n", $fields);

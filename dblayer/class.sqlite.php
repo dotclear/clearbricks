@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * @class sqliteConnection
  * @brief SQLite Database Driver
@@ -12,10 +13,9 @@
  * @copyright GPL-2.0-only
  */
 
-/** @cond ONCE */
+/* @cond ONCE */
 if (class_exists('dbLayer')) {
-/** @endcond */
-
+    /** @endcond */
     class sqliteConnection extends dbLayer implements i_dbLayer
     {
         protected $__driver        = 'sqlite';
@@ -116,6 +116,7 @@ if (class_exists('dbLayer')) {
                 if ($res === false) {
                     $e      = new Exception($this->db_last_error($handle));
                     $e->sql = $query;
+
                     throw $e;
                 }
 
@@ -133,6 +134,7 @@ if (class_exists('dbLayer')) {
             if ($res instanceof PDOStatement) {
                 return $res->columnCount();
             }
+
             return 0;
         }
 
@@ -144,6 +146,7 @@ if (class_exists('dbLayer')) {
         {
             if ($res instanceof PDOStatement) {
                 $m = $res->getColumnMeta($position);
+
                 return preg_replace('/^.+\./', '', $m['name']); # we said short_column_names = 1
             }
         }
@@ -184,8 +187,10 @@ if (class_exists('dbLayer')) {
         {
             if ($handle instanceof PDO) {
                 $err = $handle->errorInfo();
+
                 return $err[2] . ' (' . $err[1] . ')';
             }
+
             return false;
         }
 
@@ -194,6 +199,7 @@ if (class_exists('dbLayer')) {
             if ($handle instanceof PDO) {
                 return trim($handle->quote($str), "'");
             }
+
             return $str;
         }
 
@@ -266,6 +272,7 @@ if (class_exists('dbLayer')) {
                     }
                 }
             }
+
             return empty($res) ? '' : ' ORDER BY ' . implode(',', $res) . ' ';
         }
 
@@ -279,6 +286,7 @@ if (class_exists('dbLayer')) {
                     $res = array_map(function ($i) use ($fmt) {return sprintf($fmt, $i);}, $v);
                 }
             }
+
             return empty($res) ? '' : implode(',', $res);
         }
 
@@ -289,6 +297,6 @@ if (class_exists('dbLayer')) {
         }
     }
 
-/** @cond ONCE */
+    /* @cond ONCE */
 }
-/** @endcond */
+/* @endcond */

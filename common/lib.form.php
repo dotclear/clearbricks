@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * @class form
  * @brief HTML Forms creation helpers
@@ -106,7 +107,7 @@ class form
             '</select>' . "\n";
     }
 
-    private static function comboOptions($data, $default): string
+    private static function comboOptions(array $data, $default): string
     {
         $res      = '';
         $option   = '<option value="%1$s"%3$s>%2$s</option>' . "\n";
@@ -742,10 +743,10 @@ class formSelectOption
      *
      * Returns option HTML code
      *
-     * @param boolean  $default  Option is selected
+     * @param string  $default  Value of selected option
      * @return string
      */
-    public function render(bool $default): string
+    public function render(string $default): string
     {
         $attr = $this->html ? ' ' . $this->html : '';
         $attr .= $this->class_name ? ' class="' . $this->class_name . '"' : '';

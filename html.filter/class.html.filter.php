@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * @class htmlFilter
  * @brief HTML code filter

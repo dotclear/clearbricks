@@ -24,7 +24,7 @@ define('CLEARBRICKS_PATH', __DIR__ . '/../..');
 
 require_once CLEARBRICKS_PATH . '/vendor/autoload.php';
 
-$__autoload = array();
+$__autoload = [];
 
 $__autoload['dbStruct']        = CLEARBRICKS_PATH . '/dbschema/class.dbstruct.php';
 $__autoload['dbSchema']        = CLEARBRICKS_PATH . '/dbschema/class.dbschema.php';
@@ -49,4 +49,4 @@ function cb_autoload($name)
         require_once $__autoload[$name];
     }
 }
-spl_autoload_register("cb_autoload");
+spl_autoload_register('cb_autoload');

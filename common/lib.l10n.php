@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * @class l10n
  * @brief Localization tools
@@ -622,7 +623,7 @@ class l10n
     public static function createPluralFunction(int $nplurals, string $expression)
     {
         return function ($n) use ($nplurals, $expression) {
-            $i = eval('return (integer) (' . str_replace('n', $n, $expression) . ');');
+            $i = eval('return (integer) (' . str_replace('n', (string) $n, $expression) . ');');
 
             return ($i < $nplurals) ? $i : $nplurals - 1;
         };

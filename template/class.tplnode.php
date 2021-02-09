@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * @class tplNode
  * @brief Template nodes, for parsing purposes

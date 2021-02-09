@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * @class tplNodeBlockDefinition
  * @brief Block node, for all <tpl:Tag>...</tpl:Tag>
