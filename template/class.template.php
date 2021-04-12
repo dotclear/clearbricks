@@ -44,7 +44,7 @@ class template
         $this->addBlock('Block', [$this, 'blockSection']);
     }
 
-    public function includeFile(array $attr)
+    public function includeFile($attr)
     {
         if (!isset($attr['src'])) {
             return;
@@ -66,7 +66,7 @@ class template
             '} catch (Exception $e) {} ?>' . "\n";
     }
 
-    public function blockSection(array $attr, string $content)
+    public function blockSection($attr, string $content)
     {
         return $content;
     }
