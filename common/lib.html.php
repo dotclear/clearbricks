@@ -22,7 +22,7 @@ class html
      * @param string $str    String to escape
      * @return    string
      */
-    public static function escapeHTML(string $str): string
+    public static function escapeHTML(?string $str): string
     {
         return htmlspecialchars($str, ENT_COMPAT, 'UTF-8');
     }
