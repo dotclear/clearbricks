@@ -23,5 +23,4 @@ use atoum;
  */
 class json extends atoum
 {
-
 }

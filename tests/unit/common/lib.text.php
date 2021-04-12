@@ -45,6 +45,7 @@ class text extends atoum
     protected function testIsEmailAllDataProvider()
     {
         require_once __DIR__ . '/../fixtures/data/lib.text.php';
+
         return array_values($emailTest);
     }
 
@@ -158,7 +159,7 @@ class text extends atoum
             ->isEqualTo(false);
 
         $this
-            ->variable(\text::utf8badFind('Étrange et ' . chr(0xE0A0BF) . ' curieux/=À vous' . chr(0xC280)  . ' !'))
+            ->variable(\text::utf8badFind('Étrange et ' . chr(0xE0A0BF) . ' curieux/=À vous' . chr(0xC280) . ' !'))
             ->isEqualTo(12);
     }
 
@@ -169,7 +170,7 @@ class text extends atoum
             ->isEqualTo('Étrange et curieux/=À vous !');
 
         $this
-            ->string(\text::cleanUTF8('Étrange et ' . chr(0xE0A0BF) . ' curieux/=À vous' . chr(0xC280)  . ' !'))
+            ->string(\text::cleanUTF8('Étrange et ' . chr(0xE0A0BF) . ' curieux/=À vous' . chr(0xC280) . ' !'))
             ->isEqualTo('Étrange et ? curieux/=À vous? !');
     }
 

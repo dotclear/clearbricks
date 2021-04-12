@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * @class dt
  * @brief Date/time utilities
@@ -9,7 +10,6 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-
 class dt
 {
     private static $timezones = null;
@@ -26,9 +26,11 @@ class dt
      * @param string    $tz        Timezone
      * @return    string
      */
-    public static function str($p, $ts = null, $tz = null)
+    public static function str(string $p, $ts = null, string $tz = null): string
     {
-        if ($ts === null) {$ts = time();}
+        if ($ts === null || $ts === false) {
+            $ts = time();
+        }
 
         $hash = '799b4e471dc78154865706469d23d512';
         $p    = preg_replace('/(?<!%)%(a|A)/', '{{' . $hash . '__$1%w__}}', $p);
@@ -60,7 +62,7 @@ class dt
      * @param string    $tz        Timezone
      * @return    string
      */
-    public static function dt2str($p, $dt, $tz = null)
+    public static function dt2str(string $p, string $dt, string $tz = null): string
     {
         return dt::str($p, strtotime($dt), $tz);
     }
@@ -74,10 +76,11 @@ class dt
      * @param string    $tz        Timezone
      * @return    string
      */
-    public static function iso8601($ts, $tz = 'UTC')
+    public static function iso8601(int $ts, string $tz = 'UTC'): string
     {
         $o  = self::getTimeOffset($tz, $ts);
         $of = sprintf('%02u:%02u', abs($o) / 3600, (abs($o) % 3600) / 60);
+
         return date('Y-m-d\\TH:i:s', $ts) . ($o < 0 ? '-' : '+') . $of;
     }
 
@@ -90,11 +93,12 @@ class dt
      * @param string    $tz        Timezone
      * @return    string
      */
-    public static function rfc822($ts, $tz = 'UTC')
+    public static function rfc822(int $ts, string $tz = 'UTC'): string
     {
         # Get offset
         $o  = self::getTimeOffset($tz, $ts);
         $of = sprintf('%02u%02u', abs($o) / 3600, (abs($o) % 3600) / 60);
+
         return strftime('%a, %d %b %Y %H:%M:%S ' . ($o < 0 ? '-' : '+') . $of, $ts);
     }
 
@@ -105,10 +109,11 @@ class dt
      *
      * @param    string    $tz        Timezone
      */
-    public static function setTZ($tz)
+    public static function setTZ(string $tz)
     {
         if (function_exists('date_default_timezone_set')) {
             date_default_timezone_set($tz);
+
             return;
         }
 
@@ -124,7 +129,7 @@ class dt
      *
      * @return string
      */
-    public static function getTZ()
+    public static function getTZ(): string
     {
         if (function_exists('date_default_timezone_get')) {
             return date_default_timezone_get();
@@ -142,7 +147,7 @@ class dt
      * @param integer    $ts        Timestamp
      * @return integer
      */
-    public static function getTimeOffset($tz, $ts = false)
+    public static function getTimeOffset(string $tz, $ts = false): int
     {
         if (!$ts) {
             $ts = time();
@@ -167,7 +172,7 @@ class dt
      * @param integer    $ts        Timestamp
      * @return integer
      */
-    public static function toUTC($ts)
+    public static function toUTC(int $ts): int
     {
         return $ts + self::getTimeOffset('UTC', $ts);
     }
@@ -181,11 +186,12 @@ class dt
      * @param integer    $ts        Timestamp
      * @return integer
      */
-    public static function addTimeZone($tz, $ts = false)
+    public static function addTimeZone(string $tz, $ts = false): int
     {
         if ($ts === false) {
             $ts = time();
         }
+
         return $ts + self::getTimeOffset($tz, $ts);
     }
 
@@ -198,14 +204,14 @@ class dt
      * @param boolean    $groups    Return timezones in arrays of continents
      * @return array
      */
-    public static function getZones($flip = false, $groups = false)
+    public static function getZones(bool $flip = false, bool $groups = false): array
     {
         if (is_null(self::$timezones)) {
             // Read timezones from file
             if (!is_readable($f = dirname(__FILE__) . '/tz.dat')) {
                 return [];
             }
-            $tz = file(dirname(__FILE__) . '/tz.dat');
+            $tz  = file(dirname(__FILE__) . '/tz.dat');
             $res = [];
             foreach ($tz as $v) {
                 $v = trim($v);
@@ -235,7 +241,7 @@ class dt
         return $res;
     }
 
-    private static function _callback($args)
+    private static function _callback($args): string
     {
         $b = [
             1  => '_Jan',

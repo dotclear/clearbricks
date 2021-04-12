@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * @class mysqlimb4Schema
  *
@@ -8,12 +9,11 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
+require_once 'class.mysqli.dbschema.php';
 
-require_once 'class.mysql.dbschema.php';
-
-class mysqlimb4Schema extends mysqlSchema
+class mysqlimb4Schema extends mysqliSchema
 {
-    public function db_create_table($name, $fields)
+    public function db_create_table(string $name, array $fields)
     {
         $a = [];
 
@@ -35,13 +35,11 @@ class mysqlimb4Schema extends mysqlSchema
                 $default = '';
             }
 
-            $a[] =
-            $this->con->escapeSystem($n) . ' ' .
+            $a[] = $this->con->escapeSystem($n) . ' ' .
                 $type . $len . ' ' . $null . ' ' . $default;
         }
 
-        $sql =
-        'CREATE TABLE ' . $this->con->escapeSystem($name) . " (\n" .
+        $sql = 'CREATE TABLE ' . $this->con->escapeSystem($name) . " (\n" .
         implode(",\n", $a) .
             "\n) ENGINE=InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
 

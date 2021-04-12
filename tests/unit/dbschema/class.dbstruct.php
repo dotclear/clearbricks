@@ -34,7 +34,7 @@ class dbStruct extends atoum
 
     public function testMustEscapeNameInCreateTable($driver, $query)
     {
-        $controller              = new \atoum\mock\controller();
+        $controller              = new \atoum\atoum\mock\controller();
         $controller->__construct = function () {};
 
         $driver_class_name = sprintf('\mock\%sConnection', $driver);
@@ -60,11 +60,9 @@ class dbStruct extends atoum
      **/
     protected function testMustEscapeNameInCreateTableDataProvider()
     {
-        $create_query['mysql'] = sprintf('CREATE TABLE `%sblog` (' . "\n", $this->prefix);
-        $create_query['mysql'] .= '`blog_id` varchar(32) NOT NULL ' . "\n";
-        $create_query['mysql'] .= ') ENGINE=InnoDB CHARACTER SET utf8 COLLATE utf8_bin ';
-
-        $create_query['mysqli'] = $create_query['mysql'];
+        $create_query['mysqli'] = sprintf('CREATE TABLE `%sblog` (' . "\n", $this->prefix);
+        $create_query['mysqli'] .= '`blog_id` varchar(32) NOT NULL ' . "\n";
+        $create_query['mysqli'] .= ') ENGINE=InnoDB CHARACTER SET utf8 COLLATE utf8_bin ';
 
         $create_query['mysqlimb4'] = sprintf('CREATE TABLE `%sblog` (' . "\n", $this->prefix);
         $create_query['mysqlimb4'] .= '`blog_id` varchar(32) NOT NULL ' . "\n";
@@ -73,11 +71,10 @@ class dbStruct extends atoum
         $create_query['pgsql'] = sprintf('CREATE TABLE "%sblog" (' . "\n", $this->prefix);
         $create_query['pgsql'] .= 'blog_id varchar(32) NOT NULL ' . "\n" . ')';
 
-        return array(
-            array('pgsql', $create_query['pgsql']),
-            array('mysql', $create_query['mysql']),
-            array('mysqli', $create_query['mysqli']),
-            array('mysqlimb4', $create_query['mysqlimb4'])
-        );
+        return [
+            ['pgsql', $create_query['pgsql']],
+            ['mysqli', $create_query['mysqli']],
+            ['mysqlimb4', $create_query['mysqlimb4']]
+        ];
     }
 }

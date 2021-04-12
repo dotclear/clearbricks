@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * @class crypt
  * @brief Functions to handle passwords or sensitive data
@@ -9,7 +10,6 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-
 class crypt
 {
     /**
@@ -23,20 +23,20 @@ class crypt
      * @param    string    $hashfunc    Hash function (md5 or sha1)
      * @return string
      */
-    public static function hmac($key, $data, $hashfunc = 'sha1')
+    public static function hmac(string $key, string $data, string $hashfunc = 'sha1'): string
     {
-
         if (function_exists('hash_hmac')) {
             if (!in_array($hashfunc, hash_algos())) {
                 $hashfunc = 'sha1';
             }
+
             return hash_hmac($hashfunc, $data, $key);
         }
 
         return self::hmac_legacy($key, $data, $hashfunc);
     }
 
-    public static function hmac_legacy($key, $data, $hashfunc = 'sha1')
+    public static function hmac_legacy(string $key, string $data, string $hashfunc = 'sha1'): string
     {
         // Legacy way
         if ($hashfunc != 'sha1') {
@@ -50,6 +50,7 @@ class crypt
         $ipad = str_repeat(chr(0x36), $blocksize);
         $opad = str_repeat(chr(0x5c), $blocksize);
         $hmac = pack('H*', $hashfunc(($key ^ $opad) . pack('H*', $hashfunc(($key ^ $ipad) . $data))));
+
         return bin2hex($hmac);
     }
 
@@ -61,7 +62,7 @@ class crypt
      * @param      integer $length required length
      * @return     string
      */
-    public static function createPassword($length = 8)
+    public static function createPassword(int $length = 8): string
     {
         $pwd    = [];
         $chars  = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
@@ -70,10 +71,11 @@ class crypt
         for ($i = 0; $i < $length; $i++) {
             $pwd[] = $chars[rand(0, strlen($chars) - 1)];
         }
-        for ($j = 0; $j < (int)($length / 4); $j++) {
+        for ($j = 0; $j < (int) ($length / 4); $j++) {
             $pos       = rand(0, 3) + 4 * $j;
             $pwd[$pos] = $chars2[rand(0, strlen($chars2) - 1)];
         }
+
         return implode('', $pwd);
     }
 }

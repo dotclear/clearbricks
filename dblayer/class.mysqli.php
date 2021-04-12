@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * @class mysqliConnection
  * @brief MySQLi Database Driver
@@ -12,10 +13,9 @@
  * @copyright GPL-2.0-only
  */
 
-/** @cond ONCE */
+/* @cond ONCE */
 if (class_exists('dbLayer')) {
-/** @endcond */
-
+    /** @endcond */
     class mysqliConnection extends dbLayer implements i_dbLayer
     {
         public static $weak_locks = true; ///< boolean: Enables weak locks if true
@@ -29,7 +29,7 @@ if (class_exists('dbLayer')) {
                 throw new Exception('PHP MySQLi functions are not available');
             }
 
-            $port   = ini_get("mysqli.default_port");
+            $port   = ini_get('mysqli.default_port');
             $socket = null;
             if (strpos($host, ':') !== false) {
                 // Port or socket given
@@ -72,7 +72,7 @@ if (class_exists('dbLayer')) {
                     // Setting CHARACTER_SET_DATABASE is obosolete for MySQL 8.0+
                     $this->db_query($link, "SET CHARACTER_SET_DATABASE = 'utf8'");
                 }
-                $link->set_charset("utf8");
+                $link->set_charset('utf8');
             }
         }
 
@@ -88,19 +88,19 @@ if (class_exists('dbLayer')) {
             if ($handle instanceof MySQLi) {
                 return mysqli_get_server_info($handle);
             }
-            return;
         }
 
         public function db_query($handle, $query)
         {
             if ($handle instanceof MySQLi) {
-
                 $res = @mysqli_query($handle, $query);
                 if ($res === false) {
                     $e      = new Exception($this->db_last_error($handle));
                     $e->sql = $query;
+
                     throw $e;
                 }
+
                 return $res;
             }
         }
@@ -116,6 +116,7 @@ if (class_exists('dbLayer')) {
                 //return mysql_num_fields($res);
                 return $res->field_count;
             }
+
             return 0;
         }
 
@@ -124,6 +125,7 @@ if (class_exists('dbLayer')) {
             if ($res instanceof MySQLi_Result) {
                 return $res->num_rows;
             }
+
             return 0;
         }
 
@@ -132,6 +134,7 @@ if (class_exists('dbLayer')) {
             if ($res instanceof MySQLi_Result) {
                 $res->field_seek($position);
                 $finfo = $res->fetch_field();
+
                 return $finfo->name;
             }
         }
@@ -141,6 +144,7 @@ if (class_exists('dbLayer')) {
             if ($res instanceof MySQLi_Result) {
                 $res->field_seek($position);
                 $finfo = $res->fetch_field();
+
                 return $this->_convert_types($finfo->type);
             }
         }
@@ -149,6 +153,7 @@ if (class_exists('dbLayer')) {
         {
             if ($res instanceof MySQLi_Result) {
                 $v = $res->fetch_assoc();
+
                 return ($v === null) ? false : $v;
             }
         }
@@ -175,15 +180,16 @@ if (class_exists('dbLayer')) {
                     return $e . ' (' . mysqli_errno($handle) . ')';
                 }
             }
+
             return false;
         }
 
         public function db_escape_string($str, $handle = null)
         {
             if ($handle instanceof MySQLi) {
-
                 return mysqli_real_escape_string($handle, $str);
             }
+
             return addslashes($str);
         }
 
@@ -237,6 +243,7 @@ if (class_exists('dbLayer')) {
                     $res[]      = $v['field'] . ($v['collate'] ? ' COLLATE utf8_unicode_ci' : '') . ' ' . $v['order'];
                 }
             }
+
             return empty($res) ? '' : ' ORDER BY ' . implode(',', $res) . ' ';
         }
 
@@ -250,12 +257,14 @@ if (class_exists('dbLayer')) {
                     $res = array_map(function ($i) use ($fmt) {return sprintf($fmt, $i);}, $v);
                 }
             }
+
             return empty($res) ? '' : implode(',', $res);
         }
 
         public function concat()
         {
             $args = func_get_args();
+
             return 'CONCAT(' . implode(',', $args) . ')';
         }
 
@@ -267,13 +276,13 @@ if (class_exists('dbLayer')) {
         protected function _convert_types($id)
         {
             $id2type = [
-                '1'   => 'int',
-                '2'   => 'int',
-                '3'   => 'int',
-                '8'   => 'int',
-                '9'   => 'int',
+                '1' => 'int',
+                '2' => 'int',
+                '3' => 'int',
+                '8' => 'int',
+                '9' => 'int',
 
-                '16'  => 'int', //BIT type recognized as unknown with mysql adapter
+                '16' => 'int', //BIT type recognized as unknown with mysql adapter
 
                 '4'   => 'real',
                 '5'   => 'real',
@@ -282,12 +291,12 @@ if (class_exists('dbLayer')) {
                 '253' => 'string',
                 '254' => 'string',
 
-                '10'  => 'date',
-                '11'  => 'time',
-                '12'  => 'datetime',
-                '13'  => 'year',
+                '10' => 'date',
+                '11' => 'time',
+                '12' => 'datetime',
+                '13' => 'year',
 
-                '7'   => 'timestamp',
+                '7' => 'timestamp',
 
                 '252' => 'blob'
 
@@ -302,6 +311,6 @@ if (class_exists('dbLayer')) {
         }
     }
 
-/** @cond ONCE */
+    /* @cond ONCE */
 }
-/** @endcond */
+/* @endcond */

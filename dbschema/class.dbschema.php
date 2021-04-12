@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * @interface i_dbSchema
  *
@@ -8,7 +9,6 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-
 interface i_dbSchema
 {
     /**
@@ -16,7 +16,7 @@ interface i_dbSchema
      *
      * @return     array
      */
-    public function db_get_tables();
+    public function db_get_tables(): array;
 
     /**
      * This method should return an associative array of columns in given table
@@ -31,7 +31,7 @@ interface i_dbSchema
      * @param      string $table Table name
      * @return     array
      */
-    function db_get_columns($table);
+    public function db_get_columns(string $table): array;
 
     /**
      * This method should return an array of keys in given table
@@ -45,7 +45,7 @@ interface i_dbSchema
      * @param      string $table Table name
      * @return     array
      */
-    function db_get_keys($table);
+    public function db_get_keys(string $table): array;
 
     /**
      * This method should return an array of indexes in given table
@@ -58,7 +58,7 @@ interface i_dbSchema
      * @param      string $table Table name
      * @return     array
      */
-    function db_get_indexes($table);
+    public function db_get_indexes(string $table): array;
 
     /**
      * This method should return an array of foreign keys in given table
@@ -74,31 +74,31 @@ interface i_dbSchema
      * @param      string $table Table name
      * @return     array
      */
-    function db_get_references($table);
+    public function db_get_references(string $table): array;
 
-    function db_create_table($name, $fields);
+    public function db_create_table(string $name, array $fields);
 
-    function db_create_field($table, $name, $type, $len, $null, $default);
+    public function db_create_field(string $table, string $name, string $type, int $len, bool $null, $default);
 
-    function db_create_primary($table, $name, $cols);
+    public function db_create_primary(string $table, string $name, array $cols);
 
-    function db_create_unique($table, $name, $cols);
+    public function db_create_unique(string $table, string $name, array $cols);
 
-    function db_create_index($table, $name, $type, $cols);
+    public function db_create_index(string $table, string $name, string $type, array $cols);
 
-    function db_create_reference($name, $c_table, $c_cols, $p_table, $p_cols, $update, $delete);
+    public function db_create_reference(string $name, string $c_table, array $c_cols, string $p_table, array $p_cols, bool $update, bool $delete);
 
-    function db_alter_field($table, $name, $type, $len, $null, $default);
+    public function db_alter_field(string $table, string $name, string $type, int $len, bool $null, $default);
 
-    function db_alter_primary($table, $name, $newname, $cols);
+    public function db_alter_primary(string $table, string $name, string $newname, array $cols);
 
-    function db_alter_unique($table, $name, $newname, $cols);
+    public function db_alter_unique(string $table, string $name, string $newname, array $cols);
 
-    function db_alter_index($table, $name, $newname, $type, $cols);
+    public function db_alter_index(string $table, string $name, string $newname, string $type, array $cols);
 
-    function db_alter_reference($name, $newname, $c_table, $c_cols, $p_table, $p_cols, $update, $delete);
+    public function db_alter_reference(string $name, string $newname, string $c_table, array $c_cols, string $p_table, array $p_cols, bool $update, bool $delete);
 
-    function db_drop_unique($table, $name);
+    public function db_drop_unique(string $table, string $name);
 }
 
 /**
@@ -141,7 +141,7 @@ class dbSchema
      * @param      string $default Default field value (in/out)
      * @return     string
      */
-    public function dbt2udt($type, &$len, &$default)
+    public function dbt2udt(string $type, int &$len, &$default): string
     {
         $c = [
             'bool'              => 'boolean',
@@ -172,7 +172,7 @@ class dbSchema
      * @param      string $default Default field value (in/out)
      * @return     string
      */
-    public function udt2dbt($type, &$len, &$default)
+    public function udt2dbt(string $type, int &$len, &$default): string
     {
         return $type;
     }
@@ -183,7 +183,7 @@ class dbSchema
      * @see        i_dbSchema::db_get_tables
      * @return     array
      */
-    public function getTables()
+    public function getTables(): array
     {
         return $this->db_get_tables();
     }
@@ -196,7 +196,7 @@ class dbSchema
      * @param      string $table Table name
      * @return     array
      */
-    public function getColumns($table)
+    public function getColumns(string $table): array
     {
         return $this->db_get_columns($table);
     }
@@ -209,7 +209,7 @@ class dbSchema
      * @param      string $table Table name
      * @return     array
      */
-    public function getKeys($table)
+    public function getKeys(string $table): array
     {
         return $this->db_get_keys($table);
     }
@@ -222,7 +222,7 @@ class dbSchema
      * @param      string $table Table name
      * @return     array
      */
-    public function getIndexes($table)
+    public function getIndexes(string $table): array
     {
         return $this->db_get_indexes($table);
     }
@@ -235,67 +235,67 @@ class dbSchema
      * @param      string $table Table name
      * @return     array
      */
-    public function getReferences($table)
+    public function getReferences(string $table): array
     {
         return $this->db_get_references($table);
     }
 
-    public function createTable($name, $fields)
+    public function createTable(string $name, array $fields)
     {
         return $this->db_create_table($name, $fields);
     }
 
-    public function createField($table, $name, $type, $len, $null, $default)
+    public function createField(string $table, string $name, string $type, int $len, bool $null, $default)
     {
         return $this->db_create_field($table, $name, $type, $len, $null, $default);
     }
 
-    public function createPrimary($table, $name, $cols)
+    public function createPrimary(string $table, string $name, array $cols)
     {
         return $this->db_create_primary($table, $name, $cols);
     }
 
-    public function createUnique($table, $name, $cols)
+    public function createUnique(string $table, string $name, array $cols)
     {
         return $this->db_create_unique($table, $name, $cols);
     }
 
-    public function createIndex($table, $name, $type, $cols)
+    public function createIndex(string $table, string $name, string $type, array $cols)
     {
         return $this->db_create_index($table, $name, $type, $cols);
     }
 
-    public function createReference($name, $c_table, $c_cols, $p_table, $p_cols, $update, $delete)
+    public function createReference(string $name, string $c_table, array $c_cols, string $p_table, array $p_cols, bool $update, bool $delete)
     {
         return $this->db_create_reference($name, $c_table, $c_cols, $p_table, $p_cols, $update, $delete);
     }
 
-    public function alterField($table, $name, $type, $len, $null, $default)
+    public function alterField(string $table, string $name, string $type, int $len, bool $null, $default)
     {
         return $this->db_alter_field($table, $name, $type, $len, $null, $default);
     }
 
-    public function alterPrimary($table, $name, $newname, $cols)
+    public function alterPrimary(string $table, string $name, string $newname, array $cols)
     {
         return $this->db_alter_primary($table, $name, $newname, $cols);
     }
 
-    public function alterUnique($table, $name, $newname, $cols)
+    public function alterUnique(string $table, string $name, string $newname, array $cols)
     {
         return $this->db_alter_unique($table, $name, $newname, $cols);
     }
 
-    public function alterIndex($table, $name, $newname, $type, $cols)
+    public function alterIndex(string $table, string $name, string $newname, string $type, array $cols)
     {
         return $this->db_alter_index($table, $name, $newname, $type, $cols);
     }
 
-    public function alterReference($name, $newname, $c_table, $c_cols, $p_table, $p_cols, $update, $delete)
+    public function alterReference(string $name, string $newname, string $c_table, array $c_cols, string $p_table, array $p_cols, bool $update, bool $delete)
     {
         return $this->db_alter_reference($name, $newname, $c_table, $c_cols, $p_table, $p_cols, $update, $delete);
     }
 
-    public function dropUnique($table, $name)
+    public function dropUnique(string $table, string $name)
     {
         return $this->db_drop_unique($table, $name);
     }

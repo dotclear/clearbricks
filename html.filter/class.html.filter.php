@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * @class htmlFilter
  * @brief HTML code filter
@@ -222,7 +223,6 @@ class htmlFilter
             $config = [
                 'doctype'                     => 'strict',
                 'drop-proprietary-attributes' => true,
-                'drop-font-tags'              => true,
                 'escape-cdata'                => true,
                 'indent'                      => false,
                 'join-classes'                => false,

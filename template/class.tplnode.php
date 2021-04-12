@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * @class tplNode
  * @brief Template nodes, for parsing purposes
@@ -11,7 +12,6 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-
 class tplNode
 {
     # Basic tree structure : links to parent, children forrest
@@ -31,6 +31,7 @@ class tplNode
         foreach ($this->children as $child) {
             $res .= $child->compile($tpl);
         }
+
         return $res;
     }
 
@@ -48,7 +49,6 @@ class tplNode
         foreach ($this->children as $child) {
             $child->setParent($this);
         }
-
     }
 
     # Defines parent for current node
@@ -67,6 +67,6 @@ class tplNode
     # Current node tag
     public function getTag()
     {
-        return "ROOT";
+        return 'ROOT';
     }
 }

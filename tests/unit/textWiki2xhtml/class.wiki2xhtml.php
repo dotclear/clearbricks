@@ -93,7 +93,7 @@ class wiki2xhtml extends atoum
             ->string($wiki2xhtml->transform('----'))
             ->isIdenticalTo('<hr />');
 
-        $wiki2xhtml->setOpts(array(
+        $wiki2xhtml->setOpts([
             'active_urls'        => 0,
             'active_auto_urls'   => 0,
             'active_img'         => 0,
@@ -121,7 +121,7 @@ class wiki2xhtml extends atoum
             'active_pre'         => 0,
             'active_aside'       => 0,
             'active_span'        => 0
-        ));
+        ]);
         $wiki = <<<EOW
 
 URL: https://dotclear.org/
@@ -220,16 +220,16 @@ EOH;
 
         $wiki2xhtml->setOpts('fake');
 
-        $wiki2xhtml->setOpts(array(
+        $wiki2xhtml->setOpts([
             'active_hr' => 0,
-            'active_br' => 0));
+            'active_br' => 0]);
         $this
             ->string($wiki2xhtml->transform('----' . "\n" . 'Line%%%'))
             ->isIdenticalTo('<p><del></del>' . "\n" . 'Line%%%</p>');
 
-        $wiki2xhtml->setOpts(array(
+        $wiki2xhtml->setOpts([
             'active_hr' => 1,
-            'active_br' => 1));
+            'active_br' => 1]);
         $this
             ->string($wiki2xhtml->transform('----' . "\n" . 'Line%%%'))
             ->isIdenticalTo('<hr />' . "\n\n" . '<p>Line<br /></p>');
@@ -368,8 +368,8 @@ EOH;
         $word = $faker->word();
         $lang = $faker->languageCode();
 
-        $search  = array('%url%', '%lang%', '%word%');
-        $replace = array($url, $lang, $word);
+        $search  = ['%url%', '%lang%', '%word%'];
+        $replace = [$url, $lang, $word];
 
         $in  = str_replace($search, $replace, $in);
         $out = str_replace($search, $replace, $out);
@@ -438,8 +438,8 @@ EOH;
         $wiki2xhtml = new \wiki2xhtml();
 
         $in_html           = "Some __strong__ and ''em'' ??dc?? texts with {{citation}} and @@code@@ plus an ??cb?? ??ACME|american company manufacturing everything?? where we can ++insert++ and --delete-- texts, and with some ``<span class=\"focus\">focus</span>`` on specific part";
-        $out_html          = "<p>Some <strong>strong</strong> and <em>em</em> <abbr>dc</abbr> texts with <q>citation</q> and <code>code</code> plus an <abbr>cb</abbr> <abbr title=\"american company manufacturing everything\">ACME</abbr> where we can <ins>insert</ins> and <del>delete</del> texts, and with some <span class=\"focus\">focus</span> on specific part</p>";
-        $out_html_acronyms = "<p>Some <strong>strong</strong> and <em>em</em> <abbr title=\"dotclear\">dc</abbr> texts with <q>citation</q> and <code>code</code> plus an <abbr title=\"clearbicks\">cb</abbr> <abbr title=\"american company manufacturing everything\">ACME</abbr> where we can <ins>insert</ins> and <del>delete</del> texts, and with some <span class=\"focus\">focus</span> on specific part</p>";
+        $out_html          = '<p>Some <strong>strong</strong> and <em>em</em> <abbr>dc</abbr> texts with <q>citation</q> and <code>code</code> plus an <abbr>cb</abbr> <abbr title="american company manufacturing everything">ACME</abbr> where we can <ins>insert</ins> and <del>delete</del> texts, and with some <span class="focus">focus</span> on specific part</p>';
+        $out_html_acronyms = '<p>Some <strong>strong</strong> and <em>em</em> <abbr title="dotclear">dc</abbr> texts with <q>citation</q> and <code>code</code> plus an <abbr title="clearbicks">cb</abbr> <abbr title="american company manufacturing everything">ACME</abbr> where we can <ins>insert</ins> and <del>delete</del> texts, and with some <span class="focus">focus</span> on specific part</p>';
 
         $this
             ->string($wiki2xhtml->transform($in_html))
@@ -457,8 +457,8 @@ EOH;
         $wiki2xhtml = new \wiki2xhtml();
 
         $in_html           = "Some __strong__ and ''em'' texts with {{citation}} and @@code@@ plus an ??ACME|american company manufacturing everything?? where we can ++insert++ and --delete-- texts, and with some ``<span class=\"focus\">focus</span>`` on specific WikiWord part";
-        $out_html          = "<p>Some <strong>strong</strong> and <em>em</em> texts with <q>citation</q> and <code>code</code> plus an <abbr title=\"american company manufacturing everything\">ACME</abbr> where we can <ins>insert</ins> and <del>delete</del> texts, and with some <span class=\"focus\">focus</span> on specific WikiWord part</p>";
-        $out_html_acronyms = "<p>Some <strong>strong</strong> and <em>em</em> texts with <q>citation</q> and <code>code</code> plus an <abbr title=\"american company manufacturing everything\">ACME</abbr> where we can <ins>insert</ins> and <del>delete</del> texts, and with some <span class=\"focus\">focus</span> on specific wikiword part</p>";
+        $out_html          = '<p>Some <strong>strong</strong> and <em>em</em> texts with <q>citation</q> and <code>code</code> plus an <abbr title="american company manufacturing everything">ACME</abbr> where we can <ins>insert</ins> and <del>delete</del> texts, and with some <span class="focus">focus</span> on specific WikiWord part</p>';
+        $out_html_acronyms = '<p>Some <strong>strong</strong> and <em>em</em> texts with <q>citation</q> and <code>code</code> plus an <abbr title="american company manufacturing everything">ACME</abbr> where we can <ins>insert</ins> and <del>delete</del> texts, and with some <span class="focus">focus</span> on specific wikiword part</p>';
 
         $this
             ->string($wiki2xhtml->transform($in_html))
@@ -479,16 +479,16 @@ EOH;
     {
         $wiki2xhtml = new \wiki2xhtml();
 
-        $in_html          = "Test with an [Wiki first link|wiki:first_link] !";
-        $out_html         = "<p>Test with an <a href=\"wiki:first_link\">Wiki first link</a>&nbsp;!</p>";
-        $out_html_special = "<p>Test with an <a href=\"https://example.org/wiki/first_link\" title=\"Wiki\">Wiki first link</a>&nbsp;!</p>";
+        $in_html          = 'Test with an [Wiki first link|wiki:first_link] !';
+        $out_html         = '<p>Test with an <a href="wiki:first_link">Wiki first link</a>&nbsp;!</p>';
+        $out_html_special = '<p>Test with an <a href="https://example.org/wiki/first_link" title="Wiki">Wiki first link</a>&nbsp;!</p>';
 
         $this
             ->string($wiki2xhtml->transform($in_html))
             ->isIdenticalTo($out_html);
 
         $wiki2xhtml->registerFunction('url:wiki', function ($url, $content) {
-            return array('url' => 'https://example.org/wiki/' . substr($url, 5), 'content' => $content, 'title' => 'Wiki');
+            return ['url' => 'https://example.org/wiki/' . substr($url, 5), 'content' => $content, 'title' => 'Wiki'];
         });
         $this
             ->string($wiki2xhtml->transform($in_html))
@@ -499,7 +499,7 @@ EOH;
     {
         $wiki2xhtml = new \wiki2xhtml();
 
-        $in_html          = <<<EOW
+        $in_html = <<<EOW
 ) lorem ipsum 1
 
 ) lorem ipsum 2§§class="title"§§
@@ -513,7 +513,7 @@ EOH;
 ) lorem ipsum 7§§class="title"§§
 EOW;
 
-        $out_html         = <<<EOH
+        $out_html = <<<EOH
 <aside><p>lorem ipsum 1</p></aside>
 
 
@@ -542,174 +542,174 @@ EOH;
 
     protected function testTagTransformDataProvider()
     {
-        return array(
-            array('em', array("''", "''")),
-            array('strong', array('__', '__')),
-            array('abbr', array('??', '??')),
-            array('q', array('{{', '}}')),
-            array('code', array('@@', '@@')),
-            array('del', array('--', '--')),
-            array('ins', array('++', '++')),
-            array('mark', array('""', '""')),
-            array('sup', array('^', '^')),
-            array('sub', array(',,', ',,')),
-            array('i', array('££', '££')),
-            array('span', array(';;', ';;'))
-        );
+        return [
+            ['em', ["''", "''"]],
+            ['strong', ['__', '__']],
+            ['abbr', ['??', '??']],
+            ['q', ['{{', '}}']],
+            ['code', ['@@', '@@']],
+            ['del', ['--', '--']],
+            ['ins', ['++', '++']],
+            ['mark', ['""', '""']],
+            ['sup', ['^', '^']],
+            ['sub', [',,', ',,']],
+            ['i', ['££', '££']],
+            ['span', [';;', ';;']]
+        ];
     }
 
     protected function testBlocksDataProvider()
     {
-        return array(
-            array('\[not a link | not a title label\]',
-                '<p>[not a link | not a title label]</p>', 0),
-            array('``<strong>%s</strong>%s</p><ul><li>%s</li><li>%s</li></ul>``',
-                '<p><strong>%s</strong>%s</p><ul><li>%s</li><li>%s</li></ul></p>', 4),
-            array("* item 1\n** item 1.1\n** item 1.2\n* item 2\n* item 3\n*# item 3.1",
+        return [
+            ['\[not a link | not a title label\]',
+                '<p>[not a link | not a title label]</p>', 0],
+            ['``<strong>%s</strong>%s</p><ul><li>%s</li><li>%s</li></ul>``',
+                '<p><strong>%s</strong>%s</p><ul><li>%s</li><li>%s</li></ul></p>', 4],
+            ["* item 1\n** item 1.1\n** item 1.2\n* item 2\n* item 3\n*# item 3.1",
                 '<ul><li>item 1<ul><li>item 1.1</li><li>item 1.2</li></ul></li>' .
-                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li></ul>', 1),
-            array("# item 1\n#* item 1.1\n#* item 1.2\n# item 2\n# item 3\n## item 3.1\n# item 4",
+                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li></ul>', 1],
+            ["# item 1\n#* item 1.1\n#* item 1.2\n# item 2\n# item 3\n## item 3.1\n# item 4",
                 '<ol><li>item 1<ul><li>item 1.1</li><li>item 1.2</li></ul></li>' .
-                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li><li>item 4</li></ol>', 1),
+                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li><li>item 4</li></ol>', 1],
 
-            array('{{%s}}', '<p><q>%s</q></p>', 1),
-            array('{{%s|%lang%}}', '<p><q lang="%lang%">%s</q></p>', 1),
-            array('{{%s|%lang%|%url%}}', '<p><q lang="%lang%" cite="%url%">%s</q></p>', 1),
+            ['{{%s}}', '<p><q>%s</q></p>', 1],
+            ['{{%s|%lang%}}', '<p><q lang="%lang%">%s</q></p>', 1],
+            ['{{%s|%lang%|%url%}}', '<p><q lang="%lang%" cite="%url%">%s</q></p>', 1],
 
-            array('££%s££', '<p><i>%s</i></p>', 1),
-            array('££%s|%lang%££', '<p><i lang="%lang%">%s</i></p>', 1),
+            ['££%s££', '<p><i>%s</i></p>', 1],
+            ['££%s|%lang%££', '<p><i lang="%lang%">%s</i></p>', 1],
 
-            array(" %s\n %s\n %s", '<pre>%s%s%s</pre>', 3),
-            array('??%1$s|%2$s??', '<p><abbr title="%2$s">%1$s</abbr></p>', 2),
-            array(">%s\n>%s", '<blockquote><p>%s%s</p></blockquote>', 2),
+            [" %s\n %s\n %s", '<pre>%s%s%s</pre>', 3],
+            ['??%1$s|%2$s??', '<p><abbr title="%2$s">%1$s</abbr></p>', 2],
+            [">%s\n>%s", '<blockquote><p>%s%s</p></blockquote>', 2],
 
-            array('----', '<hr />', 0),
-            array(' %s', '<pre>%s</pre>', 1),
-            array(') %s', '<aside><p>%s</p></aside>', 1),
-            array(") %s\n)\n) %s", '<aside><p>%s</p><p>%s</p></aside>', 2),
-            array('!!!!%s', '<h2>%s</h2>', 1),
-            array('!!!%s', '<h3>%s</h3>', 1),
-            array('!!%s', '<h4>%s</h4>', 1),
-            array('!%s', '<h5>%s</h5>', 1),
-            array('~%word%~', '<p><a id="%word%"></a></p>', 1),
+            ['----', '<hr />', 0],
+            [' %s', '<pre>%s</pre>', 1],
+            [') %s', '<aside><p>%s</p></aside>', 1],
+            [") %s\n)\n) %s", '<aside><p>%s</p><p>%s</p></aside>', 2],
+            ['!!!!%s', '<h2>%s</h2>', 1],
+            ['!!!%s', '<h3>%s</h3>', 1],
+            ['!!%s', '<h4>%s</h4>', 1],
+            ['!%s', '<h5>%s</h5>', 1],
+            ['~%word%~', '<p><a id="%word%"></a></p>', 1],
 
-            array('@@%s@@', '<p><code>%s</code></p>', 1),
+            ['@@%s@@', '<p><code>%s</code></p>', 1],
 
-            array('%s$$%s$$', '<p>%s<sup>[<a href="#wiki-footnote-1" id="rev-wiki-footnote-1">1</a>]</sup></p>' .
+            ['%s$$%s$$', '<p>%s<sup>[<a href="#wiki-footnote-1" id="rev-wiki-footnote-1">1</a>]</sup></p>' .
                 '<div class="footnotes"><h4>Note</h4><p>[<a href="#rev-wiki-footnote-1" id="wiki-footnote-1">1</a>] ' .
-                '%s</p></div>', 2),
-            array('%s$$%s$$', '<p>%s<sup>[<a href="#wiki-footnote-1" id="rev-wiki-footnote-1">1</a>]</sup></p>' .
+                '%s</p></div>', 2],
+            ['%s$$%s$$', '<p>%s<sup>[<a href="#wiki-footnote-1" id="rev-wiki-footnote-1">1</a>]</sup></p>' .
                 '<div class="footnotes"><h4>Note</h4><p>[<a href="#rev-wiki-footnote-1" id="wiki-footnote-1">1</a>] ' .
-                '%s</p></div>', 2),
+                '%s</p></div>', 2],
 
-            array("* %s\n///\n%s\n///\n", "<ul><li>%s</li></ul><pre>%s</pre>", 2),
-            array("# %s\n///\n%s\n///\n", "<ol><li>%s</li></ol><pre>%s</pre>", 2),
+            ["* %s\n///\n%s\n///\n", '<ul><li>%s</li></ul><pre>%s</pre>', 2],
+            ["# %s\n///\n%s\n///\n", '<ol><li>%s</li></ol><pre>%s</pre>', 2],
 
-            array("= term", "<dl><dt>term</dt></dl>", 0),
-            array(": definition", "<dl><dd>definition</dd></dl>", 0),
-            array("= %s", "<dl><dt>%s</dt></dl>", 1),
-            array(": %s", "<dl><dd>%s</dd></dl>", 1),
-            array("= %s\n: %s", "<dl><dt>%s</dt><dd>%s</dd></dl>", 2),
-            array("= %s\n= %s\n: %s\n: %s", "<dl><dt>%s</dt><dt>%s</dt><dd>%s</dd><dd>%s</dd></dl>", 4),
+            ['= term', '<dl><dt>term</dt></dl>', 0],
+            [': definition', '<dl><dd>definition</dd></dl>', 0],
+            ['= %s', '<dl><dt>%s</dt></dl>', 1],
+            [': %s', '<dl><dd>%s</dd></dl>', 1],
+            ["= %s\n: %s", '<dl><dt>%s</dt><dd>%s</dd></dl>', 2],
+            ["= %s\n= %s\n: %s\n: %s", '<dl><dt>%s</dt><dt>%s</dt><dd>%s</dd><dd>%s</dd></dl>', 4],
 
             // With attributes
 
-            array("* item 1§§class=\"title\"§§\n** item 1.1\n** item 1.2\n* item 2\n* item 3\n*# item 3.1",
+            ["* item 1§§class=\"title\"§§\n** item 1.1\n** item 1.2\n* item 2\n* item 3\n*# item 3.1",
                 '<ul><li class="title">item 1<ul><li>item 1.1</li><li>item 1.2</li></ul></li>' .
-                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li></ul>', 1),
-            array("# item 1§§class=\"title\"§§\n#* item 1.1\n#* item 1.2\n# item 2\n# item 3\n## item 3.1\n# item 4",
+                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li></ul>', 1],
+            ["# item 1§§class=\"title\"§§\n#* item 1.1\n#* item 1.2\n# item 2\n# item 3\n## item 3.1\n# item 4",
                 '<ol><li class="title">item 1<ul><li>item 1.1</li><li>item 1.2</li></ul></li>' .
-                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li><li>item 4</li></ol>', 1),
+                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li><li>item 4</li></ol>', 1],
 
-            array("* item 1§§class=\"title\"|class=\"parent\"§§\n** item 1.1\n** item 1.2\n* item 2\n* item 3\n*# item 3.1",
+            ["* item 1§§class=\"title\"|class=\"parent\"§§\n** item 1.1\n** item 1.2\n* item 2\n* item 3\n*# item 3.1",
                 '<ul class="parent"><li class="title">item 1<ul><li>item 1.1</li><li>item 1.2</li></ul></li>' .
-                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li></ul>', 1),
-            array("# item 1§§class=\"title\"|class=\"parent\"§§\n#* item 1.1\n#* item 1.2\n# item 2\n# item 3\n## item 3.1\n# item 4",
+                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li></ul>', 1],
+            ["# item 1§§class=\"title\"|class=\"parent\"§§\n#* item 1.1\n#* item 1.2\n# item 2\n# item 3\n## item 3.1\n# item 4",
                 '<ol class="parent"><li class="title">item 1<ul><li>item 1.1</li><li>item 1.2</li></ul></li>' .
-                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li><li>item 4</li></ol>', 1),
+                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li><li>item 4</li></ol>', 1],
 
-            array("* item 1§§|class=\"parent\"§§\n** item 1.1\n** item 1.2\n* item 2\n* item 3\n*# item 3.1",
+            ["* item 1§§|class=\"parent\"§§\n** item 1.1\n** item 1.2\n* item 2\n* item 3\n*# item 3.1",
                 '<ul class="parent"><li>item 1<ul><li>item 1.1</li><li>item 1.2</li></ul></li>' .
-                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li></ul>', 1),
-            array("# item 1§§|class=\"parent\"§§\n#* item 1.1\n#* item 1.2\n# item 2\n# item 3\n## item 3.1\n# item 4",
+                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li></ul>', 1],
+            ["# item 1§§|class=\"parent\"§§\n#* item 1.1\n#* item 1.2\n# item 2\n# item 3\n## item 3.1\n# item 4",
                 '<ol class="parent"><li>item 1<ul><li>item 1.1</li><li>item 1.2</li></ul></li>' .
-                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li><li>item 4</li></ol>', 1),
+                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li><li>item 4</li></ol>', 1],
 
-            array("* item 1§§class=\"title-1\"§§\n** item 1.1\n** item 1.2§§class=\"title-1-2\"§§\n* item 2\n* item 3\n*# item 3.1",
+            ["* item 1§§class=\"title-1\"§§\n** item 1.1\n** item 1.2§§class=\"title-1-2\"§§\n* item 2\n* item 3\n*# item 3.1",
                 '<ul><li class="title-1">item 1<ul><li>item 1.1</li><li class="title-1-2">item 1.2</li></ul></li>' .
-                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li></ul>', 1),
-            array("# item 1§§class=\"title-1\"§§\n#* item 1.1\n#* item 1.2§§class=\"title-1-2\"§§\n# item 2\n# item 3\n## item 3.1\n# item 4",
+                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li></ul>', 1],
+            ["# item 1§§class=\"title-1\"§§\n#* item 1.1\n#* item 1.2§§class=\"title-1-2\"§§\n# item 2\n# item 3\n## item 3.1\n# item 4",
                 '<ol><li class="title-1">item 1<ul><li>item 1.1</li><li class="title-1-2">item 1.2</li></ul></li>' .
-                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li><li>item 4</li></ol>', 1),
+                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li><li>item 4</li></ol>', 1],
 
-            array('----§§class="title"§§', '<hr class="title" />', 0),
-            array(' %s§§class="title"§§', '<pre class="title">%s</pre>', 1),
-            array(') %s§§class="title"§§', '<aside class="title"><p>%s</p></aside>', 1),
-            array(") %s§§class=\"title\"§§\n)\n) %s", '<aside class="title"><p>%s</p><p>%s</p></aside>', 2),
-            array('!!!!%s§§class="title"§§', '<h2 class="title">%s</h2>', 1),
-            array('!!!%s§§class="title"§§', '<h3 class="title">%s</h3>', 1),
-            array('!!%s§§class="title"§§', '<h4 class="title">%s</h4>', 1),
-            array('!%s§§class="title"§§', '<h5 class="title">%s</h5>', 1),
+            ['----§§class="title"§§', '<hr class="title" />', 0],
+            [' %s§§class="title"§§', '<pre class="title">%s</pre>', 1],
+            [') %s§§class="title"§§', '<aside class="title"><p>%s</p></aside>', 1],
+            [") %s§§class=\"title\"§§\n)\n) %s", '<aside class="title"><p>%s</p><p>%s</p></aside>', 2],
+            ['!!!!%s§§class="title"§§', '<h2 class="title">%s</h2>', 1],
+            ['!!!%s§§class="title"§§', '<h3 class="title">%s</h3>', 1],
+            ['!!%s§§class="title"§§', '<h4 class="title">%s</h4>', 1],
+            ['!%s§§class="title"§§', '<h5 class="title">%s</h5>', 1],
 
-            array("= term§§class=\"title\"§§", "<dl><dt class=\"title\">term</dt></dl>", 0),
-            array(": definition§§class=\"title\"§§", "<dl><dd class=\"title\">definition</dd></dl>", 0),
+            ['= term§§class="title"§§', '<dl><dt class="title">term</dt></dl>', 0],
+            [': definition§§class="title"§§', '<dl><dd class="title">definition</dd></dl>', 0],
 
-            array("= term§§class=\"title\"|class=\"parent\"§§", "<dl class=\"parent\"><dt class=\"title\">term</dt></dl>", 0),
-            array(": definition§§class=\"title\"|class=\"parent\"§§", "<dl class=\"parent\"><dd class=\"title\">definition</dd></dl>", 0),
+            ['= term§§class="title"|class="parent"§§', '<dl class="parent"><dt class="title">term</dt></dl>', 0],
+            [': definition§§class="title"|class="parent"§§', '<dl class="parent"><dd class="title">definition</dd></dl>', 0],
 
-            array("= term§§|class=\"parent\"§§", "<dl class=\"parent\"><dt>term</dt></dl>", 0),
-            array(": definition§§|class=\"parent\"§§", "<dl class=\"parent\"><dd>definition</dd></dl>", 0),
+            ['= term§§|class="parent"§§', '<dl class="parent"><dt>term</dt></dl>', 0],
+            [': definition§§|class="parent"§§', '<dl class="parent"><dd>definition</dd></dl>', 0],
 
-            array(">%s§§class=\"title\"§§\n>%s", '<blockquote class="title"><p>%s%s</p></blockquote>', 2),
+            [">%s§§class=\"title\"§§\n>%s", '<blockquote class="title"><p>%s%s</p></blockquote>', 2],
 
-            array('%s§§class="title"§§', '<p class="title">%s</p>', 1),
+            ['%s§§class="title"§§', '<p class="title">%s</p>', 1],
 
-            array('%s __bold§class="bold"§__ lorem \'\'ipsum§class="italic"§\'\'§§class="title"§§', '<p class="title">%s <strong class="bold">bold</strong> lorem <em class="italic">ipsum</em></p>', 1),
+            ['%s __bold§class="bold"§__ lorem \'\'ipsum§class="italic"§\'\'§§class="title"§§', '<p class="title">%s <strong class="bold">bold</strong> lorem <em class="italic">ipsum</em></p>', 1],
 
-            array('%s \'\'%s§class="inline"§\'\' %s', '<p>%s <em class="inline">%s</em> %s</p>', 3),
-            array('%s __%s§class="inline"§__ %s', '<p>%s <strong class="inline">%s</strong> %s</p>', 3),
+            ['%s \'\'%s§class="inline"§\'\' %s', '<p>%s <em class="inline">%s</em> %s</p>', 3],
+            ['%s __%s§class="inline"§__ %s', '<p>%s <strong class="inline">%s</strong> %s</p>', 3],
 
-            array('%s {{%s§class="inline"§}} %s', '<p>%s <q class="inline">%s</q> %s</p>', 3),
-            array('%s {{%s|fr§class="inline"§}} %s', '<p>%s <q class="inline" lang="fr">%s</q> %s</p>', 3),
-            array('%s {{%s|fr|https//dotclear.net/§class="inline"§}} %s', '<p>%s <q class="inline" lang="fr" cite="https//dotclear.net/">%s</q> %s</p>', 3),
+            ['%s {{%s§class="inline"§}} %s', '<p>%s <q class="inline">%s</q> %s</p>', 3],
+            ['%s {{%s|fr§class="inline"§}} %s', '<p>%s <q class="inline" lang="fr">%s</q> %s</p>', 3],
+            ['%s {{%s|fr|https//dotclear.net/§class="inline"§}} %s', '<p>%s <q class="inline" lang="fr" cite="https//dotclear.net/">%s</q> %s</p>', 3],
 
-            array('%s @@%s§class="inline"§@@ %s', '<p>%s <code class="inline">%s</code> %s</p>', 3),
+            ['%s @@%s§class="inline"§@@ %s', '<p>%s <code class="inline">%s</code> %s</p>', 3],
 
-            array('%s --%s§class="inline"§-- %s', '<p>%s <del class="inline">%s</del> %s</p>', 3),
-            array('%s ++%s§class="inline"§++ %s', '<p>%s <ins class="inline">%s</ins> %s</p>', 3),
+            ['%s --%s§class="inline"§-- %s', '<p>%s <del class="inline">%s</del> %s</p>', 3],
+            ['%s ++%s§class="inline"§++ %s', '<p>%s <ins class="inline">%s</ins> %s</p>', 3],
 
-            array('%s ""%s§class="inline"§"" %s', '<p>%s <mark class="inline">%s</mark> %s</p>', 3),
+            ['%s ""%s§class="inline"§"" %s', '<p>%s <mark class="inline">%s</mark> %s</p>', 3],
 
-            array('%s ^%s§class="inline"§^ %s', '<p>%s <sup class="inline">%s</sup> %s</p>', 3),
-            array('%s ,,%s§class="inline"§,, %s', '<p>%s <sub class="inline">%s</sub> %s</p>', 3),
+            ['%s ^%s§class="inline"§^ %s', '<p>%s <sup class="inline">%s</sup> %s</p>', 3],
+            ['%s ,,%s§class="inline"§,, %s', '<p>%s <sub class="inline">%s</sub> %s</p>', 3],
 
-            array('%s ££%s§class="inline"§££ %s', '<p>%s <i class="inline">%s</i> %s</p>', 3),
-            array('%s ££%s|fr§class="inline"§££ %s', '<p>%s <i class="inline" lang="fr">%s</i> %s</p>', 3),
+            ['%s ££%s§class="inline"§££ %s', '<p>%s <i class="inline">%s</i> %s</p>', 3],
+            ['%s ££%s|fr§class="inline"§££ %s', '<p>%s <i class="inline" lang="fr">%s</i> %s</p>', 3],
 
-            array('%s ??%s§class="inline"§?? %s', '<p>%s <abbr class="inline">%s</abbr> %s</p>', 3),
-            array('%s ??%s|Title§class="inline"§?? %s', '<p>%s <abbr class="inline" title="Title">%s</abbr> %s</p>', 3),
+            ['%s ??%s§class="inline"§?? %s', '<p>%s <abbr class="inline">%s</abbr> %s</p>', 3],
+            ['%s ??%s|Title§class="inline"§?? %s', '<p>%s <abbr class="inline" title="Title">%s</abbr> %s</p>', 3],
 
-            array('%s ;;%s§class="inline"§;; %s', '<p>%s <span class="inline">%s</span> %s</p>', 3),
+            ['%s ;;%s§class="inline"§;; %s', '<p>%s <span class="inline">%s</span> %s</p>', 3],
 
-            array('~%word%§class="anchor"§~', '<p><a class="anchor" id="%word%"></a></p>', 1),
+            ['~%word%§class="anchor"§~', '<p><a class="anchor" id="%word%"></a></p>', 1],
 
-            array('[%1$s§class="link"§]', '<p><a class="link" href="%1$s" title="%1$s">%1$s</a></p>', 1),
-            array('[%1$s|%2$s§class="link"§]', '<p><a class="link" href="%2$s">%1$s</a></p>', 2),
-            array('[%1$s|%2$s|fr§class="link"§]', '<p><a class="link" href="%2$s" hreflang="fr">%1$s</a></p>', 2),
-            array('[%1$s|%2$s|fr|%3$s§class="link"§]', '<p><a class="link" href="%2$s" hreflang="fr" title="%3$s">%1$s</a></p>', 2),
+            ['[%1$s§class="link"§]', '<p><a class="link" href="%1$s" title="%1$s">%1$s</a></p>', 1],
+            ['[%1$s|%2$s§class="link"§]', '<p><a class="link" href="%2$s">%1$s</a></p>', 2],
+            ['[%1$s|%2$s|fr§class="link"§]', '<p><a class="link" href="%2$s" hreflang="fr">%1$s</a></p>', 2],
+            ['[%1$s|%2$s|fr|%3$s§class="link"§]', '<p><a class="link" href="%2$s" hreflang="fr" title="%3$s">%1$s</a></p>', 2],
 
-            array('((%s|%s§class="img"§))', '<p><img class="img" src="%s" alt="%s" /></p>', 2),
-            array('((%s|§class="img"§))', '<p><img class="img" src="%s" alt="" /></p>', 1),
-            array('((%s|%s|C§class="img"§))', '<p><img class="img" src="%s" alt="%s" style="display:block; margin:0 auto;" /></p>', 2),
-            array('((%s|%s|C|%s§class="img"§))', '<p><img class="img" src="%s" alt="%s" style="display:block; margin:0 auto;" title="%s" /></p>', 3),
-            array('((%s|%s|C|%s|legend§class="img"§))', '<figure class="img" style="display:block; margin:0 auto;"><img class="img" src="%s" alt="%s" title="%s" /><figcaption>legend</figcaption></figure>', 3),
+            ['((%s|%s§class="img"§))', '<p><img class="img" src="%s" alt="%s" /></p>', 2],
+            ['((%s|§class="img"§))', '<p><img class="img" src="%s" alt="" /></p>', 1],
+            ['((%s|%s|C§class="img"§))', '<p><img class="img" src="%s" alt="%s" style="display:block; margin:0 auto;" /></p>', 2],
+            ['((%s|%s|C|%s§class="img"§))', '<p><img class="img" src="%s" alt="%s" style="display:block; margin:0 auto;" title="%s" /></p>', 3],
+            ['((%s|%s|C|%s|legend§class="img"§))', '<figure class="img" style="display:block; margin:0 auto;"><img class="img" src="%s" alt="%s" title="%s" /><figcaption>legend</figcaption></figure>', 3],
 
-            array('[((%s|%s))|https://dotclear.net/]', '<p><a href="https://dotclear.net/"><img src="%s" alt="%s" /></a></p>', 2),
-            array('[((%s|%s))|https://dotclear.net/§class="link"§]', '<p><a class="link" href="https://dotclear.net/"><img src="%s" alt="%s" /></a></p>', 2),
+            ['[((%s|%s))|https://dotclear.net/]', '<p><a href="https://dotclear.net/"><img src="%s" alt="%s" /></a></p>', 2],
+            ['[((%s|%s))|https://dotclear.net/§class="link"§]', '<p><a class="link" href="https://dotclear.net/"><img src="%s" alt="%s" /></a></p>', 2],
 
-            array('[text __bold§class="bold"§__|https://dotclear.net/§class="link"§]', '<p><a class="bold" class="link" href="https://dotclear.net/">text <strong>bold</strong></a></p>', 2),
-            array('[((%s|%s§class="img"§))|https://dotclear.net/§class="link"§]', '<p><a class="img" class="link" href="https://dotclear.net/"><img src="%s" alt="%s" /></a></p>', 2),
-        );
+            ['[text __bold§class="bold"§__|https://dotclear.net/§class="link"§]', '<p><a class="bold" class="link" href="https://dotclear.net/">text <strong>bold</strong></a></p>', 2],
+            ['[((%s|%s§class="img"§))|https://dotclear.net/§class="link"§]', '<p><a class="img" class="link" href="https://dotclear.net/"><img src="%s" alt="%s" /></a></p>', 2],
+        ];
     }
 
     /*
@@ -717,6 +717,6 @@ EOH;
 
     private function removeSpace($s)
     {
-        return str_replace(array("\r\n", "\n"), array('', ''), $s);
+        return str_replace(["\r\n", "\n"], ['', ''], $s);
     }
 }

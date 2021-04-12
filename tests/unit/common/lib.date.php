@@ -22,7 +22,6 @@ use atoum;
 /**
  * Test clearbrick dt (date) class.
  */
-
 class dt extends atoum
 {
     /**
@@ -32,8 +31,8 @@ class dt extends atoum
     {
         \dt::setTZ('UTC');
         $this
-            ->string(\dt::str("%d%m%Y"))
-            ->isEqualTo(strftime("%d%m%Y"));
+            ->string(\dt::str('%d%m%Y'))
+            ->isEqualTo(strftime('%d%m%Y'));
     }
 
     /**
@@ -90,7 +89,7 @@ class dt extends atoum
         \dt::setTZ('UTC');
         $this
             ->string(\dt::dt2str('%Y', 'Everything but a time'))
-            ->isEqualTo(\dt::str('%Y', 1));
+            ->isEqualTo(\dt::str('%Y'));
     }
 
     /*
@@ -214,7 +213,7 @@ class dt extends atoum
     {
         \dt::setTZ('UTC');
         $this
-            ->string(\dt::str("%a %A %b %B", 1))
+            ->string(\dt::str('%a %A %b %B', 1))
             ->isEqualTo('_Thu Thursday _Jan January');
     }
 }

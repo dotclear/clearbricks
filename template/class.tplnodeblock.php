@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * @class tplNodeBlock
  * @brief Block node, for all <tpl:Tag>...</tpl:Tag>
@@ -9,14 +10,13 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-
 class tplNodeBlock extends tplNode
 {
     protected $attr;
     protected $tag;
     protected $closed;
 
-    public function __construct($tag, $attr)
+    public function __construct(string $tag, array $attr)
     {
         parent::__construct();
         $this->content = '';
@@ -32,15 +32,15 @@ class tplNodeBlock extends tplNode
     {
         return $this->closed;
     }
-    public function compile($tpl)
+    public function compile($tpl): string
     {
         if ($this->closed) {
             $content = parent::compile($tpl);
+
             return $tpl->compileBlockNode($this->tag, $this->attr, $content);
-        } else {
-            // if tag has not been closed, silently ignore its content...
-            return '';
         }
+        // if tag has not been closed, silently ignore its content...
+        return '';
     }
     public function getTag()
     {

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * @class template
  *
@@ -8,7 +9,6 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-
 class template
 {
     private $self_name;
@@ -36,7 +36,7 @@ class template
     protected static $_n;
     protected static $_r;
 
-    public function __construct($cache_dir, $self_name)
+    public function __construct(string $cache_dir, string $self_name)
     {
         $this->setCacheDir($cache_dir);
 
@@ -45,15 +45,21 @@ class template
         $this->addBlock('Block', [$this, 'blockSection']);
     }
 
-    public function includeFile($attr)
+    public function includeFile(array $attr)
     {
-        if (!isset($attr['src'])) {return;}
+        if (!isset($attr['src'])) {
+            return;
+        }
 
         $src = path::clean($attr['src']);
 
         $tpl_file = $this->getFilePath($src);
-        if (!$tpl_file) {return;}
-        if (in_array($tpl_file, $this->compile_stack)) {return;}
+        if (!$tpl_file) {
+            return;
+        }
+        if (in_array($tpl_file, $this->compile_stack)) {
+            return;
+        }
 
         return
         '<?php try { ' .
@@ -61,7 +67,7 @@ class template
             '} catch (Exception $e) {} ?>' . "\n";
     }
 
-    public function blockSection($attr, $content)
+    public function blockSection(array $attr, string $content)
     {
         return $content;
     }
@@ -87,12 +93,12 @@ class template
         $this->tpl_path = array_unique($path);
     }
 
-    public function getPath()
+    public function getPath(): array
     {
         return $this->tpl_path;
     }
 
-    public function setCacheDir($dir)
+    public function setCacheDir(string $dir)
     {
         if (!is_dir($dir)) {
             throw new Exception($dir . ' is not a valid directory.');
@@ -105,7 +111,7 @@ class template
         $this->cache_dir = path::real($dir) . '/';
     }
 
-    public function addBlock($name, $callback)
+    public function addBlock(string $name, $callback)
     {
         if (!is_callable($callback)) {
             throw new Exception('No valid callback for ' . $name);
@@ -114,7 +120,7 @@ class template
         $this->blocks[$name] = $callback;
     }
 
-    public function addValue($name, $callback)
+    public function addValue(string $name, $callback)
     {
         if (!is_callable($callback)) {
             throw new Exception('No valid callback for ' . $name);
@@ -123,22 +129,22 @@ class template
         $this->values[$name] = $callback;
     }
 
-    public function blockExists($name)
+    public function blockExists(string $name): bool
     {
         return isset($this->blocks[$name]);
     }
 
-    public function valueExists($name)
+    public function valueExists(string $name): bool
     {
         return isset($this->values[$name]);
     }
 
-    public function tagExists($name)
+    public function tagExists(string $name): bool
     {
         return $this->blockExists($name) || $this->valueExists($name);
     }
 
-    public function getValueCallback($name)
+    public function getValueCallback(string $name)
     {
         if ($this->valueExists($name)) {
             return $this->values[$name];
@@ -147,7 +153,7 @@ class template
         return false;
     }
 
-    public function getBlockCallback($name)
+    public function getBlockCallback(string $name)
     {
         if ($this->blockExists($name)) {
             return $this->blocks[$name];
@@ -156,22 +162,23 @@ class template
         return false;
     }
 
-    public function getBlocksList()
+    public function getBlocksList(): array
     {
         return array_keys($this->blocks);
     }
 
-    public function getValuesList()
+    public function getValuesList(): array
     {
         return array_keys($this->values);
     }
 
-    public function getFile($file)
+    public function getFile(string $file)
     {
         $tpl_file = $this->getFilePath($file);
 
         if (!$tpl_file) {
             throw new Exception('No template found for ' . $file);
+
             return false;
         }
 
@@ -208,10 +215,11 @@ class template
             fclose($fp);
             files::inheritChmod($dest_file);
         }
+
         return $dest_file;
     }
 
-    public function getFilePath($file)
+    public function getFilePath(string $file)
     {
         foreach ($this->tpl_path as $p) {
             if (file_exists($p . '/' . $file)) {
@@ -222,12 +230,12 @@ class template
         return false;
     }
 
-    public function getParentFilePath($previous_path, $file)
+    public function getParentFilePath(string $previous_path, string $file)
     {
         $check_file = false;
         foreach ($this->tpl_path as $p) {
             if ($check_file && file_exists($p . '/' . $file)) {
-                return $p . "/" . $file;
+                return $p . '/' . $file;
             }
             if ($p == $previous_path) {
                 $check_file = true;
@@ -237,7 +245,7 @@ class template
         return false;
     }
 
-    public function getData($________)
+    public function getData(string $________): string
     {
         self::$_k = array_keys($GLOBALS);
 
@@ -259,7 +267,7 @@ class template
         return self::$_r;
     }
 
-    protected function getCompiledTree($file, &$err)
+    protected function getCompiledTree(string $file, &$err)
     {
         $fc = file_get_contents($file);
 
@@ -325,11 +333,11 @@ class template
                         $str_attr = $match[6];
                         $attr     = $this->getAttrs($match[6]);
                     }
-                    if (strtolower($tag) == "extends") {
-                        if (isset($attr['parent']) && $this->parent_file == "") {
+                    if (strtolower($tag) == 'extends') {
+                        if (isset($attr['parent']) && $this->parent_file == '') {
                             $this->parent_file = $attr['parent'];
                         }
-                    } elseif (strtolower($tag) == "parent") {
+                    } elseif (strtolower($tag) == 'parent') {
                         $node->addChild(new tplNodeValueParent($tag, $attr, $str_attr));
                     } else {
                         $node->addChild(new tplNodeValue($tag, $attr, $str_attr));
@@ -337,7 +345,7 @@ class template
                 } else {
                     // Opening tag, create new node and dive into it
                     $tag = $match[1];
-                    if ($tag == "Block") {
+                    if ($tag == 'Block') {
                         $newnode = new tplNodeBlockDefinition($tag, isset($match[2]) ? $this->getAttrs($match[2]) : []);
                     } else {
                         $newnode = new tplNodeBlock($tag, isset($match[2]) ? $this->getAttrs($match[2]) : []);
@@ -357,7 +365,7 @@ class template
                 html::escapeHTML($node->getTag()));
         }
 
-        $err = "";
+        $err = '';
         if (count($errors) > 0) {
             $err = "\n\n<!-- \n" .
             __('WARNING: the following errors have been found while parsing template file :') .
@@ -365,29 +373,32 @@ class template
             join("\n * ", $errors) .
                 "\n -->\n";
         }
+
         return $rootNode;
     }
 
-    protected function compileFile($file)
+    protected function compileFile(string $file)
     {
         $tree = null;
         while (true) {
             if ($file && !in_array($file, $this->parent_stack)) {
                 $tree = $this->getCompiledTree($file, $err);
 
-                if ($this->parent_file == "__parent__") {
+                if ($this->parent_file == '__parent__') {
                     $this->parent_stack[] = $file;
                     $newfile              = $this->getParentFilePath(dirname($file), basename($file));
                     if (!$newfile) {
                         throw new Exception('No template found for ' . basename($file));
+
                         return false;
                     }
                     $file = $newfile;
-                } elseif ($this->parent_file != "") {
+                } elseif ($this->parent_file != '') {
                     $this->parent_stack[] = $file;
                     $file                 = $this->getFilePath($this->parent_file);
                     if (!$file) {
                         throw new Exception('No template found for ' . $this->parent_file);
+
                         return false;
                     }
                 } else {
@@ -396,14 +407,14 @@ class template
             } else {
                 if ($tree != null) {
                     return $tree->compile($this) . $err;
-                } else {
-                    return '';
                 }
+
+                return '';
             }
         }
     }
 
-    public function compileBlockNode($tag, $attr, $content)
+    public function compileBlockNode(string $tag, array $attr, string $content)
     {
         $res = '';
         if (isset($this->blocks[$tag])) {
@@ -411,10 +422,11 @@ class template
         } elseif ($this->unknown_block_handler != null) {
             $res .= call_user_func($this->unknown_block_handler, $tag, $attr, $content);
         }
+
         return $res;
     }
 
-    public function compileValueNode($tag, $attr, $str_attr)
+    public function compileValueNode(string $tag, array $attr, string $str_attr)
     {
         $res = '';
         if (isset($this->values[$tag])) {
@@ -422,14 +434,15 @@ class template
         } elseif ($this->unknown_value_handler != null) {
             $res .= call_user_func($this->unknown_value_handler, $tag, $attr, $str_attr);
         }
+
         return $res;
     }
 
-    protected function compileValue($match)
+    protected function compileValue(array $match)
     {
         $v        = $match[1];
         $attr     = isset($match[2]) ? $this->getAttrs($match[2]) : [];
-        $str_attr = isset($match[2]) ? $match[2] : null;
+        $str_attr = $match[2] ?? null;
 
         return call_user_func($this->values[$v], $attr, ltrim($str_attr));
     }
@@ -448,7 +461,7 @@ class template
         }
     }
 
-    protected function getAttrs($str)
+    protected function getAttrs(string $str): array
     {
         $res = [];
         if (preg_match_all('|([a-zA-Z0-9_:-]+)="([^"]*)"|ms', $str, $m) > 0) {
@@ -456,6 +469,7 @@ class template
                 $res[$v] = $m[2][$i];
             }
         }
+
         return $res;
     }
 }

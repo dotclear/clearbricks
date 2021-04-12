@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * @class htmlValidator
  * @brief HTML Validator
@@ -12,10 +13,9 @@
  * @copyright GPL-2.0-only
  */
 
-/** @cond ONCE */
+/* @cond ONCE */
 if (class_exists('netHttp')) {
-/** @endcond */
-
+    /** @endcond */
     class htmlValidator extends netHttp
     {
         protected $host       = 'validator.w3.org';
@@ -24,7 +24,7 @@ if (class_exists('netHttp')) {
         protected $user_agent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.3a) Gecko/20021207';
         protected $timeout    = 2;
 
-        protected $html_errors = []; ///<    <b>array</b>        Validation errors list
+        protected $html_errors = ''; ///<    <b>string</b>        Validation errors list
 
         /**
          * Constructor, no parameters.
@@ -42,7 +42,7 @@ if (class_exists('netHttp')) {
          * @param string    $fragment            HTML content
          * @return string
          */
-        public function getDocument($fragment)
+        public function getDocument(string $fragment): string
         {
             return
                 '<!DOCTYPE html>' . "\n" .
@@ -65,7 +65,7 @@ if (class_exists('netHttp')) {
          * @param string    $charset            Document charset
          * @return boolean
          */
-        public function perform($html, $charset = 'UTF-8')
+        public function perform(string $html, string $charset = 'UTF-8'): bool
         {
             $this->setMoreHeader('Content-Type: text/html; charset=' . strtolower($charset));
             $this->post($this->path, $html);
@@ -78,20 +78,20 @@ if (class_exists('netHttp')) {
 
             if (strpos($result, '<p class="success">The document validates according to the specified schema(s).</p>')) {
                 return true;
-            } else {
-                if ($errors = preg_match('#(<ol>.*</ol>)<p class="failure">There were errors.</p>#msU', $result, $matches)) {
-                    $this->html_errors = strip_tags($matches[1], '<ol><li><p><code><strong>');
-                }
-                return false;
             }
+            if ($errors = preg_match('#(<ol>.*</ol>)<p class="failure">There were errors.</p>#msU', $result, $matches)) {
+                $this->html_errors = strip_tags($matches[1], '<ol><li><p><code><strong>');
+            }
+
+            return false;
         }
 
         /**
          * Validation Errors
          *
-         * @return array    HTML validation errors list
+         * @return string    HTML validation errors list
          */
-        public function getErrors()
+        public function getErrors(): string
         {
             return $this->html_errors;
         }
@@ -116,12 +116,12 @@ if (class_exists('netHttp')) {
 
             if ($o->perform($fragment, $charset)) {
                 return ['valid' => true, 'errors' => null];
-            } else {
-                return ['valid' => false, 'errors' => $o->getErrors()];
             }
+
+            return ['valid' => false, 'errors' => $o->getErrors()];
         }
     }
 
-/** @cond ONCE */
+    /* @cond ONCE */
 }
-/** @endcond */
+/* @endcond */

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * @class tplNodeBlockDefinition
  * @brief Block node, for all <tpl:Tag>...</tpl:Tag>
@@ -9,7 +10,6 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-
 class tplNodeBlockDefinition extends tplNodeBlock
 {
     protected static $stack         = [];
@@ -43,7 +43,7 @@ class tplNodeBlockDefinition extends tplNodeBlock
      * @param  template $tpl  the template engine instance
      * @return string       the block (empty string if unavailable)
      */
-    public static function getStackBlock($name, $tpl)
+    public static function getStackBlock(string $name, $tpl)
     {
         $stack = &self::$stack[$name];
         $pos   = $stack['pos'];
@@ -67,11 +67,11 @@ class tplNodeBlockDefinition extends tplNodeBlock
                 // Already compiled, nice ! Simply return string
                 $ret = $stack['blocks'][$pos];
             }
+
             return $ret;
-        } else {
-            // Not found => return empty
-            return '';
         }
+        // Not found => return empty
+        return '';
     }
 
     /**
@@ -79,13 +79,12 @@ class tplNodeBlockDefinition extends tplNodeBlock
      * @param string $tag  Current tag (might be "Block")
      * @param array $attr Tag attributes (must contain "name" attribute)
      */
-    public function __construct($tag, $attr)
+    public function __construct(string $tag, array $attr)
     {
         parent::__construct($tag, $attr);
         $this->name = '';
         if (isset($attr['name'])) {
             $this->name = $attr['name'];
-
         }
     }
 
@@ -110,7 +109,7 @@ class tplNodeBlockDefinition extends tplNodeBlock
      * @param  template $tpl current template engine instance
      * @return string      the compiled block
      */
-    public function compile($tpl)
+    public function compile($tpl): string
     {
         return $tpl->compileBlockNode(
             $this->tag,
