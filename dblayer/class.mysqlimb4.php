@@ -29,11 +29,8 @@ if (class_exists('dbLayer')) {
                 throw new Exception('PHP MySQLi functions are not available');
             }
 
-            $port = ini_get('mysqli.default_port');
-            if ($port !== false) {
-                $port = abs((integer) $port);
-            }
-            $socket = null;
+            $port   = abs((integer) ini_get('mysqli.default_port'));
+            $socket = '';
             if (strpos($host, ':') !== false) {
                 // Port or socket given
                 $bits   = explode(':', $host);
@@ -42,10 +39,10 @@ if (class_exists('dbLayer')) {
                 if (abs((integer) $socket) > 0) {
                     // TCP/IP connection on given port
                     $port   = abs((integer) $socket);
-                    $socket = null;
+                    $socket = '';
                 } else {
                     // Socket connection
-                    $port = null;
+                    $port = 0;
                 }
             }
             if (($link = @mysqli_connect($host, $user, $password, $database, $port, $socket)) === false) {
