@@ -6,7 +6,7 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-define('CLEARBRICKS_VERSION', '1.1');
+define('CLEARBRICKS_VERSION', '1.2');
 
 # Autoload
 $__autoload = [
