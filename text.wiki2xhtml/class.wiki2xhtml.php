@@ -241,7 +241,7 @@ class wiki2xhtml
         }
     }
 
-    public function setOpts($options)
+    public function setOpts($options): void
     {
         if (!is_array($options)) {
             return;

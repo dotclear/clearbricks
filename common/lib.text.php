@@ -202,7 +202,7 @@ class text
      * @param string    $encoding    Optionnal "from" encoding
      * @return string
      */
-    public static function toUTF8(string $str, $encoding = null): string
+    public static function toUTF8(string $str, ?string $encoding = null): string
     {
         if (!$encoding) {
             $encoding = self::detectEncoding($str);

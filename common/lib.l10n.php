@@ -27,7 +27,7 @@ if (!function_exists('__')) {
      * @param      integer  $count Context number for plural form (optionnal)
      * @return     string   translated string
      */
-    function __(string $singular, $plural = null, $count = null): string
+    function __(string $singular, ?string $plural = null, ?int $count = null): string
     {
         return l10n::trans($singular, $plural, $count);
     }
@@ -86,7 +86,7 @@ class l10n
      * @param string $code Language code
      * @return string Current language code
      */
-    public static function lang($code = null): string
+    public static function lang(?string $code = null): string
     {
         if ($code !== null && self::$language_code != $code && self::isCode($code)) {
             self::$language_code             = $code;
@@ -119,7 +119,7 @@ class l10n
      * @param integer $count Context number for plural form (optionnal)
      * @return string Translated string
      */
-    public static function trans(string $singular, $plural = null, $count = null): string
+    public static function trans(string $singular, ?string $plural = null, ?int $count = null): string
     {
         // If no string to translate, return no string
         if ($singular == '') {

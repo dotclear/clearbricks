@@ -12,7 +12,7 @@ declare(strict_types=1);
  */
 class tplNodeValueParent extends tplNodeValue
 {
-    public function compile($tpl): string
+    public function compile(template $tpl): string
     {
         // simply ask currently being displayed to display itself!
         return tplNodeBlockDefinition::renderParent($tpl);

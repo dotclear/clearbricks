@@ -173,7 +173,7 @@ class http
      *
      * @return string
      */
-    public static function realIP() //: ?string
+    public static function realIP(): ?string
     {
         return $_SERVER['REMOTE_ADDR'] ?? null;
     }
@@ -263,7 +263,7 @@ class http
      * @param array        $files        Files on which check mtime
      * @param array        $mod_ts        List of timestamps
      */
-    public static function cache(array $files, array $mod_ts = [])
+    public static function cache(array $files, array $mod_ts = []): void
     {
         if (empty($files) || !is_array($files)) {
             return;
@@ -310,7 +310,7 @@ class http
      *
      * Sends HTTP cache headers (304) according to a list of etags in client request.
      */
-    public static function etag()
+    public static function etag(): void
     {
         # We create an etag from all arguments
         $args = func_get_args();
@@ -342,7 +342,7 @@ class http
      * @param int    $code        HTTP code
      * @param string    $msg            Message
      */
-    public static function head(int $code, $msg = null)
+    public static function head(int $code, $msg = null): void
     {
         $status_mode = preg_match('/cgi/', PHP_SAPI);
 
@@ -406,7 +406,7 @@ class http
      * Trims every value in GET, POST, REQUEST and COOKIE vars.
      * Removes magic quotes if magic_quote_gpc is on.
      */
-    public static function trimRequest()
+    public static function trimRequest(): void
     {
         if (!empty($_GET)) {
             array_walk($_GET, ['self', 'trimRequestInVar']);
@@ -422,7 +422,7 @@ class http
         }
     }
 
-    private static function trimRequestInVar(&$value, $key)
+    private static function trimRequestInVar(&$value, $key): void
     {
         if (is_array($value)) {
             foreach ($value as $k => &$v) {
@@ -440,7 +440,7 @@ class http
     /**
      * Unset global variables (obsolete)
      */
-    public static function unsetGlobals()
+    public static function unsetGlobals(): void
     {
     }
 }

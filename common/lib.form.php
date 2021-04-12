@@ -22,7 +22,7 @@ class form
      * @static
      * @access private
      */
-    private static function getNameAndId($nid, &$name, &$id)
+    private static function getNameAndId($nid, &$name, &$id): void
     {
         if (is_array($nid)) {
             $name = $nid[0];

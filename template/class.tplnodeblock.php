@@ -32,7 +32,7 @@ class tplNodeBlock extends tplNode
     {
         return $this->closed;
     }
-    public function compile($tpl): string
+    public function compile(template $tpl): string
     {
         if ($this->closed) {
             $content = parent::compile($tpl);

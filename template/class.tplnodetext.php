@@ -21,7 +21,7 @@ class tplNodeText extends tplNode
         $this->content = $text;
     }
 
-    public function compile($tpl): string
+    public function compile(template $tpl): string
     {
         return $this->content;
     }

@@ -25,7 +25,7 @@ class tplNode
     }
 
     // Returns compiled block
-    public function compile($tpl)
+    public function compile(template $tpl)
     {
         $res = '';
         foreach ($this->children as $child) {

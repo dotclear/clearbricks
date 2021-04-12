@@ -62,7 +62,7 @@ class dt
      * @param string    $tz        Timezone
      * @return    string
      */
-    public static function dt2str(string $p, string $dt, string $tz = null): string
+    public static function dt2str(string $p, string $dt, ?string $tz = null): string
     {
         return dt::str($p, strtotime($dt), $tz);
     }

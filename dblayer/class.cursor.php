@@ -40,7 +40,7 @@ class cursor
      * @param dbLayer    &$con        Connection object
      * @param string    $table    Table name
      */
-    public function __construct($con, $table)
+    public function __construct(dbLayer $con, string $table)
     {
         $this->__con = &$con;
         $this->setTable($table);
@@ -53,7 +53,7 @@ class cursor
      *
      * @param string    $table    Table name
      */
-    public function setTable($table)
+    public function setTable(string $table): void
     {
         $this->__table = $table;
         $this->__data  = [];
@@ -72,7 +72,7 @@ class cursor
      * @param string    $n        Field name
      * @param mixed        $v        Field value
      */
-    public function setField($n, $v)
+    public function setField(string $n, $v): void
     {
         $this->__data[$n] = $v;
     }
@@ -84,7 +84,7 @@ class cursor
      *
      * @param string    $n        Field name
      */
-    public function unsetField($n)
+    public function unsetField(string $n): void
     {
         unset($this->__data[$n]);
     }
@@ -94,7 +94,7 @@ class cursor
      *
      * @return boolean    true if field named <var>$n</var> exists
      */
-    public function isField($n)
+    public function isField(string $n): bool
     {
         return isset($this->__data[$n]);
     }
@@ -105,7 +105,7 @@ class cursor
      * @see __get()
      * @return mixed    value for a field named <var>$n</var>
      */
-    public function getField($n)
+    public function getField(string $n)
     {
         if (isset($this->__data[$n])) {
             return $this->__data[$n];
@@ -117,7 +117,7 @@ class cursor
      *
      * Magic alias for {@link setField()}
      */
-    public function __set($n, $v)
+    public function __set(string $n, $v): void
     {
         $this->setField($n, $v);
     }
@@ -129,7 +129,7 @@ class cursor
      *
      * @return mixed    value for a field named <var>$n</var>
      */
-    public function __get($n)
+    public function __get(string $n)
     {
         return $this->getField($n);
     }
@@ -139,12 +139,12 @@ class cursor
      *
      * Removes all data from data set
      */
-    public function clean()
+    public function clean(): void
     {
         $this->__data = [];
     }
 
-    private function formatFields()
+    private function formatFields(): array
     {
         $data = [];
 
@@ -172,7 +172,7 @@ class cursor
      *
      * @return string
      */
-    public function getInsert()
+    public function getInsert(): string
     {
         $data = $this->formatFields();
 
@@ -191,7 +191,7 @@ class cursor
      * @param string    $where        WHERE condition
      * @return string
      */
-    public function getUpdate($where)
+    public function getUpdate(string $where): string
     {
         $data   = $this->formatFields();
         $fields = [];
@@ -213,7 +213,7 @@ class cursor
      *
      * Executes the generated INSERT query
      */
-    public function insert()
+    public function insert(): bool
     {
         if (!$this->__table) {
             throw new Exception('No table name.');
@@ -233,7 +233,7 @@ class cursor
      *
      * @param string    $where        WHERE condition
      */
-    public function update($where)
+    public function update(string $where): bool
     {
         if (!$this->__table) {
             throw new Exception('No table name.');

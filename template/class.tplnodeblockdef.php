@@ -23,7 +23,7 @@ class tplNodeBlockDefinition extends tplNodeBlock
      * @param  template $tpl the current template engine instance
      * @return string      the compiled parent block
      */
-    public static function renderParent($tpl)
+    public static function renderParent(template $tpl)
     {
         return self::getStackBlock(self::$current_block, $tpl);
     }
@@ -43,7 +43,7 @@ class tplNodeBlockDefinition extends tplNodeBlock
      * @param  template $tpl  the template engine instance
      * @return string       the block (empty string if unavailable)
      */
-    public static function getStackBlock(string $name, $tpl)
+    public static function getStackBlock(string $name, template $tpl)
     {
         $stack = &self::$stack[$name];
         $pos   = $stack['pos'];
@@ -109,7 +109,7 @@ class tplNodeBlockDefinition extends tplNodeBlock
      * @param  template $tpl current template engine instance
      * @return string      the compiled block
      */
-    public function compile($tpl): string
+    public function compile(template $tpl): string
     {
         return $tpl->compileBlockNode(
             $this->tag,

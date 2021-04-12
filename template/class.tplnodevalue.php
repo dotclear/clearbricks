@@ -25,7 +25,7 @@ class tplNodeValue extends tplNode
         $this->str_attr = $str_attr;
     }
 
-    public function compile($tpl): string
+    public function compile(template $tpl): string
     {
         return $tpl->compileValueNode($this->tag, $this->attr, $this->str_attr);
     }

@@ -190,7 +190,7 @@ class files
      *
      * @param array        $tab        New MIME types.
      */
-    public static function registerMimeTypes(array $tab)
+    public static function registerMimeTypes(array $tab): void
     {
         self::$mimeType = array_merge(self::$mimeType, $tab);
     }
@@ -248,7 +248,7 @@ class files
      *
      * @param string    $f        File to change
      */
-    public static function touch(string $f)
+    public static function touch(string $f): void
     {
         if (is_writable($f)) {
             if (function_exists('touch')) {
@@ -269,7 +269,7 @@ class files
      * @param string    $f        Directory to create
      * @param boolean    $r        Create parent directories
      */
-    public static function makeDir(string $f, bool $r = false)
+    public static function makeDir(string $f, bool $r = false): void
     {
         if (empty($f)) {
             return;

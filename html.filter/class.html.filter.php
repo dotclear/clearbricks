@@ -26,7 +26,7 @@ class htmlFilter
      *
      * Creates a new instance of the class.
      */
-    public function __construct($keep_aria = false, $keep_data = false, $keep_js = false)
+    public function __construct(bool $keep_aria = false, bool $keep_data = false, bool $keep_js = false)
     {
         $this->parser = xml_parser_create('UTF-8');
         xml_set_object($this->parser, $this);
@@ -199,7 +199,7 @@ class htmlFilter
      *
      * @param array        $t        Tags array
      */
-    public function setTags($t)
+    public function setTags(array $t)
     {
         if (is_array($t)) {
             $this->tags = $t;
@@ -217,7 +217,7 @@ class htmlFilter
      *
      * @return string               Filtered string
      */
-    public function apply($str, $tidy = true)
+    public function apply(string $str, bool $tidy = true)
     {
         if ($tidy && extension_loaded('tidy') && class_exists('tidy')) {
             $config = [
@@ -264,20 +264,20 @@ class htmlFilter
         return $this->content;
     }
 
-    private function miniTidy($str)
+    private function miniTidy(string $str)
     {
         $str = preg_replace_callback('%(<(?!(\s*?/|!)).*?>)%msu', [$this, 'miniTidyFixTag'], $str);
 
         return $str;
     }
 
-    private function miniTidyFixTag($m)
+    private function miniTidyFixTag(array $m)
     {
         # Non quoted attributes
         return preg_replace_callback('%(=")(.*?)(")%msu', [$this, 'miniTidyFixAttr'], $m[1]);
     }
 
-    private function miniTidyFixAttr($m)
+    private function miniTidyFixAttr(array $m)
     {
         # Escape entities in attributes value
         return $m[1] . html::escapeHTML(html::decodeEntities($m[2])) . $m[3];
