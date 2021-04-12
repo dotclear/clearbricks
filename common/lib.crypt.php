@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 /**
  * @class crypt
  * @brief Functions to handle passwords or sensitive data

@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 /**
  * @class i_dbLayer
  * @brief Database Abstraction Layer interface

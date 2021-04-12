@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 /**
  * @class l10n
  * @brief Localization tools

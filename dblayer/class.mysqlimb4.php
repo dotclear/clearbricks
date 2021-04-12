@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 /**
  * @class mysqlimb4Connection
  * @brief MySQLi utf8-mb4 Database Driver

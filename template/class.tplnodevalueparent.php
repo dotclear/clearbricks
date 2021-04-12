@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 /**
  * @class tplNodeValueParent
  * @brief Value node, for all {{tpl:Tag}}

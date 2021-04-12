@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 /**
  * @class tplNodeText
  * @brief Text node, for any non-tpl content
