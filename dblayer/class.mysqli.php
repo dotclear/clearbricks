@@ -29,7 +29,10 @@ if (class_exists('dbLayer')) {
                 throw new Exception('PHP MySQLi functions are not available');
             }
 
-            $port   = ini_get('mysqli.default_port');
+            $port = ini_get('mysqli.default_port');
+            if ($port !== false) {
+                $port = abs((integer) $port);
+            }
             $socket = null;
             if (strpos($host, ':') !== false) {
                 // Port or socket given
