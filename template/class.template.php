@@ -413,7 +413,7 @@ class template
         }
     }
 
-    public function compileBlockNode(string $tag, array $attr, string $content)
+    public function compileBlockNode(string $tag, $attr, string $content)
     {
         $res = '';
         if (isset($this->blocks[$tag])) {
@@ -425,7 +425,7 @@ class template
         return $res;
     }
 
-    public function compileValueNode(string $tag, array $attr, string $str_attr)
+    public function compileValueNode(string $tag, $attr, string $str_attr)
     {
         $res = '';
         if (isset($this->values[$tag])) {
