@@ -745,7 +745,7 @@ class formSelectOption
      * @param string  $default  Value of selected option
      * @return string
      */
-    public function render(string $default): string
+    public function render(?string $default): string
     {
         $attr = $this->html ? ' ' . $this->html : '';
         $attr .= $this->class_name ? ' class="' . $this->class_name . '"' : '';
