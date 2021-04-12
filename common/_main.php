@@ -6,8 +6,7 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-
-define('CLEARBRICKS_VERSION', '1.1');
+define('CLEARBRICKS_VERSION', '1.1.1');
 
 # Autoload
 $__autoload = [
@@ -31,7 +30,7 @@ function cb_autoload($name)
         require_once $__autoload[$name];
     }
 }
-spl_autoload_register("cb_autoload");
+spl_autoload_register('cb_autoload');
 
 # We only need l10n __() function
 require_once dirname(__FILE__) . '/lib.l10n.php';
