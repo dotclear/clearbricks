@@ -156,6 +156,7 @@ class wiki2xhtml
     public $functions;
 
     public $tags;
+    public $linetags;
     public $open_tags;
     public $close_tags;
     public $custom_tags = [];
@@ -1284,6 +1285,8 @@ class wiki2xhtml
             # forme de <pre>
             return '<pre>' . htmlspecialchars($this->macros[$id]) . '</pre>';
         }
+
+        return '';
     }
 
     private function __macroHTML($s): string

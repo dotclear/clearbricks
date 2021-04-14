@@ -8,7 +8,6 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-
 class mimeMessage
 {
     protected $from_email       = null;
@@ -40,8 +39,6 @@ class mimeMessage
                 return $body;
             }
         }
-
-        return;
     }
 
     public function getBody()
@@ -64,6 +61,7 @@ class mimeMessage
 
         if ($only_last && is_array($this->headers[$hdr])) {
             $r = $this->headers[$hdr];
+
             return array_pop($r);
         }
 
@@ -103,8 +101,6 @@ class mimeMessage
         if (isset($this->d_parameters['filename'])) {
             return $this->d_parameters['filename'];
         }
-
-        return;
     }
 
     protected function decode($headers, $body, $default_ctype = 'text/plain')
@@ -112,8 +108,7 @@ class mimeMessage
         $headers = $this->parseHeaders($headers);
 
         foreach ($headers as $v) {
-            if (isset($this->headers[strtolower($v['name'])]) &&
-                !is_array($this->headers[strtolower($v['name'])])) {
+            if (isset($this->headers[strtolower($v['name'])]) && !is_array($this->headers[strtolower($v['name'])])) {
                 $this->headers[strtolower($v['name'])]   = [$this->headers[strtolower($v['name'])]];
                 $this->headers[strtolower($v['name'])][] = $v['value'];
             } elseif (isset($this->headers[strtolower($v['name'])])) {
@@ -128,6 +123,7 @@ class mimeMessage
             switch ($headers[$k]['name']) {
                 case 'from':
                     list($this->from_name, $this->from_email) = $this->decodeSender($headers[$k]['value']);
+
                     break;
 
                 case 'content-type':
@@ -139,24 +135,27 @@ class mimeMessage
                     }
 
                     if (isset($content_type['other'])) {
-                        while (list($p_name, $p_value) = each($content_type['other'])) {
+                        foreach ($content_type['other'] as $p_name => $p_value) {
                             $this->ctype_parameters[$p_name] = $p_value;
                         }
                     }
+
                     break;
 
                 case 'content-disposition':
                     $content_disposition = $this->parseHeaderValue($headers[$k]['value']);
                     $this->disposition   = $content_disposition['value'];
                     if (isset($content_disposition['other'])) {
-                        while (list($p_name, $p_value) = each($content_disposition['other'])) {
+                        foreach ($content_disposition['other'] as $p_name => $p_value) {
                             $this->d_parameters[$p_name] = $p_value;
                         }
                     }
+
                     break;
 
                 case 'content-transfer-encoding':
                     $content_transfer_encoding = $this->parseHeaderValue($headers[$k]['value']);
+
                     break;
             }
         }
@@ -166,9 +165,10 @@ class mimeMessage
                 case 'text/plain':
                 case 'text/html':
                     $encoding   = isset($content_transfer_encoding) ? $content_transfer_encoding['value'] : '7bit';
-                    $charset    = isset($this->ctype_parameters['charset']) ? $this->ctype_parameters['charset'] : null;
+                    $charset    = $this->ctype_parameters['charset'] ?? null;
                     $this->body = $this->decodeBody($body, $encoding);
                     $this->body = text::cleanUTF8(@text::toUTF8($this->body, $charset));
+
                     break;
 
                 case 'multipart/parallel':
@@ -189,10 +189,12 @@ class mimeMessage
                     for ($i = 0; $i < count($parts); $i++) {
                         $this->parts[] = new self($parts[$i]);
                     }
+
                     break;
 
                 case 'message/rfc822':
                     $this->parts[] = new self($body);
+
                     break;
 
                 default:
@@ -200,6 +202,7 @@ class mimeMessage
                         $content_transfer_encoding['value'] = '7bit';
                     }
                     $this->body = $this->decodeBody($body, $content_transfer_encoding['value']);
+
                     break;
             }
         } else {
@@ -215,10 +218,9 @@ class mimeMessage
     {
         if (preg_match('/^(.*?)\r?\n\r?\n(.*)/s', $input, $match)) {
             return [$match[1], $match[2]];
-        } else {
-            # No body found
-            return [$input, ''];
         }
+        # No body found
+        return [$input, ''];
     }
 
     protected function parseHeaders($input)
@@ -259,7 +261,6 @@ class mimeMessage
 
     protected function parseHeaderValue($input)
     {
-
         if (($pos = strpos($input, ';')) !== false) {
             $return['value'] = trim(substr($input, 0, $pos));
             $input           = trim(substr($input, $pos + 1));
@@ -307,6 +308,7 @@ class mimeMessage
         }
 
         list($charset, $value) = explode("''", $value);
+
         return @text::toUTF8(rawurldecode($value), $charset);
     }
 
@@ -350,6 +352,7 @@ class mimeMessage
             switch (strtolower($encoding)) {
                 case 'b':
                     $text = base64_decode($text);
+
                     break;
 
                 case 'q':
@@ -358,6 +361,7 @@ class mimeMessage
                     foreach ($matches[1] as $value) {
                         $text = str_replace('=' . $value, chr(hexdec($value)), $text);
                     }
+
                     break;
             }
             $text  = @text::toUTF8($text, $charset);
@@ -383,8 +387,8 @@ class mimeMessage
             $result[1] = $sender;
         }
 
-        $result[0] = str_replace("\"", "", $result[0]);
-        $result[0] = str_replace("'", "", $result[0]);
+        $result[0] = str_replace('"', '', $result[0]);
+        $result[0] = str_replace("'", '', $result[0]);
 
         return $result;
     }
@@ -394,14 +398,17 @@ class mimeMessage
         switch (strtolower($encoding)) {
             case '7bit':
                 return $input;
+
                 break;
 
             case 'quoted-printable':
                 return $this->quotedPrintableDecode($input);
+
                 break;
 
             case 'base64':
                 return base64_decode($input);
+
                 break;
 
             default:

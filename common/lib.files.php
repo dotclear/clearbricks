@@ -26,7 +26,6 @@ class files
         'ppt' => 'application/mspowerpoint',
         'doc' => 'application/msword',
         'xls' => 'application/msexcel',
-        'rtf' => 'application/rtf',
 
         'pdf'  => 'application/pdf',
         'ps'   => 'application/postscript',

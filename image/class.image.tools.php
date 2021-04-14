@@ -11,7 +11,6 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-
 class imageTools
 {
     public $res; ///< resource: Image resource
@@ -60,7 +59,7 @@ class imageTools
         if (($info = @getimagesize($f)) !== false) {
             $this->memoryAllocate(
                 $info[0], $info[1],
-                isset($infos['channels']) ? $info['channels'] : 4
+                $info['channels'] ?? 4
             );
 
             switch ($info[2]) {
@@ -70,12 +69,15 @@ class imageTools
                         @imagealphablending($this->res, false);
                         @imagesavealpha($this->res, true);
                     }
+
                     break;
                 case 2: // JPEG
                     $this->res = @imagecreatefromjpeg($f);
+
                     break;
                 case 1: // GIF
                     $this->res = @imagecreatefromgif($f);
+
                     break;
                 case 18: // WEBP
                     if (function_exists('imagecreatefromwebp')) {
@@ -87,6 +89,7 @@ class imageTools
                     } else {
                         throw new Exception('WebP image format not supported');
                     }
+
                     break;
             }
         }
@@ -159,18 +162,22 @@ class imageTools
                 case 'png':
                     header('Content-type: image/png');
                     imagepng($this->res);
+
                     return true;
                 case 'jpeg':
                 case 'jpg':
                     header('Content-type: image/jpeg');
                     imagejpeg($this->res, null, $qual);
+
                     return true;
                 case 'wepb':
                     if (function_exists('imagewebp')) {
                         header('Content-type: image/webp');
                         imagewebp($this->res, null, $qual);
+
                         return true;
                     }
+
                     return false;
                 default:
                     return false;
@@ -186,11 +193,13 @@ class imageTools
                     if (function_exists('imagewebp')) {
                         return imagewebp($this->res, $file, $qual);
                     }
+
                     return false;
                 default:
                     return false;
             }
         }
+
         return false;
     }
 
@@ -204,6 +213,8 @@ class imageTools
      */
     public function resize($WIDTH, $HEIGHT, $MODE = 'ratio', $EXPAND = false)
     {
+        $_h = 0;
+        $_w = 0;
 
         $imgWidth  = $this->getW();
         $imgHeight = $this->getH();
@@ -295,6 +306,7 @@ class imageTools
         imagecopyresampled($dest, $this->res, 0, 0, $decalW, $decalH, $_w, $_h, $cropW, $cropH);
         imagedestroy($this->res);
         $this->res = $dest;
+
         return true;
     }
 }

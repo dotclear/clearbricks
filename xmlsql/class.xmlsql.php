@@ -7,7 +7,6 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-
 class xmlsql
 {
     protected $con;
@@ -52,9 +51,11 @@ class xmlsql
             switch (dom_import_simplexml($n)->nodeName) {
                 case 'test':
                     $this->performTest($n);
+
                     break;
                 case 'action':
                     $this->performAction($n);
+
                     break;
             }
         }
@@ -62,6 +63,8 @@ class xmlsql
 
     protected function performTest($node)
     {
+        $test = [];
+
         /* Test like:
         <test type="table" name="table name" [eq="neq"]>...</test>
          */
@@ -80,7 +83,6 @@ class xmlsql
 
             if (count($c) != 2) {
                 return false;
-
             }
 
             list($table, $col) = $c;
@@ -97,7 +99,7 @@ class xmlsql
         <test type="version" name="version number" [comp=">"]>...</test>
          */
         elseif (isset($node['type']) && (string) $node['type'] == 'version') {
-            $comp           = isset($node['comp']) ? $node['comp'] : '>';
+            $comp           = $node['comp'] ?? '>';
             $test['result'] = version_compare($node['name'], $this->test_version, $comp);
             $test['label']  = 'Version %s is too low';
             $test['string'] = (string) $node['name'];

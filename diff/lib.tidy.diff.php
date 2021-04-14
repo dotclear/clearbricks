@@ -11,7 +11,6 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-
 class tidyDiff
 {
     protected $__data = []; ///< array: Chunks array
@@ -303,8 +302,6 @@ class tidyDiffLine
 
             return $this;
         }
-
-        return;
     }
 
     /**
@@ -317,7 +314,7 @@ class tidyDiffLine
      */
     public function __get($n)
     {
-        return isset($n, $this) ? $this->{$n} : null;
+        return $this->{$n} ?? null;
     }
 
     /**

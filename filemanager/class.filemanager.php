@@ -9,7 +9,6 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-
 class filemanager
 {
     public $root;                                               ///< string: Files manager root path
@@ -187,6 +186,7 @@ class filemanager
                 return true;
             }
         }
+
         return false;
     }
 
@@ -296,6 +296,7 @@ class filemanager
         }
 
         files::inheritChmod($dest);
+
         return path::real($dest);
     }
 
@@ -469,6 +470,7 @@ class filemanager
         if ($a->parent && !$b->parent || !$a->parent && $b->parent) {
             return ($a->parent) ? -1 : 1;
         }
+
         return strcasecmp($a->basename, $b->basename);
     }
 }
@@ -494,6 +496,7 @@ class fileItem
     public $relname;        ///< string: File path relative to <var>$root</var> given in constructor
     public $parent = false; ///< boolean: Parent directory (ie. "..")
     public $type;           ///< string: File MimeType. See {@link files::getMimeType()}.
+    public $type_prefix;    ///< string
     public $mtime;          ///< integer: File modification timestamp
     public $size;           ///< integer: File size
     public $mode;           ///< integer: File permissions mode

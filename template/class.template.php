@@ -379,6 +379,7 @@ class template
     protected function compileFile(string $file)
     {
         $tree = null;
+        $err  = '';
         while (true) {
             if ($file && !in_array($file, $this->parent_stack)) {
                 $tree = $this->getCompiledTree($file, $err);

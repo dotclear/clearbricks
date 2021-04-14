@@ -11,13 +11,14 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-
 class sessionDB
 {
     private $con;
     private $table;
     private $cookie_name;
     private $cookie_path;
+    private $cookie_domain;
+    private $cookie_secure;
     private $ttl       = '-120 minutes';
     private $transient = false;
 
@@ -36,7 +37,8 @@ class sessionDB
      * @param boolean    $transient        Transient session : no db optimize on session destruction if true
      */
     public function __construct($con, $table, $cookie_name,
-        $cookie_path = null, $cookie_domain = null, $cookie_secure = false, $ttl = null, $transient = false) {
+        $cookie_path = null, $cookie_domain = null, $cookie_secure = false, $ttl = null, $transient = false)
+    {
         $this->con           = &$con;
         $this->table         = $table;
         $this->cookie_name   = $cookie_name;
@@ -150,6 +152,7 @@ class sessionDB
     public function _close()
     {
         $this->_gc();
+
         return true;
     }
 
@@ -162,9 +165,9 @@ class sessionDB
 
         if ($rs->isEmpty()) {
             return '';
-        } else {
-            return $rs->f('ses_value');
         }
+
+        return $rs->f('ses_value');
     }
 
     public function _write($ses_id, $data)
@@ -201,6 +204,7 @@ class sessionDB
         if (!$this->transient) {
             $this->_optimize();
         }
+
         return true;
     }
 
@@ -216,6 +220,7 @@ class sessionDB
         if ($this->con->changes() > 0) {
             $this->_optimize();
         }
+
         return true;
     }
 
@@ -229,6 +234,7 @@ class sessionDB
         if (!preg_match('/^([0-9a-f]{40})$/i', $id)) {
             return;
         }
+
         return $id;
     }
 }

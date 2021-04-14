@@ -14,6 +14,7 @@ class tplNodeBlock extends tplNode
     protected $attr;
     protected $tag;
     protected $closed;
+    protected $content;
 
     public function __construct(string $tag, array $attr)
     {

@@ -78,7 +78,7 @@ if (class_exists('dbSchema')) {
             return $type;
         }
 
-        public function flushStack()
+        public function flushStack(): void
         {
             foreach ($this->table_stack as $table => $def) {
                 $sql = 'CREATE TABLE ' . $table . " (\n" . implode(",\n", $def) . "\n)\n ";
@@ -285,7 +285,7 @@ if (class_exists('dbSchema')) {
             return $res;
         }
 
-        public function db_create_table(string $name, array $fields)
+        public function db_create_table(string $name, array $fields): void
         {
             $a = [];
 
@@ -314,7 +314,7 @@ if (class_exists('dbSchema')) {
             $this->table_hist[$name]    = $fields;
         }
 
-        public function db_create_field(string $table, string $name, string $type, int $len, bool $null, $default)
+        public function db_create_field(string $table, string $name, string $type, int $len, bool $null, $default): void
         {
             $type = $this->udt2dbt($type, $len, $default);
 
@@ -331,22 +331,22 @@ if (class_exists('dbSchema')) {
             $this->con->execute($sql);
         }
 
-        public function db_create_primary(string $table, string $name, array $cols)
+        public function db_create_primary(string $table, string $name, array $cols): void
         {
             $this->table_stack[$table][] = 'CONSTRAINT ' . $name . ' PRIMARY KEY (' . implode(',', $cols) . ') ';
         }
 
-        public function db_create_unique(string $table, string $name, array $cols)
+        public function db_create_unique(string $table, string $name, array $cols): void
         {
             $this->table_stack[$table][] = 'CONSTRAINT ' . $name . ' UNIQUE (' . implode(',', $cols) . ') ';
         }
 
-        public function db_create_index(string $table, string $name, string $type, array $cols)
+        public function db_create_index(string $table, string $name, string $type, array $cols): void
         {
             $this->x_stack[] = 'CREATE INDEX ' . $name . ' ON ' . $table . ' (' . implode(',', $cols) . ') ';
         }
 
-        public function db_create_reference(string $name, string $c_table, array $c_cols, string $p_table, array $p_cols, bool $update, bool $delete)
+        public function db_create_reference(string $name, string $c_table, array $c_cols, string $p_table, array $p_cols, bool $update, bool $delete): void
         {
             if (!isset($this->table_hist[$c_table])) {
                 return;
@@ -429,7 +429,7 @@ if (class_exists('dbSchema')) {
             }
         }
 
-        public function db_alter_field(string $table, string $name, string $type, int $len, bool $null, $default)
+        public function db_alter_field(string $table, string $name, string $type, int $len, bool $null, $default): void
         {
             $type = $this->udt2dbt($type, $len, $default);
             if ($type != 'integer' && $type != 'text' && $type != 'timestamp') {
@@ -437,23 +437,23 @@ if (class_exists('dbSchema')) {
             }
         }
 
-        public function db_alter_primary(string $table, string $name, string $newname, array $cols)
+        public function db_alter_primary(string $table, string $name, string $newname, array $cols): void
         {
             throw new Exception('SQLite primary key cannot be changed.');
         }
 
-        public function db_alter_unique(string $table, string $name, string $newname, array $cols)
+        public function db_alter_unique(string $table, string $name, string $newname, array $cols): void
         {
             throw new Exception('SQLite unique index cannot be changed.');
         }
 
-        public function db_alter_index(string $table, string $name, string $newname, string $type, array $cols)
+        public function db_alter_index(string $table, string $name, string $newname, string $type, array $cols): void
         {
             $this->con->execute('DROP INDEX IF EXISTS ' . $name);
             $this->con->execute('CREATE INDEX ' . $newname . ' ON ' . $table . ' (' . implode(',', $cols) . ') ');
         }
 
-        public function db_alter_reference(string $name, string $newname, string $c_table, array $c_cols, string $p_table, array $p_cols, bool $update, bool $delete)
+        public function db_alter_reference(string $name, string $newname, string $c_table, array $c_cols, string $p_table, array $p_cols, bool $update, bool $delete): void
         {
             $this->con->execute('DROP TRIGGER IF EXISTS bur_' . $name);
             $this->con->execute('DROP TRIGGER IF EXISTS burp_' . $name);
@@ -465,7 +465,7 @@ if (class_exists('dbSchema')) {
             $this->db_create_reference($newname, $c_table, $c_cols, $p_table, $p_cols, $update, $delete);
         }
 
-        public function db_drop_unique(string $table, string $name)
+        public function db_drop_unique(string $table, string $name): void
         {
             throw new Exception('SQLite unique index cannot be removed.');
         }

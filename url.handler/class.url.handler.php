@@ -7,7 +7,6 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-
 class urlHandler
 {
     protected $types = [];
@@ -57,7 +56,6 @@ class urlHandler
         if (isset($this->types[$type])) {
             return $this->types[$type]['url'];
         }
-        return;
     }
 
     public function getDocument()
@@ -84,9 +82,9 @@ class urlHandler
                 foreach ($qs as $k => $v) {
                     if ($v === null) {
                         $part = $k;
-                        unset($_GET[$k]);
-                        unset($_REQUEST[$k]);
+                        unset($_GET[$k], $_REQUEST[$k]);
                     }
+
                     break;
                 }
             }
@@ -110,6 +108,7 @@ class urlHandler
         if ($part == '') {
             $type = null;
             $args = null;
+
             return;
         }
 
@@ -120,10 +119,12 @@ class urlHandler
             if ($repr == $part) {
                 $type = $k;
                 $args = null;
+
                 return;
             } elseif (preg_match('#' . $repr . '#', $part, $m)) {
                 $type = $k;
-                $args = isset($m[1]) ? $m[1] : null;
+                $args = $m[1] ?? null;
+
                 return;
             }
         }
@@ -142,6 +143,7 @@ class urlHandler
         if (!is_callable($handler)) {
             throw new Exception('Unable to call function');
         }
+
         try {
             call_user_func($handler, $args);
         } catch (Exception $e) {
@@ -172,7 +174,6 @@ class urlHandler
             # propagate exception, as it has not been processed by handlers
             throw $e;
         }
-
     }
 
     protected function parseQueryString()
@@ -193,11 +194,13 @@ class urlHandler
 
             return $T;
         }
+
         return [];
     }
 
     protected function sortTypes()
     {
+        $r = [];
         foreach ($this->types as $k => $v) {
             $r[$k] = $v['url'];
         }

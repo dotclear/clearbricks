@@ -221,6 +221,7 @@ class dbLayer
     protected $__version = null; ///< string: Database version
     protected $__link;           ///< resource: Database resource link
     protected $__last_result;    ///< resource: Last result resource link
+    protected $__database;
 
     /**
      * Start connection
@@ -263,11 +264,14 @@ class dbLayer
     public function __construct($host, $database, $user = '', $password = '', $persistent = false)
     {
         if ($persistent) {
+            /* @phpstan-ignore-next-line */
             $this->__link = $this->db_pconnect($host, $user, $password, $database);
         } else {
+            /* @phpstan-ignore-next-line */
             $this->__link = $this->db_connect($host, $user, $password, $database);
         }
 
+        /* @phpstan-ignore-next-line */
         $this->__version  = $this->db_version($this->__link);
         $this->__database = $database;
     }
@@ -277,6 +281,7 @@ class dbLayer
      */
     public function close()
     {
+        /* @phpstan-ignore-next-line */
         $this->db_close($this->__link);
     }
 
@@ -340,18 +345,23 @@ class dbLayer
      */
     public function select($sql)
     {
+        /* @phpstan-ignore-next-line */
         $result = $this->db_query($this->__link, $sql);
 
         $this->__last_result = &$result;
 
-        $info         = [];
-        $info['con']  = &$this;
+        $info        = [];
+        $info['con'] = &$this;
+        /* @phpstan-ignore-next-line */
         $info['cols'] = $this->db_num_fields($result);
+        /* @phpstan-ignore-next-line */
         $info['rows'] = $this->db_num_rows($result);
         $info['info'] = [];
 
         for ($i = 0; $i < $info['cols']; $i++) {
+            /* @phpstan-ignore-next-line */
             $info['info']['name'][] = $this->db_field_name($result, $i);
+            /* @phpstan-ignore-next-line */
             $info['info']['type'][] = $this->db_field_type($result, $i);
         }
 
@@ -388,6 +398,7 @@ class dbLayer
      */
     public function execute($sql)
     {
+        /* @phpstan-ignore-next-line */
         $result = $this->db_exec($this->__link, $sql);
 
         $this->__last_result = &$result;
@@ -435,6 +446,7 @@ class dbLayer
      */
     public function writeLock($table)
     {
+        /* @phpstan-ignore-next-line */
         $this->db_write_lock($table);
     }
 
@@ -445,6 +457,7 @@ class dbLayer
      */
     public function unlock()
     {
+        /* @phpstan-ignore-next-line */
         $this->db_unlock();
     }
 
@@ -467,6 +480,7 @@ class dbLayer
      */
     public function changes()
     {
+        /* @phpstan-ignore-next-line */
         return $this->db_changes($this->__link, $this->__last_result);
     }
 
@@ -479,6 +493,7 @@ class dbLayer
      */
     public function error()
     {
+        /* @phpstan-ignore-next-line */
         $err = $this->db_last_error($this->__link);
 
         if (!$err) {
@@ -655,12 +670,14 @@ class dbLayer
     {
         if (is_array($i)) {
             foreach ($i as $k => $s) {
+                /* @phpstan-ignore-next-line */
                 $i[$k] = $this->db_escape_string($s, $this->__link);
             }
 
             return $i;
         }
 
+        /* @phpstan-ignore-next-line */
         return $this->db_escape_string($i, $this->__link);
     }
 

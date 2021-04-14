@@ -14,6 +14,7 @@ class tplNodeValue extends tplNode
     protected $attr;
     protected $str_attr;
     protected $tag;
+    protected $content;
 
     public function __construct(string $tag, array $attr, string $str_attr)
     {

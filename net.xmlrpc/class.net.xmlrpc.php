@@ -71,15 +71,19 @@ class xmlrpcValue
         switch ($this->type) {
             case 'boolean':
                 return '<boolean>' . (($this->data) ? '1' : '0') . '</boolean>';
+
                 break;
             case 'int':
                 return '<int>' . $this->data . '</int>';
+
                 break;
             case 'double':
                 return '<double>' . $this->data . '</double>';
+
                 break;
             case 'string':
                 return '<string>' . htmlspecialchars($this->data) . '</string>';
+
                 break;
             case 'array':
                 $return = '<array><data>' . "\n";
@@ -87,7 +91,9 @@ class xmlrpcValue
                     $return .= '  <value>' . $item->getXml() . "</value>\n";
                 }
                 $return .= '</data></array>';
+
                 return $return;
+
                 break;
             case 'struct':
                 $return = '<struct>' . "\n";
@@ -96,13 +102,17 @@ class xmlrpcValue
                     $return .= $value->getXml() . "</value></member>\n";
                 }
                 $return .= '</struct>';
+
                 return $return;
+
                 break;
             case 'date':
             case 'base64':
                 return $this->data->getXml();
+
                 break;
         }
+
         return false;
     }
 
@@ -134,6 +144,7 @@ class xmlrpcValue
         # If it is a normal PHP object convert it in to a struct
         if (is_object($this->data)) {
             $this->data = get_object_vars($this->data);
+
             return 'struct';
         }
         if (!is_array($this->data)) {
@@ -142,9 +153,9 @@ class xmlrpcValue
         # We have an array - is it an array or a struct ?
         if ($this->isStruct($this->data)) {
             return 'struct';
-        } else {
-            return 'array';
         }
+
+        return 'array';
     }
 
     /**
@@ -165,6 +176,7 @@ class xmlrpcValue
             }
             $expected++;
         }
+
         return false;
     }
 }
@@ -230,6 +242,7 @@ class xmlrpcMessage
         if (!in_array($root_tag, ['<methodCall', '<methodResponse', '<fault'])) {
             throw new Exception('XML Parser Error.');
         }
+
         try {
             $dom = new DOMDocument();
             @$dom->loadXML($xml);
@@ -253,6 +266,7 @@ class xmlrpcMessage
             $c = xml_get_error_code($this->_parser);
             $e = xml_error_string($c);
             $e .= ' on line ' . xml_get_current_line_number($this->_parser);
+
             throw new Exception('XML Parser Error. ' . $e, $c);
         }
 
@@ -263,27 +277,31 @@ class xmlrpcMessage
             $this->faultCode   = $this->params[0]['faultCode'];
             $this->faultString = $this->params[0]['faultString'];
         }
+
         return true;
     }
 
     protected function tag_open($parser, $tag, $attr)
     {
-        $this->currentTag = $tag;
+        $this->_currentTag = $tag;
 
         switch ($tag) {
             case 'methodCall':
             case 'methodResponse':
             case 'fault':
                 $this->messageType = $tag;
+
                 break;
             # Deal with stacks of arrays and structs
             case 'data': # data is to all intents and puposes more interesting than array
                 $this->_arraystructstypes[] = 'array';
                 $this->_arraystructs[]      = [];
+
                 break;
             case 'struct':
                 $this->_arraystructstypes[] = 'struct';
                 $this->_arraystructs[]      = [];
+
                 break;
         }
     }
@@ -296,6 +314,7 @@ class xmlrpcMessage
     protected function tag_close($parser, $tag)
     {
         $valueFlag = false;
+        $value     = null;
 
         switch ($tag) {
             case 'int':
@@ -303,22 +322,26 @@ class xmlrpcMessage
                 $value                     = (int) trim($this->_currentTagContents);
                 $this->_currentTagContents = '';
                 $valueFlag                 = true;
+
                 break;
             case 'double':
                 $value                     = (double) trim($this->_currentTagContents);
                 $this->_currentTagContents = '';
                 $valueFlag                 = true;
+
                 break;
             case 'string':
                 $value                     = (string) trim($this->_currentTagContents);
                 $this->_currentTagContents = '';
                 $valueFlag                 = true;
+
                 break;
             case 'dateTime.iso8601':
                 $value = new xmlrpcDate(trim($this->_currentTagContents));
                 # $value = $iso->getTimestamp();
                 $this->_currentTagContents = '';
                 $valueFlag                 = true;
+
                 break;
             case 'value':
                 # "If no type is indicated, the type is string."
@@ -327,16 +350,19 @@ class xmlrpcMessage
                     $this->_currentTagContents = '';
                     $valueFlag                 = true;
                 }
+
                 break;
             case 'boolean':
                 $value                     = (boolean) trim($this->_currentTagContents);
                 $this->_currentTagContents = '';
                 $valueFlag                 = true;
+
                 break;
             case 'base64':
                 $value                     = base64_decode($this->_currentTagContents);
                 $this->_currentTagContents = '';
                 $valueFlag                 = true;
+
                 break;
             # Deal with stacks of arrays and structs
             case 'data':
@@ -344,17 +370,21 @@ class xmlrpcMessage
                 $value = array_pop($this->_arraystructs);
                 array_pop($this->_arraystructstypes);
                 $valueFlag = true;
+
                 break;
             case 'member':
                 array_pop($this->_currentStructName);
+
                 break;
             case 'name':
                 $this->_currentStructName[] = trim($this->_currentTagContents);
                 $this->_currentTagContents  = '';
+
                 break;
             case 'methodName':
                 $this->methodName          = trim($this->_currentTagContents);
                 $this->_currentTagContents = '';
+
                 break;
         }
 
@@ -397,8 +427,7 @@ class xmlrpcRequest
         $this->method = $method;
         $this->args   = $args;
 
-        $this->xml =
-        '<?xml version="1.0"?>' . "\n" .
+        $this->xml = '<?xml version="1.0"?>' . "\n" .
         "<methodCall>\n" .
         '  <methodName>' . $this->method . "</methodName>\n" .
             "  <params>\n";
@@ -450,6 +479,7 @@ class xmlrpcDate
     protected $hour;   ///< string
     protected $minute; ///< string
     protected $second; ///< string
+    protected $ts;
 
     /**
      * Constructor
@@ -555,7 +585,7 @@ class xmlrpcBase64
     }
 }
 
-/**
+/*
  * @class xmlrpcClient
  * @brief XML-RPC Client
  *
@@ -566,10 +596,9 @@ class xmlrpcBase64
  * Basic XML-RPC Client.
  */
 
-/** @cond ONCE */
+/* @cond ONCE */
 if (class_exists('netHttp')) {
-/** @endcond */
-
+    /** @endcond */
     class xmlrpcClient extends netHttp
     {
         protected $request; ///< xmlrpcRequest XML-RPC Request object
@@ -612,12 +641,13 @@ if (class_exists('netHttp')) {
          * ?>
          * </code>
          *
+         * @param string    $method
+         * @param mixed     $args
+         *
          * @return mixed
          */
-        public function query()
+        public function query($method, ...$args)
         {
-            $args          = func_get_args();
-            $method        = array_shift($args);
             $this->request = new xmlrpcRequest($method, $args);
 
             $this->doRequest();
@@ -660,11 +690,11 @@ if (class_exists('netHttp')) {
         }
     }
 
-/** @cond ONCE */
+    /* @cond ONCE */
 }
-/** @endcond */
+/* @endcond */
 
-/**
+/*
  * @class xmlrpcClientMulticall
  * @brief Multicall XML-RPC Client
  *
@@ -675,10 +705,9 @@ if (class_exists('netHttp')) {
  * Multicall client using system.multicall method of server.
  */
 
-/** @cond ONCE */
+/* @cond ONCE */
 if (class_exists('xmlrpcClient')) {
-/** @endcond */
-
+    /** @endcond */
     class xmlrpcClientMulticall extends xmlrpcClient
     {
         protected $calls = []; ///< array
@@ -705,15 +734,15 @@ if (class_exists('xmlrpcClient')) {
          * ?>
          * </code>
          *
+         * @param string    $method
+         * @param mixed     $args
+         *
          * @return mixed
          */
-        public function addCall()
+        public function addCall($method, ...$args)
         {
-            $args       = func_get_args();
-            $methodName = array_shift($args);
-
             $struct = [
-                'methodName' => $methodName,
+                'methodName' => $method,
                 'params'     => $args
             ];
 
@@ -726,16 +755,19 @@ if (class_exists('xmlrpcClient')) {
          * This method sends calls stack to XML-RPC system.multicall method.
          * See {@link xmlrpcServer::multiCall()} for details and links about it.
          *
+         * @param string    $method (not used, use ::addCall() before invoking ::query())
+         * @param mixed     $args (see above)
+         *
          * @return array
          */
-        public function query()
+        public function query($method = null, ...$args)
         {
             # Prepare multicall, then call the parent::query() method
             return parent::query('system.multicall', $this->calls);
         }
     }
 
-/** @cond ONCE */
+    /* @cond ONCE */
 }
 /** @endcond */
 
@@ -792,9 +824,9 @@ class xmlrpcServer
      */
     public function serve($data = false)
     {
+        $result = null;
         if (!$data) {
-            try
-            {
+            try {
                 # Check HTTP Method
                 if ($_SERVER['REQUEST_METHOD'] != 'POST') {
                     throw new Exception('XML-RPC server accepts POST requests only.', 405);
@@ -847,8 +879,7 @@ class xmlrpcServer
 
         $this->message = new xmlrpcMessage($data);
 
-        try
-        {
+        try {
             $this->message->parse();
 
             if ($this->message->messageType != 'methodCall') {
@@ -865,8 +896,7 @@ class xmlrpcServer
         $resultxml = $r->getXml();
 
         # Create the XML
-        $xml =
-            "<methodResponse>\n" .
+        $xml = "<methodResponse>\n" .
             "<params>\n" .
             "<param>\n" .
             "  <value>\n" .
@@ -874,7 +904,7 @@ class xmlrpcServer
             "  </value>\n" .
             "</param>\n" .
             "</params>\n" .
-            "</methodResponse>";
+            '</methodResponse>';
 
         # Send it
         $this->output($xml);
@@ -1001,11 +1031,11 @@ class xmlrpcServer
     {
         # Initialises capabilities array
         $this->capabilities = [
-            'xmlrpc'           => [
+            'xmlrpc' => [
                 'specUrl'     => 'http://www.xmlrpc.com/spec',
                 'specVersion' => 1
             ],
-            'faults_interop'   => [
+            'faults_interop' => [
                 'specUrl'     => 'http://xmlrpc-epi.sourceforge.net/specs/rfc.fault_codes.php',
                 'specVersion' => 20010516
             ],
@@ -1078,8 +1108,7 @@ class xmlrpcServer
             $method = $call['methodName'];
             $params = $call['params'];
 
-            try
-            {
+            try {
                 if ($method == 'system.multicall') {
                     throw new xmlrpcException('Recursive calls to system.multicall are forbidden', -32600);
                 }
@@ -1098,7 +1127,7 @@ class xmlrpcServer
     }
 }
 
-/**
+/*
  * @class xmlrpcIntrospectionServer
  * @brief XML-RPC Introspection Server
  *
@@ -1114,10 +1143,9 @@ class xmlrpcServer
  * - system.multicall
  */
 
-/** @cond ONCE */
+/* @cond ONCE */
 if (class_exists('xmlrpcServer')) {
-/** @endcond */
-
+    /** @endcond */
     class xmlrpcIntrospectionServer extends xmlrpcServer
     {
         protected $signatures;
@@ -1262,32 +1290,38 @@ if (class_exists('xmlrpcServer')) {
                         if (is_array($arg) || !is_int($arg)) {
                             return false;
                         }
+
                         break;
                     case 'base64':
                     case 'string':
                         if (!is_string($arg)) {
                             return false;
                         }
+
                         break;
                     case 'boolean':
                         if ($arg !== false && $arg !== true) {
                             return false;
                         }
+
                         break;
                     case 'float':
                     case 'double':
                         if (!is_float($arg)) {
                             return false;
                         }
+
                         break;
                     case 'date':
                     case 'dateTime.iso8601':
                         if (!($arg instanceof xmlrpcDate)) {
                             return false;
                         }
+
                         break;
                 }
             }
+
             return true;
         }
 
@@ -1303,7 +1337,6 @@ if (class_exists('xmlrpcServer')) {
         {
             if (!$this->hasMethod($method)) {
                 throw new xmlrpcException('Server error. Requested method "' . $method . '" not specified.', -32601);
-
             }
 
             # We should be returning an array of types
@@ -1314,31 +1347,40 @@ if (class_exists('xmlrpcServer')) {
                 switch ($type) {
                     case 'string':
                         $return[] = 'string';
+
                         break;
                     case 'int':
                     case 'i4':
                         $return[] = 42;
+
                         break;
                     case 'double':
                         $return[] = 3.1415;
+
                         break;
                     case 'dateTime.iso8601':
                         $return[] = new xmlrpcDate(time());
+
                         break;
                     case 'boolean':
                         $return[] = true;
+
                         break;
                     case 'base64':
                         $return[] = new xmlrpcBase64('base64');
+
                         break;
                     case 'array':
                         $return[] = ['array'];
+
                         break;
                     case 'struct':
                         $return[] = ['struct' => 'struct'];
+
                         break;
                 }
             }
+
             return $return;
         }
 
@@ -1356,6 +1398,6 @@ if (class_exists('xmlrpcServer')) {
         }
     }
 
-/** @cond ONCE */
+    /* @cond ONCE */
 }
-/** @endcond */
+/* @endcond */

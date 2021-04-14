@@ -11,7 +11,6 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-
 class restServer
 {
     public $rsp;                 ///< xmlTag Server response
@@ -68,20 +67,14 @@ class restServer
      */
     public function serve($encoding = 'UTF-8')
     {
-        $get = [];
-        if (isset($_GET)) {
-            $get = $_GET;
-        }
-
-        $post = [];
-        if (isset($_POST)) {
-            $post = $_POST;
-        }
+        $get  = $_GET ?: [];
+        $post = $_POST ?: [];
 
         if (!isset($_REQUEST['f'])) {
             $this->rsp->status = 'failed';
             $this->rsp->message('No function given');
             $this->getXML($encoding);
+
             return false;
         }
 
@@ -89,6 +82,7 @@ class restServer
             $this->rsp->status = 'failed';
             $this->rsp->message('Function does not exist');
             $this->getXML($encoding);
+
             return false;
         }
 
@@ -98,6 +92,7 @@ class restServer
             $this->rsp->status = 'failed';
             $this->rsp->message($e->getMessage());
             $this->getXML($encoding);
+
             return false;
         }
 
@@ -106,6 +101,7 @@ class restServer
         $this->rsp->insertNode($res);
 
         $this->getXML($encoding);
+
         return true;
     }
 

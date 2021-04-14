@@ -11,7 +11,6 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-
 class diff
 {
     private static $us_range = "@@ -%s,%s +%s,%s @@\n";
@@ -35,6 +34,8 @@ class diff
      */
     public static function SES($src, $dst)
     {
+        $x = $y = $k = 0;
+
         $cx = count($src);
         $cy = count($dst);
 
@@ -58,6 +59,7 @@ class diff
 
                 if ($x == $cx && $y == $cy) {
                     $end_reached = true;
+
                     break;
                 }
             }
@@ -89,6 +91,7 @@ class diff
                 $y = $x - $k;
 
                 $res[] = ['i', $x, $y];
+
                 continue;
             }
 
@@ -193,6 +196,7 @@ class diff
                 $pos_y + 1 - $new_lines, $new_lines + $i
             ) . $buffer;
         }
+
         return $res;
     }
 
