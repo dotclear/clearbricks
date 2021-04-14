@@ -112,6 +112,12 @@ You can also get code coverage report (in `coverage/html`) for tests by runing:
 ./bin/atoum -c .atoum.coverage.php
 ```
 
+For PHP static analysis, run:
+
+```sh
+bin/phpstan analyse --memory-limit=-1
+```
+
 ## License
 
 Copyright Olivier Meunier & Association Dotclear

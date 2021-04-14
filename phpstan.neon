@@ -1,0 +1,30 @@
+parameters:
+  level: 8
+
+  paths:
+    - common
+    - dblayer
+    - dbschema
+    - diff
+    - ext
+    - filemanager
+    - html.filter
+    - html.validator
+    - image
+    - mail
+    - mail.convert
+    - mail.mime
+    - net
+    - net.http
+    - net.http.feed
+    - net.xmlrpc
+    - pager
+    - rest
+    - session.db
+    - template
+    - text.wiki2xhtml
+    - url.handler
+    - xmlsql
+    - zip
+
+  reportUnmatchedIgnoredErrors: false
