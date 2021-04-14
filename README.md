@@ -31,6 +31,7 @@ In order to use Clearbricks you need:
   * mbstring
   * iconv
   * simplexml
+  * json
 
 ## Use it with Git
 
