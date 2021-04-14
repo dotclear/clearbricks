@@ -231,7 +231,7 @@ class form
      *
      * @static
      */
-    public static function field($nid, $size, $max, $default = '', string $class = '', string $tabindex = '',
+    public static function field($nid, int $size, int $max, $default = '', string $class = '', string $tabindex = '',
         bool $disabled = false, string $extra_html = '', bool $required = false, string $type = 'text',
         string $autocomplete = ''): string
     {
@@ -281,7 +281,7 @@ class form
      *
      * @static
      */
-    public static function password($nid, $size, $max, $default = '', string $class = '', string $tabindex = '',
+    public static function password($nid, int $size, int $max, $default = '', string $class = '', string $tabindex = '',
         bool $disabled = false, string $extra_html = '', bool $required = false, string $autocomplete = ''): string
     {
         if (func_num_args() > 3 && is_array($default)) {
@@ -318,7 +318,7 @@ class form
      *
      * @static
      */
-    public static function color($nid, $size = 7, $max = 7, string $default = '', string $class = '', string $tabindex = '',
+    public static function color($nid, $size = 7, int $max = 7, string $default = '', string $class = '', string $tabindex = '',
         bool $disabled = false, string $extra_html = '', bool $required = false, string $autocomplete = ''): string
     {
         if (func_num_args() > 1 && is_array($size)) {
@@ -355,7 +355,7 @@ class form
      *
      * @static
      */
-    public static function email($nid, $size = 20, $max = 255, string $default = '', string $class = '',
+    public static function email($nid, $size = 20, int $max = 255, string $default = '', string $class = '',
         string $tabindex = '', bool $disabled = false, string $extra_html = '', bool $required = false,
         string $autocomplete = ''): string
     {
@@ -393,7 +393,7 @@ class form
      *
      * @static
      */
-    public static function url($nid, $size = 20, $max = 255, string $default = '', string $class = '',
+    public static function url($nid, $size = 20, int $max = 255, string $default = '', string $class = '',
         string $tabindex = '', bool $disabled = false, string $extra_html = '', bool $required = false,
         string $autocomplete = ''): string
     {
@@ -431,7 +431,7 @@ class form
      *
      * @static
      */
-    public static function datetime($nid, $size = 16, $max = 16, string $default = '', string $class = '',
+    public static function datetime($nid, $size = 16, int $max = 16, string $default = '', string $class = '',
         string $tabindex = '', bool $disabled = false, string $extra_html = '', bool $required = false,
         string $autocomplete = ''): string
     {
@@ -476,7 +476,7 @@ class form
      *
      * @static
      */
-    public static function date($nid, $size = 10, $max = 10, string $default = '', string $class = '',
+    public static function date($nid, $size = 10, int $max = 10, string $default = '', string $class = '',
         string $tabindex = '', bool $disabled = false, string $extra_html = '', bool $required = false,
         string $autocomplete = ''): string
     {
@@ -521,7 +521,7 @@ class form
      *
      * @static
      */
-    public static function time($nid, $size = 5, $max = 5, string $default = '', string $class = '', string $tabindex = '',
+    public static function time($nid, $size = 5, int $max = 5, string $default = '', string $class = '', string $tabindex = '',
         bool $disabled = false, string $extra_html = '', bool $required = false, string $autocomplete = ''): string
     {
         if (func_num_args() > 1 && is_array($size)) {
@@ -605,7 +605,7 @@ class form
      *
      * @static
      */
-    public static function number($nid, $min = null, $max = null, string $default = '', string $class = '',
+    public static function number($nid, $min = null, int $max = null, string $default = '', string $class = '',
         string $tabindex = '', bool $disabled = false, string $extra_html = '', bool $required = false,
         string $autocomplete = ''): string
     {
@@ -654,7 +654,7 @@ class form
      *
      * @static
      */
-    public static function textArea($nid, $cols, $rows, $default = '', string $class = '', string $tabindex = '',
+    public static function textArea($nid, int $cols, int $rows, $default = '', string $class = '', string $tabindex = '',
         bool $disabled = false, string $extra_html = '', bool $required = false, string $autocomplete = ''): string
     {
         self::getNameAndId($nid, $name, $id);
