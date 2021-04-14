@@ -231,7 +231,7 @@ class form
      *
      * @static
      */
-    public static function field($nid, int $size, int $max, $default = '', string $class = '', string $tabindex = '',
+    public static function field($nid, ?int $size, ?int $max, $default = '', string $class = '', string $tabindex = '',
         bool $disabled = false, string $extra_html = '', bool $required = false, string $type = 'text',
         string $autocomplete = ''): string
     {
@@ -242,9 +242,10 @@ class form
             extract(array_merge($options, array_intersect_key($default, $options)));
         }
 
-        return '<input type="' . $type . '" size="' . $size . '" name="' . $name . '" ' .
+        return '<input type="' . $type . '" name="' . $name . '" ' .
 
             ($id ? 'id="' . $id . '" ' : '') .
+            ($size ? 'size="' . $size . '" ' : '') .
             ($max ? 'maxlength="' . $max . '" ' : '') .
             ($default || $default === '0' ? 'value="' . $default . '" ' : '') .
             ($class ? 'class="' . $class . '" ' : '') .
