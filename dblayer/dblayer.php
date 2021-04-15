@@ -28,7 +28,7 @@ interface i_dbLayer
      * @param string    $user        Database user name
      * @param string    $password        Database password
      * @param string    $database        Database name
-     * @return resource
+     * @return mixed
      */
     public function db_connect($host, $user, $password, $database);
 
@@ -42,7 +42,7 @@ interface i_dbLayer
      * @param string    $user        Database user name
      * @param string    $password        Database password
      * @param string    $database        Database name
-     * @return resource
+     * @return mixed
      */
     public function db_pconnect($host, $user, $password, $database);
 
@@ -51,7 +51,7 @@ interface i_dbLayer
      *
      * This method should close resource link.
      *
-     * @param resource    $handle        Resource link
+     * @param mixed    $handle        Resource link
      */
     public function db_close($handle);
 
@@ -60,7 +60,7 @@ interface i_dbLayer
      *
      * This method should return database version number.
      *
-     * @param resource    $handle        Resource link
+     * @param mixed    $handle        Resource link
      * @return string
      */
     public function db_version($handle);
@@ -70,9 +70,9 @@ interface i_dbLayer
      *
      * This method should run an SQL query and return a resource result.
      *
-     * @param resource    $handle        Resource link
+     * @param mixed    $handle        Resource link
      * @param string    $query        SQL query string
-     * @return resource
+     * @return mixed
      */
     public function db_query($handle, $query);
 
@@ -81,7 +81,7 @@ interface i_dbLayer
      *
      * This method should run an SQL query and return a resource result.
      *
-     * @param resource    $handle        Resource link
+     * @param mixed    $handle        Resource link
      * @param string    $query        SQL query string
      * @return resource
      */
@@ -92,7 +92,7 @@ interface i_dbLayer
      *
      * This method should return the number of fields in a result.
      *
-     * @param resource    $res            Resource result
+     * @param mixed    $res            Resource result
      * @return integer
      */
     public function db_num_fields($res);
@@ -102,7 +102,7 @@ interface i_dbLayer
      *
      * This method should return the number of rows in a result.
      *
-     * @param resource    $res            Resource result
+     * @param mixed    $res            Resource result
      * @return integer
      */
     public function db_num_rows($res);
@@ -113,7 +113,7 @@ interface i_dbLayer
      * This method should return the name of the field at the given position
      * <var>$position</var>.
      *
-     * @param resource    $res            Resource result
+     * @param mixed    $res            Resource result
      * @param integer    $position        Field position
      * @return string
      */
@@ -125,7 +125,7 @@ interface i_dbLayer
      * This method should return the field type a the given position
      * <var>$position</var>.
      *
-     * @param resource    $res            Resource result
+     * @param mixed    $res            Resource result
      * @param integer    $position        Field position
      * @return string
      */
@@ -137,8 +137,8 @@ interface i_dbLayer
      * This method should fetch one line of result and return an associative array
      * with field name as key and field value as value.
      *
-     * @param resource    $res            Resource result
-     * @return array
+     * @param mixed    $res            Resource result
+     * @return array|false
      */
     public function db_fetch_assoc($res);
 
@@ -148,7 +148,7 @@ interface i_dbLayer
      * This method should move result cursor on given row position <var>$row</var>
      * and return true on success.
      *
-     * @param resource    $res            Resource result
+     * @param mixed    $res            Resource result
      * @param integer    $row        Row position
      * @return boolean
      */
@@ -160,8 +160,8 @@ interface i_dbLayer
      * This method should return number of rows affected by INSERT, UPDATE or
      * DELETE queries.
      *
-     * @param resource    $handle        Resource link
-     * @param resource    $res            Resource result
+     * @param mixed    $handle        Resource link
+     * @param mixed    $res            Resource result
      * @return integer
      */
     public function db_changes($handle, $res);
@@ -171,8 +171,8 @@ interface i_dbLayer
      *
      * This method should return the last error string for the current connection.
      *
-     * @param resource    $handle        Resource link
-     * @return string
+     * @param mixed    $handle        Resource link
+     * @return string|false
      */
     public function db_last_error($handle);
 
@@ -182,7 +182,7 @@ interface i_dbLayer
      * This method should return an escaped string for the current connection.
      *
      * @param string    $str            String to escape
-     * @param resource    $handle        Resource link
+     * @param mixed     $handle        Resource link
      * @return string
      */
     public function db_escape_string($str, $handle = null);
@@ -234,7 +234,7 @@ class dbLayer
      * @param string    $database        Database name
      * @param string    $user        User ID
      * @param string    $password        Password
-     * @param string    $persistent    Persistent connection
+     * @param boolean   $persistent    Persistent connection
      * @return object
      */
     public static function init($driver, $host, $database, $user = '', $password = '', $persistent = false)
@@ -259,7 +259,7 @@ class dbLayer
      * @param string    $database        Database name
      * @param string    $user        User ID
      * @param string    $password        Password
-     * @param string    $persistent    Persistent connection
+     * @param boolean   $persistent    Persistent connection
      */
     public function __construct($host, $database, $user = '', $password = '', $persistent = false)
     {
@@ -743,7 +743,7 @@ class record implements Iterator, Countable
      * - info[name] => an array with columns names
      * - info[type] => an array with columns types
      *
-     * @param resource    $result        Resource result
+     * @param mixed        $result      Resource result
      * @param array        $info        Information array
      */
     public function __construct($result, $info)
@@ -832,7 +832,7 @@ class record implements Iterator, Countable
      * Returns true if a field exists.
      *
      * @param string        $n        Field name
-     * @return string
+     * @return boolean
      */
     public function exists($n)
     {
@@ -880,7 +880,7 @@ class record implements Iterator, Countable
     /**
      * Returns record extensions.
      *
-     * @return            <b>array</b>
+     * @return  array
      */
     public function extensions()
     {
@@ -907,7 +907,7 @@ class record implements Iterator, Countable
      * specified.
      *
      * @param integer    $row            Row number to move
-     * @return integer
+     * @return integer|boolean
      */
     public function index($row = null)
     {

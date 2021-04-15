@@ -15,8 +15,8 @@ class form
      * return id and name from given argument
      *
      * @param  string|array $nid   input argument
-     * @param  string       &$name returned name
-     * @param  string       &$id   returned id
+     * @param  string       $name  returned name
+     * @param  string       $id    returned id
      *
      * @static
      * @access private
@@ -90,7 +90,8 @@ class form
         if (func_num_args() > 2 && is_array($default)) {
             // Cope with associative array of optional parameters
             $options = self::getDefaults(__CLASS__, __FUNCTION__);
-            extract(array_merge($options, array_intersect_key($default, $options)));
+            $args    = array_merge($options, array_intersect_key($default, $options));
+            extract($args);
         }
 
         return '<select name="' . $name . '" ' .
@@ -145,14 +146,15 @@ class form
      *
      * @static
      */
-    public static function radio($nid, string $value, $checked = '', string $class = '', string $tabindex = '',
+    public static function radio($nid, string $value, $checked = false, string $class = '', string $tabindex = '',
         bool $disabled = false, string $extra_html = ''): string
     {
         self::getNameAndId($nid, $name, $id);
         if (func_num_args() > 2 && is_array($checked)) {
             // Cope with associative array of optional parameters
             $options = self::getDefaults(__CLASS__, __FUNCTION__);
-            extract(array_merge($options, array_intersect_key($checked, $options)));
+            $args    = array_merge($options, array_intersect_key($checked, $options));
+            extract($args);
         }
 
         return '<input type="radio" name="' . $name . '" value="' . $value . '" ' .
@@ -186,14 +188,15 @@ class form
      *
      * @static
      */
-    public static function checkbox($nid, string $value, $checked = '', string $class = '', string $tabindex = '',
+    public static function checkbox($nid, string $value, $checked = false, string $class = '', string $tabindex = '',
         bool $disabled = false, string $extra_html = ''): string
     {
         self::getNameAndId($nid, $name, $id);
         if (func_num_args() > 2 && is_array($checked)) {
             // Cope with associative array of optional parameters
             $options = self::getDefaults(__CLASS__, __FUNCTION__);
-            extract(array_merge($options, array_intersect_key($checked, $options)));
+            $args    = array_merge($options, array_intersect_key($checked, $options));
+            extract($args);
         }
 
         return '<input type="checkbox" name="' . $name . '" value="' . $value . '" ' .
@@ -239,7 +242,8 @@ class form
         if (func_num_args() > 3 && is_array($default)) {
             // Cope with associative array of optional parameters
             $options = self::getDefaults(__CLASS__, __FUNCTION__);
-            extract(array_merge($options, array_intersect_key($default, $options)));
+            $args    = array_merge($options, array_intersect_key($default, $options));
+            extract($args);
         }
 
         return '<input type="' . $type . '" name="' . $name . '" ' .
@@ -288,7 +292,8 @@ class form
         if (func_num_args() > 3 && is_array($default)) {
             // Cope with associative array of optional parameters
             $options = self::getDefaults(__CLASS__, __FUNCTION__);
-            extract(array_merge($options, array_intersect_key($default, $options)));
+            $args    = array_merge($options, array_intersect_key($default, $options));
+            extract($args);
         }
 
         return self::field($nid, $size, $max, $default, $class, $tabindex, $disabled, $extra_html,
@@ -325,7 +330,8 @@ class form
         if (func_num_args() > 1 && is_array($size)) {
             // Cope with associative array of optional parameters
             $options = self::getDefaults(__CLASS__, __FUNCTION__);
-            extract(array_merge($options, array_intersect_key($size, $options)));
+            $args    = array_merge($options, array_intersect_key($size, $options));
+            extract($args);
         }
 
         return self::field($nid, $size, $max, $default, $class, $tabindex, $disabled, $extra_html,
@@ -363,7 +369,8 @@ class form
         if (func_num_args() > 1 && is_array($size)) {
             // Cope with associative array of optional parameters
             $options = self::getDefaults(__CLASS__, __FUNCTION__);
-            extract(array_merge($options, array_intersect_key($size, $options)));
+            $args    = array_merge($options, array_intersect_key($size, $options));
+            extract($args);
         }
 
         return self::field($nid, $size, $max, $default, $class, $tabindex, $disabled, $extra_html,
@@ -401,7 +408,8 @@ class form
         if (func_num_args() > 1 && is_array($size)) {
             // Cope with associative array of optional parameters
             $options = self::getDefaults(__CLASS__, __FUNCTION__);
-            extract(array_merge($options, array_intersect_key($size, $options)));
+            $args    = array_merge($options, array_intersect_key($size, $options));
+            extract($args);
         }
 
         return self::field($nid, $size, $max, $default, $class, $tabindex, $disabled, $extra_html,
@@ -439,7 +447,8 @@ class form
         if (func_num_args() > 1 && is_array($size)) {
             // Cope with associative array of optional parameters
             $options = self::getDefaults(__CLASS__, __FUNCTION__);
-            extract(array_merge($options, array_intersect_key($size, $options)));
+            $args    = array_merge($options, array_intersect_key($size, $options));
+            extract($args);
         }
         // Cope with unimplemented input type for some browser (type="text" + pattern + placeholder)
         if (strpos(strtolower($extra_html), 'pattern=') === false) {
@@ -484,7 +493,8 @@ class form
         if (func_num_args() > 1 && is_array($size)) {
             // Cope with associative array of optional parameters
             $options = self::getDefaults(__CLASS__, __FUNCTION__);
-            extract(array_merge($options, array_intersect_key($size, $options)));
+            $args    = array_merge($options, array_intersect_key($size, $options));
+            extract($args);
         }
         // Cope with unimplemented input type for some browser (type="text" + pattern + placeholder)
         if (strpos(strtolower($extra_html), 'pattern=') === false) {
@@ -528,7 +538,8 @@ class form
         if (func_num_args() > 1 && is_array($size)) {
             // Cope with associative array of optional parameters
             $options = self::getDefaults(__CLASS__, __FUNCTION__);
-            extract(array_merge($options, array_intersect_key($size, $options)));
+            $args    = array_merge($options, array_intersect_key($size, $options));
+            extract($args);
         }
         // Cope with unimplemented input type for some browser (type="text" + pattern + placeholder)
         if (strpos(strtolower($extra_html), 'pattern=') === false) {
@@ -568,7 +579,8 @@ class form
         if (func_num_args() > 1 && is_array($default)) {
             // Cope with associative array of optional parameters
             $options = self::getDefaults(__CLASS__, __FUNCTION__);
-            extract(array_merge($options, array_intersect_key($default, $options)));
+            $args    = array_merge($options, array_intersect_key($default, $options));
+            extract($args);
         }
 
         return '<input type="file" ' . '" name="' . $name . '" ' .
@@ -614,7 +626,8 @@ class form
         if (func_num_args() > 1 && is_array($min)) {
             // Cope with associative array of optional parameters
             $options = self::getDefaults(__CLASS__, __FUNCTION__);
-            extract(array_merge($options, array_intersect_key($min, $options)));
+            $args    = array_merge($options, array_intersect_key($min, $options));
+            extract($args);
         }
 
         return '<input type="number" name="' . $name . '" ' .
@@ -662,7 +675,8 @@ class form
         if (func_num_args() > 3 && is_array($default)) {
             // Cope with associative array of optional parameters
             $options = self::getDefaults(__CLASS__, __FUNCTION__);
-            extract(array_merge($options, array_intersect_key($default, $options)));
+            $args    = array_merge($options, array_intersect_key($default, $options));
+            extract($args);
         }
 
         return '<textarea cols="' . $cols . '" rows="' . $rows . '" name="' . $name . '" ' .

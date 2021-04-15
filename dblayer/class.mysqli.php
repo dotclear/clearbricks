@@ -87,6 +87,8 @@ if (class_exists('dbLayer')) {
             if ($handle instanceof MySQLi) {
                 return mysqli_get_server_info($handle);
             }
+
+            return '';
         }
 
         public function db_query($handle, $query)
@@ -94,14 +96,15 @@ if (class_exists('dbLayer')) {
             if ($handle instanceof MySQLi) {
                 $res = @mysqli_query($handle, $query);
                 if ($res === false) {
-                    $e      = new Exception($this->db_last_error($handle));
-                    $e->sql = $query;
+                    $e = new Exception($this->db_last_error($handle));
 
                     throw $e;
                 }
 
                 return $res;
             }
+
+            return null;
         }
 
         public function db_exec($handle, $query)
@@ -134,8 +137,10 @@ if (class_exists('dbLayer')) {
                 $res->field_seek($position);
                 $finfo = $res->fetch_field();
 
-                return $finfo->name;
+                return $finfo->name;    // @phpstan-ignore-line
             }
+
+            return '';
         }
 
         public function db_field_type($res, $position)
@@ -144,8 +149,10 @@ if (class_exists('dbLayer')) {
                 $res->field_seek($position);
                 $finfo = $res->fetch_field();
 
-                return $this->_convert_types($finfo->type);
+                return $this->_convert_types($finfo->type); // @phpstan-ignore-line
             }
+
+            return '';
         }
 
         public function db_fetch_assoc($res)
@@ -155,6 +162,8 @@ if (class_exists('dbLayer')) {
 
                 return ($v === null) ? false : $v;
             }
+
+            return false;
         }
 
         public function db_result_seek($res, $row)
@@ -162,6 +171,8 @@ if (class_exists('dbLayer')) {
             if ($res instanceof MySQLi_Result) {
                 return $res->data_seek($row);
             }
+
+            return false;
         }
 
         public function db_changes($handle, $res)
@@ -169,6 +180,8 @@ if (class_exists('dbLayer')) {
             if ($handle instanceof MySQLi) {
                 return mysqli_affected_rows($handle);
             }
+
+            return 0;
         }
 
         public function db_last_error($handle)

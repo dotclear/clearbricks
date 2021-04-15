@@ -177,8 +177,6 @@ class template
 
         if (!$tpl_file) {
             throw new Exception('No template found for ' . $file);
-
-            return false;
         }
 
         $file_md5  = md5($tpl_file);
@@ -389,8 +387,6 @@ class template
                     $newfile              = $this->getParentFilePath(dirname($file), basename($file));
                     if (!$newfile) {
                         throw new Exception('No template found for ' . basename($file));
-
-                        return false;
                     }
                     $file = $newfile;
                 } elseif ($this->parent_file != '') {
@@ -398,8 +394,6 @@ class template
                     $file                 = $this->getFilePath($this->parent_file);
                     if (!$file) {
                         throw new Exception('No template found for ' . $this->parent_file);
-
-                        return false;
                     }
                 } else {
                     return $tree->compile($this) . $err;

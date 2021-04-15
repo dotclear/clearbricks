@@ -399,17 +399,11 @@ class mimeMessage
             case '7bit':
                 return $input;
 
-                break;
-
             case 'quoted-printable':
                 return $this->quotedPrintableDecode($input);
 
-                break;
-
             case 'base64':
                 return base64_decode($input);
-
-                break;
 
             default:
                 return $input;

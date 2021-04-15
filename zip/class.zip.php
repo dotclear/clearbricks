@@ -8,7 +8,6 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-
 class fileZip
 {
     protected $entries  = [];
@@ -171,8 +170,7 @@ class fileZip
         $mtime = $this->makeTime(time());
 
         # Data descriptor
-        $data_desc =
-        "\x50\x4b\x03\x04" .
+        $data_desc = "\x50\x4b\x03\x04" .
         "\x0a\x00" . # ver needed to extract
         "\x00\x00" . # gen purpose bit flag
         "\x00\x00" . # compression method
@@ -192,8 +190,7 @@ class fileZip
         fwrite($this->fp, $data_desc);
 
         # Add to central record
-        $cdrec =
-        "\x50\x4b\x01\x02" .
+        $cdrec = "\x50\x4b\x01\x02" .
         "\x00\x00" . # version made by
         "\x0a\x00" . # version needed to extract
         "\x00\x00" . # gen purpose bit flag
@@ -238,8 +235,7 @@ class fileZip
         $mtime = $this->makeTime($mtime);
 
         # Data descriptor
-        $data_desc =
-        "\x50\x4b\x03\x04" .
+        $data_desc = "\x50\x4b\x03\x04" .
         "\x14\x00" . # ver needed to extract
         "\x00\x00" . # gen purpose bit flag
         "\x08\x00" . # compression method
@@ -262,8 +258,7 @@ class fileZip
         $new_offset = $this->old_offset + strlen($data_desc);
 
         # Add to central directory record
-        $cdrec =
-        "\x50\x4b\x01\x02" .
+        $cdrec = "\x50\x4b\x01\x02" .
         "\x00\x00" . # version made by
         "\x14\x00" . # version needed to extract
         "\x00\x00" . # gen purpose bit flag
@@ -343,7 +338,7 @@ class fileZip
             $mem_needed = $size;
 
             if ($mem_needed > $mem_avail) {
-                if (@ini_set('memory_limit', $mem_limit + $mem_needed + $mem_used) === false) {
+                if (@ini_set('memory_limit', (string) ($mem_limit + $mem_needed + $mem_used)) === false) {
                     throw new Exception(__('Not enough memory to open file.'));
                 }
 

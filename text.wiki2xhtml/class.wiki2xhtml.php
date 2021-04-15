@@ -381,7 +381,7 @@ class wiki2xhtml
         }
 
         # On ajoute les notes
-        if (count($this->foot_notes) > 0) {
+        if (count($this->foot_notes) > 0) { // @phpstan-ignore-line
             $res_notes = '';
             $i         = 1;
             foreach ($this->foot_notes as $k => $v) {
@@ -1425,11 +1425,9 @@ class wiki2xhtml
         $res = '<dl class="wikiHelp">';
 
         $res .= '<dt>Blocs</dt><dd>';
-        if (count($help['b']) > 0) {
-            $res .= '<ul><li>';
-            $res .= implode('&nbsp;;</li><li>', $help['b']);
-            $res .= '.</li></ul>';
-        }
+        $res .= '<ul><li>';
+        $res .= implode('&nbsp;;</li><li>', $help['b']);
+        $res .= '.</li></ul>';
         $res .= '</dd>';
 
         $res .= '<dt>Éléments en ligne</dt><dd>';

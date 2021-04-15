@@ -12,7 +12,6 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-
 class feedParser
 {
     public $feed_type;   ///< string Feed type
@@ -39,7 +38,7 @@ class feedParser
         $this->xml = @simplexml_load_string($data);
 
         if (!$this->xml) {
-            return false;
+            return;
         }
 
         if (preg_match('/<rdf:RDF/', $data)) {
@@ -52,8 +51,7 @@ class feedParser
             $this->parseAtom03();
         }
 
-        unset($data);
-        unset($this->xml);
+        unset($data, $this->xml);
     }
 
     /**
@@ -160,9 +158,9 @@ class feedParser
         $this->generator = (string) $this->xml->generator;
 
         foreach ($this->xml->link as $link) {
-            if ($link['rel'] == 'alternate' &&
-                ($link['type'] == 'text/html' || $link['type'] == 'application/xhtml+xml')) {
+            if ($link['rel'] == 'alternate' && ($link['type'] == 'text/html' || $link['type'] == 'application/xhtml+xml')) {
                 $this->link = (string) $link['href'];
+
                 break;
             }
         }
@@ -175,9 +173,9 @@ class feedParser
             $item = new stdClass();
 
             foreach ($i->link as $link) {
-                if ($link['rel'] == 'alternate' &&
-                    ($link['type'] == 'text/html' || $link['type'] == 'application/xhtml+xml')) {
+                if ($link['rel'] == 'alternate' && ($link['type'] == 'text/html' || $link['type'] == 'application/xhtml+xml')) {
                     $item->link = (string) $link['href'];
+
                     break;
                 }
 
@@ -210,9 +208,9 @@ class feedParser
         $this->generator = (string) $this->xml->generator;
 
         foreach ($this->xml->link as $link) {
-            if ($link['rel'] == 'alternate' &&
-                ($link['type'] == 'text/html' || $link['type'] == 'application/xhtml+xml')) {
+            if ($link['rel'] == 'alternate' && ($link['type'] == 'text/html' || $link['type'] == 'application/xhtml+xml')) {
                 $this->link = (string) $link['href'];
+
                 break;
             }
         }
@@ -225,9 +223,9 @@ class feedParser
             $item = new stdClass();
 
             foreach ($i->link as $link) {
-                if ($link['rel'] == 'alternate' &&
-                    ($link['type'] == 'text/html' || $link['type'] == 'application/xhtml+xml')) {
+                if ($link['rel'] == 'alternate' && ($link['type'] == 'text/html' || $link['type'] == 'application/xhtml+xml')) {
                     $item->link = (string) $link['href'];
+
                     break;
                 }
 

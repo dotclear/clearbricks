@@ -32,7 +32,7 @@ class restServer
      * POST values.
      *
      * @param string    $name        Function name
-     * @param callback    $callback        Callback function
+     * @param callable  $callback        Callback function
      */
     public function addFunction($name, $callback)
     {

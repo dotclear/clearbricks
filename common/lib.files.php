@@ -419,28 +419,16 @@ class files
             case UPLOAD_ERR_INI_SIZE:
             case UPLOAD_ERR_FORM_SIZE:
                 throw new Exception(__('The uploaded file exceeds the maximum file size allowed.'));
-
-                return false;
             case UPLOAD_ERR_PARTIAL:
                 throw new Exception(__('The uploaded file was only partially uploaded.'));
-
-                return false;
             case UPLOAD_ERR_NO_FILE:
                 throw new Exception(__('No file was uploaded.'));
-
-                return false;
             case UPLOAD_ERR_NO_TMP_DIR:
                 throw new Exception(__('Missing a temporary folder.'));
-
-                return false;
             case UPLOAD_ERR_CANT_WRITE:
                 throw new Exception(__('Failed to write file to disk.'));
-
-                return false;
             case UPLOAD_ERR_EXTENSION:
                 throw new Exception(__('A PHP extension stopped the file upload.'));
-
-                return false;
             default:
                 return true;
         }
@@ -526,7 +514,7 @@ class path
      *
      * @param string    $p        Filename
      * @param boolean    $strict    File should exists
-     * @return string
+     * @return string|false
      */
     public static function real(string $p, bool $strict = true)
     {

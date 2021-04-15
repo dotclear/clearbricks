@@ -38,10 +38,9 @@
  * @copyright GPL-2.0-only
  */
 
-/** @cond ONCE */
+/* @cond ONCE */
 if (class_exists('netSocket')) {
-/** @endcond */
-
+    /** @endcond */
     class netHttp extends netSocket
     {
         protected $host;          ///< string Server host
@@ -119,7 +118,7 @@ if (class_exists('netSocket')) {
          * matching query string will be constructed. Returns true on success.
          *
          * @param string    $path            Request path
-         * @param array        $data            Request parameters
+         * @param boolean|array        $data            Request parameters
          * @return boolean
          */
         public function get($path, $data = false)
@@ -142,9 +141,9 @@ if (class_exists('netSocket')) {
          * <var>$data</var> can be an array of key value pairs, in which case a
          * matching query string will be constructed. Returns true on success.
          *
-         * @param string    $path            Request path
-         * @param array        $data            Request parameters
-         * @param array        $charset            Request charset
+         * @param string        $path            Request path
+         * @param array|string  $data            Request parameters
+         * @param array         $charset         Request charset
          * @return boolean
          */
         public function post($path, $data, $charset = null)
@@ -155,6 +154,7 @@ if (class_exists('netSocket')) {
             $this->path     = $path;
             $this->method   = 'POST';
             $this->postdata = $this->buildQueryString($data);
+
             return $this->doRequest();
         }
 
@@ -164,7 +164,7 @@ if (class_exists('netSocket')) {
          * Prepares Query String for HTTP request. <var>$data</var> is an associative
          * array of arguments.
          *
-         * @param array        $data            Query data
+         * @param array|string        $data            Query data
          * @return string
          */
         protected function buildQueryString($data)
@@ -229,6 +229,7 @@ if (class_exists('netSocket')) {
                     $this->status        = $m[2];
                     $this->status_string = $m[3]; # not used
                     $this->debug($line);
+
                     continue;
                 }
 
@@ -241,6 +242,7 @@ if (class_exists('netSocket')) {
                         if ($this->headers_only) {
                             break;
                         }
+
                         continue;
                     }
 
@@ -260,6 +262,7 @@ if (class_exists('netSocket')) {
                     } else {
                         $this->headers[$key] = $val;
                     }
+
                     continue;
                 }
 
@@ -303,11 +306,12 @@ if (class_exists('netSocket')) {
             if ($this->handle_redirects) {
                 if (++$this->redirect_count >= $this->max_redirects) {
                     $this->redirect_count = 0;
+
                     throw new Exception('Number of redirects exceeded maximum (' . $this->max_redirects . ')');
                 }
 
-                $location = isset($this->headers['location']) ? $this->headers['location'] : '';
-                $uri      = isset($this->headers['uri']) ? $this->headers['uri'] : '';
+                $location = $this->headers['location'] ?? '';
+                $uri      = $this->headers['uri']      ?? '';
                 if ($location || $uri) {
                     if (self::readUrl($location . $uri, $r_ssl, $r_host, $r_port, $r_path, $r_user, $r_pass)) {
                         # If we try to move on another host, remove cookies, user and pass
@@ -318,11 +322,13 @@ if (class_exists('netSocket')) {
                         }
                         $this->useSSL($r_ssl);
                         $this->debug('Redirect to: ' . $location . $uri);
+
                         return $this->get($r_path);
                     }
                 }
                 $this->redirect_count = 0;
             }
+
             return true;
         }
 
@@ -394,6 +400,7 @@ if (class_exists('netSocket')) {
                     if (preg_match('/^Content-Type: /', $value)) {
                         // Content-Type already set in headers, ignore
                         $needed = false;
+
                         break;
                     }
                 }
@@ -500,16 +507,16 @@ if (class_exists('netSocket')) {
          * Returns the specified response header, or false if it does not exist.
          *
          * @param string    $header            Header name
-         * @return string
+         * @return string|false
          */
         public function getHeader($header)
         {
             $header = strtolower($header);
             if (isset($this->headers[$header])) {
                 return $this->headers[$header];
-            } else {
-                return false;
             }
+
+            return false;
         }
 
         /**
@@ -538,6 +545,7 @@ if (class_exists('netSocket')) {
                 $url .= ':' . $this->port;
             }
             $url .= $this->path;
+
             return $url;
         }
 
@@ -597,7 +605,7 @@ if (class_exists('netSocket')) {
          * @param string    $username            User name
          * @param string    $password            Password
          */
-        public function setAuthorization($username, $password)
+        public function setAuthorization(?string $username, ?string $password)
         {
             $this->username = $username;
             $this->password = $password;
@@ -776,6 +784,7 @@ if (class_exists('netSocket')) {
             }
             $client->setOutput($output);
             $client->get($path);
+
             return $client->getStatus() == 200 ? $client->getContent() : false;
         }
 
@@ -785,10 +794,10 @@ if (class_exists('netSocket')) {
          * Static method designed for running simple POST requests. Returns content or
          * false on failure.
          *
-         * @param string    $url                Request URL
-         * @param string    $data            Array of parameters
+         * @param string    $url               Request URL
+         * @param array     $data              Array of parameters
          * @param string    $output            Optionnal output stream
-         * @return string
+         * @return string|false
          */
         public static function quickPost($url, $data, $output = null)
         {
@@ -797,6 +806,7 @@ if (class_exists('netSocket')) {
             }
             $client->setOutput($output);
             $client->post($path, $data);
+
             return $client->getStatus() == 200 ? $client->getContent() : false;
         }
 
@@ -806,8 +816,8 @@ if (class_exists('netSocket')) {
          * Returns a new instance of the class. <var>$path</var> is an output variable.
          *
          * @param string    $url                Request URL
-         * @param string    &$path            Resulting path
-         * @return netHttp
+         * @param string    $path               Resulting path
+         * @return netHttp|false
          */
         public static function initClient($url, &$path)
         {
@@ -829,13 +839,13 @@ if (class_exists('netSocket')) {
          * <var>$path</var>, <var>$user</var> and <var>$pass</var> variables. Returns
          * true on succes.
          *
-         * @param string    $url                Request URL
-         * @param boolean    &$ssl            true if HTTPS URL
-         * @param string    &$host            Host name
-         * @param string    &$port            Server Port
-         * @param string    &$path            Path
-         * @param string    &$user            Username
-         * @param string    &$pass            Password
+         * @param string    $url             Request URL
+         * @param boolean   $ssl             true if HTTPS URL
+         * @param string    $host            Host name
+         * @param string    $port            Server Port
+         * @param string    $path            Path
+         * @param string    $user            Username
+         * @param string    $pass            Password
          * @return boolean
          */
         public static function readURL($url, &$ssl, &$host, &$port, &$path, &$user, &$pass)
@@ -850,12 +860,12 @@ if (class_exists('netSocket')) {
                 return false;
             }
 
-            $scheme = isset($bits['scheme']) ? $bits['scheme'] : 'http';
-            $host   = isset($bits['host']) ? $bits['host'] : null;
-            $port   = isset($bits['port']) ? $bits['port'] : null;
-            $path   = isset($bits['path']) ? $bits['path'] : '/';
-            $user   = isset($bits['user']) ? $bits['user'] : null;
-            $pass   = isset($bits['pass']) ? $bits['pass'] : null;
+            $scheme = $bits['scheme'] ?? 'http';
+            $host   = $bits['host']   ?? null;
+            $port   = $bits['port']   ?? null;
+            $path   = $bits['path']   ?? '/';
+            $user   = $bits['user']   ?? null;
+            $pass   = $bits['pass']   ?? null;
 
             $ssl = $scheme == 'https';
 
@@ -898,25 +908,23 @@ if (class_exists('netSocket')) {
         }
     }
 
-/** @cond ONCE */
+    /* @cond ONCE */
 }
-/** @endcond */
+/* @endcond */
 
 # Compatibility to Incutio HttpClient class
 # This will be removed soon!
 
-/** @cond ONCE */
+/* @cond ONCE */
 if (class_exists('netHttp')) {
-/** @endcond */
-
+    /** @endcond */
     class HttpClient extends netHttp
     {
         public function getError()
         {
-            return;
         }
     }
 
-/** @cond ONCE */
+    /* @cond ONCE */
 }
-/** @endcond */
+/* @endcond */

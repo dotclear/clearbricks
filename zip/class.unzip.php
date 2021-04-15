@@ -8,7 +8,6 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-
 class fileUnzip
 {
     protected $file_name;
@@ -105,6 +104,7 @@ class fileUnzip
         fseek($this->fp(), $details['contents_start_offset']);
 
         $this->memoryAllocate($details['compressed_size']);
+
         return $this->uncompress(
             fread($this->fp(), $details['compressed_size']),
             $details['compression_method'],
@@ -125,6 +125,7 @@ class fileUnzip
                 $res[] = $k;
             }
         }
+
         return $res;
     }
 
@@ -140,6 +141,7 @@ class fileUnzip
                 $res[] = substr($k, 0, -1);
             }
         }
+
         return $res;
     }
 
@@ -154,14 +156,22 @@ class fileUnzip
 
         $root_files = 0;
         $root_dirs  = 0;
-        foreach ($files as $v) {if (strpos($v, '/') === false) {$root_files++;}}
-        foreach ($dirs as $v) {if (strpos($v, '/') === false) {$root_dirs++;}}
+        foreach ($files as $v) {
+            if (strpos($v, '/') === false) {
+                $root_files++;
+            }
+        }
+        foreach ($dirs as $v) {
+            if (strpos($v, '/') === false) {
+                $root_dirs++;
+            }
+        }
 
         if ($root_files == 0 && $root_dirs == 1) {
             return $dirs[0];
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     public function isEmpty()
@@ -217,8 +227,10 @@ class fileUnzip
                 throw new Exception(__('Unable to write destination file.'));
             }
             files::inheritChmod($target);
+
             return true;
         }
+
         return $content;
     }
 
@@ -239,6 +251,7 @@ class fileUnzip
             case 0:
                 # Not compressed
                 $this->memoryAllocate($size * 2);
+
                 return $this->putContent($content, $target);
             case 1:
                 throw new Exception('Shrunk mode is not supported.');
@@ -257,6 +270,7 @@ class fileUnzip
                     throw new Exception('Gzip functions are not available.');
                 }
                 $this->memoryAllocate($size * 2);
+
                 return $this->putContent(gzinflate($content, $size), $target);
             case 9:
                 throw new Exception('Enhanced Deflating is not supported.');
@@ -268,6 +282,7 @@ class fileUnzip
                     throw new Exception('Bzip2 functions are not available.');
                 }
                 $this->memoryAllocate($size * 2);
+
                 return $this->putContent(bzdecompress($content), $target);
             case 18:
                 throw new Exception('IBM TERSE is not supported.');
@@ -297,7 +312,7 @@ class fileUnzip
                 ];
 
                 $zip_comment_len          = unpack('v', fread($fp, 2));
-                $eodir['zipfile_comment'] = $zip_comment_len[1] ? fread($fp, $zip_comment_len) : '';
+                $eodir['zipfile_comment'] = $zip_comment_len[1] ? fread($fp, (int) $zip_comment_len) : '';
 
                 $this->eo_central = [
                     'disk_number_this'   => $eodir['disk_number_this'][1],
@@ -314,36 +329,36 @@ class fileUnzip
 
                 while ($signature == $this->dir_sig) {
                     $dir                       = [];
-                    $dir['version_madeby']     = unpack("v", fread($fp, 2)); # version made by
-                    $dir['version_needed']     = unpack("v", fread($fp, 2)); # version needed to extract
-                    $dir['general_bit_flag']   = unpack("v", fread($fp, 2)); # general purpose bit flag
-                    $dir['compression_method'] = unpack("v", fread($fp, 2)); # compression method
-                    $dir['lastmod_time']       = unpack("v", fread($fp, 2)); # last mod file time
-                    $dir['lastmod_date']       = unpack("v", fread($fp, 2)); # last mod file date
+                    $dir['version_madeby']     = unpack('v', fread($fp, 2)); # version made by
+                    $dir['version_needed']     = unpack('v', fread($fp, 2)); # version needed to extract
+                    $dir['general_bit_flag']   = unpack('v', fread($fp, 2)); # general purpose bit flag
+                    $dir['compression_method'] = unpack('v', fread($fp, 2)); # compression method
+                    $dir['lastmod_time']       = unpack('v', fread($fp, 2)); # last mod file time
+                    $dir['lastmod_date']       = unpack('v', fread($fp, 2)); # last mod file date
                     $dir['crc-32']             = fread($fp, 4); # crc-32
-                    $dir['compressed_size']    = unpack("V", fread($fp, 4)); # compressed size
-                    $dir['uncompressed_size']  = unpack("V", fread($fp, 4)); # uncompressed size
+                    $dir['compressed_size']    = unpack('V', fread($fp, 4)); # compressed size
+                    $dir['uncompressed_size']  = unpack('V', fread($fp, 4)); # uncompressed size
 
-                    $file_name_len    = unpack("v", fread($fp, 2)); # filename length
-                    $extra_field_len  = unpack("v", fread($fp, 2)); # extra field length
-                    $file_comment_len = unpack("v", fread($fp, 2)); # file comment length
+                    $file_name_len    = unpack('v', fread($fp, 2)); # filename length
+                    $extra_field_len  = unpack('v', fread($fp, 2)); # extra field length
+                    $file_comment_len = unpack('v', fread($fp, 2)); # file comment length
 
-                    $dir['disk_number_start']    = unpack("v", fread($fp, 2)); # disk number start
-                    $dir['internal_attributes']  = unpack("v", fread($fp, 2)); # internal file attributes-byte1
-                    $dir['external_attributes1'] = unpack("v", fread($fp, 2)); # external file attributes-byte2
-                    $dir['external_attributes2'] = unpack("v", fread($fp, 2)); # external file attributes
-                    $dir['relative_offset']      = unpack("V", fread($fp, 4)); # relative offset of local header
+                    $dir['disk_number_start']    = unpack('v', fread($fp, 2)); # disk number start
+                    $dir['internal_attributes']  = unpack('v', fread($fp, 2)); # internal file attributes-byte1
+                    $dir['external_attributes1'] = unpack('v', fread($fp, 2)); # external file attributes-byte2
+                    $dir['external_attributes2'] = unpack('v', fread($fp, 2)); # external file attributes
+                    $dir['relative_offset']      = unpack('V', fread($fp, 4)); # relative offset of local header
                     $dir['file_name']            = $this->cleanFileName(fread($fp, $file_name_len[1])); # filename
                     $dir['extra_field']          = $extra_field_len[1] ? fread($fp, $extra_field_len[1]) : ''; # extra field
                     $dir['file_comment']         = $file_comment_len[1] ? fread($fp, $file_comment_len[1]) : ''; # file comment
 
                     $dir_list[$dir['file_name']] = [
-                        'version_madeby'       => $dir['version_madeby'][1],
-                        'version_needed'       => $dir['version_needed'][1],
-                        'general_bit_flag'     => str_pad(decbin($dir['general_bit_flag'][1]), 8, '0', STR_PAD_LEFT),
-                        'compression_method'   => $dir['compression_method'][1],
-                        'lastmod_datetime'     => $this->getTimeStamp($dir['lastmod_date'][1], $dir['lastmod_time'][1]),
-                        'crc-32'               => str_pad(dechex(ord($dir['crc-32'][3])), 2, '0', STR_PAD_LEFT) .
+                        'version_madeby'     => $dir['version_madeby'][1],
+                        'version_needed'     => $dir['version_needed'][1],
+                        'general_bit_flag'   => str_pad(decbin($dir['general_bit_flag'][1]), 8, '0', STR_PAD_LEFT),
+                        'compression_method' => $dir['compression_method'][1],
+                        'lastmod_datetime'   => $this->getTimeStamp($dir['lastmod_date'][1], $dir['lastmod_time'][1]),
+                        'crc-32'             => str_pad(dechex(ord($dir['crc-32'][3])), 2, '0', STR_PAD_LEFT) .
                         str_pad(dechex(ord($dir['crc-32'][2])), 2, '0', STR_PAD_LEFT) .
                         str_pad(dechex(ord($dir['crc-32'][1])), 2, '0', STR_PAD_LEFT) .
                         str_pad(dechex(ord($dir['crc-32'][0])), 2, '0', STR_PAD_LEFT),
@@ -384,9 +399,11 @@ class fileUnzip
                         break;
                     }
                 }
+
                 return true;
             }
         }
+
         return false;
     }
 
@@ -434,17 +451,17 @@ class fileUnzip
         if ($signature == $this->zip_sig) {
             # Get information about the zipped file
             $file                       = [];
-            $file['version_needed']     = unpack("v", fread($fp, 2)); # version needed to extract
-            $file['general_bit_flag']   = unpack("v", fread($fp, 2)); # general purpose bit flag
-            $file['compression_method'] = unpack("v", fread($fp, 2)); # compression method
-            $file['lastmod_time']       = unpack("v", fread($fp, 2)); # last mod file time
-            $file['lastmod_date']       = unpack("v", fread($fp, 2)); # last mod file date
+            $file['version_needed']     = unpack('v', fread($fp, 2)); # version needed to extract
+            $file['general_bit_flag']   = unpack('v', fread($fp, 2)); # general purpose bit flag
+            $file['compression_method'] = unpack('v', fread($fp, 2)); # compression method
+            $file['lastmod_time']       = unpack('v', fread($fp, 2)); # last mod file time
+            $file['lastmod_date']       = unpack('v', fread($fp, 2)); # last mod file date
             $file['crc-32']             = fread($fp, 4); # crc-32
-            $file['compressed_size']    = unpack("V", fread($fp, 4)); # compressed size
-            $file['uncompressed_size']  = unpack("V", fread($fp, 4)); # uncompressed size
+            $file['compressed_size']    = unpack('V', fread($fp, 4)); # compressed size
+            $file['uncompressed_size']  = unpack('V', fread($fp, 4)); # uncompressed size
 
-            $file_name_len   = unpack("v", fread($fp, 2)); # filename length
-            $extra_field_len = unpack("v", fread($fp, 2)); # extra field length
+            $file_name_len   = unpack('v', fread($fp, 2)); # filename length
+            $extra_field_len = unpack('v', fread($fp, 2)); # extra field length
 
             $file['file_name']             = $this->cleanFileName(fread($fp, $file_name_len[1])); # filename
             $file['extra_field']           = $extra_field_len[1] ? fread($fp, $extra_field_len[1]) : ''; # extra field
@@ -455,12 +472,12 @@ class fileUnzip
 
             # Mount file table
             $i = [
-                'file_name'             => $file['file_name'],
-                'is_dir'                => substr($file['file_name'], -1, 1) == '/',
-                'compression_method'    => $file['compression_method'][1],
-                'version_needed'        => $file['version_needed'][1],
-                'lastmod_datetime'      => $this->getTimeStamp($file['lastmod_date'][1], $file['lastmod_time'][1]),
-                'crc-32'                => str_pad(dechex(ord($file['crc-32'][3])), 2, '0', STR_PAD_LEFT) .
+                'file_name'          => $file['file_name'],
+                'is_dir'             => substr($file['file_name'], -1, 1) == '/',
+                'compression_method' => $file['compression_method'][1],
+                'version_needed'     => $file['version_needed'][1],
+                'lastmod_datetime'   => $this->getTimeStamp($file['lastmod_date'][1], $file['lastmod_time'][1]),
+                'crc-32'             => str_pad(dechex(ord($file['crc-32'][3])), 2, '0', STR_PAD_LEFT) .
                 str_pad(dechex(ord($file['crc-32'][2])), 2, '0', STR_PAD_LEFT) .
                 str_pad(dechex(ord($file['crc-32'][1])), 2, '0', STR_PAD_LEFT) .
                 str_pad(dechex(ord($file['crc-32'][0])), 2, '0', STR_PAD_LEFT),
@@ -470,8 +487,10 @@ class fileUnzip
                 'general_bit_flag'      => str_pad(decbin($file['general_bit_flag'][1]), 8, '0', STR_PAD_LEFT),
                 'contents_start_offset' => $file['contents_start_offset']
             ];
+
             return $i;
         }
+
         return false;
     }
 
@@ -493,6 +512,7 @@ class fileUnzip
     {
         $n = str_replace('../', '', $n);
         $n = preg_replace('#^/+#', '', $n);
+
         return $n;
     }
 
@@ -510,7 +530,7 @@ class fileUnzip
             $mem_needed = $size;
 
             if ($mem_needed > $mem_avail) {
-                if (@ini_set('memory_limit', $mem_limit + $mem_needed + $mem_used) === false) {
+                if (@ini_set('memory_limit', (string) ($mem_limit + $mem_needed + $mem_used)) === false) {
                     throw new Exception(__('Not enough memory to open file.'));
                 }
 

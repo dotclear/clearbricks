@@ -73,6 +73,8 @@ if (class_exists('dbLayer')) {
             if ($handle instanceof PDO) {
                 return $handle->getAttribute(PDO::ATTR_SERVER_VERSION);
             }
+
+            return '';
         }
 
         # There is no other way than get all selected data in a staticRecord
@@ -92,7 +94,7 @@ if (class_exists('dbLayer')) {
             }
 
             $data = [];
-            while ($r = $result->fetch(PDO::FETCH_ASSOC)) {
+            while ($r = $result->fetch(PDO::FETCH_ASSOC)) { // @phpstan-ignore-line
                 $R = [];
                 foreach ($r as $k => $v) {
                     $k     = preg_replace('/^(.*)\./', '', $k);
@@ -103,7 +105,7 @@ if (class_exists('dbLayer')) {
             }
 
             $info['rows'] = count($data);
-            $result->closeCursor();
+            $result->closeCursor(); // @phpstan-ignore-line
 
             return new staticRecord($data, $info);
         }
@@ -113,14 +115,15 @@ if (class_exists('dbLayer')) {
             if ($handle instanceof PDO) {
                 $res = $handle->query($query);
                 if ($res === false) {
-                    $e      = new Exception($this->db_last_error($handle));
-                    $e->sql = $query;
+                    $e = new Exception($this->db_last_error($handle));
 
                     throw $e;
                 }
 
                 return $res;
             }
+
+            return null;
         }
 
         public function db_exec($handle, $query)
@@ -139,6 +142,7 @@ if (class_exists('dbLayer')) {
 
         public function db_num_rows($res)
         {
+            return 0;
         }
 
         public function db_field_name($res, $position)
@@ -148,6 +152,8 @@ if (class_exists('dbLayer')) {
 
                 return preg_replace('/^.+\./', '', $m['name']); # we said short_column_names = 1
             }
+
+            return '';
         }
 
         public function db_field_type($res, $position)
@@ -165,14 +171,18 @@ if (class_exists('dbLayer')) {
                         return 'varchar';
                 }
             }
+
+            return '';
         }
 
         public function db_fetch_assoc($res)
         {
+            return false;
         }
 
         public function db_result_seek($res, $row)
         {
+            return false;
         }
 
         public function db_changes($handle, $res)
@@ -180,6 +190,8 @@ if (class_exists('dbLayer')) {
             if ($res instanceof PDOStatement) {
                 return $res->rowCount();
             }
+
+            return 0;
         }
 
         public function db_last_error($handle)

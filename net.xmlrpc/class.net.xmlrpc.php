@@ -35,8 +35,8 @@ class xmlrpcValue
     /**
      * Constructor
      *
-     * @param mixed        $data        Data value
-     * @param string    $type        Data type
+     * @param mixed    $data        Data value
+     * @param mixed    $type        Data type
      */
     public function __construct($data, $type = false)
     {
@@ -71,20 +71,12 @@ class xmlrpcValue
         switch ($this->type) {
             case 'boolean':
                 return '<boolean>' . (($this->data) ? '1' : '0') . '</boolean>';
-
-                break;
             case 'int':
                 return '<int>' . $this->data . '</int>';
-
-                break;
             case 'double':
                 return '<double>' . $this->data . '</double>';
-
-                break;
             case 'string':
                 return '<string>' . htmlspecialchars($this->data) . '</string>';
-
-                break;
             case 'array':
                 $return = '<array><data>' . "\n";
                 foreach ($this->data as $item) {
@@ -93,8 +85,6 @@ class xmlrpcValue
                 $return .= '</data></array>';
 
                 return $return;
-
-                break;
             case 'struct':
                 $return = '<struct>' . "\n";
                 foreach ($this->data as $name => $value) {
@@ -104,16 +94,12 @@ class xmlrpcValue
                 $return .= '</struct>';
 
                 return $return;
-
-                break;
             case 'date':
             case 'base64':
                 return $this->data->getXml();
-
-                break;
         }
 
-        return false;
+        return '';
     }
 
     /**
@@ -255,12 +241,12 @@ class xmlrpcMessage
         $this->_parser = xml_parser_create();
 
         # Set XML parser to take the case of tags in to account
-        xml_parser_set_option($this->_parser, XML_OPTION_CASE_FOLDING, false);
+        xml_parser_set_option($this->_parser, XML_OPTION_CASE_FOLDING, 0);
 
         # Set XML parser callback functions
         xml_set_object($this->_parser, $this);
-        xml_set_element_handler($this->_parser, 'tag_open', 'tag_close');
-        xml_set_character_data_handler($this->_parser, 'cdata');
+        xml_set_element_handler($this->_parser, [$this, 'tag_open'], [$this, 'tag_close']);
+        xml_set_character_data_handler($this->_parser, [$this, 'cdata']);
 
         if (!xml_parse($this->_parser, $this->message)) {
             $c = xml_get_error_code($this->_parser);
@@ -614,7 +600,7 @@ if (class_exists('netHttp')) {
         public function __construct($url)
         {
             if (!$this->readUrl($url, $ssl, $host, $port, $path, $user, $pass)) {
-                return false;
+                return;
             }
 
             parent::__construct($host, $port);
@@ -798,8 +784,8 @@ class xmlrpcServer
     /**
      * Constructor
      *
-     * @param array     $callbacks       Server callbacks
-     * @param string    $data            Server data
+     * @param mixed     $callbacks       Server callbacks
+     * @param mixed     $data            Server data
      * @param string    $encoding        Server encoding
      */
     public function __construct($callbacks = false, $data = false, $encoding = 'UTF-8')
@@ -820,7 +806,7 @@ class xmlrpcServer
      * which should be a valid XML-RPC raw stream. If data is not specified, it
      * take values from raw POST data.
      *
-     * @param string    $data            XML-RPC raw stream
+     * @param mixed    $data            XML-RPC raw stream
      */
     public function serve($data = false)
     {
@@ -1213,7 +1199,7 @@ if (class_exists('xmlrpcServer')) {
          * callback. <var>$callback</var> should be a valid PHP callback.
          *
          * @param string    $method            Method name
-         * @param callback    $callback            Method callback
+         * @param callable    $callback            Method callback
          * @param array        $args            Array of arguments type. The first is the returned one.
          * @param string    $help            Method help string
          */
@@ -1231,7 +1217,7 @@ if (class_exists('xmlrpcServer')) {
          * method <var>$methodname</var> with arguments in <var>$args</var> array.
          *
          * @param string    $methodname        Method name
-         * @param array        $args            Arguments
+         * @param mixed        $args            Arguments
          * @return mixed
          */
         protected function call($methodname, $args)

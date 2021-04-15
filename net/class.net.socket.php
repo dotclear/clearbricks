@@ -11,7 +11,6 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-
 class netSocket
 {
     protected $_host;           ///< string: Server host
@@ -25,7 +24,7 @@ class netSocket
      *
      * @param string        $host        Server host
      * @param string         $port        Server port
-     * @param string        $timeout        Connection timeout
+     * @param int        $timeout        Connection timeout
      */
     public function __construct($host, $port, $timeout = 10)
     {
@@ -57,8 +56,10 @@ class netSocket
     {
         if ($host) {
             $this->_host = $host;
+
             return true;
         }
+
         return $this->_host;
     }
 
@@ -75,8 +76,10 @@ class netSocket
     {
         if ($port) {
             $this->_port = abs((integer) $port);
+
             return true;
         }
+
         return $this->_port;
     }
 
@@ -93,8 +96,10 @@ class netSocket
     {
         if ($timeout) {
             $this->_timeout = abs((integer) $timeout);
+
             return true;
         }
+
         return $this->_timeout;
     }
 
@@ -111,7 +116,8 @@ class netSocket
         if (!$this->isOpen()) {
             return false;
         }
-        return stream_set_blocking($this->_handle, $i);
+
+        return stream_set_blocking($this->_handle, (bool) $i);
     }
 
     /**
@@ -129,6 +135,7 @@ class netSocket
             throw new Exception('Socket error: ' . $errstr . ' (' . $errno . ')');
         }
         $this->_handle = $handle;
+
         return $this->iterator();
     }
 
@@ -168,7 +175,7 @@ class netSocket
      * </code>
      *
      * @param string|array    $data        Data to send
-     * @return    netSocketIterator
+     * @return    netSocketIterator|false
      */
     public function write($data)
     {
@@ -181,6 +188,7 @@ class netSocket
         }
 
         fwrite($this->_handle, $data);
+
         return $this->iterator();
     }
 
@@ -201,13 +209,14 @@ class netSocket
     /**
      * Iterator
      *
-     * Returns an object of type netSocketIterator
+     * @return    netSocketIterator|false
      */
     protected function iterator()
     {
         if (!$this->isOpen()) {
             return false;
         }
+
         return new netSocketIterator($this->_handle);
     }
 
@@ -241,7 +250,7 @@ class netSocketIterator implements Iterator
     /**
      * Constructor
      *
-     * @param resource    &$handle        Socket resource handler
+     * @param resource    $handle        Socket resource handler
      */
     public function __construct(&$handle)
     {

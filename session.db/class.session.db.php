@@ -27,7 +27,7 @@ class sessionDB
      *
      * This method creates an instance of sessionDB class.
      *
-     * @param dbLayer    &$con            dbLayer inherited database instance
+     * @param dbLayer    $con            dbLayer inherited database instance
      * @param string        $table            Table name
      * @param string        $cookie_name    Session cookie name
      * @param string        $cookie_path    Session cookie path
@@ -57,7 +57,7 @@ class sessionDB
             @ini_set('session.use_trans_sid', '0');
             @ini_set('session.cookie_path', $this->cookie_path);
             @ini_set('session.cookie_domain', $this->cookie_domain);
-            @ini_set('session.cookie_secure', $this->cookie_secure);
+            @ini_set('session.cookie_secure', (string) $this->cookie_secure);
         }
     }
 
@@ -92,7 +92,7 @@ class sessionDB
         }
 
         if (!isset($_COOKIE[$this->cookie_name])) {
-            session_id(sha1(uniqid(rand(), true)));
+            session_id(sha1(uniqid((string) rand(), true)));
         }
 
         session_name($this->cookie_name);

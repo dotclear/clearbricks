@@ -20,9 +20,9 @@ class dt
      * function.
      * Special cases %a, %A, %b and %B are handled by {@link l10n} library.
      *
-     * @param string    $p        Format pattern
-     * @param integer    $ts        Timestamp
-     * @param string    $tz        Timezone
+     * @param string            $p        Format pattern
+     * @param integer|boolean   $ts       Timestamp
+     * @param string            $tz       Timezone
      * @return    string
      */
     public static function str(string $p, $ts = null, string $tz = null): string
@@ -143,7 +143,7 @@ class dt
      * Get time offset for a timezone and an optionnal $ts timestamp.
      *
      * @param string    $tz        Timezone
-     * @param integer    $ts        Timestamp
+     * @param integer|boolean    $ts        Timestamp
      * @return integer
      */
     public static function getTimeOffset(string $tz, $ts = false): int
@@ -182,7 +182,7 @@ class dt
      * Returns a timestamp with its timezone offset.
      *
      * @param string    $tz        Timezone
-     * @param integer    $ts        Timestamp
+     * @param integer|boolean    $ts        Timestamp
      * @return integer
      */
     public static function addTimeZone(string $tz, $ts = false): int

@@ -9,7 +9,6 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-
 class mail
 {
     /**
@@ -28,6 +27,11 @@ class mail
      */
     public static function sendMail($to, $subject, $message, $headers = null, $p = null)
     {
+        /**
+         * User defined mail function
+         *
+         * @var        callable $f
+         */
         $f   = function_exists('_mail') ? '_mail' : null;
         $eol = trim(ini_get('sendmail_path')) ? "\n" : "\r\n";
 
@@ -52,7 +56,7 @@ class mail
      * Returns MX records sorted by weight for a given host.
      *
      * @param string    $host        Hostname
-     * @return array
+     * @return array|false
      */
     public static function getMX($host)
     {

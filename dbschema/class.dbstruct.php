@@ -150,9 +150,11 @@ class dbStruct
                 $got_work = true;
             } else { # Table exists
                 # Check new fields to create
-                $fields    = $t->getFields();
+                $fields = $t->getFields();
+                /* @phpstan-ignore-next-line */
                 $db_fields = $this->tables[$tname]->getFields();
                 foreach ($fields as $fname => $f) {
+                    /* @phpstan-ignore-next-line */
                     if (!$this->tables[$tname]->fieldExists($fname)) {
                         # Field doest not exist, create it
                         $field_create[$tname][$fname] = $f;
@@ -165,7 +167,8 @@ class dbStruct
                 }
 
                 # Check keys to add or upgrade
-                $keys    = $t->getKeys();
+                $keys = $t->getKeys();
+                /* @phpstan-ignore-next-line */
                 $db_keys = $this->tables[$tname]->getKeys();
 
                 foreach ($keys as $kname => $k) {
@@ -175,6 +178,7 @@ class dbStruct
                         $kname = $this->prefix . $kname;
                     }
 
+                    /* @phpstan-ignore-next-line */
                     $db_kname = $this->tables[$tname]->keyExists($kname, $k['type'], $k['cols']);
                     if (!$db_kname) {
                         # Key does not exist, create it
@@ -188,11 +192,13 @@ class dbStruct
                 }
 
                 # Check index to add or upgrade
-                $idx    = $t->getIndexes();
+                $idx = $t->getIndexes();
+                /* @phpstan-ignore-next-line */
                 $db_idx = $this->tables[$tname]->getIndexes();
 
                 foreach ($idx as $iname => $i) {
-                    $iname    = $this->prefix . $iname;
+                    $iname = $this->prefix . $iname;
+                    /* @phpstan-ignore-next-line */
                     $db_iname = $this->tables[$tname]->indexExists($iname, $i['type'], $i['cols']);
 
                     if (!$db_iname) {
@@ -207,13 +213,15 @@ class dbStruct
                 }
 
                 # Check references to add or upgrade
-                $ref    = $t->getReferences();
+                $ref = $t->getReferences();
+                /* @phpstan-ignore-next-line */
                 $db_ref = $this->tables[$tname]->getReferences();
 
                 foreach ($ref as $rname => $r) {
                     $rname        = $this->prefix . $rname;
                     $r['p_table'] = $this->prefix . $r['p_table'];
-                    $db_rname     = $this->tables[$tname]->referenceExists($rname, $r['c_cols'], $r['p_table'], $r['p_cols']);
+                    /* @phpstan-ignore-next-line */
+                    $db_rname = $this->tables[$tname]->referenceExists($rname, $r['c_cols'], $r['p_table'], $r['p_cols']);
 
                     if (!$db_rname) {
                         # Reference does not exist, create it
@@ -396,8 +404,6 @@ class dbStructTable
     public function __construct(string $name)
     {
         $this->name = $name;
-
-        return $this;
     }
 
     public function getFields(): array
@@ -543,7 +549,7 @@ class dbStructTable
         return $this;
     }
 
-    public function reference(string $name, $c_cols, string $p_table, $p_cols, bool $update = false, bool $delete = false)
+    public function reference(string $name, $c_cols, string $p_table, $p_cols, $update = false, $delete = false)
     {
         if (!is_array($p_cols)) {
             $p_cols = [$p_cols];

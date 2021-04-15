@@ -29,9 +29,9 @@ class htmlFilter
     {
         $this->parser = xml_parser_create('UTF-8');
         xml_set_object($this->parser, $this);
-        xml_set_element_handler($this->parser, 'tag_open', 'tag_close');
-        xml_set_character_data_handler($this->parser, 'cdata');
-        xml_parser_set_option($this->parser, XML_OPTION_CASE_FOLDING, false);
+        xml_set_element_handler($this->parser, [$this, 'tag_open'], [$this, 'tag_close']);
+        xml_set_character_data_handler($this->parser, [$this, 'cdata']);
+        xml_parser_set_option($this->parser, XML_OPTION_CASE_FOLDING, 0);
 
         $this->removeTags(
             'applet',
@@ -238,6 +238,7 @@ class htmlFilter
             $tidy->parseString($str, $config, 'utf8');
             $tidy->cleanRepair();
 
+            /* @phpstan-ignore-next-line */
             $str = (string) $tidy;
 
             $str = preg_replace('#^<p>tt</p>\s?#', '', $str);

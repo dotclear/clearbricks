@@ -36,7 +36,7 @@ class cursor
      * </code>
      *
      * @see dbLayer::openCursor()
-     * @param dbLayer    &$con        Connection object
+     * @param dbLayer   $con      Connection object
      * @param string    $table    Table name
      */
     public function __construct(dbLayer $con, string $table)

@@ -96,7 +96,7 @@ class filemanager
      * Appends an exclusion to exclusions list. $f should be a regexp.
      *
      * @see $exclude_list
-     * @param string    $f            Exclusion regexp
+     * @param array|string    $f            Exclusion regexp
      */
     public function addExclusion($f)
     {
@@ -268,7 +268,7 @@ class filemanager
      * @see files::uploadStatus()
      * @param string    $tmp            Temporary uploaded file path
      * @param string    $dest        Destination file
-     * @param string    $overwrite    overwrite mode
+     * @param boolean    $overwrite    overwrite mode
      * @return string                Destination real path
      */
     public function uploadFile($tmp, $dest, $overwrite = false)

@@ -1,3 +1,10 @@
+#
+# To run analyse:
+# bin/phpstan analyse --memory-limit=-1
+#
+# or (replacing conf level by 1, … up to 8):
+# bin/phpstan analyse -l 1 --memory-limit=-1
+
 parameters:
   level: 8
 
@@ -31,3 +38,8 @@ parameters:
     - zip
 
   reportUnmatchedIgnoredErrors: false
+
+# Notes:
+#
+# Use /* @phpstan-ignore-next-line */ or // @phpstan-ignore-line
+# to ignore some specific lines in code

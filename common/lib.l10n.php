@@ -333,7 +333,7 @@ class l10n
      * Return an array of po headers and translations from a po file
      *
      * @param string $file File path
-     * @return array Parsed file
+     * @return array|false Parsed file
      */
     public static function parsePoFile(string $file)
     {
@@ -617,7 +617,7 @@ class l10n
      *
      * @param integer $nplurals Plurals number
      * @param string $expression Plural expression
-     * @return function Function to extract right plural index
+     * @return callable Function to extract right plural index
      */
     public static function createPluralFunction(int $nplurals, string $expression)
     {

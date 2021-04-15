@@ -85,7 +85,7 @@ interface i_dbSchema
 
     public function db_create_index(string $table, string $name, string $type, array $cols): void;
 
-    public function db_create_reference(string $name, string $c_table, array $c_cols, string $p_table, array $p_cols, bool $update, bool $delete): void;
+    public function db_create_reference(string $name, string $c_table, array $c_cols, string $p_table, array $p_cols, string $update, string $delete): void;
 
     public function db_alter_field(string $table, string $name, string $type, int $len, bool $null, $default): void;
 
@@ -95,7 +95,7 @@ interface i_dbSchema
 
     public function db_alter_index(string $table, string $name, string $newname, string $type, array $cols): void;
 
-    public function db_alter_reference(string $name, string $newname, string $c_table, array $c_cols, string $p_table, array $p_cols, bool $update, bool $delete): void;
+    public function db_alter_reference(string $name, string $newname, string $c_table, array $c_cols, string $p_table, array $p_cols, string $update, string $delete): void;
 
     public function db_drop_unique(string $table, string $name): void;
 }
@@ -274,7 +274,7 @@ class dbSchema
         return $this->db_create_index($table, $name, $type, $cols);
     }
 
-    public function createReference(string $name, string $c_table, array $c_cols, string $p_table, array $p_cols, bool $update, bool $delete)
+    public function createReference(string $name, string $c_table, array $c_cols, string $p_table, array $p_cols, string $update, string $delete)
     {
         /* @phpstan-ignore-next-line */
         return $this->db_create_reference($name, $c_table, $c_cols, $p_table, $p_cols, $update, $delete);
@@ -304,7 +304,7 @@ class dbSchema
         return $this->db_alter_index($table, $name, $newname, $type, $cols);
     }
 
-    public function alterReference(string $name, string $newname, string $c_table, array $c_cols, string $p_table, array $p_cols, bool $update, bool $delete)
+    public function alterReference(string $name, string $newname, string $c_table, array $c_cols, string $p_table, array $p_cols, string $update, string $delete)
     {
         /* @phpstan-ignore-next-line */
         return $this->db_alter_reference($name, $newname, $c_table, $c_cols, $p_table, $p_cols, $update, $delete);

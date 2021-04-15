@@ -292,7 +292,7 @@ if (class_exists('dbSchema')) {
             $this->con->execute($sql);
         }
 
-        public function db_create_reference(string $name, string $c_table, array $c_cols, string $p_table, array $p_cols, bool $update, bool $delete): void
+        public function db_create_reference(string $name, string $c_table, array $c_cols, string $p_table, array $p_cols, string $update, string $delete): void
         {
             $sql = 'ALTER TABLE ' . $c_table . ' ' .
             'ADD CONSTRAINT ' . $name . ' FOREIGN KEY ' .
@@ -357,7 +357,7 @@ if (class_exists('dbSchema')) {
             $this->createIndex($table, $newname, $type, $cols);
         }
 
-        public function db_alter_reference(string $name, string $newname, string $c_table, array $c_cols, string $p_table, array $p_cols, bool $update, bool $delete): void
+        public function db_alter_reference(string $name, string $newname, string $c_table, array $c_cols, string $p_table, array $p_cols, string $update, string $delete): void
         {
             $sql = 'ALTER TABLE ' . $c_table . ' DROP CONSTRAINT ' . $name;
             $this->con->execute($sql);

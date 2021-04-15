@@ -16,10 +16,9 @@
  * @copyright GPL-2.0-only
  */
 
-/** @cond ONCE */
+/* @cond ONCE */
 if (class_exists('netHttp')) {
-/** @endcond */
-
+    /** @endcond */
     class feedReader extends netHttp
     {
         protected $user_agent = 'Clearbricks Feed Reader/0.2';
@@ -56,17 +55,16 @@ if (class_exists('netHttp')) {
             $this->validators = [];
             if ($this->cache_dir) {
                 return $this->withCache($url);
-            } else {
-                if (!$this->getFeed($url)) {
-                    return false;
-                }
-
-                if ($this->getStatus() != '200') {
-                    return false;
-                }
-
-                return new feedParser($this->getContent());
             }
+            if (!$this->getFeed($url)) {
+                return false;
+            }
+
+            if ($this->getStatus() != '200') {
+                return false;
+            }
+
+            return new feedParser($this->getContent());
         }
 
         /**
@@ -104,6 +102,7 @@ if (class_exists('netHttp')) {
 
             if (!empty($dir) && is_dir($dir) && is_writeable($dir)) {
                 $this->cache_dir = $dir;
+
                 return true;
             }
 
@@ -135,7 +134,7 @@ if (class_exists('netHttp')) {
          * Returns feed content for given URL.
          *
          * @param string    $url            Feed URL
-         * @return string
+         * @return string|boolean
          */
         protected function getFeed($url)
         {
@@ -156,7 +155,7 @@ if (class_exists('netHttp')) {
          * returns result.
          *
          * @param string    $url            Feed URL
-         * @return feedParser
+         * @return feedParser|false
          */
         protected function withCache($url)
         {
@@ -186,28 +185,31 @@ if (class_exists('netHttp')) {
                     # connection failed - fetched from cache
                     return unserialize(file_get_contents($cached_file));
                 }
+
                 return false;
             }
 
             switch ($this->getStatus()) {
                 case '304':
                     @files::touch($cached_file);
+
                     return unserialize(file_get_contents($cached_file));
                 case '200':
-                    if ($feed = new feedParser($this->getContent())) {
-                        try {
-                            files::makeDir(dirname($cached_file), true);
-                        } catch (Exception $e) {
-                            return $feed;
-                        }
+                    $feed = new feedParser($this->getContent());
 
-                        if (($fp = @fopen($cached_file, 'wb'))) {
-                            fwrite($fp, serialize($feed));
-                            fclose($fp);
-                            files::inheritChmod($cached_file);
-                        }
+                    try {
+                        files::makeDir(dirname($cached_file), true);
+                    } catch (Exception $e) {
                         return $feed;
                     }
+
+                    if (($fp = @fopen($cached_file, 'wb'))) {
+                        fwrite($fp, serialize($feed));
+                        fclose($fp);
+                        files::inheritChmod($cached_file);
+                    }
+
+                    return $feed;
             }
 
             return false;
@@ -252,6 +254,6 @@ if (class_exists('netHttp')) {
         }
     }
 
-/** @cond ONCE */
+    /* @cond ONCE */
 }
-/** @endcond */
+/* @endcond */

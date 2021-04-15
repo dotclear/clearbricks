@@ -26,7 +26,7 @@ class tidyDiff
      * Creates a diff representation from unified diff.
      *
      * @param string    $udiff            Unified diff
-     * @param array        $inline_changes    Find inline changes
+     * @param boolean   $inline_changes   Find inline changes
      */
     public function __construct($udiff, $inline_changes = false)
     {
@@ -133,10 +133,8 @@ class tidyDiffChunk
      */
     public function setRange($line_start, $offest_start, $line_end, $offset_end)
     {
-        if (is_int($line_start) && is_int($offest_start) && is_int($line_end) && is_int($offset_end)) {
-            $this->__info['range']['start'] = [$line_start, $offest_start];
-            $this->__info['range']['end']   = [$line_end, $offset_end];
-        }
+        $this->__info['range']['start'] = [$line_start, $offest_start];
+        $this->__info['range']['end']   = [$line_end, $offset_end];
     }
 
     /**
@@ -152,10 +150,8 @@ class tidyDiffChunk
     {
         $tidy_line = new tidyDiffLine($type, $lines, $content);
 
-        if (!is_null($tidy_line)) {
-            array_push($this->__data, $tidy_line);
-            $this->__info[$type]++;
-        }
+        array_push($this->__data, $tidy_line);
+        $this->__info[$type]++;
     }
 
     /**
@@ -283,8 +279,7 @@ class tidyDiffLine
     /**
      * Constructor
      *
-     * Creates a line representation for a tidy chunk. Returns a new object if
-     * all parameters are fine, null otherwise.
+     * Creates a line representation for a tidy chunk.
      *
      * @param string    $type        Tine type
      * @param array        $lines        Line number for old and new context
@@ -299,8 +294,6 @@ class tidyDiffLine
             $this->type    = $type;
             $this->lines   = $lines;
             $this->content = $content;
-
-            return $this;
         }
     }
 

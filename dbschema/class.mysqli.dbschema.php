@@ -339,7 +339,7 @@ if (class_exists('dbSchema')) {
             $this->con->execute($sql);
         }
 
-        public function db_create_reference(string $name, string $c_table, array $c_cols, string $p_table, array $p_cols, bool $update, bool $delete): void
+        public function db_create_reference(string $name, string $c_table, array $c_cols, string $p_table, array $p_cols, string $update, string $delete): void
         {
             $c = [];
             $p = [];
@@ -429,7 +429,7 @@ if (class_exists('dbSchema')) {
             $this->con->execute($sql);
         }
 
-        public function db_alter_reference(string $name, string $newname, string $c_table, array $c_cols, string $p_table, array $p_cols, bool $update, bool $delete): void
+        public function db_alter_reference(string $name, string $newname, string $c_table, array $c_cols, string $p_table, array $p_cols, string $update, string $delete): void
         {
             $sql = 'ALTER TABLE ' . $this->con->escapeSystem($c_table) . ' ' .
             'DROP FOREIGN KEY ' . $this->con->escapeSystem($name);

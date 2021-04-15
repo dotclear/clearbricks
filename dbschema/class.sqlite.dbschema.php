@@ -346,7 +346,7 @@ if (class_exists('dbSchema')) {
             $this->x_stack[] = 'CREATE INDEX ' . $name . ' ON ' . $table . ' (' . implode(',', $cols) . ') ';
         }
 
-        public function db_create_reference(string $name, string $c_table, array $c_cols, string $p_table, array $p_cols, bool $update, bool $delete): void
+        public function db_create_reference(string $name, string $c_table, array $c_cols, string $p_table, array $p_cols, string $update, string $delete): void
         {
             if (!isset($this->table_hist[$c_table])) {
                 return;
@@ -453,7 +453,7 @@ if (class_exists('dbSchema')) {
             $this->con->execute('CREATE INDEX ' . $newname . ' ON ' . $table . ' (' . implode(',', $cols) . ') ');
         }
 
-        public function db_alter_reference(string $name, string $newname, string $c_table, array $c_cols, string $p_table, array $p_cols, bool $update, bool $delete): void
+        public function db_alter_reference(string $name, string $newname, string $c_table, array $c_cols, string $p_table, array $p_cols, string $update, string $delete): void
         {
             $this->con->execute('DROP TRIGGER IF EXISTS bur_' . $name);
             $this->con->execute('DROP TRIGGER IF EXISTS burp_' . $name);

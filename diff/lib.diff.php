@@ -110,7 +110,7 @@ class diff
      *
      * @param string        $src        Original data
      * @param string        $dst        New data
-     * @param string        $ctx        Context length
+     * @param int           $ctx        Context length
      * @return string
      */
     public static function uniDiff($src, $dst, $ctx = 2)

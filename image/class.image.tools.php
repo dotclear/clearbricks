@@ -133,7 +133,7 @@ class imageTools
             $mem_needed = $w * $h * $bpp;
 
             if ($mem_needed > $mem_avail) {
-                if (@ini_set('memory_limit', $mem_limit + $mem_needed + $mem_used) === false) {
+                if (@ini_set('memory_limit', (string) ($mem_limit + $mem_needed + $mem_used)) === false) {
                     throw new Exception(__('Not enough memory to open image.'));
                 }
 

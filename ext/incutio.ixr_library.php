@@ -73,20 +73,12 @@ class IXR_Value
         switch ($this->type) {
             case 'boolean':
                 return '<boolean>' . (($this->data) ? '1' : '0') . '</boolean>';
-
-                break;
             case 'int':
                 return '<int>' . $this->data . '</int>';
-
-                break;
             case 'double':
                 return '<double>' . $this->data . '</double>';
-
-                break;
             case 'string':
                 return '<string>' . htmlspecialchars($this->data) . '</string>';
-
-                break;
             case 'array':
                 $return = '<array><data>' . "\n";
                 foreach ($this->data as $item) {
@@ -95,8 +87,6 @@ class IXR_Value
                 $return .= '</data></array>';
 
                 return $return;
-
-                break;
             case 'struct':
                 $return = '<struct>' . "\n";
                 foreach ($this->data as $name => $value) {
@@ -106,13 +96,9 @@ class IXR_Value
                 $return .= '</struct>';
 
                 return $return;
-
-                break;
             case 'date':
             case 'base64':
                 return $this->data->getXml();
-
-                break;
         }
 
         return false;
@@ -164,11 +150,11 @@ class IXR_Message
         }
         $this->_parser = xml_parser_create();
         // Set XML parser to take the case of tags in to account
-        xml_parser_set_option($this->_parser, XML_OPTION_CASE_FOLDING, false);
+        xml_parser_set_option($this->_parser, XML_OPTION_CASE_FOLDING, 0);
         // Set XML parser callback functions
         xml_set_object($this->_parser, $this);
-        xml_set_element_handler($this->_parser, 'tag_open', 'tag_close');
-        xml_set_character_data_handler($this->_parser, 'cdata');
+        xml_set_element_handler($this->_parser, [$this, 'tag_open'], [$this, 'tag_close']);
+        xml_set_character_data_handler($this->_parser, [$this, 'cdata']);
         if (!xml_parse($this->_parser, $this->message)) {
             /* die(sprintf('XML error: %s at line %d',
             xml_error_string(xml_get_error_code($this->_parser)),

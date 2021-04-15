@@ -112,6 +112,8 @@ if (class_exists('dbLayer')) {
             if (is_resource($handle)) {
                 return pg_parameter_status($handle, 'server_version');
             }
+
+            return '';
         }
 
         public function db_query($handle, $query)
@@ -119,8 +121,7 @@ if (class_exists('dbLayer')) {
             if (is_resource($handle)) {
                 $res = @pg_query($handle, $query);
                 if ($res === false) {
-                    $e      = new Exception($this->db_last_error($handle));
-                    $e->sql = $query;
+                    $e = new Exception($this->db_last_error($handle));
 
                     throw $e;
                 }
@@ -157,6 +158,8 @@ if (class_exists('dbLayer')) {
             if (is_resource($res)) {
                 return pg_field_name($res, $position);
             }
+
+            return '';
         }
 
         public function db_field_type($res, $position)
@@ -164,6 +167,8 @@ if (class_exists('dbLayer')) {
             if (is_resource($res)) {
                 return pg_field_type($res, $position);
             }
+
+            return '';
         }
 
         public function db_fetch_assoc($res)
@@ -171,6 +176,8 @@ if (class_exists('dbLayer')) {
             if (is_resource($res)) {
                 return pg_fetch_assoc($res);
             }
+
+            return false;
         }
 
         public function db_result_seek($res, $row)
@@ -187,6 +194,8 @@ if (class_exists('dbLayer')) {
             if (is_resource($handle) && is_resource($res)) {
                 return pg_affected_rows($res);
             }
+
+            return 0;
         }
 
         public function db_last_error($handle)
