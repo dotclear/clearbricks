@@ -6,7 +6,7 @@
 # bin/phpstan analyse -l 1 --memory-limit=-1
 
 parameters:
-  level: 8
+  level: 5
 
   scanFiles:
     - _common.php
