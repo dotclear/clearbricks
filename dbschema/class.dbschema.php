@@ -77,7 +77,7 @@ interface i_dbSchema
 
     public function db_create_table(string $name, array $fields): void;
 
-    public function db_create_field(string $table, string $name, string $type, int $len, bool $null, $default): void;
+    public function db_create_field(string $table, string $name, string $type, ?int $len, bool $null, $default): void;
 
     public function db_create_primary(string $table, string $name, array $cols): void;
 
@@ -87,7 +87,7 @@ interface i_dbSchema
 
     public function db_create_reference(string $name, string $c_table, array $c_cols, string $p_table, array $p_cols, string $update, string $delete): void;
 
-    public function db_alter_field(string $table, string $name, string $type, int $len, bool $null, $default): void;
+    public function db_alter_field(string $table, string $name, string $type, ?int $len, bool $null, $default): void;
 
     public function db_alter_primary(string $table, string $name, string $newname, array $cols): void;
 
@@ -250,7 +250,7 @@ class dbSchema
         return $this->db_create_table($name, $fields);
     }
 
-    public function createField(string $table, string $name, string $type, int $len, bool $null, $default)
+    public function createField(string $table, string $name, string $type, ?int $len, bool $null, $default)
     {
         /* @phpstan-ignore-next-line */
         return $this->db_create_field($table, $name, $type, $len, $null, $default);
@@ -280,7 +280,7 @@ class dbSchema
         return $this->db_create_reference($name, $c_table, $c_cols, $p_table, $p_cols, $update, $delete);
     }
 
-    public function alterField(string $table, string $name, string $type, int $len, bool $null, $default)
+    public function alterField(string $table, string $name, string $type, ?int $len, bool $null, $default)
     {
         /* @phpstan-ignore-next-line */
         return $this->db_alter_field($table, $name, $type, $len, $null, $default);

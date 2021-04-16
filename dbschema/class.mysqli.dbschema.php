@@ -281,7 +281,7 @@ if (class_exists('dbSchema')) {
             $this->con->execute($sql);
         }
 
-        public function db_create_field(string $table, string $name, string $type, int $len, bool $null, $default): void
+        public function db_create_field(string $table, string $name, string $type, ?int $len, bool $null, $default): void
         {
             $type = $this->udt2dbt($type, $len, $default);
 
@@ -366,7 +366,7 @@ if (class_exists('dbSchema')) {
             $this->con->execute($sql);
         }
 
-        public function db_alter_field(string $table, string $name, string $type, int $len, bool $null, $default): void
+        public function db_alter_field(string $table, string $name, string $type, ?int $len, bool $null, $default): void
         {
             $type = $this->udt2dbt($type, $len, $default);
 
