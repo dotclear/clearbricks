@@ -140,7 +140,7 @@ class dbSchema
      * @param      string $default Default field value (in/out)
      * @return     string
      */
-    public function dbt2udt(string $type, int &$len, &$default): string
+    public function dbt2udt(string $type, ?int &$len, &$default): string
     {
         $c = [
             'bool'              => 'boolean',
@@ -171,7 +171,7 @@ class dbSchema
      * @param      string $default Default field value (in/out)
      * @return     string
      */
-    public function udt2dbt(string $type, int &$len, &$default): string
+    public function udt2dbt(string $type, ?int &$len, &$default): string
     {
         return $type;
     }

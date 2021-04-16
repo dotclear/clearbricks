@@ -19,7 +19,7 @@ if (class_exists('dbSchema')) {
         private $table_stack = []; // Stack for tables creation
         private $x_stack     = []; // Execution stack
 
-        public function dbt2udt(string $type, int &$len, &$default): string
+        public function dbt2udt(string $type, ?int &$len, &$default): string
         {
             $type = parent::dbt2udt($type, $len, $default);
 
@@ -51,7 +51,7 @@ if (class_exists('dbSchema')) {
             return $type;
         }
 
-        public function udt2dbt(string $type, int &$len, &$default): string
+        public function udt2dbt(string $type, ?int &$len, &$default): string
         {
             $type = parent::udt2dbt($type, $len, $default);
 

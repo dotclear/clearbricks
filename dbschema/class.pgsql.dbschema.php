@@ -22,14 +22,14 @@ if (class_exists('dbSchema')) {
             'd' => 'set default'
         ];
 
-        public function dbt2udt(string $type, int &$len, &$default): string
+        public function dbt2udt(string $type, ?int &$len, &$default): string
         {
             $type = parent::dbt2udt($type, $len, $default);
 
             return $type;
         }
 
-        public function udt2dbt(string $type, int &$len, &$default): string
+        public function udt2dbt(string $type, ?int &$len, &$default): string
         {
             $type = parent::udt2dbt($type, $len, $default);
 
