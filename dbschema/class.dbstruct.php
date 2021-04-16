@@ -484,7 +484,7 @@ class dbStructTable
         return false;
     }
 
-    public function field(string $name, string $type, int $len, bool $null = true, $default = false, bool $to_null = false)
+    public function field(string $name, string $type, ?int $len, bool $null = true, $default = false, bool $to_null = false)
     {
         $type = strtolower($type);
 
