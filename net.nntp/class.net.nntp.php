@@ -8,7 +8,6 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-
 class netNntp extends netSocket
 {
     const SERVER_READY         = 200;
@@ -54,6 +53,7 @@ class netNntp extends netSocket
         if (!is_array($data)) {
             $data = $data . "\r\n";
         }
+
         return parent::write($data);
     }
 
@@ -73,7 +73,7 @@ class netNntp extends netSocket
 
         if ($this->use_proxy) {
             $this->_host = $this->proxy_host;
-            $this->_post = $this->proxy_port;
+            $this->_port = $this->proxy_port;
         } else {
             $this->_host = $this->host;
             $this->_port = $this->port;
@@ -85,8 +85,7 @@ class netNntp extends netSocket
             if ($this->use_proxy) {
                 $data[] = 'CONNECT ' . $this->host . ':' . $this->port . ' HTTP/1.0';
                 if ($this->proxy_user && $this->proxy_pass) {
-                    $data[] =
-                    'Proxy-Authorization: Basic ' .
+                    $data[] = 'Proxy-Authorization: Basic ' .
                     base64_encode($this->proxy_user . ':' . $this->proxy_pass);
                 }
 
@@ -94,16 +93,17 @@ class netNntp extends netSocket
                     if ($i == 0) {
                         if (stristr($v, '200 Connection established')) {
                             continue;
-                        } else {
-                            $rsp = [
-                                'status'  => self::NO_PERMISSION, # Assign it to something dummy
-                                'message' => "No permission"
-                            ];
-                            break;
                         }
+                        $rsp = [
+                            'status'  => self::NO_PERMISSION, # Assign it to something dummy
+                            'message' => 'No permission'
+                        ];
+
+                        break;
                     }
                     if ($i == 2) {
                         $rsp = $this->parseResponse($v);
+
                         break;
                     }
                 }
@@ -112,7 +112,7 @@ class netNntp extends netSocket
             }
 
             if (($rsp['status'] == self::SERVER_READY) || ($rsp['status'] == self::SERVER_READY_NO_POST)) {
-                $this->sendRequest("mode reader");
+                $this->sendRequest('mode reader');
                 if ($this->user) {
                     $rsp = $this->parseResponse($this->sendRequest('authinfo user ' . $this->user));
 
@@ -150,7 +150,7 @@ class netNntp extends netSocket
         $this->proxy_user = $proxy_user;
         $this->proxy_pass = $proxy_pass;
 
-        if ((strcmp($this->proxy_host, "") != 0) && (strcmp($this->proxy_port, "") != 0)) {
+        if ((strcmp($this->proxy_host, '') != 0) && (strcmp($this->proxy_port, '') != 0)) {
             $this->use_proxy = true;
         } else {
             $this->use_proxy = false;
@@ -233,6 +233,7 @@ class netNntp extends netSocket
                 }
                 $res[] = trim($buf);
             }
+
             return $res;
         }
 
@@ -256,35 +257,36 @@ class netNntp extends netSocket
                 }
                 $res[] = trim($buf);
             }
+
             return $res;
-        } else {
-            # newnews is not implemented, use xhdr instead
-            # First, we need to join the group
-            $g = $this->joinGroup($group);
+        }
+        # newnews is not implemented, use xhdr instead
+        # First, we need to join the group
+        $g = $this->joinGroup($group);
 
-            if ($g['count'] > 1000) {
-                $g['start_id'] = $g['end_id'] - 1000;
-            }
+        if ($g['count'] > 1000) {
+            $g['start_id'] = $g['end_id'] - 1000;
+        }
 
-            # Then, xhdr on all group messages
-            $rsp = $this->write('xhdr date ' . $g['start_id'] . '-');
-            $r   = $this->parseResponse($rsp->current());
+        # Then, xhdr on all group messages
+        $rsp = $this->write('xhdr date ' . $g['start_id'] . '-');
+        $r   = $this->parseResponse($rsp->current());
 
-            if ($r['status'] == self::ARTICLE_HEAD) {
-                $ts = $ts + dt::getTimeOffset('UTC', $ts);
+        if ($r['status'] == self::ARTICLE_HEAD) {
+            $ts = $ts + dt::getTimeOffset('UTC', $ts);
 
-                $res = [];
-                foreach ($rsp as $buf) {
-                    if (self::eot($buf)) {
-                        break;
-                    }
-                    $buf = preg_split('/\s/', $buf, 2);
-                    if (strtotime($buf[1]) > $ts) {
-                        $res[] = $buf[0];
-                    }
+            $res = [];
+            foreach ($rsp as $buf) {
+                if (self::eot($buf)) {
+                    break;
                 }
-                return $res;
+                $buf = preg_split('/\s/', $buf, 2);
+                if (strtotime($buf[1]) > $ts) {
+                    $res[] = $buf[0];
+                }
             }
+
+            return $res;
         }
 
         throw new Exception($r['message'] . ' - (' . $r['status'] . ')');
@@ -323,13 +325,14 @@ class netNntp extends netSocket
                 }
                 $article .= $buf;
             }
+
             return new nntpMessage($article);
         }
 
         throw new Exception($r['message'] . ' - (' . $r['status'] . ')');
     }
 
-    public function postArticle($headers = [], $content)
+    public function postArticle($headers = [], $content = '')
     {
         if (!is_array($headers)) {
             return false;
@@ -401,6 +404,7 @@ class netNntp extends netSocket
 
         $rsp = $this->write($request);
         $this->flush();
+
         return $rsp->current();
     }
 }
