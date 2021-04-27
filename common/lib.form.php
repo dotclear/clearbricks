@@ -135,7 +135,7 @@ class form
      * $checked could be a boolean or an associative array of any of optional parameters
      *
      * @param string|array   $nid         Element ID and name
-     * @param string         $value       Element value
+     * @param mixed          $value       Element value
      * @param boolean|array  $checked     True if checked | associative array of optional parameters
      * @param string         $class       Element class name
      * @param string         $tabindex    Element tabindex
@@ -146,7 +146,7 @@ class form
      *
      * @static
      */
-    public static function radio($nid, string $value, $checked = false, string $class = '', string $tabindex = '',
+    public static function radio($nid, mixed $value, $checked = false, string $class = '', string $tabindex = '',
         bool $disabled = false, string $extra_html = ''): string
     {
         self::getNameAndId($nid, $name, $id);
@@ -177,7 +177,7 @@ class form
      * $checked could be a boolean or an associative array of any of optional parameters
      *
      * @param string|array   $nid         Element ID and name
-     * @param string         $value       Element value
+     * @param mixed          $value       Element value
      * @param boolean|array  $checked     True if checked | associative array of optional parameters
      * @param string         $class       Element class name
      * @param string         $tabindex    Element tabindex
@@ -188,7 +188,7 @@ class form
      *
      * @static
      */
-    public static function checkbox($nid, string $value, $checked = false, string $class = '', string $tabindex = '',
+    public static function checkbox($nid, mixed $value, $checked = false, string $class = '', string $tabindex = '',
         bool $disabled = false, string $extra_html = ''): string
     {
         self::getNameAndId($nid, $name, $id);
@@ -724,10 +724,10 @@ class form
  */
 class formSelectOption
 {
-    public $name;       ///< Option name
-    public $value;      ///< Option value
-    public $class_name; ///< Element class name
-    public $html;       ///< Extra HTML attributes
+    public $name;       ///< string Option name
+    public $value;      ///< mixed  Option value
+    public $class_name; ///< string Element class name
+    public $html;       ///< string Extra HTML attributes
 
     /**
      * sprintf template for option
@@ -740,11 +740,11 @@ class formSelectOption
      * Option constructor
      *
      * @param string  $name        Option name
-     * @param string  $value       Option value
+     * @param mixed   $value       Option value
      * @param string  $class_name  Element class name
      * @param string  $html        Extra HTML attributes
      */
-    public function __construct(string $name, string $value, string $class_name = '', string $html = '')
+    public function __construct(string $name, mixed $value, string $class_name = '', string $html = '')
     {
         $this->name       = $name;
         $this->value      = $value;
