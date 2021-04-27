@@ -143,7 +143,7 @@ if (class_exists('netSocket')) {
          *
          * @param string        $path            Request path
          * @param array|string  $data            Request parameters
-         * @param array         $charset         Request charset
+         * @param string        $charset         Request charset
          * @return boolean
          */
         public function post($path, $data, $charset = null)
