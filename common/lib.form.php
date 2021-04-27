@@ -146,7 +146,7 @@ class form
      *
      * @static
      */
-    public static function radio($nid, mixed $value, $checked = false, string $class = '', string $tabindex = '',
+    public static function radio($nid, $value, $checked = false, string $class = '', string $tabindex = '',
         bool $disabled = false, string $extra_html = ''): string
     {
         self::getNameAndId($nid, $name, $id);
@@ -188,7 +188,7 @@ class form
      *
      * @static
      */
-    public static function checkbox($nid, mixed $value, $checked = false, string $class = '', string $tabindex = '',
+    public static function checkbox($nid, $value, $checked = false, string $class = '', string $tabindex = '',
         bool $disabled = false, string $extra_html = ''): string
     {
         self::getNameAndId($nid, $name, $id);
@@ -744,7 +744,7 @@ class formSelectOption
      * @param string  $class_name  Element class name
      * @param string  $html        Extra HTML attributes
      */
-    public function __construct(string $name, mixed $value, string $class_name = '', string $html = '')
+    public function __construct(string $name, $value, string $class_name = '', string $html = '')
     {
         $this->name       = $name;
         $this->value      = $value;
