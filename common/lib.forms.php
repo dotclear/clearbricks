@@ -66,7 +66,7 @@ class forms
 
         '';
 
-        if (isset($params['data'])) {
+        if (isset($params['data']) && is_array($params['data'])) {
             // Data attributes
             foreach ($params['data'] as $key => $value) {
                 $render .= ' data-' . $key . '="' . $value . '"';
