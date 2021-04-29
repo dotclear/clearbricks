@@ -10,15 +10,17 @@ define('CLEARBRICKS_VERSION', '1.2');
 
 # Autoload
 $__autoload = [
-    'crypt'            => dirname(__FILE__) . '/lib.crypt.php',
-    'dt'               => dirname(__FILE__) . '/lib.date.php',
-    'files'            => dirname(__FILE__) . '/lib.files.php',
-    'path'             => dirname(__FILE__) . '/lib.files.php',
-    'form'             => dirname(__FILE__) . '/lib.form.php',
-    'formSelectOption' => dirname(__FILE__) . '/lib.form.php',
-    'html'             => dirname(__FILE__) . '/lib.html.php',
-    'http'             => dirname(__FILE__) . '/lib.http.php',
-    'text'             => dirname(__FILE__) . '/lib.text.php'
+    'crypt'             => dirname(__FILE__) . '/lib.crypt.php',
+    'dt'                => dirname(__FILE__) . '/lib.date.php',
+    'files'             => dirname(__FILE__) . '/lib.files.php',
+    'path'              => dirname(__FILE__) . '/lib.files.php',
+    'form'              => dirname(__FILE__) . '/lib.form.php',
+    'formSelectOption'  => dirname(__FILE__) . '/lib.form.php',
+    'forms'             => dirname(__FILE__) . '/lib.forms.php',
+    'formsSelectOption' => dirname(__FILE__) . '/lib.forms.php',
+    'html'              => dirname(__FILE__) . '/lib.html.php',
+    'http'              => dirname(__FILE__) . '/lib.http.php',
+    'text'              => dirname(__FILE__) . '/lib.text.php'
 ];
 
 # autoload for clearbricks
