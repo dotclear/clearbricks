@@ -83,8 +83,8 @@ class form
      *
      * @static
      */
-    public static function combo($nid, $data, $default = '', string $class = '', string $tabindex = '', bool $disabled = false,
-        string $extra_html = ''): string
+    public static function combo($nid, $data, $default = '', ?string $class = '', ?string $tabindex = '', bool $disabled = false,
+        ?string $extra_html = ''): string
     {
         self::getNameAndId($nid, $name, $id);
         if (func_num_args() > 2 && is_array($default)) {
@@ -146,8 +146,8 @@ class form
      *
      * @static
      */
-    public static function radio($nid, $value, $checked = false, string $class = '', string $tabindex = '',
-        bool $disabled = false, string $extra_html = ''): string
+    public static function radio($nid, $value, $checked = false, ?string $class = '', ?string $tabindex = '',
+        bool $disabled = false, ?string $extra_html = ''): string
     {
         self::getNameAndId($nid, $name, $id);
         if (func_num_args() > 2 && is_array($checked)) {
@@ -188,8 +188,8 @@ class form
      *
      * @static
      */
-    public static function checkbox($nid, $value, $checked = false, string $class = '', string $tabindex = '',
-        bool $disabled = false, string $extra_html = ''): string
+    public static function checkbox($nid, $value, $checked = false, ?string $class = '', ?string $tabindex = '',
+        bool $disabled = false, ?string $extra_html = ''): string
     {
         self::getNameAndId($nid, $name, $id);
         if (func_num_args() > 2 && is_array($checked)) {
@@ -234,9 +234,9 @@ class form
      *
      * @static
      */
-    public static function field($nid, ?int $size, ?int $max, $default = '', string $class = '', string $tabindex = '',
-        bool $disabled = false, string $extra_html = '', bool $required = false, string $type = 'text',
-        string $autocomplete = ''): string
+    public static function field($nid, ?int $size, ?int $max, $default = '', ?string $class = '', ?string $tabindex = '',
+        bool $disabled = false, ?string $extra_html = '', bool $required = false, ?string $type = 'text',
+        ?string $autocomplete = ''): string
     {
         self::getNameAndId($nid, $name, $id);
         if (func_num_args() > 3 && is_array($default)) {
@@ -286,8 +286,8 @@ class form
      *
      * @static
      */
-    public static function password($nid, int $size, int $max, $default = '', string $class = '', string $tabindex = '',
-        bool $disabled = false, string $extra_html = '', bool $required = false, string $autocomplete = ''): string
+    public static function password($nid, int $size, ?int $max, $default = '', ?string $class = '', ?string $tabindex = '',
+        bool $disabled = false, ?string $extra_html = '', bool $required = false, ?string $autocomplete = ''): string
     {
         if (func_num_args() > 3 && is_array($default)) {
             // Cope with associative array of optional parameters
@@ -324,8 +324,8 @@ class form
      *
      * @static
      */
-    public static function color($nid, $size = 7, int $max = 7, string $default = '', string $class = '', string $tabindex = '',
-        bool $disabled = false, string $extra_html = '', bool $required = false, string $autocomplete = ''): string
+    public static function color($nid, $size = 7, ?int $max = 7, ?string $default = '', ?string $class = '', ?string $tabindex = '',
+        bool $disabled = false, ?string $extra_html = '', bool $required = false, ?string $autocomplete = ''): string
     {
         if (func_num_args() > 1 && is_array($size)) {
             // Cope with associative array of optional parameters
@@ -362,9 +362,9 @@ class form
      *
      * @static
      */
-    public static function email($nid, $size = 20, int $max = 255, string $default = '', string $class = '',
-        string $tabindex = '', bool $disabled = false, string $extra_html = '', bool $required = false,
-        string $autocomplete = ''): string
+    public static function email($nid, $size = 20, ?int $max = 255, ?string $default = '', ?string $class = '',
+        ?string $tabindex = '', bool $disabled = false, ?string $extra_html = '', bool $required = false,
+        ?string $autocomplete = ''): string
     {
         if (func_num_args() > 1 && is_array($size)) {
             // Cope with associative array of optional parameters
@@ -401,9 +401,9 @@ class form
      *
      * @static
      */
-    public static function url($nid, $size = 20, int $max = 255, string $default = '', string $class = '',
-        string $tabindex = '', bool $disabled = false, string $extra_html = '', bool $required = false,
-        string $autocomplete = ''): string
+    public static function url($nid, $size = 20, ?int $max = 255, ?string $default = '', ?string $class = '',
+        ?string $tabindex = '', bool $disabled = false, ?string $extra_html = '', bool $required = false,
+        ?string $autocomplete = ''): string
     {
         if (func_num_args() > 1 && is_array($size)) {
             // Cope with associative array of optional parameters
@@ -440,9 +440,9 @@ class form
      *
      * @static
      */
-    public static function datetime($nid, $size = 16, int $max = 16, string $default = '', string $class = '',
-        string $tabindex = '', bool $disabled = false, string $extra_html = '', bool $required = false,
-        string $autocomplete = ''): string
+    public static function datetime($nid, $size = 16, ?int $max = 16, ?string $default = '', ?string $class = '',
+        ?string $tabindex = '', bool $disabled = false, ?string $extra_html = '', bool $required = false,
+        ?string $autocomplete = ''): string
     {
         if (func_num_args() > 1 && is_array($size)) {
             // Cope with associative array of optional parameters
@@ -486,9 +486,9 @@ class form
      *
      * @static
      */
-    public static function date($nid, $size = 10, int $max = 10, string $default = '', string $class = '',
-        string $tabindex = '', bool $disabled = false, string $extra_html = '', bool $required = false,
-        string $autocomplete = ''): string
+    public static function date($nid, $size = 10, ?int $max = 10, ?string $default = '', ?string $class = '',
+        ?string $tabindex = '', bool $disabled = false, ?string $extra_html = '', bool $required = false,
+        ?string $autocomplete = ''): string
     {
         if (func_num_args() > 1 && is_array($size)) {
             // Cope with associative array of optional parameters
@@ -532,8 +532,8 @@ class form
      *
      * @static
      */
-    public static function time($nid, $size = 5, int $max = 5, string $default = '', string $class = '', string $tabindex = '',
-        bool $disabled = false, string $extra_html = '', bool $required = false, string $autocomplete = ''): string
+    public static function time($nid, $size = 5, ?int $max = 5, ?string $default = '', ?string $class = '', ?string $tabindex = '',
+        bool $disabled = false, ?string $extra_html = '', bool $required = false, ?string $autocomplete = ''): string
     {
         if (func_num_args() > 1 && is_array($size)) {
             // Cope with associative array of optional parameters
@@ -572,8 +572,8 @@ class form
      *
      * @static
      */
-    public static function file($nid, $default = '', string $class = '', string $tabindex = '', bool $disabled = false,
-        string $extra_html = '', bool $required = false): string
+    public static function file($nid, $default = '', ?string $class = '', ?string $tabindex = '', bool $disabled = false,
+        ?string $extra_html = '', bool $required = false): string
     {
         self::getNameAndId($nid, $name, $id);
         if (func_num_args() > 1 && is_array($default)) {
@@ -618,9 +618,9 @@ class form
      *
      * @static
      */
-    public static function number($nid, $min = null, int $max = null, string $default = '', string $class = '',
-        string $tabindex = '', bool $disabled = false, string $extra_html = '', bool $required = false,
-        string $autocomplete = ''): string
+    public static function number($nid, $min = null, ?int $max = null, ?string $default = '', ?string $class = '',
+        ?string $tabindex = '', bool $disabled = false, ?string $extra_html = '', bool $required = false,
+        ?string $autocomplete = ''): string
     {
         self::getNameAndId($nid, $name, $id);
         if (func_num_args() > 1 && is_array($min)) {
@@ -668,8 +668,8 @@ class form
      *
      * @static
      */
-    public static function textArea($nid, int $cols, int $rows, $default = '', string $class = '', string $tabindex = '',
-        bool $disabled = false, string $extra_html = '', bool $required = false, string $autocomplete = ''): string
+    public static function textArea($nid, int $cols, int $rows, $default = '', ?string $class = '', ?string $tabindex = '',
+        bool $disabled = false, ?string $extra_html = '', bool $required = false, ?string $autocomplete = ''): string
     {
         self::getNameAndId($nid, $name, $id);
         if (func_num_args() > 3 && is_array($default)) {
