@@ -586,7 +586,7 @@ class path
      * @param string    $p        File path
      * @return string
      */
-    public static function clean(string $p): string
+    public static function clean(?string $p): string
     {
         $p = str_replace('..', '', $p);
         $p = preg_replace('|/{2,}|', '/', $p);
