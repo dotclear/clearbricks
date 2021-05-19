@@ -126,7 +126,7 @@ class netSocket
      * Opens socket connection and Returns an object of type {@link netSocketIterator}
      * which can be iterate with a simple foreach loop.
      *
-     * @return    netSocketIterator
+     * @return    netSocketIterator|bool
      */
     public function open()
     {

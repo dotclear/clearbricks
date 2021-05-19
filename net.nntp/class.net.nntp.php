@@ -39,6 +39,15 @@ class netNntp extends netSocket
     protected $proxy_pass;
     protected $use_proxy;
 
+    /**
+     * Constructs a new instance.
+     *
+     * @param      mixed   $host      The host
+     * @param      int     $port      The port
+     * @param      mixed   $user      The user
+     * @param      mixed   $password  The password
+     * @param      int     $timeout   The timeout
+     */
     public function __construct($host, $port = 119, $user = null, $password = null, $timeout = 10)
     {
         $this->host     = $host;
@@ -48,6 +57,13 @@ class netNntp extends netSocket
         $this->_timeout = $timeout;
     }
 
+    /**
+     * Send data
+     *
+     * @param      mixed  $data   The data
+     *
+     * @return     mixed
+     */
     public function write($data)
     {
         if (!is_array($data)) {
@@ -65,6 +81,13 @@ class netNntp extends netSocket
         }
     }
 
+    /**
+     * Open a connection
+     *
+     * @throws     Exception
+     *
+     * @return     mixed
+     */
     public function open()
     {
         if ($this->isOpen()) {
@@ -130,6 +153,8 @@ class netNntp extends netSocket
 
             throw new Exception($rsp['status'] . ' - ' . $rsp['message']);
         }
+
+        return false;
     }
 
     public function setUser($user, $password = null)
