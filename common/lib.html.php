@@ -36,7 +36,7 @@ class html
      * @param string|bool   $keep_special   Keep special characters: &gt; &lt; &amp;
      * @return    string
      */
-    public static function decodeEntities(string $str, $keep_special = false): string
+    public static function decodeEntities(?string $str, $keep_special = false): string
     {
         if ($keep_special) {
             $str = str_replace(
@@ -63,7 +63,7 @@ class html
      * @param string    $str        String to clean
      * @return    string
      */
-    public static function clean(string $str): string
+    public static function clean(?string $str): string
     {
         $str = strip_tags($str);
 
@@ -78,7 +78,7 @@ class html
      * @param string    $str        String to protect
      * @return    string
      */
-    public static function escapeJS(string $str): string
+    public static function escapeJS(?string $str): string
     {
         $str = htmlspecialchars($str, ENT_NOQUOTES, 'UTF-8');
         $str = str_replace("'", "\'", $str);
@@ -95,7 +95,7 @@ class html
      * @param string    $str        String to escape
      * @return    string
      */
-    public static function escapeURL(string $str): string
+    public static function escapeURL(?string $str): string
     {
         return str_replace('&', '&amp;', $str);
     }
@@ -108,7 +108,7 @@ class html
      * @param string    $str        String to satinyze
      * @return    string
      */
-    public static function sanitizeURL(string $str): string
+    public static function sanitizeURL(?string $str): string
     {
         return str_replace('%2F', '/', rawurlencode($str));
     }
@@ -121,7 +121,7 @@ class html
      * @param string    $url        URL to transform
      * @return    string
      */
-    public static function stripHostURL(string $url): string
+    public static function stripHostURL(?string $url): string
     {
         return preg_replace('|^[a-z]{3,}://.*?(/.*$)|', '$1', $url);
     }
@@ -135,7 +135,7 @@ class html
      * @param string    $root    Base URL
      * @return    string
      */
-    public static function absoluteURLs(string $str, string $root): string
+    public static function absoluteURLs(?string $str, ?string $root): string
     {
         self::$url_root = $root;
         $attr           = 'action|background|cite|classid|code|codebase|data|download|formaction|href|longdesc|profile|src|usemap';
