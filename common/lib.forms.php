@@ -8,6 +8,8 @@ declare(strict_types = 1);
  * @package Clearbricks
  * @subpackage Common
  *
+ * @since 1.2 First time this was introduced.
+ *
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
@@ -17,11 +19,32 @@ class forms
      * Add common attributes
      *
      * @param      array   $params          The parameters
+     *      $params[
+     *          'name'          => string name (required if id is not provided).
+     *          'id'            => string id (required if name is not provided).
+     *          'value'         => string value.
+     *          'default'       => string default value (will be used if value is not provided).
+     *          'autocomplete'  => string autocomplete type.
+     *          'autofocus'     => boolean autofocus.
+     *          'class'         => string class(es).
+     *          'disabled'      => boolean disabled.
+     *          'form'          => string form id.
+     *          'list'          => string list id.
+     *          'readonly'      => boolean readonly.
+     *          'required'      => boolean required.
+     *          'tabindex'      => int tabindex.
+     *          'data'          => array data.
+     *              [
+     *                  key => string data id (rendered as data-<id>).
+     *                  value => string data value.
+     *              ]
+     *          'extra'         => string extra HTML attributes.
+     *      ]
      * @param      bool    $includeValue    Includes $params['value'] if exist
      *
      * @return     string
      */
-    private static function commonAttributes(array $params, bool $includeValue = true): string
+    protected static function commonAttributes(array $params, bool $includeValue = true): string
     {
         $render = '' .
 
@@ -88,7 +111,7 @@ class forms
      *
      * @return     bool
      */
-    private static function checkAttributes(array $params): bool
+    protected static function checkAttributes(array $params): bool
     {
         // Check for mandatory info
         return (isset($params['name']) || isset($params['id']));
@@ -106,6 +129,11 @@ class forms
      * @uses form::formSelectOption
      *
      * @param array         $params     Select parameters
+     *      $param[
+     *          'name' and/or 'id'  => string name and or id (required).
+     *          'items'             => mixed combo items (see above).
+     *          …                   => see {@link commonAttributes}.
+     *      ]
      *
      * @return string
      *
@@ -151,6 +179,10 @@ class forms
      * Returns HTML code for a radio button.
      *
      * @param array         $params     Radio parameters
+     *      $param[
+     *          'name' and/or 'id'  => string name and or id (required).
+     *          …                   => see {@link commonAttributes}.
+     *      ]
      *
      * @return string
      *
@@ -172,6 +204,10 @@ class forms
      * Returns HTML code for a checkbox.
      *
      * @param array         $params     Checkbox parameters
+     *      $param[
+     *          'name' and/or 'id'  => string name and or id (required).
+     *          …                   => see {@link commonAttributes}.
+     *      ]
      *
      * @return string
      *
@@ -193,6 +229,13 @@ class forms
      * Returns HTML code for an input field.
      *
      * @param array         $params     Field parameters
+     *      $param[
+     *          'name' and/or 'id'  => string name and or id (required).
+     *          'type'              => string type of input (default = text).
+     *          'size'              => int number of visible characters.
+     *          'maxlength'         => int number of max characters.
+     *          …                   => see {@link commonAttributes}.
+     *      ]
      *
      * @return string
      *
@@ -219,6 +262,10 @@ class forms
      * @uses forms::field
      *
      * @param array         $params     Password field parameters
+     *      $param[
+     *          'name' and/or 'id'  => string name and or id (required).
+     *          …                   => see {@link commonAttributes}.
+     *      ]
      *
      * @return string
      *
@@ -242,6 +289,12 @@ class forms
      * @uses forms::field
      *
      * @param array         $params     Color field parameters
+     *      $param[
+     *          'name' and/or 'id'  => string name and or id (required).
+     *          'size'              => int number of visible characters (default = 7).
+     *          'maxlength'         => int number of max characters (default = 7).
+     *          …                   => see {@link commonAttributes}.
+     *      ]
      *
      * @return string
      *
@@ -267,6 +320,12 @@ class forms
      * @uses forms::field
      *
      * @param array         $params     Email field parameters
+     *      $param[
+     *          'name' and/or 'id'  => string name and or id (required).
+     *          'size'              => int number of visible characters (default = 20).
+     *          'maxlength'         => int number of max characters (default = 255).
+     *          …                   => see {@link commonAttributes}.
+     *      ]
      *
      * @return string
      *
@@ -292,6 +351,12 @@ class forms
      * @uses forms::field
      *
      * @param array         $params     Email field parameters
+     *      $param[
+     *          'name' and/or 'id'  => string name and or id (required).
+     *          'size'              => int number of visible characters (default = 20).
+     *          'maxlength'         => int number of max characters (default = 255).
+     *          …                   => see {@link commonAttributes}.
+     *      ]
      *
      * @return string
      *
@@ -317,6 +382,12 @@ class forms
      * @uses forms::field
      *
      * @param array         $params     Email field parameters
+     *      $param[
+     *          'name' and/or 'id'  => string name and or id (required).
+     *          'size'              => int number of visible characters (default = 16).
+     *          'maxlength'         => int number of max characters (default = 16).
+     *          …                   => see {@link commonAttributes}.
+     *      ]
      *
      * @return string
      *
@@ -354,6 +425,12 @@ class forms
      * @uses forms::field
      *
      * @param array         $params     Email field parameters
+     *      $param[
+     *          'name' and/or 'id'  => string name and or id (required).
+     *          'size'              => int number of visible characters (default = 10).
+     *          'maxlength'         => int number of max characters (default = 10).
+     *          …                   => see {@link commonAttributes}.
+     *      ]
      *
      * @return string
      *
@@ -391,6 +468,12 @@ class forms
      * @uses forms::field
      *
      * @param array         $params     Email field parameters
+     *      $param[
+     *          'name' and/or 'id'  => string name and or id (required).
+     *          'size'              => int number of visible characters (default = 5).
+     *          'maxlength'         => int number of max characters (default = 5).
+     *          …                   => see {@link commonAttributes}.
+     *      ]
      *
      * @return string
      *
@@ -426,6 +509,10 @@ class forms
      * Returns HTML code for an input file field.
      *
      * @param array         $params     Email field parameters
+     *      $param[
+     *          'name' and/or 'id'  => string name and or id (required).
+     *          …                   => see {@link commonAttributes}.
+     *      ]
      *
      * @return string
      *
@@ -447,6 +534,12 @@ class forms
      * Returns HTML code for an number input field.
      *
      * @param array         $params     Number field parameters
+     *      $param[
+     *          'name' and/or 'id'  => string name and or id (required).
+     *          'min'               => int number of text columns.
+     *          'max'               => int number of text raws.
+     *          …                   => see {@link commonAttributes}.
+     *      ]
      *
      * @return string
      *
@@ -471,6 +564,12 @@ class forms
      * Returns HTML code for a textarea.
      *
      * @param array         $params     Textarea parameters
+     *      $param[
+     *          'name' and/or 'id'  => string name and or id (required).
+     *          'cols'              => int number of text columns.
+     *          'rows'              => int number of text raws.
+     *          …                   => see {@link commonAttributes}.
+     *      ]
      *
      * @return string
      *
@@ -497,6 +596,10 @@ class forms
      * Returns HTML code for an hidden field.
      *
      * @param array         $params     Hidden field parameters
+     *      $param[
+     *          'name' and/or 'id'  => string name and or id (required).
+     *          …                   => see {@link commonAttributes}.
+     *      ]
      *
      * @return string
      *
@@ -538,6 +641,12 @@ class formsSelectOption
      * Option constructor
      *
      * @param array   $params       Parameters
+     *      $params = [
+     *          'name'          => string option name (required).
+     *          'value'         => string option value (required).
+     *          'class_name'    => string class name.
+     *          'extra'         => string extra HTML attributes.
+     *      ]
      */
     public function __construct(array $params)
     {
