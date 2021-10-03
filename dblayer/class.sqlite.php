@@ -20,6 +20,7 @@ if (class_exists('dbLayer')) {
         protected $__driver        = 'sqlite';
         protected $__syntax        = 'sqlite';
         protected $utf8_unicode_ci = null;
+        protected $vacuum          = false;
 
         public function db_connect($host, $user, $password, $database)
         {
@@ -63,6 +64,9 @@ if (class_exists('dbLayer')) {
         public function db_close($handle)
         {
             if ($handle instanceof PDO) {
+                if ($this->vacuum) {
+                    $this->db_exec($handle, 'VACUUM');
+                }
                 $handle       = null;
                 $this->__link = null;
             }
@@ -252,7 +256,7 @@ if (class_exists('dbLayer')) {
 
         public function vacuum($table)
         {
-            $this->execute('VACUUM ' . $this->escapeSystem($table));
+            $this->vacuum = true;
         }
 
         public function dateFormat($field, $pattern)
