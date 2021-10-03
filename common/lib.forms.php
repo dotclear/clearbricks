@@ -104,7 +104,7 @@ class forms
 
         if (isset($params['extra'])) {
             // Extra HTML
-            $render .= ' ' . is_array($params['extra']) ? implode(' ', $params['extra']) : $params['extra'];
+            $render .= ' ' . (is_array($params['extra']) ? implode(' ', $params['extra']) : $params['extra']);
         }
 
         return $render;
