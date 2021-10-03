@@ -29,9 +29,11 @@ class forms
      *          'class'         => string class(es).
      *          'disabled'      => boolean disabled.
      *          'form'          => string form id.
+     *          'lang'          => string lang
      *          'list'          => string list id.
      *          'readonly'      => boolean readonly.
      *          'required'      => boolean required.
+     *          'spellcheck'    => boolean spellcheck
      *          'tabindex'      => int tabindex.
      *          'data'          => array data.
      *              [
@@ -73,7 +75,7 @@ class forms
             (isset($params['autofocus']) && $params['autofocus'] ?
                 ' autofocus' : '') .
             (isset($params['class']) ?
-                ' class="' . $params['class'] . '"' : '') .
+                ' class="' . (is_array($params['class']) ? implode(' ', $params['class']) : $params['class']) . '"' : '') .
             (isset($params['disabled']) && $params['disabled'] ?
                 ' disabled' : '') .
             (isset($params['form']) ?
@@ -84,6 +86,10 @@ class forms
                 ' readonly' : '') .
             (isset($params['required']) && $params['required'] ?
                 ' required' : '') .
+            (isset($params['lang']) ?
+                ' lang="' . $params['lang'] . '"' : '') .
+            (isset($params['spellcheck']) ?
+                ' spellcheck="' . $params['spellcheck'] . '"' : '') .
             (array_key_exists('tabindex', $params) ?
                 ' tabindex="' . strval((int) $params['tabindex']) . '"' : '') .
 
@@ -98,7 +104,7 @@ class forms
 
         if (isset($params['extra'])) {
             // Extra HTML
-            $render .= ' ' . $params['extra'];
+            $render .= ' ' . is_array($params['extra']) ? implode(' ', $params['extra']) : $params['extra'];
         }
 
         return $render;
