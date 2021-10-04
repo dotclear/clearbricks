@@ -129,3 +129,26 @@ $__autoload['fileZip']   = dirname(__FILE__) . '/zip/class.zip.php';
 # Diff tools
 $__autoload['diff']     = dirname(__FILE__) . '/diff/lib.diff.php';
 $__autoload['tidyDiff'] = dirname(__FILE__) . '/diff/lib.tidy.diff.php';
+
+# HTML Form helpers
+$__autoload['formComponent'] = dirname(__FILE__) . '/html.form/class.form.component.php';
+$__autoload['formTextarea']  = dirname(__FILE__) . '/html.form/class.form.textarea.php';
+$__autoload['formInput']     = dirname(__FILE__) . '/html.form/class.form.input.php';
+$__autoload['formCheckbox']  = dirname(__FILE__) . '/html.form/class.form.checkbox.php';
+$__autoload['formColor']     = dirname(__FILE__) . '/html.form/class.form.color.php';
+$__autoload['formDate']      = dirname(__FILE__) . '/html.form/class.form.date.php';
+$__autoload['formDatetime']  = dirname(__FILE__) . '/html.form/class.form.datetime.php';
+$__autoload['formEmail']     = dirname(__FILE__) . '/html.form/class.form.email.php';
+$__autoload['formFile']      = dirname(__FILE__) . '/html.form/class.form.file.php';
+$__autoload['formHidden']    = dirname(__FILE__) . '/html.form/class.form.hidden.php';
+$__autoload['formNumber']    = dirname(__FILE__) . '/html.form/class.form.number.php';
+$__autoload['formPassword']  = dirname(__FILE__) . '/html.form/class.form.password.php';
+$__autoload['formRadio']     = dirname(__FILE__) . '/html.form/class.form.radio.php';
+$__autoload['formTime']      = dirname(__FILE__) . '/html.form/class.form.time.php';
+$__autoload['formUrl']       = dirname(__FILE__) . '/html.form/class.form.url.php';
+$__autoload['formLabel']     = dirname(__FILE__) . '/html.form/class.form.label.php';
+$__autoload['formFieldset']  = dirname(__FILE__) . '/html.form/class.form.fieldset.php';
+$__autoload['formLegend']    = dirname(__FILE__) . '/html.form/class.form.legend.php';
+$__autoload['formSelect']    = dirname(__FILE__) . '/html.form/class.form.select.php';
+$__autoload['formOptgroup']  = dirname(__FILE__) . '/html.form/class.form.optgroup.php';
+$__autoload['formOption']    = dirname(__FILE__) . '/html.form/class.form.option.php';
