@@ -27,6 +27,17 @@ abstract class formComponent
     }
 
     /**
+     * Call statically new instance
+     *
+     * @return object New formXxx instance
+     */
+    public static function init()
+    {
+        $c = get_called_class();
+        return new $c(...func_get_args());
+    }
+
+    /**
      * Magic getter method
      *
      * @param      string  $property  The property
