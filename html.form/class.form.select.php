@@ -49,8 +49,14 @@ class formSelect extends formComponent
         $buffer = '<' . ($this->getElement() ?? self::DEFAULT_ELEMENT) . $this->renderCommonAttributes() . '>' . "\n";
 
         if (isset($this->items) && is_array($this->items)) {
-            foreach ($this->items as $item) {
-                $buffer .= $item->render($this->default ?? $default ?? null);
+            foreach ($this->items as $item => $value) {
+                if ($value instanceof formOption || $value instanceof formOptgroup) {
+                    $buffer .= $value->render($this->default ?? $default ?? null);
+                } elseif (is_array($value)) {
+                    $buffer .= (new formOptgroup($item))->items($value)->render($this->default ?? $default ?? null);
+                } else {
+                    $buffer .= (new formOption($item, $value))->render($this->default ?? $default ?? null);
+                }
             }
         }
 

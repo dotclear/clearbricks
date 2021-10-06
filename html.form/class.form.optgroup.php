@@ -44,8 +44,14 @@ class formOptgroup extends formComponent
             $this->renderCommonAttributes() . '>' . "\n";
 
         if (isset($this->items) && is_array($this->items)) {
-            foreach ($this->items as $item) {
-                $buffer .= $item->render($default);
+            foreach ($this->items as $item => $value) {
+                if ($value instanceof formOption || $value instanceof formOptgroup) {
+                    $buffer .= $value->render($default);
+                } elseif (is_array($value)) {
+                    $buffer .= (new formOptgroup($item))->items($value)->render($this->default ?? $default ?? null);
+                } else {
+                    $buffer .= (new formOption($item, $value))->render($this->default ?? $default ?? null);
+                }
             }
         }
 
