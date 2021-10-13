@@ -541,6 +541,18 @@ class path extends atoum
         $this
             ->string(\path::clean('..' . DIRECTORY_SEPARATOR . 'testDirectory'))
             ->isEqualTo(DIRECTORY_SEPARATOR . 'testDirectory');
+
+        $this
+            ->string(\path::clean(DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'testDirectory' . DIRECTORY_SEPARATOR))
+            ->isEqualTo(DIRECTORY_SEPARATOR . 'testDirectory');
+
+        $this
+            ->string(\path::clean(DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR . 'testDirectory' . DIRECTORY_SEPARATOR))
+            ->isEqualTo(DIRECTORY_SEPARATOR . 'testDirectory');
+
+        $this
+            ->string(\path::clean(DIRECTORY_SEPARATOR . 'testDirectory' . DIRECTORY_SEPARATOR . '..'))
+            ->isEqualTo(DIRECTORY_SEPARATOR . 'testDirectory');
     }
 
     public function testInfo()

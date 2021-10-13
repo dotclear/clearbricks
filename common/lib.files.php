@@ -588,9 +588,9 @@ class path
      */
     public static function clean(?string $p): string
     {
-        $p = str_replace('..', '', $p);
-        $p = preg_replace('|/{2,}|', '/', $p);
-        $p = preg_replace('|/$|', '', $p);
+        $p = preg_replace(['|^\.\.|', '|/\.\.|', '|\.\.$|'], '', $p);   // Remove double point (upper directory)
+        $p = preg_replace('|/{2,}|', '/', $p);                          // Replace double slashes by one
+        $p = preg_replace('|/$|', '', $p);                              // Remove trailing slash
 
         return $p;
     }
