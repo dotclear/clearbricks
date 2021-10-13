@@ -13,12 +13,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/atoum/atoum.git",
-                "reference": "c4214d1b9a695d24a57cd1ffe874118c721b4b2f"
+                "reference": "36240d6e141af6ad3c0f283e653c4966b6bc4abb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atoum/atoum/zipball/c4214d1b9a695d24a57cd1ffe874118c721b4b2f",
-                "reference": "c4214d1b9a695d24a57cd1ffe874118c721b4b2f",
+                "url": "https://api.github.com/repos/atoum/atoum/zipball/36240d6e141af6ad3c0f283e653c4966b6bc4abb",
+                "reference": "36240d6e141af6ad3c0f283e653c4966b6bc4abb",
                 "shasum": ""
             },
             "require": {
@@ -91,9 +91,9 @@
             ],
             "support": {
                 "issues": "https://github.com/atoum/atoum/issues",
-                "source": "https://github.com/atoum/atoum/tree/master"
+                "source": "https://github.com/atoum/atoum/tree/4.0.2"
             },
-            "time": "2021-01-14T18:13:00+00:00"
+            "time": "2021-10-10T19:53:23+00:00"
         },
         {
             "name": "atoum/reports-extension",
