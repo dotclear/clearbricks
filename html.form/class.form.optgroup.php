@@ -48,8 +48,10 @@ class formOptgroup extends formComponent
                 if ($value instanceof formOption || $value instanceof formOptgroup) {
                     $buffer .= $value->render($default);
                 } elseif (is_array($value)) {
+                    /* @phpstan-ignore-next-line */
                     $buffer .= (new formOptgroup($item))->items($value)->render($this->default ?? $default ?? null);
                 } else {
+                    /* @phpstan-ignore-next-line */
                     $buffer .= (new formOption($item, $value))->render($this->default ?? $default ?? null);
                 }
             }

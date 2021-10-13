@@ -19,6 +19,7 @@ parameters:
     - ext
     - filemanager
     - html.filter
+    - html.form
     - html.validator
     - image
     - mail
@@ -43,3 +44,15 @@ parameters:
 #
 # Use /* @phpstan-ignore-next-line */ or // @phpstan-ignore-line
 # to ignore some specific lines in code
+
+  ignoreErrors:
+
+    # Intensive use of magic __set/__get/__call/__invoke causes theses wrong warnings
+    - message: '#Call to an undefined method form#'
+      paths:
+      - html.form/*
+
+    # Intensive use of magic __set/__get/__call/__invoke causes theses wrong warnings
+    - message: '#Access to an undefined property form#'
+      paths:
+      - html.form/*

@@ -43,9 +43,9 @@ class formLabel extends formComponent
     /**
      * Constructs a new instance.
      *
-     * @param      string       $text   The text
-     * @param      bool         $child  The child
-     * @param      null|string  $id     The identifier
+     * @param      string       $text      The text
+     * @param      int          $position  The position
+     * @param      null|string  $id        The identifier
      */
     public function __construct(string $text = '', int $position = self::INSIDE_TEXT_BEFORE, ?string $id = null)
     {
@@ -61,7 +61,7 @@ class formLabel extends formComponent
     /**
      * Renders the HTML component.
      *
-     * @param      bool|null|string  $buffer  The buffer
+     * @param      null|string  $buffer  The buffer
      *
      * @return     string
      */
@@ -89,6 +89,7 @@ class formLabel extends formComponent
         }
 
         $start = ($this->getElement() ?? self::DEFAULT_ELEMENT);
+        /* @phpstan-ignore-next-line */
         if (($this->_position !== self::INSIDE_TEXT_BEFORE || $this->_position !== self::INSIDE_TEXT_AFTER) && isset($this->for)) {
             $start .= ' for="' . $this->for . '"';
         }

@@ -34,6 +34,8 @@ abstract class formComponent
     public static function init()
     {
         $c = get_called_class();
+
+        /* @phpstan-ignore-next-line */
         return new $c(...func_get_args());
     }
 
@@ -100,7 +102,7 @@ abstract class formComponent
      * @param      string  $method     The property
      * @param      array   $arguments  The arguments
      *
-     * @return     method called, property value (or null), self
+     * @return     mixed   method called, property value (or null), self
      */
     public function __call(string $method, $arguments)
     {
@@ -116,12 +118,12 @@ abstract class formComponent
                 return $this->_data[$method];
             }
 
-            return null;
+            return null;    // @phpstan-ignore-line
         }
         // Argument here, assume its a set
         $this->_data[$method] = $arguments[0];
 
-        return $this;
+        return $this;   // @phpstan-ignore-line
     }
 
     /**

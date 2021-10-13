@@ -51,10 +51,13 @@ class formSelect extends formComponent
         if (isset($this->items) && is_array($this->items)) {
             foreach ($this->items as $item => $value) {
                 if ($value instanceof formOption || $value instanceof formOptgroup) {
+                    /* @phpstan-ignore-next-line */
                     $buffer .= $value->render($this->default ?? $default ?? null);
                 } elseif (is_array($value)) {
+                    /* @phpstan-ignore-next-line */
                     $buffer .= (new formOptgroup($item))->items($value)->render($this->default ?? $default ?? null);
                 } else {
+                    /* @phpstan-ignore-next-line */
                     $buffer .= (new formOption($item, $value))->render($this->default ?? $default ?? null);
                 }
             }
