@@ -18,12 +18,15 @@ Nicolas Chachereau
 Jérôme Lipowicz
 Franck Paul
 
-Version : 3.2.23
-Release date : 2020-07-24
+Version : 3.2.24
+Release date : 2021-10-25
 
 History :
 
-3.3.23 - Franck
+3.2.24 - Franck
+=> Ajout support bloc détail (|summary en première ligne du bloc, | en dernière ligne du bloc, contenu du bloc libre)
+
+3.2.23 - Franck
 => Ajout support attributs supplémentaires (§attributs§) pour les éléments en ligne (sans d'imbrication)
 => Ajout support ;;span;;
 
@@ -201,6 +204,7 @@ class wiki2xhtml
         $this->setOpt('active_sub', 1); # Activation du <sub> ,,..,,
         $this->setOpt('active_i', 1); # Activation du <i> ££..££
         $this->setOpt('active_span', 1); # Activation du <span> ;;..;;
+        $this->setOpt('active_details', 1); #activation du <details> |sommaire ...
 
         $this->setOpt('parse_pre', 1); # Parser l'intérieur de blocs <pre> ?
 
@@ -420,14 +424,15 @@ class wiki2xhtml
             'span'   => [';;', ';;']
         ];
         $this->linetags = [
-            'empty' => 'øøø',
-            'title' => '([!]{1,4})',
-            'hr'    => '[-]{4}[- ]',
-            'quote' => '(&gt;|;:)',
-            'lists' => '([*#]+)',
-            'defl'  => '([=|:]{1} )',
-            'pre'   => '[ ]{1}',
-            'aside' => '[\)]{1}'
+            'empty'   => 'øøø',
+            'title'   => '([!]{1,4})',
+            'hr'      => '[-]{4}[- ]',
+            'quote'   => '(&gt;|;:)',
+            'lists'   => '([*#]+)',
+            'defl'    => '([=|:]{1} )',
+            'pre'     => '[ ]{1}',
+            'aside'   => '[\)]{1}',
+            'details' => '[\|]{1}'
         ];
 
         $this->tags = array_merge($tags, $this->custom_tags);
@@ -512,6 +517,9 @@ class wiki2xhtml
         }
         if (!$this->getOpt('active_aside')) {
             unset($this->linetags['aside']);
+        }
+        if (!$this->getOpt('active_details')) {
+            unset($this->linetags['details']);
         }
 
         $this->open_tags   = $this->__getTags();
@@ -696,6 +704,15 @@ class wiki2xhtml
                 $attr = $cap[3];
             }
         }
+        # Details
+        elseif ($this->getOpt('active_details') && preg_match('/^[\|]{1}(.*?)(§§(.*)§§)?$/', $line, $cap)) {
+            $type = 'details';
+            $line = trim($cap[1]);
+            $mode = $line == '' ? '0' : '1';
+            if (isset($cap[3])) {
+                $attr = $cap[3];
+            }
+        }
         # Paragraphe
         else {
             $type = 'p';
@@ -740,6 +757,10 @@ class wiki2xhtml
             return "\n<pre" . $attr_child . '>';
         } elseif ($open && $type == 'aside') {
             return "\n<aside" . $attr_child . '><p>';
+        } elseif ($open && $type == 'details' && $mode == '0') {
+            return "\n</details>";
+        } elseif ($open && $type == 'details' && $mode == '1') {
+            return "\n<details" . $attr_child . '><summary>';
         } elseif ($open && $type == 'hr') {
             return "\n<hr" . $attr_child . ' />';
         } elseif ($type == 'list') {
@@ -803,6 +824,8 @@ class wiki2xhtml
             return "</pre>\n";
         } elseif ($close && $pre_type == 'aside') {
             return "</p></aside>\n";
+        } elseif ($close && $pre_type == 'details' && $pre_mode == '1') {
+            return "</summary>\n";
         } elseif ($close && $pre_type == 'list') {
             $res = '';
             for ($j = 0; $j < strlen($pre_mode); $j++) {
@@ -1336,6 +1359,10 @@ class wiki2xhtml
 
         if ($this->getOpt('active_aside')) {
             $help['b'][] = '<aside>Note de côté</aside> : <code>)</code> devant chaque ligne de texte';
+        }
+
+        if ($this->getOpt('active_details')) {
+            $help['b'][] = '<details><summary>Sommaire</summary> ... </details> : <code>|</code> en première ligne avec le texte du sommaire, <code>|</code> en derniere ligne du bloc';
         }
 
         if ($this->getOpt('active_fr_syntax')) {

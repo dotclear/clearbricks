@@ -120,7 +120,8 @@ class wiki2xhtml extends atoum
             'active_defl'        => 0,
             'active_pre'         => 0,
             'active_aside'       => 0,
-            'active_span'        => 0
+            'active_span'        => 0,
+            'active_details'     => 0,
         ]);
         $wiki = <<<EOW
 
@@ -159,6 +160,9 @@ Another ""mark""
 )
 ) End
 
+|summary of details block
+content of details block
+|
 EOW;
         $html = <<<EOH
 <p>URL: https://dotclear.org/
@@ -208,6 +212,11 @@ Another code line</p>
 <p>) And finally an aside paragraph with a square^2 inside and some CO,,2,,
 )
 ) End</p>
+
+
+<p>|summary of details block
+content of details block
+|</p>
 EOH;
         $this
             ->string($wiki2xhtml->transform($wiki))
@@ -612,6 +621,8 @@ EOH;
             ["= %s\n: %s", '<dl><dt>%s</dt><dd>%s</dd></dl>', 2],
             ["= %s\n= %s\n: %s\n: %s", '<dl><dt>%s</dt><dt>%s</dt><dd>%s</dd><dd>%s</dd></dl>', 4],
 
+            ["|summary\n%s\n|", '<details><summary>summary</summary><p>%s</p></details>', 1],
+
             // With attributes
 
             ["* item 1§§class=\"title\"§§\n** item 1.1\n** item 1.2\n* item 2\n* item 3\n*# item 3.1",
@@ -659,6 +670,8 @@ EOH;
 
             ['= term§§|class="parent"§§', '<dl class="parent"><dt>term</dt></dl>', 0],
             [': definition§§|class="parent"§§', '<dl class="parent"><dd>definition</dd></dl>', 0],
+
+            ["|summary§§open§§\n%s\n|", '<details open><summary>summary</summary><p>%s</p></details>', 1],
 
             [">%s§§class=\"title\"§§\n>%s", '<blockquote class="title"><p>%s%s</p></blockquote>', 2],
 
