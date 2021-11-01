@@ -150,7 +150,8 @@ class template extends atoum
 
         foreach (new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator($this->fixturesDir),
-            \RecursiveIteratorIterator::LEAVES_ONLY) as $file) {
+            \RecursiveIteratorIterator::LEAVES_ONLY
+        ) as $file) {
             if (preg_match('/\.test$/', $file)) {
                 $tests[] = $file->getRealpath();
             }

@@ -139,9 +139,12 @@ class diff
                 }
 
                 # Header for current chunk
-                $res .= sprintf(self::$us_range,
-                    $pos_x + 1 - $old_lines, $old_lines + $i,
-                    $pos_y + 1 - $new_lines, $new_lines + $i
+                $res .= sprintf(
+                    self::$us_range,
+                    $pos_x + 1 - $old_lines,
+                    $old_lines + $i,
+                    $pos_y + 1 - $new_lines,
+                    $new_lines + $i
                 ) . $buffer;
 
                 $pos_x     = $x;
@@ -191,9 +194,12 @@ class diff
             }
 
             # Header for current chunk
-            $res .= sprintf(self::$us_range,
-                $pos_x + 1 - $old_lines, $old_lines + $i,
-                $pos_y + 1 - $new_lines, $new_lines + $i
+            $res .= sprintf(
+                self::$us_range,
+                $pos_x + 1 - $old_lines,
+                $old_lines + $i,
+                $pos_y + 1 - $new_lines,
+                $new_lines + $i
             ) . $buffer;
         }
 

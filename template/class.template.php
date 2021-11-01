@@ -180,7 +180,8 @@ class template
         }
 
         $file_md5  = md5($tpl_file);
-        $dest_file = sprintf('%s/%s/%s/%s/%s.php',
+        $dest_file = sprintf(
+            '%s/%s/%s/%s/%s.php',
             $this->cache_dir,
             'cbtpl',
             substr($file_md5, 0, 2),
@@ -276,8 +277,11 @@ class template
         }
 
         # Transform what could be considered as PHP short tags
-        $fc = preg_replace('/(<\?(?!php|=|\s))(.*?)(\?>)/ms',
-            '<?php echo "$1"; ?>$2<?php echo "$3"; ?>', $fc);
+        $fc = preg_replace(
+            '/(<\?(?!php|=|\s))(.*?)(\?>)/ms',
+            '<?php echo "$1"; ?>$2<?php echo "$3"; ?>',
+            $fc
+        );
 
         # Remove template comments <!-- #... -->
         $fc = preg_replace('/(^\s*)?<!-- #(.*?)-->/ms', '', $fc);
@@ -285,8 +289,11 @@ class template
         # Lexer part : split file into small pieces
         # each array entry will be either a tag or plain text
         $blocks = preg_split(
-            '#(<tpl:\w+[^>]*>)|(</tpl:\w+>)|({{tpl:\w+[^}]*}})#msu', $fc, -1,
-            PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+            '#(<tpl:\w+[^>]*>)|(</tpl:\w+>)|({{tpl:\w+[^}]*}})#msu',
+            $fc,
+            -1,
+            PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY
+        );
 
         # Next : build semantic tree from tokens.
         $rootNode          = new tplNode();
@@ -312,13 +319,15 @@ class template
                         if ($search->getTag() == $tag) {
                             $errors[] = sprintf(
                                 __('Did not find closing tag for block <tpl:%s>. Content has been ignored.'),
-                                html::escapeHTML($node->getTag()));
+                                html::escapeHTML($node->getTag())
+                            );
                             $search->setClosing();
                             $node = $search->getParent();
                         } else {
                             $errors[] = sprintf(
                                 __('Unexpected closing tag </tpl:%s> found.'),
-                                $tag);
+                                $tag
+                            );
                         }
                     }
                 } elseif (substr($match[0], 0, 1) == '{') {
@@ -359,7 +368,8 @@ class template
         if (($node instanceof tplNodeBlock) && !$node->isClosed()) {
             $errors[] = sprintf(
                 __('Did not find closing tag for block <tpl:%s>. Content has been ignored.'),
-                html::escapeHTML($node->getTag()));
+                html::escapeHTML($node->getTag())
+            );
         }
 
         $err = '';

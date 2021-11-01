@@ -9,7 +9,6 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-
 class socketMail
 {
     public static $fp;
@@ -57,6 +56,7 @@ class socketMail
 
         if (!is_resource(self::$fp)) {
             self::$fp = null;
+
             throw new Exception('Unable to open socket');
         }
 
@@ -67,18 +67,21 @@ class socketMail
         # HELO cmd
         if (!self::cmd('HELO ' . $from_host, $data)) {
             self::quit();
+
             throw new Exception($data);
         }
 
         # MAIL FROM: <...>
         if (!self::cmd('MAIL FROM: <' . $from . '>', $data)) {
             self::quit();
+
             throw new Exception($data);
         }
 
         # RCPT TO: <...>
         if (!self::cmd('RCPT TO: <' . $to . '>', $data)) {
             self::quit();
+
             throw new Exception($data);
         }
 
@@ -92,6 +95,7 @@ class socketMail
 
         if (!self::sendMessage($message, $data)) {
             self::quit();
+
             throw new Exception($data);
         }
 

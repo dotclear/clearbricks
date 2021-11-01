@@ -149,7 +149,8 @@ class fileZip
 
         $ctrldir = implode('', $this->ctrl_dir);
 
-        fwrite($this->fp,
+        fwrite(
+            $this->fp,
             $ctrldir .
             $this->eof_ctrl_dir .
             pack('v', sizeof($this->ctrl_dir)) . # total # of entries "on this disk"

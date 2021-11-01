@@ -160,7 +160,8 @@ if (class_exists('netHttp')) {
         protected function withCache($url)
         {
             $url_md5     = md5($url);
-            $cached_file = sprintf('%s/%s/%s/%s/%s.php',
+            $cached_file = sprintf(
+                '%s/%s/%s/%s/%s.php',
                 $this->cache_dir,
                 $this->cache_file_prefix,
                 substr($url_md5, 0, 2),

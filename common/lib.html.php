@@ -42,7 +42,8 @@ class html
             $str = str_replace(
                 ['&amp;', '&gt;', '&lt;'],
                 ['&amp;amp;', '&amp;gt;', '&amp;lt;'],
-                $str);
+                $str
+            );
         }
 
         # Some extra replacements

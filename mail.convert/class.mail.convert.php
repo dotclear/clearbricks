@@ -11,7 +11,6 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-
 class mailConvert
 {
     public $url_pattern = '%(?<![\[\|])(http|https|ftp|news):(//)?(.*?)(["\s\)]|&gt;|&lt;|\Z)%msu'; ///< URL pattern
@@ -19,12 +18,14 @@ class mailConvert
     public static function toHTML($str)
     {
         $o = new self;
+
         return $o->html(rtrim($str), true);
     }
 
     public static function rewrap($str, $l = 72)
     {
         $o = new self;
+
         return $o->wrap($str, $l);
     }
 
@@ -33,6 +34,7 @@ class mailConvert
         while (preg_match('/^re: /msiu', $str)) {
             $str = preg_replace('/^re: /msiu', '', $str);
         }
+
         return $str;
     }
 
@@ -53,9 +55,11 @@ class mailConvert
                 case 'block':
                     $t['content'] = $this->htmlParseBlock($t['content']);
                     $res .= '<pre>' . $t['content'] . "</pre>\n";
+
                     break;
                 case 'quote':
                     $res .= "<blockquote>\n" . $this->html($t['content']) . "</blockquote>\n\n";
+
                     break;
             }
         }

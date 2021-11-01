@@ -13,10 +13,9 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-
 class imageMeta
 {
-    protected $xmp = []; ///< array: Internal XMP array
+    protected $xmp  = []; ///< array: Internal XMP array
     protected $iptc = []; ///< array: Internal IPTC array
     protected $exif = []; ///< array: Internal EXIF array
 
@@ -32,6 +31,7 @@ class imageMeta
     {
         $o = new self;
         $o->loadFile($f);
+
         return $o->getMeta();
     }
 
@@ -57,7 +57,8 @@ class imageMeta
 
         # Fix date format
         $this->properties['DateTimeOriginal'] = preg_replace(
-            '/^(\d{4}):(\d{2}):(\d{2})/', '$1-$2-$3',
+            '/^(\d{4}):(\d{2}):(\d{2})/',
+            '$1-$2-$3',
             $this->properties['DateTimeOriginal']
         );
 
@@ -134,6 +135,7 @@ class imageMeta
             foreach ($patterns as $p) {
                 if (preg_match($p, $xmp, $m)) {
                     $this->xmp[$code] = $m[1];
+
                     break;
                 }
             }
@@ -243,46 +245,46 @@ class imageMeta
 
     # XMP
     protected $xmp_reg = [
-        'Title'             => [
+        'Title' => [
             '%<dc:title>\s*<rdf:Alt>\s*<rdf:li.*?>(.+?)</rdf:li>%msu'
         ],
-        'Description'       => [
+        'Description' => [
             '%<dc:description>\s*<rdf:Alt>\s*<rdf:li.*?>(.+?)</rdf:li>%msu'
         ],
-        'Creator'           => [
+        'Creator' => [
             '%<dc:creator>\s*<rdf:Seq>\s*<rdf:li>(.+?)</rdf:li>%msu'
         ],
-        'Rights'            => [
+        'Rights' => [
             '%<dc:rights>\s*<rdf:Alt>\s*<rdf:li.*?>(.+?)</rdf:li>%msu'
         ],
-        'Make'              => [
+        'Make' => [
             '%<tiff:Make>(.+?)</tiff:Make>%msu',
             '%tiff:Make="(.+?)"%msu'
         ],
-        'Model'             => [
+        'Model' => [
             '%<tiff:Model>(.+?)</tiff:Model>%msu',
             '%tiff:Model="(.+?)"%msu'
         ],
-        'Exposure'          => [
+        'Exposure' => [
             '%<exif:ExposureTime>(.+?)</exif:ExposureTime>%msu',
             '%exif:ExposureTime="(.+?)"%msu'
         ],
-        'FNumber'           => [
+        'FNumber' => [
             '%<exif:FNumber>(.+?)</exif:FNumber>%msu',
             '%exif:FNumber="(.+?)"%msu'
         ],
-        'MaxApertureValue'  => [
+        'MaxApertureValue' => [
             '%<exif:MaxApertureValue>(.+?)</exif:MaxApertureValue>%msu',
             '%exif:MaxApertureValue="(.+?)"%msu'
         ],
-        'ExposureProgram'   => [
+        'ExposureProgram' => [
             '%<exif:ExposureProgram>(.+?)</exif:ExposureProgram>%msu',
             '%exif:ExposureProgram="(.+?)"%msu'
         ],
-        'ISOSpeedRatings'   => [
+        'ISOSpeedRatings' => [
             '%<exif:ISOSpeedRatings>\s*<rdf:Seq>\s*<rdf:li>(.+?)</rdf:li>%msu'
         ],
-        'DateTimeOriginal'  => [
+        'DateTimeOriginal' => [
             '%<exif:DateTimeOriginal>(.+?)</exif:DateTimeOriginal>%msu',
             '%exif:DateTimeOriginal="(.+?)"%msu'
         ],
@@ -290,31 +292,31 @@ class imageMeta
             '%<exif:ExposureBiasValue>(.+?)</exif:ExposureBiasValue>%msu',
             '%exif:ExposureBiasValue="(.+?)"%msu'
         ],
-        'MeteringMode'      => [
+        'MeteringMode' => [
             '%<exif:MeteringMode>(.+?)</exif:MeteringMode>%msu',
             '%exif:MeteringMode="(.+?)"%msu'
         ],
-        'FocalLength'       => [
+        'FocalLength' => [
             '%<exif:FocalLength>(.+?)</exif:FocalLength>%msu',
             '%exif:FocalLength="(.+?)"%msu'
         ],
-        'Lens'              => [
+        'Lens' => [
             '%<aux:Lens>(.+?)</aux:Lens>%msu',
             '%aux:Lens="(.+?)"%msu'
         ],
-        'CountryCode'       => [
+        'CountryCode' => [
             '%<Iptc4xmpCore:CountryCode>(.+?)</Iptc4xmpCore:CountryCode>%msu',
             '%Iptc4xmpCore:CountryCode="(.+?)"%msu'
         ],
-        'Country'           => [
+        'Country' => [
             '%<photoshop:Country>(.+?)</photoshop:Country>%msu',
             '%photoshop:Country="(.+?)"%msu'
         ],
-        'State'             => [
+        'State' => [
             '%<photoshop:State>(.+?)</photoshop:State>%msu',
             '%photoshop:State="(.+?)"%msu'
         ],
-        'City'              => [
+        'City' => [
             '%<photoshop:City>(.+?)</photoshop:City>%msu',
             '%photoshop:City="(.+?)"%msu'
         ]

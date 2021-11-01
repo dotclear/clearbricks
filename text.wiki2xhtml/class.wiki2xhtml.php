@@ -215,11 +215,15 @@ class wiki2xhtml
         $this->setOpt('note_prefix', 'wiki-footnote');
         $this->setOpt('note_str', '<div class="footnotes"><h4>Notes</h4>%s</div>');
         $this->setOpt('note_str_single', '<div class="footnotes"><h4>Note</h4>%s</div>');
-        $this->setOpt('words_pattern',
-            '((?<![A-Za-z0-9])([A-Z][a-z]+){2,}(?![A-Za-z0-9]))');
+        $this->setOpt(
+            'words_pattern',
+            '((?<![A-Za-z0-9])([A-Z][a-z]+){2,}(?![A-Za-z0-9]))'
+        );
 
-        $this->setOpt('auto_url_pattern',
-            '%(?<![\[\|])(http://|https://|ftp://|news:)([^"\s\)!]+)%msu');
+        $this->setOpt(
+            'auto_url_pattern',
+            '%(?<![\[\|])(http://|https://|ftp://|news:)([^"\s\)!]+)%msu'
+        );
 
         $this->setOpt('acronyms_file', dirname(__FILE__) . '/acronyms.txt');
 
@@ -310,7 +314,8 @@ class wiki2xhtml
             if (!$active_urls) {
                 $res = preg_replace(
                     '%(?<!\\\\)([' . preg_quote(implode('', $this->tags['a'])) . '])%msU',
-                    '\\\$1', $res
+                    '\\\$1',
+                    $res
                 );
             }
 
@@ -378,7 +383,8 @@ class wiki2xhtml
 
                     return $before . $figure . $after;
                 },
-                $ret);
+                $ret
+            );
         }
         if (!is_null($ret)) {
             $res = $ret;

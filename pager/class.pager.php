@@ -11,7 +11,6 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-
 class pager
 {
     protected $env;
@@ -155,6 +154,7 @@ class pager
     {
         if ($this->base_url !== null) {
             $this->page_url = $this->base_url;
+
             return;
         }
 
@@ -184,9 +184,9 @@ class pager
     public function debug()
     {
         return
-        "Elements per page ........... " . $this->nb_per_page . "\n" .
+        'Elements per page ........... ' . $this->nb_per_page . "\n" .
         'Pages per group.............. ' . $this->nb_pages_per_group . "\n" .
-        "Elements count .............. " . $this->nb_elements . "\n" .
+        'Elements count .............. ' . $this->nb_elements . "\n" .
         'Pages ....................... ' . $this->nb_pages . "\n" .
         'Groups ...................... ' . $this->nb_groups . "\n\n" .
         'Current page .................' . $this->env . "\n" .

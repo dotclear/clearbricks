@@ -86,7 +86,8 @@ class forms extends atoum
                     'class'    => 'classme',
                     'disabled' => true,
                     'data'     => ['test' => 'This Is A Test']
-                ]))
+                ]
+            ))
             ->contains('<select')
             ->contains('</select>')
             ->contains('class="classme"')

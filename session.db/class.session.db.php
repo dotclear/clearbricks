@@ -36,8 +36,16 @@ class sessionDB
      * @param string     $ttl             TTL (default -120 minutes)
      * @param boolean    $transient        Transient session : no db optimize on session destruction if true
      */
-    public function __construct($con, $table, $cookie_name,
-        $cookie_path = null, $cookie_domain = null, $cookie_secure = false, $ttl = null, $transient = false)
+    public function __construct(
+        $con,
+        $table,
+        $cookie_name,
+        $cookie_path = null,
+        $cookie_domain = null,
+        $cookie_secure = false,
+        $ttl = null,
+        $transient = false
+    )
     {
         $this->con           = &$con;
         $this->table         = $table;

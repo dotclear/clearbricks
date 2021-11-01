@@ -58,7 +58,8 @@ class imageTools
 
         if (($info = @getimagesize($f)) !== false) {
             $this->memoryAllocate(
-                $info[0], $info[1],
+                $info[0],
+                $info[1],
                 $info['channels'] ?? 4
             );
 
