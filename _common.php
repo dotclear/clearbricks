@@ -132,6 +132,7 @@ $__autoload['tidyDiff'] = dirname(__FILE__) . '/diff/lib.tidy.diff.php';
 
 # HTML Form helpers
 $__autoload['formComponent'] = dirname(__FILE__) . '/html.form/class.form.component.php';
+$__autoload['formForm']      = dirname(__FILE__) . '/html.form/class.form.form.php';
 $__autoload['formTextarea']  = dirname(__FILE__) . '/html.form/class.form.textarea.php';
 $__autoload['formInput']     = dirname(__FILE__) . '/html.form/class.form.input.php';
 $__autoload['formCheckbox']  = dirname(__FILE__) . '/html.form/class.form.checkbox.php';

@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 /**
  * @class formComponent
@@ -297,7 +298,7 @@ abstract class formComponent
             (isset($this->name) ?
                 ' name="' . $this->name . '"' :
                 (isset($this->id) ? ' name="' . $this->id . '"' : '')) .
-            (isset($this->id)   ?
+            (isset($this->id) ?
                 ' id="' . $this->id . '"' :
                 (isset($this->name) ? ' id="' . $this->name . '"' : '')) .
 
