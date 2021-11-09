@@ -1,4 +1,5 @@
 <?php
+
 # ***** BEGIN LICENSE BLOCK *****
 # This file is part of Clearbricks.
 # Copyright (c) 2003-2013 Olivier Meunier & Association Dotclear
@@ -302,6 +303,9 @@ EOH;
 
             ->string($wiki2xhtml->transform(sprintf('[%s|%s]', $label, 'javascript:alert(1);')))
             ->isIdenticalTo(sprintf('<p><a href="#">%s</a></p>', $label))
+
+            ->string($wiki2xhtml->transform(sprintf('[%s|%s|9%s]', $label, $url, $lang)))
+            ->isIdenticalTo(sprintf('<p><a href="%s">%s</a></p>', $url, $label))
         ;
     }
 
