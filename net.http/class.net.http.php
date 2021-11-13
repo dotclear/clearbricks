@@ -558,7 +558,7 @@ if (class_exists('netSocket')) {
         public function setHost($host, $port = 80)
         {
             $this->host = $host;
-            $this->port = abs((integer) $port);
+            $this->port = abs((int) $port);
         }
 
         /**
@@ -570,7 +570,7 @@ if (class_exists('netSocket')) {
         public function setProxy($host, $port = '8080')
         {
             $this->proxy_host = $host;
-            $this->proxy_port = abs((integer) $port);
+            $this->proxy_port = abs((int) $port);
         }
 
         /**
@@ -580,7 +580,7 @@ if (class_exists('netSocket')) {
          */
         public function setTimeout($t)
         {
-            $this->timeout = abs((integer) $t);
+            $this->timeout = abs((int) $t);
         }
 
         /**
@@ -674,7 +674,7 @@ if (class_exists('netSocket')) {
          */
         public function useGzip($boolean)
         {
-            $this->use_gzip = (boolean) $boolean;
+            $this->use_gzip = (bool) $boolean;
         }
 
         /**
@@ -687,7 +687,7 @@ if (class_exists('netSocket')) {
          */
         public function setPersistCookies($boolean)
         {
-            $this->persist_cookies = (boolean) $boolean;
+            $this->persist_cookies = (bool) $boolean;
         }
 
         /**
@@ -700,7 +700,7 @@ if (class_exists('netSocket')) {
          */
         public function setPersistReferers($boolean)
         {
-            $this->persist_referers = (boolean) $boolean;
+            $this->persist_referers = (bool) $boolean;
         }
 
         /**
@@ -713,7 +713,7 @@ if (class_exists('netSocket')) {
          */
         public function setHandleRedirects($boolean)
         {
-            $this->handle_redirects = (boolean) $boolean;
+            $this->handle_redirects = (bool) $boolean;
         }
 
         /**
@@ -726,7 +726,7 @@ if (class_exists('netSocket')) {
          */
         public function setMaxRedirects($num)
         {
-            $this->max_redirects = abs((integer) $num);
+            $this->max_redirects = abs((int) $num);
         }
 
         /**
@@ -739,7 +739,7 @@ if (class_exists('netSocket')) {
          */
         public function setHeadersOnly($boolean)
         {
-            $this->headers_only = (boolean) $boolean;
+            $this->headers_only = (bool) $boolean;
         }
 
         /**
@@ -751,7 +751,7 @@ if (class_exists('netSocket')) {
          */
         public function setDebug($boolean)
         {
-            $this->debug = (boolean) $boolean;
+            $this->debug = (bool) $boolean;
         }
 
         /**
@@ -860,8 +860,8 @@ if (class_exists('netSocket')) {
                 return false;
             }
 
-            $scheme = $bits['scheme'] ?? 'http';
-            $host   = $bits['host']   ?? null;
+            $scheme = $bits['scheme'] ?? 'http';    // @phpstan-ignore-line
+            $host   = $bits['host']   ?? null;      // @phpstan-ignore-line
             $port   = $bits['port']   ?? null;
             $path   = $bits['path']   ?? '/';
             $user   = $bits['user']   ?? null;
