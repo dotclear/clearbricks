@@ -27,11 +27,11 @@ Of course, you're encouraged to use the `$__autoload` magic for your own classes
 
 In order to use Clearbricks you need:
 
-* PHP 7.3 with the following modules:
-  * mbstring
-  * iconv
-  * simplexml
-  * json
+-   PHP 7.4 with the following modules:
+    -   mbstring
+    -   iconv
+    -   simplexml
+    -   json
 
 ## Use it with Git
 
@@ -105,7 +105,7 @@ And now can run tests:
 ./bin/atoum
 ```
 
-Add ```-ebpc``` option to enable path and branch coverage (this option requires xDebug 2.3+)
+Add `-ebpc` option to enable path and branch coverage (this option requires xDebug 2.3+)
 
 You can also get code coverage report (in `coverage/html`) for tests by runing:
 
@@ -127,9 +127,9 @@ Copyright Olivier Meunier & Association Dotclear
 
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; version 2 of the License.
 
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 [1]: https://git-scm.com/docs/git-submodule
 [2]: https://github.com/atoum/atoum
