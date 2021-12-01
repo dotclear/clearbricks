@@ -119,7 +119,7 @@ class dt
 
     public static function strftime_legacy(string $p, $ts = null)
     {
-        return date(dt::strftimeToDateFormat($p), $ts);
+        return date(dt::strftimeToDateFormat($p), $ts ?? time());
     }
 
     /**
