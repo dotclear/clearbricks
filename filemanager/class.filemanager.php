@@ -33,7 +33,7 @@ class filemanager
         $this->root     = $this->pwd     = path::real($root);
         $this->root_url = $root_url;
 
-        if (!preg_match('#/$#', $this->root_url)) {
+        if (!preg_match('#/$#', (string) $this->root_url)) {
             $this->root_url = $this->root_url . '/';
         }
 
@@ -148,7 +148,7 @@ class filemanager
             return false;
         }
 
-        return preg_match($this->exclude_pattern, $f);
+        return preg_match($this->exclude_pattern, (string) $f);
     }
 
     /**
@@ -165,7 +165,7 @@ class filemanager
         $f = path::real($f);
 
         if ($f !== false) {
-            return preg_match('|^' . preg_quote($this->root, '|') . '|', $f);
+            return preg_match('|^' . preg_quote($this->root, '|') . '|', (string) $f);
         }
 
         return false;
@@ -523,7 +523,7 @@ class fileItem
         $stat = stat($file);
         $path = path::info($file);
 
-        $rel = preg_replace('/^' . preg_quote($root, '/') . '\/?/', '', $file);
+        $rel = preg_replace('/^' . preg_quote($root, '/') . '\/?/', '', (string) $file);
 
         $this->file     = $file;
         $this->basename = $path['basename'];
@@ -552,6 +552,6 @@ class fileItem
         $this->del = files::isDeletable($file);
 
         $this->type        = $this->d ? null : files::getMimeType($file);
-        $this->type_prefix = preg_replace('/^(.+?)\/.+$/', '$1', $this->type);
+        $this->type_prefix = preg_replace('/^(.+?)\/.+$/', '$1', (string) $this->type);
     }
 }

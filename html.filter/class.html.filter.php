@@ -229,12 +229,12 @@ class htmlFilter
                 'lower-literals'              => true,
                 'output-xhtml'                => true,
                 'show-body-only'              => true,
-                'wrap'                        => 80
+                'wrap'                        => 80,
             ];
 
             $str = '<p>tt</p>' . $str; // Fixes a big issue
 
-            $tidy = new tidy;
+            $tidy = new tidy();
             $tidy->parseString($str, $config, 'utf8');
             $tidy->cleanRepair();
 
@@ -354,7 +354,7 @@ class htmlFilter
     private function getURI($uri)
     {
         // Trim URI
-        $uri = trim($uri);
+        $uri = trim((string) $uri);
         // Remove escaped Unicode characters
         $uri = preg_replace('/\\\u[a-fA-F0-9]{4}/', '', $uri);
         // Sanitize and parse URL
@@ -428,7 +428,7 @@ class htmlFilter
         'https',
         'ftp',
         'mailto',
-        'news'
+        'news',
     ];
 
     // List of attributes which allow URL value
@@ -446,7 +446,7 @@ class htmlFilter
         'longdesc',
         'profile',
         'src',
-        'usemap'
+        'usemap',
     ];
 
     // List of generic attributes
@@ -474,7 +474,7 @@ class htmlFilter
         'title',
         'translate',
         'xml:base',
-        'xml:lang'];
+        'xml:lang', ];
 
     // List of events attributes
     private $event_attrs = [
@@ -553,13 +553,13 @@ class htmlFilter
         'onundo',
         'onunload',
         'onvolumechange',
-        'onwaiting'
+        'onwaiting',
     ];
 
     // List of pattern'ed attributes
     private $grep_attrs = [
         '^aria-[\-\w]+$',
-        '^data-[\-\w].*$'
+        '^data-[\-\w].*$',
     ];
 
     // List of single tags
@@ -581,20 +581,20 @@ class htmlFilter
         'param',
         'source',
         'track',
-        'wbr'
+        'wbr',
     ];
 
     private $tags = [
         // A
         'a' => ['charset', 'coords', 'download', 'href', 'hreflang', 'name', 'ping', 'referrerpolicy',
-            'rel', 'rev', 'shape', 'target', 'type'],
+            'rel', 'rev', 'shape', 'target', 'type', ],
         'abbr'    => [],
         'acronym' => [],
         'address' => [],
         'applet'  => ['align', 'alt', 'archive', 'code', 'codebase', 'datafld', 'datasrc', 'height', 'hspace',
-            'mayscript', 'name', 'object', 'vspace', 'width'],
+            'mayscript', 'name', 'object', 'vspace', 'width', ],
         'area' => ['alt', 'coords', 'download', 'href', 'name', 'media', 'nohref', 'referrerpolicy', 'rel',
-            'shape', 'target', 'type'],
+            'shape', 'target', 'type', ],
         'article' => [],
         'aside'   => [],
         'audio'   => ['autoplay', 'buffered', 'controls', 'loop', 'muted', 'played', 'preload', 'src', 'volume'],
@@ -607,7 +607,7 @@ class htmlFilter
         'big'        => [],
         'blockquote' => ['cite'],
         'body'       => ['alink', 'background', 'bgcolor', 'bottommargin', 'leftmargin', 'link', 'text', 'rightmargin',
-            'text', 'topmargin', 'vlink'],
+            'text', 'topmargin', 'vlink', ],
         'br'     => ['clear'],
         'button' => ['autofocus', 'autocomplete', 'disabled', 'form', 'formaction', 'formenctype', 'formmethod', 'formnovalidate', 'formtarget', 'name', 'type', 'value'],
         // C
@@ -640,7 +640,7 @@ class htmlFilter
         'font'       => ['color', 'face', 'size'],
         'footer'     => [],
         'form'       => ['accept', 'accept-charset', 'action', 'autocapitalize', 'autocomplete', 'enctype', 'method',
-            'name', 'novalidate', 'target'],
+            'name', 'novalidate', 'target', ],
         'frame'    => ['frameborder', 'marginheight', 'marginwidth', 'name', 'noresize', 'scrolling', 'src'],
         'frameset' => ['cols', 'rows'],
         // G
@@ -657,14 +657,14 @@ class htmlFilter
         // I
         'i'      => [],
         'iframe' => ['align', 'allowfullscreen', 'allowpaymentrequest', 'frameborder', 'height', 'longdesc',
-            'marginheight', 'marginwidth', 'name', 'referrerpolicy', 'sandbox', 'scrolling', 'src', 'srcdoc', 'width'],
+            'marginheight', 'marginwidth', 'name', 'referrerpolicy', 'sandbox', 'scrolling', 'src', 'srcdoc', 'width', ],
         'img' => ['align', 'alt', 'border', 'crossorigin', 'decoding', 'height', 'hspace', 'ismap', 'longdesc',
-            'name', 'referrerpolicy', 'sizes', 'src', 'srcset', 'usemap', 'vspace', 'width'],
+            'name', 'referrerpolicy', 'sizes', 'src', 'srcset', 'usemap', 'vspace', 'width', ],
         'input' => ['accept', 'alt', 'autocomplete', 'autofocus', 'capture', 'checked', 'disabled', 'form',
             'formaction', 'formenctype', 'formmethod', 'formnovalidate', 'formtarget', 'height', 'inputmode', 'ismap',
             'list', 'max', 'maxlength', 'min', 'minlength', 'multiple', 'name', 'pattern', 'placeholder', 'readonly',
             'required', 'selectionDirection', 'selectionEnd', 'selectionStart', 'size', 'spellcheck', 'src', 'step', 'type',
-            'usemap', 'value', 'width'],
+            'usemap', 'value', 'width', ],
         'ins'     => ['cite', 'datetime'],
         'isindex' => ['action', 'prompt'],
         // J
@@ -690,7 +690,7 @@ class htmlFilter
         'noscript' => [],
         // O
         'object' => ['archive', 'border', 'classid', 'codebase', 'codetype', 'data', 'declare', 'form', 'height',
-            'hspace', 'name', 'standby', 'type', 'typemustmatch', 'usemap', 'width'],
+            'hspace', 'name', 'standby', 'type', 'typemustmatch', 'usemap', 'width', ],
         'ol'       => ['compact', 'reversed', 'start', 'type'],
         'optgroup' => ['disabled', 'label'],
         'option'   => ['disabled', 'label', 'selected', 'value'],
@@ -712,7 +712,7 @@ class htmlFilter
         's'      => [],
         'samp'   => [],
         'script' => ['async', 'charset', 'crossorigin', 'defer', 'integrity', 'language', 'nomodule', 'nonce',
-            'src', 'type'],
+            'src', 'type', ],
         'section' => [],
         'select'  => ['autofocus', 'disabled', 'form', 'multiple', 'name', 'required', 'size'],
         'small'   => [],
@@ -728,13 +728,13 @@ class htmlFilter
         'table' => ['align', 'bgcolor', 'border', 'cellpadding', 'cellspacing', 'frame', 'rules', 'summary', 'width'],
         'tbody' => ['align', 'bgcolor', 'char', 'charoff', 'valign'],
         'td'    => ['abbr', 'align', 'axis', 'bgcolor', 'char', 'charoff', 'colspan', 'headers', 'nowrap',
-            'rowspan', 'scope', 'valign', 'width'],
+            'rowspan', 'scope', 'valign', 'width', ],
         'template' => [],
         'textarea' => ['autocomplete', 'autofocus', 'cols', 'disabled', 'form', 'maxlength', 'minlength', 'name',
-            'placeholder', 'readonly', 'rows', 'spellcheck', 'wrap'],
+            'placeholder', 'readonly', 'rows', 'spellcheck', 'wrap', ],
         'tfoot' => ['align', 'bgcolor', 'char', 'charoff', 'valign'],
         'th'    => ['abbr', 'align', 'axis', 'bgcolor', 'char', 'charoff', 'colspan', 'headers', 'nowrap',
-            'rowspan', 'scope', 'valign', 'width'],
+            'rowspan', 'scope', 'valign', 'width', ],
         'thead' => ['align', 'bgcolor', 'char', 'charoff', 'valign'],
         'time'  => ['datetime'],
         'title' => [],
@@ -747,9 +747,9 @@ class htmlFilter
         // V
         'var'   => [],
         'video' => ['autoplay', 'buffered', 'controls', 'crossorigin', 'height', 'loop', 'muted', 'played',
-            'playsinline', 'preload', 'poster', 'src', 'width'],
+            'playsinline', 'preload', 'poster', 'src', 'width', ],
         // W
-        'wbr' => []
+        'wbr' => [],
         // X
         // Y
         // Z

@@ -54,7 +54,7 @@ class fileZip
 
     public function addFile($file, $name = null)
     {
-        $file = preg_replace('#[\\\/]+#', '/', $file);
+        $file = preg_replace('#[\\\/]+#', '/', (string) $file);
 
         if (!$name) {
             $name = $file;
@@ -78,13 +78,13 @@ class fileZip
             'file'   => $file,
             'is_dir' => false,
             'mtime'  => $info['mtime'],
-            'size'   => $info['size']
+            'size'   => $info['size'],
         ];
     }
 
     public function addDirectory($dir, $name = null, $recursive = false)
     {
-        $dir = preg_replace('#[\\\/]+#', '/', $dir);
+        $dir = preg_replace('#[\\\/]+#', '/', (string) $dir);
         if (substr($dir, -1 - 1) != '/') {
             $dir .= '/';
         }
@@ -109,7 +109,7 @@ class fileZip
                     'file'   => null,
                     'is_dir' => true,
                     'mtime'  => time(),
-                    'size'   => 0
+                    'size'   => 0,
                 ];
             }
         }
@@ -294,7 +294,7 @@ class fileZip
     protected function isExcluded($name)
     {
         foreach ($this->exclusions as $reg) {
-            if (preg_match($reg, $name)) {
+            if (preg_match((string) $reg, (string) $name)) {
                 return true;
             }
         }
@@ -329,7 +329,7 @@ class fileZip
     {
         $mem_used  = function_exists('memory_get_usage') ? @memory_get_usage() : 4000000;
         $mem_limit = @ini_get('memory_limit');
-        if ($mem_limit && trim($mem_limit) === '-1' || !files::str2bytes($mem_limit)) {
+        if ($mem_limit && trim((string) $mem_limit) === '-1' || !files::str2bytes($mem_limit)) {
             // Cope with memory_limit set to -1 in PHP.ini
             return;
         }

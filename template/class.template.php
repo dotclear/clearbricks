@@ -434,7 +434,7 @@ class template
     {
         $res = '';
         if (isset($this->values[$tag])) {
-            $res .= call_user_func($this->values[$tag], $attr, ltrim($str_attr));
+            $res .= call_user_func($this->values[$tag], $attr, ltrim((string) $str_attr));
         } elseif ($this->unknown_value_handler != null) {
             $res .= call_user_func($this->unknown_value_handler, $tag, $attr, $str_attr);
         }
@@ -448,7 +448,7 @@ class template
         $attr     = isset($match[2]) ? $this->getAttrs($match[2]) : [];
         $str_attr = $match[2] ?? null;
 
-        return call_user_func($this->values[$v], $attr, ltrim($str_attr));
+        return call_user_func($this->values[$v], $attr, ltrim((string) $str_attr));
     }
 
     public function setUnknownValueHandler($callback)

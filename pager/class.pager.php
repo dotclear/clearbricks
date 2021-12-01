@@ -50,10 +50,10 @@ class pager
      */
     public function __construct($env, $nb_elements, $nb_per_page = 10, $nb_pages_per_group = 10)
     {
-        $this->env                = abs((integer) $env);
-        $this->nb_elements        = abs((integer) $nb_elements);
-        $this->nb_per_page        = abs((integer) $nb_per_page);
-        $this->nb_pages_per_group = abs((integer) $nb_pages_per_group);
+        $this->env                = abs((int) $env);
+        $this->nb_elements        = abs((int) $nb_elements);
+        $this->nb_per_page        = abs((int) $nb_per_page);
+        $this->nb_pages_per_group = abs((int) $nb_pages_per_group);
 
         # Pages count
         $this->nb_pages = ceil($this->nb_elements / $this->nb_per_page);
@@ -64,7 +64,7 @@ class pager
         }
 
         # Groups count
-        $this->nb_groups = (integer) ceil($this->nb_pages / $this->nb_pages_per_group);
+        $this->nb_groups = (int) ceil($this->nb_pages / $this->nb_pages_per_group);
 
         # Page first element index
         $this->index_start = ($this->env - 1) * $this->nb_per_page;
@@ -76,7 +76,7 @@ class pager
         }
 
         # Current group
-        $this->env_group = (integer) ceil($this->env / $this->nb_pages_per_group);
+        $this->env_group = (int) ceil($this->env / $this->nb_pages_per_group);
 
         # Group first page index
         $this->index_group_start = ($this->env_group - 1) * $this->nb_pages_per_group + 1;
@@ -158,7 +158,7 @@ class pager
             return;
         }
 
-        $url = $_SERVER['REQUEST_URI'];
+        $url = (string) $_SERVER['REQUEST_URI'];
 
         # Removing session information
         if (session_id()) {

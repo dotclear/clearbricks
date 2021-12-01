@@ -216,7 +216,7 @@ class fileUnzip
             return false;
         }
 
-        return preg_match($this->exclude_pattern, $f);
+        return preg_match($this->exclude_pattern, (string) $f);
     }
 
     protected function putContent($content, $target = false)
@@ -308,7 +308,7 @@ class fileUnzip
                     'total_entries_this' => unpack('v', fread($fp, 2)),
                     'total_entries'      => unpack('v', fread($fp, 2)),
                     'size_of_cd'         => unpack('V', fread($fp, 4)),
-                    'offset_start_cd'    => unpack('V', fread($fp, 4))
+                    'offset_start_cd'    => unpack('V', fread($fp, 4)),
                 ];
 
                 $zip_comment_len          = unpack('v', fread($fp, 2));
@@ -321,7 +321,7 @@ class fileUnzip
                     'total_entries'      => $eodir['total_entries'][1],
                     'size_of_cd'         => $eodir['size_of_cd'][1],
                     'offset_start_cd'    => $eodir['offset_start_cd'][1],
-                    'zipfile_comment'    => $eodir['zipfile_comment']
+                    'zipfile_comment'    => $eodir['zipfile_comment'],
                 ];
 
                 fseek($fp, $this->eo_central['offset_start_cd']);
@@ -371,13 +371,13 @@ class fileUnzip
                         'relative_offset'      => $dir['relative_offset'][1],
                         'file_name'            => $dir['file_name'],
                         'extra_field'          => $dir['extra_field'],
-                        'file_comment'         => $dir['file_comment']
+                        'file_comment'         => $dir['file_comment'],
                     ];
                     $signature = fread($fp, 4);
                 }
 
                 foreach ($dir_list as $k => $v) {
-                    if ($exclude && preg_match($exclude, $k)) {
+                    if ($exclude && preg_match($exclude, (string) $k)) {
                         continue;
                     }
 
@@ -424,7 +424,7 @@ class fileUnzip
             }
             $filename = $details['file_name'];
 
-            if ($exclude && preg_match($exclude, $filename)) {
+            if ($exclude && preg_match($exclude, (string) $filename)) {
                 continue;
             }
 
@@ -485,7 +485,7 @@ class fileUnzip
                 'uncompressed_size'     => $file['uncompressed_size'][1],
                 'extra_field'           => $file['extra_field'],
                 'general_bit_flag'      => str_pad(decbin($file['general_bit_flag'][1]), 8, '0', STR_PAD_LEFT),
-                'contents_start_offset' => $file['contents_start_offset']
+                'contents_start_offset' => $file['contents_start_offset'],
             ];
 
             return $i;
@@ -510,8 +510,8 @@ class fileUnzip
 
     protected function cleanFileName($n)
     {
-        $n = str_replace('../', '', $n);
-        $n = preg_replace('#^/+#', '', $n);
+        $n = str_replace('../', '', (string) $n);
+        $n = preg_replace('#^/+#', '', (string) $n);
 
         return $n;
     }
@@ -520,7 +520,7 @@ class fileUnzip
     {
         $mem_used  = function_exists('memory_get_usage') ? @memory_get_usage() : 4000000;
         $mem_limit = @ini_get('memory_limit');
-        if ($mem_limit && trim($mem_limit) === '-1' || !files::str2bytes($mem_limit)) {
+        if ($mem_limit && trim((string) $mem_limit) === '-1' || !files::str2bytes($mem_limit)) {
             // Cope with memory_limit set to -1 in PHP.ini
             return;
         }

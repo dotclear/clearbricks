@@ -41,11 +41,11 @@ class feedParser
             return;
         }
 
-        if (preg_match('/<rdf:RDF/', $data)) {
+        if (preg_match('/<rdf:RDF/', (string) $data)) {
             $this->parseRSSRDF();
-        } elseif (preg_match('/<rss/', $data)) {
+        } elseif (preg_match('/<rss/', (string) $data)) {
             $this->parseRSS();
-        } elseif (preg_match('!www.w3.org/2005/Atom!', $data)) {
+        } elseif (preg_match('!www.w3.org/2005/Atom!', (string) $data)) {
             $this->parseAtom10();
         } else {
             $this->parseAtom03();

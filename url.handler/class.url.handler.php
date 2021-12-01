@@ -25,7 +25,7 @@ class urlHandler
         $this->types[$type] = [
             'url'            => $url,
             'representation' => $representation,
-            'handler'        => $handler
+            'handler'        => $handler,
         ];
     }
 
@@ -121,7 +121,7 @@ class urlHandler
                 $args = null;
 
                 return;
-            } elseif (preg_match('#' . $repr . '#', $part, $m)) {
+            } elseif (preg_match('#' . $repr . '#', (string) $part, $m)) {
                 $type = $k;
                 $args = $m[1] ?? null;
 

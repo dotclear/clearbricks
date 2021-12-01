@@ -208,7 +208,7 @@ class xmlrpcMessage
     public function parse()
     {
         // first remove the XML declaration
-        $this->message = preg_replace('/<\?xml(.*)?\?' . '>/', '', $this->message);
+        $this->message = preg_replace('/<\?xml(.*)?\?' . '>/', '', (string) $this->message);
         if (trim($this->message) == '') {
             throw new Exception('XML Parser Error. Empty message');
         }
@@ -311,7 +311,7 @@ class xmlrpcMessage
 
                 break;
             case 'double':
-                $value                     = (double) trim($this->_currentTagContents);
+                $value                     = (float) trim($this->_currentTagContents);
                 $this->_currentTagContents = '';
                 $valueFlag                 = true;
 
@@ -339,7 +339,7 @@ class xmlrpcMessage
 
                 break;
             case 'boolean':
-                $value                     = (boolean) trim($this->_currentTagContents);
+                $value                     = (bool) trim($this->_currentTagContents);
                 $this->_currentTagContents = '';
                 $valueFlag                 = true;
 
@@ -671,7 +671,7 @@ if (class_exists('netHttp')) {
                 'User-Agent: ' . $this->user_agent,
                 'Content-Length: ' . $this->request->getLength(),
                 '',
-                $this->request->getXML()
+                $this->request->getXML(),
             ];
         }
     }
@@ -729,7 +729,7 @@ if (class_exists('xmlrpcClient')) {
         {
             $struct = [
                 'methodName' => $method,
-                'params'     => $args
+                'params'     => $args,
             ];
 
             $this->calls[] = $struct;
@@ -1019,16 +1019,16 @@ class xmlrpcServer
         $this->capabilities = [
             'xmlrpc' => [
                 'specUrl'     => 'http://www.xmlrpc.com/spec',
-                'specVersion' => 1
+                'specVersion' => 1,
             ],
             'faults_interop' => [
                 'specUrl'     => 'http://xmlrpc-epi.sourceforge.net/specs/rfc.fault_codes.php',
-                'specVersion' => 20010516
+                'specVersion' => 20010516,
             ],
             'system.multicall' => [
                 'specUrl'     => 'http://www.xmlrpc.com/discuss/msgReader$1208',
-                'specVersion' => 1
-            ]
+                'specVersion' => 1,
+            ],
         ];
     }
 
@@ -1104,7 +1104,7 @@ class xmlrpcServer
             } catch (Exception $e) {
                 $return[] = [
                     'faultCode'   => $e->getCode(),
-                    'faultString' => $e->getMessage()
+                    'faultString' => $e->getMessage(),
                 ];
             }
         }
@@ -1153,7 +1153,7 @@ if (class_exists('xmlrpcServer')) {
 
             $this->capabilities['introspection'] = [
                 'specUrl'     => 'http://xmlrpc.usefulinc.com/doc/reserved.html',
-                'specVersion' => 1
+                'specVersion' => 1,
             ];
 
             $this->addCallback(

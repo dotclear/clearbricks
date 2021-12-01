@@ -45,8 +45,7 @@ class sessionDB
         $cookie_secure = false,
         $ttl = null,
         $transient = false
-    )
-    {
+    ) {
         $this->con           = &$con;
         $this->table         = $table;
         $this->cookie_name   = $cookie_name;
@@ -148,7 +147,7 @@ class sessionDB
             $expire,
             $this->cookie_path,
             $this->cookie_domain,
-            $this->cookie_secure
+            $this->cookie_secure,
         ];
     }
 
@@ -239,7 +238,7 @@ class sessionDB
 
     private function checkID($id)
     {
-        if (!preg_match('/^([0-9a-f]{40})$/i', $id)) {
+        if (!preg_match('/^([0-9a-f]{40})$/i', (string) $id)) {
             return;
         }
 

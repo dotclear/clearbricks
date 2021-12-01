@@ -168,7 +168,7 @@ class xmlTag
      */
     public function __call($name, $args)
     {
-        if (!preg_match('#^[a-z_]#', $name)) {
+        if (!preg_match('#^[a-z_]#', (string) $name)) {
             return false;
         }
 

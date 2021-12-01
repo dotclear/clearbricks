@@ -95,7 +95,7 @@ class files
         'm4v'  => 'video/x-m4v',
         'flv'  => 'video/x-flv',
         'avi'  => 'video/x-msvideo',
-        'wmv'  => 'video/x-ms-wmv'
+        'wmv'  => 'video/x-ms-wmv',
     ];
 
     /**
@@ -546,7 +546,7 @@ class path
 
         $_start = '';
         if ($os == 'win') {
-            list($_start, $p) = explode(':', $p);
+            [$_start, $p] = explode(':', $p);
             $_start .= ':/';
         } else {
             $_start = '/';
@@ -588,9 +588,9 @@ class path
      */
     public static function clean(?string $p): string
     {
-        $p = preg_replace(['|^\.\.|', '|/\.\.|', '|\.\.$|'], '', $p);   // Remove double point (upper directory)
-        $p = preg_replace('|/{2,}|', '/', $p);                          // Replace double slashes by one
-        $p = preg_replace('|/$|', '', $p);                              // Remove trailing slash
+        $p = preg_replace(['|^\.\.|', '|/\.\.|', '|\.\.$|'], '', (string) $p);   // Remove double point (upper directory)
+        $p = preg_replace('|/{2,}|', '/', (string) $p);                          // Replace double slashes by one
+        $p = preg_replace('|/$|', '', (string) $p);                              // Remove trailing slash
 
         return $p;
     }
@@ -611,8 +611,8 @@ class path
         $p   = pathinfo($f);
         $res = [];
 
-        $res['dirname']   = $p['dirname'];
-        $res['basename']  = $p['basename'];
+        $res['dirname']   = (string) $p['dirname'];
+        $res['basename']  = (string) $p['basename'];
         $res['extension'] = $p['extension'] ?? '';
         $res['base']      = preg_replace('/\.' . preg_quote($res['extension'], '/') . '$/', '', $res['basename']);
 

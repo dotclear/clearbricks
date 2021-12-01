@@ -79,13 +79,13 @@ class xmlsql
         <test type="column" name"table.column" [eq="neq"]>...</test>
          */
         elseif (isset($node['type']) && (string) $node['type'] == 'column') {
-            $c = explode('.', $node['name']);
+            $c = explode('.', (string) $node['name']);
 
             if (count($c) != 2) {
                 return false;
             }
 
-            list($table, $col) = $c;
+            [$table, $col] = $c;
 
             $rs = $this->con->getColumns($table);
 
@@ -114,7 +114,7 @@ class xmlsql
             }
 
             if (isset($xtest['alert'])) {
-                $test['alert'] = (boolean) (integer) $xtest['alert'];
+                $test['alert'] = (bool) (int) $xtest['alert'];
             } else {
                 $test['alert'] = false;
             }

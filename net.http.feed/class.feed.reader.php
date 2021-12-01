@@ -119,7 +119,7 @@ if (class_exists('netHttp')) {
          */
         public function setCacheTTL($str)
         {
-            $str = trim($str);
+            $str = trim((string) $str);
             if (!empty($str)) {
                 if (substr($str, 0, 1) != '-') {
                     $str = '-' . $str;

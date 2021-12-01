@@ -357,7 +357,7 @@ class l10n
             'Language-Team'             => '',
             'Content-Type'              => '',
             'Content-Transfer-Encoding' => '',
-            'Plural-Forms'              => ''
+            'Plural-Forms'              => '',
             // there are more headers but these ones are default
         ];
         $headers_searched = $headers_found = false;
@@ -369,7 +369,7 @@ class l10n
         for ($i = 0; $i < count($lines); $i++) {
 
             // some people like mirovinben add white space at the end of line
-            $line = trim($lines[$i]);
+            $line = trim((string) $lines[$i]);
 
             // jump to next line on blank one or empty comment (#)
             if (strlen($line) < 2) {
@@ -377,11 +377,11 @@ class l10n
             }
 
             // headers
-            if (!$headers_searched && preg_match('/^msgid\s+""$/', trim($line))) {
+            if (!$headers_searched && preg_match('/^msgid\s+""$/', trim((string) $line))) {
 
                 // headers start wih empty msgid and msgstr follow be multine
-                if (!preg_match('/^msgstr\s+""$/', trim($lines[$i + 1]))
-                    || !preg_match('/^"(.*)"$/', trim($lines[$i + 2]))) {
+                if (!preg_match('/^msgstr\s+""$/', trim((string) $lines[$i + 1]))
+                    || !preg_match('/^"(.*)"$/', trim((string) $lines[$i + 2]))) {
                     $headers_searched = true;
                 } else {
                     $l = $i + 2;
@@ -582,11 +582,11 @@ class l10n
             'msgid'   => 'msgid(_plural|)\s+"(.*)"',
             'msgstr'  => 'msgstr(\[.*?\]|)\s+"(.*)"',
             'multi'   => '"(.*)"',
-            'comment' => '#\s*(\s|\.|:|\,|\|)\s*(.*)'
+            'comment' => '#\s*(\s|\.|:|\,|\|)\s*(.*)',
         ];
 
         if (array_key_exists($type, $patterns)
-            && preg_match('/^' . $patterns[$type] . '$/i', trim($_), $m)) {
+            && preg_match('/^' . $patterns[$type] . '$/i', trim((string) $_), $m)) {
             return $m;
         }
 
@@ -608,7 +608,7 @@ class l10n
     public static function parsePluralExpression(string $expression): array
     {
         return preg_match('/^\s*nplurals\s*=\s*(\d+)\s*;\s+plural\s*=\s*(.+)$/', $expression, $m) ?
-        [(integer) $m[1], trim(self::cleanPluralExpression($m[2]))] :
+        [(int) $m[1], trim(self::cleanPluralExpression($m[2]))] :
         [self::$language_pluralsnumber, self::$language_pluralexpression];
     }
 
@@ -1092,7 +1092,7 @@ class l10n
                 ['zh-cn', 'zhi', 'Chinese', '中文', 'ltr', 1, '0'],
                 ['zh-hk', null, 'Honk Kong Chinese', '中文 (香港)', 'ltr', 1, '0'],
                 ['zh-tw', null, 'Taiwan Chinese', '中文 (臺灣)', 'ltr', 1, '0'],
-                ['zu', 'zul', 'Zulu', 'isiZulu', 'ltr', null, null]
+                ['zu', 'zul', 'Zulu', 'isiZulu', 'ltr', null, null],
             ];
         }
 
