@@ -1,4 +1,5 @@
 <?php
+
 # -- BEGIN LICENSE BLOCK ---------------------------------------
 #
 # This file is part of Dotclear 2.
@@ -32,7 +33,7 @@ class dt extends atoum
         \dt::setTZ('UTC');
         $this
             ->string(\dt::str('%d%m%Y'))
-            ->isEqualTo(strftime('%d%m%Y'));
+            ->isEqualTo(\dt::strftime_legacy('%d%m%Y'));
     }
 
     /**
