@@ -19,12 +19,12 @@ class html
      *
      * Replaces HTML special characters by entities.
      *
-     * @param string $str    String to escape
+     * @param     string $str    String to escape
      * @return    string
      */
     public static function escapeHTML(?string $str): string
     {
-        return htmlspecialchars($str, ENT_COMPAT, 'UTF-8');
+        return htmlspecialchars($str ?: '', ENT_COMPAT, 'UTF-8');
     }
 
     /**
@@ -48,7 +48,7 @@ class html
 
         # Some extra replacements
         $extra = [
-            '&apos;' => "'"
+            '&apos;' => "'",
         ];
 
         $str = str_replace(array_keys($extra), array_values($extra), $str);

@@ -1,4 +1,5 @@
 <?php
+
 # -- BEGIN LICENSE BLOCK ---------------------------------------
 #
 # This file is part of Dotclear 2.
@@ -31,6 +32,9 @@ class html extends atoum
         $this
             ->string(\html::escapeHTML($str))
             ->isEqualTo('&quot;&lt;&gt;&amp;');
+        $this
+            ->string(\html::escapeHTML(null))
+            ->isEqualTo('');
     }
 
     public function testDecodeEntities()
