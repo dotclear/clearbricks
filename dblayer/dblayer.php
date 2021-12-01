@@ -547,9 +547,9 @@ class dbLayer
         }
 
         if ($arg2 === null) {
-            $sql = ' LIMIT ' . (integer) $arg1 . ' ';
+            $sql = ' LIMIT ' . (int) $arg1 . ' ';
         } else {
-            $sql = ' LIMIT ' . (integer) $arg2 . ' OFFSET ' . (integer) $arg1 . ' ';
+            $sql = ' LIMIT ' . (int) $arg2 . ' OFFSET ' . (int) $arg1 . ' ';
         }
 
         return $sql;
@@ -582,7 +582,7 @@ class dbLayer
             return ' IN (' . implode(',', $in) . ') ';
         }
 
-        return ' IN ( ' . (integer) $in . ') ';
+        return ' IN ( ' . (int) $in . ') ';
     }
 
     /**
@@ -604,7 +604,7 @@ class dbLayer
     {
         $default = [
             'order'   => '',
-            'collate' => false
+            'collate' => false,
         ];
         foreach (func_get_args() as $v) {
             if (is_string($v)) {
@@ -919,10 +919,10 @@ class record implements Iterator, Countable
             return false;
         }
 
-        if ($this->__info['con']->db_result_seek($this->__result, (integer) $row)) {
+        if ($this->__info['con']->db_result_seek($this->__result, (int) $row)) {
             $this->__index = $row;
             $this->setRow();
-            $this->__info['con']->db_result_seek($this->__result, (integer) $row);
+            $this->__info['con']->db_result_seek($this->__result, (int) $row);
 
             return true;
         }
@@ -1033,6 +1033,7 @@ class record implements Iterator, Countable
     /**
      * @return integer    number of rows in record
      */
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return $this->__info['rows'];
@@ -1094,6 +1095,7 @@ class record implements Iterator, Countable
     /**
      * @see Iterator::current
      */
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return $this;
@@ -1102,6 +1104,7 @@ class record implements Iterator, Countable
     /**
      * @see Iterator::key
      */
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->index();
@@ -1109,6 +1112,7 @@ class record implements Iterator, Countable
     /**
      * @see Iterator::next
      */
+    #[\ReturnTypeWillChange]
     public function next()
     {
         $this->fetch();
@@ -1117,6 +1121,7 @@ class record implements Iterator, Countable
     /**
      * @see Iterator::rewind
      */
+    #[\ReturnTypeWillChange]
     public function rewind()
     {
         $this->moveStart();
@@ -1126,6 +1131,7 @@ class record implements Iterator, Countable
     /**
      * @see Iterator::valid
      */
+    #[\ReturnTypeWillChange]
     public function valid()
     {
         return $this->__fetch;
@@ -1187,7 +1193,7 @@ class staticRecord extends record
             'con'  => null,
             'info' => null,
             'cols' => $cols,
-            'rows' => count($data)
+            'rows' => count($data),
         ];
 
         return new self($data, $info);
@@ -1265,9 +1271,9 @@ class staticRecord extends record
         $b = $b[$this->__sortfield];
 
         # Integer values
-        if ($a == (string) (integer) $a && $b == (string) (integer) $b) {
-            $a = (integer) $a;
-            $b = (integer) $b;
+        if ($a == (string) (int) $a && $b == (string) (int) $b) {
+            $a = (int) $a;
+            $b = (int) $b;
 
             return ($a - $b) * $this->__sortsign;
         }

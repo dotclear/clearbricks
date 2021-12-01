@@ -29,8 +29,8 @@ class netSocket
     public function __construct($host, $port, $timeout = 10)
     {
         $this->_host    = $host;
-        $this->_port    = abs((integer) $port);
-        $this->_timeout = abs((integer) $timeout);
+        $this->_port    = abs((int) $port);
+        $this->_timeout = abs((int) $timeout);
     }
 
     /**
@@ -75,7 +75,7 @@ class netSocket
     public function port($port = null)
     {
         if ($port) {
-            $this->_port = abs((integer) $port);
+            $this->_port = abs((int) $port);
 
             return true;
         }
@@ -95,7 +95,7 @@ class netSocket
     public function timeout($timeout = null)
     {
         if ($timeout) {
-            $this->_timeout = abs((integer) $timeout);
+            $this->_timeout = abs((int) $timeout);
 
             return true;
         }
@@ -266,6 +266,7 @@ class netSocketIterator implements Iterator
     /**
      * Rewind
      */
+    #[\ReturnTypeWillChange]
     public function rewind()
     {
         # Nothing
@@ -276,6 +277,7 @@ class netSocketIterator implements Iterator
      *
      * @return boolean    True if EOF of handler
      */
+    #[\ReturnTypeWillChange]
     public function valid()
     {
         return !feof($this->_handle);
@@ -284,6 +286,7 @@ class netSocketIterator implements Iterator
     /**
      * Move index forward
      */
+    #[\ReturnTypeWillChange]
     public function next()
     {
         $this->_index++;
@@ -294,6 +297,7 @@ class netSocketIterator implements Iterator
      *
      * @return integer    Current index
      */
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->_index;
@@ -304,6 +308,7 @@ class netSocketIterator implements Iterator
      *
      * @return string    Current socket response line
      */
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return fgets($this->_handle, 4096);
