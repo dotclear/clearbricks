@@ -120,7 +120,7 @@ if (class_exists('dbSchema')) {
                 }
 
                 // $default from db is a string and is NULL in schema so upgrade failed.
-                if (strtoupper($default) == 'NULL') {
+                if (strtoupper((string) $default) == 'NULL') {
                     $default = null;
                 } elseif ($default != '' && !is_numeric($default)) {
                     $default = "'" . $default . "'";
