@@ -1,6 +1,6 @@
 <?php
 /**
- * @class http
+ * @class Http
  * @brief HTTP utilities
  *
  * @package Clearbricks
@@ -9,7 +9,9 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class http
+namespace Clearbricks\Common;
+
+class Http
 {
     public static $https_scheme_on_443 = false; ///< boolean: Force HTTPS scheme on server port 443 in {@link getHost()}
     public static $cache_max_age       = 0;     ///< integer: Cache max age for {@link cache()}
@@ -29,7 +31,7 @@ class http
             //and HTTP_X_FORWARDED_FOR header means it's beeing using
 
             if (!isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
-                throw new Exception('Reverse proxy parametter is setted, header HTTP_X_FORWARDED_FOR is found but not the X-Forwarded-Proto. Please check your reverse proxy server settings');
+                throw new \Exception('Reverse proxy parametter is setted, header HTTP_X_FORWARDED_FOR is found but not the X-Forwarded-Proto. Please check your reverse proxy server settings');
             }
 
             $scheme = $_SERVER['HTTP_X_FORWARDED_PROTO'];

@@ -1,6 +1,6 @@
 <?php
 /**
- * @class form
+ * @class Form
  * @brief HTML Forms creation helpers
  *
  * @package Clearbricks
@@ -9,7 +9,9 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class form
+namespace Clearbricks\Common;
+
+class Form
 {
     /**
      * return id and name from given argument
@@ -44,7 +46,7 @@ class form
     private static function getDefaults(string $class, string $method): array
     {
         $options = [];
-        $reflect = new ReflectionMethod($class, $method);
+        $reflect = new \ReflectionMethod($class, $method);
         foreach ($reflect->getParameters() as $param) {
             if ($param->isOptional()) {
                 $options[$param->getName()] = $param->getDefaultValue();
@@ -123,7 +125,7 @@ class form
         foreach ($data as $k => $v) {
             if (is_array($v)) {
                 $res .= sprintf($optgroup, $k, self::comboOptions($v, $default));
-            } elseif ($v instanceof formSelectOption) {
+            } elseif ($v instanceof FormSelectOption) {
                 $res .= $v->render($default);
             } else {
                 $s = ((string) $v == (string) $default) ? ' selected="selected"' : '';
@@ -899,63 +901,5 @@ class form
             ($id ? 'id="' . $id . '" ' : '') .
 
             ' />' . "\n";
-    }
-}
-
-/**
- * @class formSelectOption
- * @brief HTML Forms creation helpers
- *
- * @package Clearbricks
- * @subpackage Common
- */
-class formSelectOption
-{
-    public $name;       ///< string Option name
-    public $value;      ///< mixed  Option value
-    public $class_name; ///< string Element class name
-    public $html;       ///< string Extra HTML attributes
-
-    /**
-     * sprintf template for option
-     * @var string $option
-     * @access private
-     */
-    private $option = '<option value="%1$s"%3$s>%2$s</option>' . "\n";
-
-    /**
-     * Option constructor
-     *
-     * @param string  $name        Option name
-     * @param mixed   $value       Option value
-     * @param string  $class_name  Element class name
-     * @param string  $html        Extra HTML attributes
-     */
-    public function __construct(string $name, $value, string $class_name = '', string $html = '')
-    {
-        $this->name       = $name;
-        $this->value      = $value;
-        $this->class_name = $class_name;
-        $this->html       = $html;
-    }
-
-    /**
-     * Option renderer
-     *
-     * Returns option HTML code
-     *
-     * @param string  $default  Value of selected option
-     * @return string
-     */
-    public function render(?string $default): string
-    {
-        $attr = $this->html ? ' ' . $this->html : '';
-        $attr .= $this->class_name ? ' class="' . $this->class_name . '"' : '';
-
-        if ($this->value == $default) {
-            $attr .= ' selected="selected"';
-        }
-
-        return sprintf($this->option, $this->value, $this->name, $attr) . "\n";
     }
 }

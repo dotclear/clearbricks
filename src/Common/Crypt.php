@@ -1,6 +1,6 @@
 <?php
 /**
- * @class crypt
+ * @class Crypt
  * @brief Functions to handle passwords or sensitive data
  *
  * @package Clearbricks
@@ -9,7 +9,9 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class crypt
+namespace Clearbricks\Common;
+
+class Crypt
 {
     /**
      * SHA1 or MD5 + HMAC

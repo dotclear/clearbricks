@@ -11,30 +11,10 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
+namespace Clearbricks\Common {
 
-/* @cond ONCE */
-if (!function_exists('__')) {
-    /** @endcond */
-
-    /**
-     * Translated string
-     *
-     * @see l10n::trans()
-     *
-     * @param      string   $singular Singular form of the string
-     * @param      string   $plural Plural form of the string (optionnal)
-     * @param      integer  $count Context number for plural form (optionnal)
-     * @return     string   translated string
-     */
-    function __(string $singular, ?string $plural = null, ?int $count = null): string
-    {
-        return l10n::trans($singular, $plural, $count);
-    }
-
-    /* @cond ONCE */
-}
 /** @endcond */
-class l10n
+class L10n
 {
     /// @name Languages properties
     //@{
@@ -1105,3 +1085,31 @@ class l10n
     }
     //@}
 }
+
+} // end clearbricks namespace
+
+namespace { // enter to global namespace to declare root __() function
+
+/* @cond ONCE */
+if (!function_exists('__')) {
+    /** @endcond */
+
+    /**
+     * Translated string
+     *
+     * @see l10n::trans()
+     *
+     * @param      string   $singular Singular form of the string
+     * @param      string   $plural Plural form of the string (optionnal)
+     * @param      integer  $count Context number for plural form (optionnal)
+     * @return     string   translated string
+     */
+    function __(string $singular, ?string $plural = null, ?int $count = null): string
+    {
+        return L10n::trans($singular, $plural, $count);
+    }
+
+    /* @cond ONCE */
+}
+
+} // end global namesapce

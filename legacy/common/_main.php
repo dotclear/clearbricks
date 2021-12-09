@@ -6,10 +6,10 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-define('CLEARBRICKS_VERSION', '1.2');
 
 # Autoload
 $__autoload = [
+    'l10n'              => dirname(__FILE__) . '/lib.l10n.php',
     'crypt'             => dirname(__FILE__) . '/lib.crypt.php',
     'dt'                => dirname(__FILE__) . '/lib.date.php',
     'files'             => dirname(__FILE__) . '/lib.files.php',
@@ -33,9 +33,3 @@ function cb_autoload($name)
     }
 }
 spl_autoload_register('cb_autoload');
-
-# We only need l10n __() function
-require_once dirname(__FILE__) . '/lib.l10n.php';
-
-# We set default timezone to avoid warning
-dt::setTZ('UTC');

@@ -1,6 +1,6 @@
 <?php
 /**
- * @class dt
+ * @class Dt
  * @brief Date/time utilities
  *
  * @package Clearbricks
@@ -9,7 +9,9 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class dt
+namespace Clearbricks\Common;
+
+class Dt
 {
     private static $timezones = null;
 

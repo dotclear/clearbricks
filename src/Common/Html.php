@@ -1,6 +1,6 @@
 <?php
 /**
- * @class html
+ * @class Html
  * @brief HTML utilities
  *
  * @package Clearbricks
@@ -9,7 +9,9 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class html
+namespace Clearbricks\Common;
+
+class Html
 {
     public static $url_root;
     public static $absolute_regs = []; ///< Array of regular expression for {@link absoluteURLs()}

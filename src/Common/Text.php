@@ -1,6 +1,6 @@
 <?php
 /**
- * @class text
+ * @class Text
  * @brief Text utilities
  *
  * @package Clearbricks
@@ -9,7 +9,9 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class text
+namespace Clearbricks\Common;
+
+class Text
 {
     /**
      * Check email address
