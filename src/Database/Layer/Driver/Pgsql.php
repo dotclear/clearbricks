@@ -14,7 +14,7 @@
  * @copyright GPL-2.0-only
  */
 
-namespace Clearbricks\Database\Layer\Connection;
+namespace Clearbricks\Database\Layer\Driver;
 
 use Clearbricks\Database\Layer\AbstractLayer;
 use Clearbricks\Database\Layer\InterfaceLayer;
@@ -324,4 +324,4 @@ class Pgsql extends abstractLayer implements InterfaceLayer
 }
 
 /** Backwards compatibility */
-class_alias('Clearbricks\Database\Layer\Connection\Pgsql', 'pgsqlConnection');
+class_alias('Clearbricks\Database\Layer\Driver\Pgsql', 'pgsqlConnection');

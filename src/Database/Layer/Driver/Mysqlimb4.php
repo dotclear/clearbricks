@@ -1,7 +1,7 @@
 <?php
 /**
- * @class \MySQLiConnection
- * @brief \MySQLi Database Driver
+ * @class \MySQLimb4
+ * @brief \MySQLi utf8-mb4 Database Driver
  *
  * See the {@link dbLayer} documentation for common methods.
  *
@@ -12,16 +12,16 @@
  * @copyright GPL-2.0-only
  */
 
-namespace Clearbricks\Database\Layer\Connection;
+namespace Clearbricks\Database\Layer\Driver;
 
 use Clearbricks\Database\Layer\AbstractLayer;
 use Clearbricks\Database\Layer\InterfaceLayer;
 
-class Mysqli extends AbstractLayer implements InterfaceLayer
+class Mysqlimb4 extends abstractLayer implements InterfaceLayer
 {
     public static $weak_locks = true; ///< boolean: Enables weak locks if true
 
-    protected $__driver = 'mysqli';
+    protected $__driver = '\MySQLimb4';
     protected $__syntax = 'mysql';
 
     public function db_connect($host, $user, $password, $database)
@@ -63,17 +63,19 @@ class Mysqli extends AbstractLayer implements InterfaceLayer
 
     private function db_post_connect($link, $database)
     {
-        if (version_compare($this->db_version($link), '4.1', '>=')) {
-            $this->db_query($link, 'SET NAMES utf8');
-            $this->db_query($link, 'SET CHARACTER SET utf8');
-            $this->db_query($link, "SET COLLATION_CONNECTION = 'utf8_general_ci'");
-            $this->db_query($link, "SET COLLATION_SERVER = 'utf8_general_ci'");
-            $this->db_query($link, "SET CHARACTER_SET_SERVER = 'utf8'");
+        if (version_compare($this->db_version($link), '5.7.7', '>=')) {
+            $this->db_query($link, 'SET NAMES utf8mb4');
+            $this->db_query($link, 'SET CHARACTER SET utf8mb4');
+            $this->db_query($link, "SET COLLATION_CONNECTION = 'utf8mb4_unicode_ci'");
+            $this->db_query($link, "SET COLLATION_SERVER = 'utf8mb4_unicode_ci'");
+            $this->db_query($link, "SET CHARACTER_SET_SERVER = 'utf8mb4'");
             if (version_compare($this->db_version($link), '8.0', '<')) {
                 // Setting CHARACTER_SET_DATABASE is obosolete for MySQL 8.0+
-                $this->db_query($link, "SET CHARACTER_SET_DATABASE = 'utf8'");
+                $this->db_query($link, "SET CHARACTER_SET_DATABASE = 'utf8mb4'");
             }
-            $link->set_charset('utf8');
+            $link->set_charset('utf8mb4');
+        } else {
+            throw new \Exception('Unable to connect to an utf8mb4 database');
         }
     }
 
@@ -256,7 +258,7 @@ class Mysqli extends AbstractLayer implements InterfaceLayer
             } elseif (is_array($v) && !empty($v['field'])) {
                 $v          = array_merge($default, $v);
                 $v['order'] = (strtoupper($v['order']) == 'DESC' ? 'DESC' : '');
-                $res[]      = $v['field'] . ($v['collate'] ? ' COLLATE utf8_unicode_ci' : '') . ' ' . $v['order'];
+                $res[]      = $v['field'] . ($v['collate'] ? ' COLLATE utf8mb4_unicode_ci' : '') . ' ' . $v['order'];
             }
         }
 
@@ -265,7 +267,7 @@ class Mysqli extends AbstractLayer implements InterfaceLayer
 
     public function lexFields()
     {
-        $fmt = '%s COLLATE utf8_unicode_ci';
+        $fmt = '%s COLLATE utf8mb4_unicode_ci';
         foreach (func_get_args() as $v) {
             if (is_string($v)) {
                 $res[] = sprintf($fmt, $v);
@@ -328,4 +330,4 @@ class Mysqli extends AbstractLayer implements InterfaceLayer
 }
 
 /** Backwards compatibility */
-class_alias('Clearbricks\Database\Layer\Connection\Mysqli', 'mysqliConnection');
+class_alias('Clearbricks\Database\Layer\Driver\Mysqlimb4', 'mysqlimb4Connection');

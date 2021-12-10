@@ -11,7 +11,7 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-namespace Clearbricks\Database\Layer\Connection;
+namespace Clearbricks\Database\Layer\Driver;
 
 use Clearbricks\Database\Layer\AbstractLayer;
 use Clearbricks\Database\Layer\InterfaceLayer;
@@ -313,4 +313,4 @@ class Sqlite extends AbstractLayer implements InterfaceLayer
     }
 
 /** Backwards compatibility */
-class_alias('Clearbricks\Database\Layer\Connection\Sqlite', 'sqliteConnection');
+class_alias('Clearbricks\Database\Layer\Driver\Sqlite', 'sqliteConnection');

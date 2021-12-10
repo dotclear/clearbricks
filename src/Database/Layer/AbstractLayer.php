@@ -12,7 +12,6 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-
 namespace Clearbricks\Database\Layer;
 
 abstract class AbstractLayer
@@ -45,7 +44,7 @@ abstract class AbstractLayer
             $driver = 'mysqli';
         }
 
-        $class = __NAMESPACE__ . '\\Connection\\' . ucfirst($driver);
+        $class = __NAMESPACE__ . '\\Driver\\' . ucfirst($driver);
         if (!class_exists($class)) {
             trigger_error('Unable to load DB layer for ' . $driver, E_USER_ERROR);
             exit(1);

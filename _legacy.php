@@ -32,10 +32,10 @@ $__autoload = [
     'record'              => $src . '/Database/Layer/Record.php',
     'staticRecord'        => $src . '/Database/Layer/StaticRecord.php',
 
-    'mysqliConnection'    => $src . '/Database/Layer/Connection/Mysqli.php',
-    'mysqlimb4Connection' => $src . '/Database/Layer/Connection/Mysqlimb4.php',
-    'mysqliConnection'    => $src . '/Database/Layer/Connection/Pgsql.php',
-    'sqliteConnection'    => $src . '/Database/Layer/Connection/Sqlite.php',
+    'mysqliConnection'    => $src . '/Database/Layer/Driver/Mysqli.php',
+    'mysqlimb4Connection' => $src . '/Database/Layer/Driver/Mysqlimb4.php',
+    'mysqliConnection'    => $src . '/Database/Layer/Driver/Pgsql.php',
+    'sqliteConnection'    => $src . '/Database/Layer/Driver/Sqlite.php',
 
 ];
 
