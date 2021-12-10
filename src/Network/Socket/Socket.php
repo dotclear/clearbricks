@@ -1,6 +1,6 @@
 <?php
 /**
- * @class netSocket
+ * @class Socket
  * @brief Network base
  *
  * This class handles network socket through an iterator.
@@ -11,7 +11,11 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class netSocket
+namespace Clearbricks\Network\Socket;
+
+use Clearbricks\Common\Exception;
+
+class Socket
 {
     protected $_host;           ///< string: Server host
     protected $_port;           ///< integer: Server port
@@ -217,7 +221,7 @@ class netSocket
             return false;
         }
 
-        return new netSocketIterator($this->_handle);
+        return new Iterator($this->_handle);
     }
 
     /**
@@ -233,84 +237,5 @@ class netSocket
     }
 }
 
-/**
- * @class netSocketIterator
- * @brief Network socket iterator
- *
- * This class offers an iterator for network operations made with
- * {@link netSocket}.
- *
- * @see netSocket::write()
- */
-class netSocketIterator implements Iterator
-{
-    protected $_handle; ///< resource: Socket resource handler
-    protected $_index;  ///< integer: Current index position
-
-    /**
-     * Constructor
-     *
-     * @param resource    $handle        Socket resource handler
-     */
-    public function __construct(&$handle)
-    {
-        if (!is_resource($handle)) {
-            throw new Exception('Handle is not a resource');
-        }
-        $this->_handle = &$handle;
-        $this->_index  = 0;
-    }
-
-    /* Iterator methods
-    --------------------------------------------------- */
-    /**
-     * Rewind
-     */
-    #[\ReturnTypeWillChange]
-    public function rewind()
-    {
-        # Nothing
-    }
-
-    /**
-     * Valid
-     *
-     * @return boolean    True if EOF of handler
-     */
-    #[\ReturnTypeWillChange]
-    public function valid()
-    {
-        return !feof($this->_handle);
-    }
-
-    /**
-     * Move index forward
-     */
-    #[\ReturnTypeWillChange]
-    public function next()
-    {
-        $this->_index++;
-    }
-
-    /**
-     * Current index
-     *
-     * @return integer    Current index
-     */
-    #[\ReturnTypeWillChange]
-    public function key()
-    {
-        return $this->_index;
-    }
-
-    /**
-     * Current value
-     *
-     * @return string    Current socket response line
-     */
-    #[\ReturnTypeWillChange]
-    public function current()
-    {
-        return fgets($this->_handle, 4096);
-    }
-}
+/** Backwards compatibility */
+class_alias('Clearbricks\Network\Socket\Socket', 'netSocket');

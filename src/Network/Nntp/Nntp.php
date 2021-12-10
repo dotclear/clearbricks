@@ -1,6 +1,6 @@
 <?php
 /**
- * @class netNntp
+ * @class Nntp
  *
  * @package Clearbricks
  * @subpackage Network
@@ -8,7 +8,15 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class netNntp extends netSocket
+namespace Clearbricks\Network\Nntp;
+
+use Clearbricks\Common\Exception;
+use Clearbricks\Common\Text;
+use Clearbricks\Common\Dt;
+use Clearbricks\Mail\Convert;
+use Clearbricks\Network\Socket\Socket;
+
+class Nntp extends Socket
 {
     const SERVER_READY         = 200;
     const SERVER_READY_NO_POST = 201;
@@ -216,7 +224,7 @@ class netNntp extends netSocket
 
                     list($group, $desc) = preg_split('/\s+/', $buf, 2);
                     if (isset($result[$group])) {
-                        $result[$group]['desc'] = text::toUTF8(trim($desc));
+                        $result[$group]['desc'] = Text::toUTF8(trim($desc));
                     }
                 }
             }
@@ -267,10 +275,10 @@ class netNntp extends netSocket
 
     public function getNewArticles($ts, $group)
     {
-        $ts = $ts + dt::getTimeOffset('UTC', $ts);
+        $ts = $ts + Dt::getTimeOffset('UTC', $ts);
 
         # First try with newnews
-        $rsp = $this->write('newnews ' . $group . ' ' . dt::str('%y%m%d %H%M%S', $ts) . ' GMT');
+        $rsp = $this->write('newnews ' . $group . ' ' . Dt::str('%y%m%d %H%M%S', $ts) . ' GMT');
         $r   = $this->parseResponse($rsp->current());
 
         if ($r['status'] == self::NEW_ARTICLES) {
@@ -298,7 +306,7 @@ class netNntp extends netSocket
         $r   = $this->parseResponse($rsp->current());
 
         if ($r['status'] == self::ARTICLE_HEAD) {
-            $ts = $ts + dt::getTimeOffset('UTC', $ts);
+            $ts = $ts + Dt::getTimeOffset('UTC', $ts);
 
             $res = [];
             foreach ($rsp as $buf) {
@@ -331,7 +339,7 @@ class netNntp extends netSocket
                 $header .= $buf;
             }
 
-            return new nntpMessage($header);
+            return new Message($header);
         }
 
         throw new Exception($r['message'] . ' - (' . $r['status'] . ')');
@@ -351,7 +359,7 @@ class netNntp extends netSocket
                 $article .= $buf;
             }
 
-            return new nntpMessage($article);
+            return new Message($article);
         }
 
         throw new Exception($r['message'] . ' - (' . $r['status'] . ')');
@@ -371,9 +379,9 @@ class netNntp extends netSocket
         $headers['Content-Type']              = 'text/plain; charset=UTF-8';
         $headers['Content-Transfer-Encoding'] = 'quoted-printable';
 
-        $content = mailConvert::rewrap($content);
+        $content = Convert::rewrap($content); // Mail\Convert
         $content = preg_replace('/^\./msu', '..$1', $content);
-        $content = text::QPEncode($content);
+        $content = Text::QPEncode($content);
 
         $data = [];
         # Headers
@@ -433,3 +441,6 @@ class netNntp extends netSocket
         return $rsp->current();
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Network\Nntp\Nntp', 'netNntp');

@@ -1,6 +1,6 @@
 <?php
 /**
- * @class nntpMessage
+ * @class Message
  *
  * @package Clearbricks
  * @subpackage Network
@@ -8,7 +8,11 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class nntpMessage extends mimeMessage
+namespace Clearbricks\Network\Nntp;
+
+use Clearbricks\Mail\Message as mMessage;
+
+class Message extends mMessage
 {
     public function __construct($message)
     {
@@ -33,3 +37,6 @@ class nntpMessage extends mimeMessage
         return explode(' ', $this->headers['references']);
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Network\Nntp\Message', 'nntpMessage');

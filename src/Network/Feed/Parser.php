@@ -1,6 +1,6 @@
 <?php
 /**
- * @class feedParser
+ * @class Parser
  * @brief Feed parser
  *
  * This class can read RSS 1.0, RSS 2.0, Atom 0.3 and Atom 1.0 feeds. Works with
@@ -12,7 +12,9 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class feedParser
+namespace Clearbricks\Network\Feed;
+
+class Parser
 {
     public $feed_type;   ///< string Feed type
     public $title;       ///< string Feed title
@@ -116,7 +118,7 @@ class feedParser
         }
 
         foreach ($this->xml->channel->item as $i) {
-            $item              = new stdClass();
+            $item              = new \stdClass();
             $item->title       = (string) $i->title;
             $item->link        = (string) $i->link;
             $item->creator     = (string) $i->children('http://purl.org/dc/elements/1.1/')->creator;
@@ -170,7 +172,7 @@ class feedParser
         }
 
         foreach ($this->xml->entry as $i) {
-            $item = new stdClass();
+            $item = new \stdClass();
 
             foreach ($i->link as $link) {
                 if ($link['rel'] == 'alternate' && ($link['type'] == 'text/html' || $link['type'] == 'application/xhtml+xml')) {
@@ -220,7 +222,7 @@ class feedParser
         }
 
         foreach ($this->xml->entry as $i) {
-            $item = new stdClass();
+            $item = new \stdClass();
 
             foreach ($i->link as $link) {
                 if ($link['rel'] == 'alternate' && ($link['type'] == 'text/html' || $link['type'] == 'application/xhtml+xml')) {
@@ -266,3 +268,6 @@ class feedParser
         return $res;
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Network\Feed\Parser', 'feedParser');

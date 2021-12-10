@@ -83,12 +83,31 @@ $__autoload = [
     'formOptgroup'        => $src . '/Html/Form/Optgroup.php',
     'formOption'          => $src . '/Html/Form/Option.php',
 
-    'imageMeta'           => $src . '/Image/ImageMeta.php',
-    'imageTools'          => $src . '/Image/ImageTools.php',
+    'imageMeta'              => $src . '/Image/ImageMeta.php',
+    'imageTools'             => $src . '/Image/ImageTools.php',
 
-    'pager'               => $src . '/Pager/Pager.php',
+    'netSocket'                 => $src . '/Network/Socket/Socket.php',
+    'netSocketIterator'         => $src . '/Network/Socket/Iterator.php',
+    'netNntp'                   => $src . '/Network/Nntp/Nntp.php',
+    'nntpMessage'               => $src . '/Network/Nntp/Message.php',
+    'netHttp'                   => $src . '/Network/Http/Http.php',
+    'HttpClient'                => $src . '/Network/Http/Client.php',
+    'feedParser'                => $src . '/Network/Feed/Parser.php',
+    'feedReader'                => $src . '/Network/Feed/Reader.php',
+    'xmlrpcException'           => $src . '/Network/Xmlrpc/Exception.php',
+    'xmlrpcValue'               => $src . '/Network/Xmlrpc/Value.php',
+    'xmlrpcMessage'             => $src . '/Network/Xmlrpc/Message.php',
+    'xmlrpcRequest'             => $src . '/Network/Xmlrpc/Request.php',
+    'xmlrpcDate'                => $src . '/Network/Xmlrpc/Date.php',
+    'xmlrpcBase64'              => $src . '/Network/Xmlrpc/Base64.php',
+    'xmlrpcClient'              => $src . '/Network/Xmlrpc/Client.php',
+    'xmlrpcClientMulticall'     => $src . '/Network/Xmlrpc/ClientMulticall.php',
+    'xmlrpcServer'              => $src . '/Network/Xmlrpc/Server.php',
+    'xmlrpcIntrospectionServer' => $src . '/Network/Xmlrpc/IntrospectionServer.php',
 
-    'sessionDB'           => $src . '/Session/SessionDb.php',
+    'pager'                  => $src . '/Pager/Pager.php',
+
+    'sessionDB'              => $src . '/Session/SessionDb.php',
 
     'template'               => $src . '/Template/Template.php',
     'tplNode'                => $src . '/Template/Node.php',
@@ -98,12 +117,8 @@ $__autoload = [
     'tplNodeBlockDefinition' => $src . '/Template/NodeBlockDefinition.php',
     'tplNodeValueParent'     => $src . '/Template/NodeValueParent.php',
 
-    'wiki2xhtml'          => $src . '/Text/Wiki2xhtml.php',
+    'wiki2xhtml'             => $src . '/Text/Wiki2xhtml.php',
 ];
-
-# Feed Reader
-$__autoload['feedParser'] = dirname(__FILE__) . '/legacy/net.http.feed/class.feed.parser.php';
-$__autoload['feedReader'] = dirname(__FILE__) . '/legacy/net.http.feed/class.feed.reader.php';
 
 # Send Mail Utilities
 $__autoload['mail'] = dirname(__FILE__) . '/legacy/mail/class.mail.php';
@@ -127,17 +142,6 @@ $__autoload['urlHandler'] = dirname(__FILE__) . '/legacy/url.handler/class.url.h
 # SQL Batch on XML Files
 $__autoload['xmlsql'] = dirname(__FILE__) . '/legacy/xmlsql/class.xmlsql.php';
 
-# Common Socket Class
-$__autoload['netSocket'] = dirname(__FILE__) . '/legacy/net/class.net.socket.php';
-
-# HTTP Client
-$__autoload['netHttp']    = dirname(__FILE__) . '/legacy/net.http/class.net.http.php';
-$__autoload['HttpClient'] = dirname(__FILE__) . '/legacy/net.http/class.net.http.php';
-
-# NNTP Client
-$__autoload['netNntp']     = dirname(__FILE__) . '/legacy/net.nntp/class.net.nntp.php';
-$__autoload['nntpMessage'] = dirname(__FILE__) . '/legacy/net.nntp/class.nntp.message.php';
-
 # XML-RPC Client and Server
 $__autoload['IXR_Value']               = dirname(__FILE__) . '/legacy/ext/incutio.ixr_library.php';
 $__autoload['IXR_Message']             = dirname(__FILE__) . '/legacy/ext/incutio.ixr_library.php';
@@ -150,15 +154,6 @@ $__autoload['IXR_Base64']              = dirname(__FILE__) . '/legacy/ext/incuti
 $__autoload['IXR_IntrospectionServer'] = dirname(__FILE__) . '/legacy/ext/incutio.ixr_library.php';
 $__autoload['IXR_ClientMulticall']     = dirname(__FILE__) . '/legacy/ext/incutio.ixr_library.php';
 
-$__autoload['xmlrpcValue']               = dirname(__FILE__) . '/legacy/net.xmlrpc/class.net.xmlrpc.php';
-$__autoload['xmlrpcMessage']             = dirname(__FILE__) . '/legacy/net.xmlrpc/class.net.xmlrpc.php';
-$__autoload['xmlrpcRequest']             = dirname(__FILE__) . '/legacy/net.xmlrpc/class.net.xmlrpc.php';
-$__autoload['xmlrpcDate']                = dirname(__FILE__) . '/legacy/net.xmlrpc/class.net.xmlrpc.php';
-$__autoload['xmlrpcBase64']              = dirname(__FILE__) . '/legacy/net.xmlrpc/class.net.xmlrpc.php';
-$__autoload['xmlrpcClient']              = dirname(__FILE__) . '/legacy/net.xmlrpc/class.net.xmlrpc.php';
-$__autoload['xmlrpcClientMulticall']     = dirname(__FILE__) . '/legacy/net.xmlrpc/class.net.xmlrpc.php';
-$__autoload['xmlrpcServer']              = dirname(__FILE__) . '/legacy/net.xmlrpc/class.net.xmlrpc.php';
-$__autoload['xmlrpcIntrospectionServer'] = dirname(__FILE__) . '/legacy/net.xmlrpc/class.net.xmlrpc.php';
 
 # autoload for clearbricks
 function cb_autoload($name)
