@@ -1,94 +1,5 @@
 <?php
 /**
- * @class tidyDiff
- * @brief TIDY diff
- *
- * A TIDY diff representation
- *
- * @package Clearbricks
- * @subpackage Diff
- *
- * @copyright Olivier Meunier & Association Dotclear
- * @copyright GPL-2.0-only
- */
-class tidyDiff
-{
-    protected $__data = []; ///< array: Chunks array
-
-    private $up_range = '/^@@ -([\d]+),([\d]+) \+([\d]+),([\d]+) @@/m';
-    private $up_ctx   = '/^ (.*)$/';
-    private $up_ins   = '/^\+(.*)$/';
-    private $up_del   = '/^-(.*)$/';
-
-    /**
-     * Constructor
-     *
-     * Creates a diff representation from unified diff.
-     *
-     * @param string    $udiff            Unified diff
-     * @param boolean   $inline_changes   Find inline changes
-     */
-    public function __construct($udiff, $inline_changes = false)
-    {
-        diff::uniCheck($udiff);
-
-        preg_match_all($this->up_range, $udiff, $context);
-
-        $chunks = preg_split($this->up_range, $udiff, -1, PREG_SPLIT_NO_EMPTY);
-
-        foreach ($chunks as $k => $chunk) {
-            $tidy_chunk = new tidyDiffChunk();
-            $tidy_chunk->setRange(
-                (int) $context[1][$k],
-                (int) $context[2][$k],
-                (int) $context[3][$k],
-                (int) $context[4][$k]
-            );
-
-            $old_line = (int) $context[1][$k];
-            $new_line = (int) $context[3][$k];
-
-            foreach (explode("\n", $chunk) as $line) {
-                # context
-                if (preg_match($this->up_ctx, $line, $m)) {
-                    $tidy_chunk->addLine('context', [$old_line, $new_line], $m[1]);
-                    $old_line++;
-                    $new_line++;
-                }
-                # insertion
-                if (preg_match($this->up_ins, $line, $m)) {
-                    $tidy_chunk->addLine('insert', [$old_line, $new_line], $m[1]);
-                    $new_line++;
-                }
-                # deletion
-                if (preg_match($this->up_del, $line, $m)) {
-                    $tidy_chunk->addLine('delete', [$old_line, $new_line], $m[1]);
-                    $old_line++;
-                }
-            }
-
-            if ($inline_changes) {
-                $tidy_chunk->findInsideChanges();
-            }
-
-            array_push($this->__data, $tidy_chunk);
-        }
-    }
-
-    /**
-     * All chunks
-     *
-     * Returns all chunks defined.
-     *
-     * @return array
-     */
-    public function getChunks()
-    {
-        return $this->__data;
-    }
-}
-
-/**
  * @class tidyDiffChunk
  * @brief TIDY diff chunk
  *
@@ -96,8 +7,13 @@ class tidyDiff
  *
  * @package Clearbricks
  * @subpackage Diff
+ *
+ * @copyright Olivier Meunier & Association Dotclear
+ * @copyright GPL-2.0-only
  */
-class tidyDiffChunk
+namespace Clearbricks\Diff;
+
+class TidyDiffChunk
 {
     protected $__info; ///< array: Chunk information array
     protected $__data; ///< array: Chunk data array
@@ -148,7 +64,7 @@ class tidyDiffChunk
      */
     public function addLine($type, $lines, $content)
     {
-        $tidy_line = new tidyDiffLine($type, $lines, $content);
+        $tidy_line = new TidyDiffLine($type, $lines, $content);
 
         array_push($this->__data, $tidy_line);
         $this->__info[$type]++;
@@ -261,66 +177,5 @@ class tidyDiffChunk
     }
 }
 
-/**
- * @class tidyDiffLine
- * @brief TIDY diff line
- *
- * A diff line representation. Used by a TIDY chunk.
- *
- * @package Clearbricks
- * @subpackage Diff
- */
-class tidyDiffLine
-{
-    protected $type;    ///< string: Line type
-    protected $lines;   ///< array: Line number for old and new context
-    protected $content; ///< string: Line content
-
-    /**
-     * Constructor
-     *
-     * Creates a line representation for a tidy chunk.
-     *
-     * @param string    $type        Tine type
-     * @param array        $lines        Line number for old and new context
-     * @param string    $content        Line content
-     * @return object
-     */
-    public function __construct($type, $lines, $content)
-    {
-        $allowed_type = ['context', 'delete', 'insert'];
-
-        if (in_array($type, $allowed_type) && is_array($lines) && is_string($content)) {
-            $this->type    = $type;
-            $this->lines   = $lines;
-            $this->content = $content;
-        }
-    }
-
-    /**
-     * Magic get
-     *
-     * Returns field content according to the given name, null otherwise.
-     *
-     * @param string    $n            Field name
-     * @return string
-     */
-    public function __get($n)
-    {
-        return $this->{$n} ?? null;
-    }
-
-    /**
-     * Overwrite
-     *
-     * Overwrites content for the current line.
-     *
-     * @param string    $content        Line content
-     */
-    public function overwrite($content)
-    {
-        if (is_string($content)) {
-            $this->content = $content;
-        }
-    }
-}
+/** Backwards compatibility */
+class_alias('Clearbricks\Diff\TidyDiffChunk', 'tidyDiffChunk');

@@ -1,6 +1,6 @@
 <?php
 /**
- * @class diff
+ * @class Diff
  * @brief Unified diff
  *
  * Diff utilities
@@ -11,7 +11,11 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class diff
+namespace Clearbricks\Diff;
+
+use Clearbricks\Common\Exception;
+
+class Diff
 {
     private static $us_range = "@@ -%s,%s +%s,%s @@\n";
     private static $us_ctx   = " %s\n";
@@ -119,7 +123,7 @@ class diff
         $cx              = count($src);
         $cy              = count($dst);
 
-        $ses = diff::SES($src, $dst);
+        $ses = Diff::SES($src, $dst);
         $res = '';
 
         $pos_x     = 0;
@@ -354,3 +358,6 @@ class diff
         }
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Diff\Diff', 'diff');

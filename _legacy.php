@@ -47,6 +47,11 @@ $__autoload = [
     'pgsqlSchema'         => $src . '/Database/Schema/Driver/Pgsql.php',
     'sqliteSchema'        => $src . '/Database/Schema/Driver/Sqlite.php',
 
+    'diff'                => $src . '/Diff/Diff.php',
+    'tidyDiff'            => $src . '/Diff/TidyDiff.php',
+    'tidyDiffChunk'       => $src . '/Diff/TidyDiffChunk.php',
+    'tidyDiffLine'        => $src . '/Diff/TidyDiffLine.php',
+
     'filemanager'         => $src . '/FileManager/FileManager.php',
     'fileItem'            => $src . '/FileManager/FileItem.php',
 ];
@@ -141,10 +146,6 @@ $__autoload['xmlrpcIntrospectionServer'] = dirname(__FILE__) . '/legacy/net.xmlr
 # Zip tools
 $__autoload['fileUnzip'] = dirname(__FILE__) . '/legacy/zip/class.unzip.php';
 $__autoload['fileZip']   = dirname(__FILE__) . '/legacy/zip/class.zip.php';
-
-# Diff tools
-$__autoload['diff']     = dirname(__FILE__) . '/legacy/diff/lib.diff.php';
-$__autoload['tidyDiff'] = dirname(__FILE__) . '/legacy/diff/lib.tidy.diff.php';
 
 # HTML Form helpers
 $__autoload['formComponent'] = dirname(__FILE__) . '/legacy/html.form/class.form.component.php';
