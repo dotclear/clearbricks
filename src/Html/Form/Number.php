@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * @class formNumber
+ * @class Number
  * @brief HTML Forms number field creation helpers
  *
  * @package Clearbricks
@@ -14,7 +14,9 @@ declare(strict_types=1);
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class formNumber extends formInput
+namespace Clearbricks\Html\Form;
+
+class Number extends Input
 {
     /**
      * Constructs a new instance.
@@ -32,3 +34,6 @@ class formNumber extends formInput
         }
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Html\Form\Number', 'formNumber');

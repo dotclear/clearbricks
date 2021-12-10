@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * @class formUrl
+ * @class Url
  * @brief HTML Forms url field creation helpers
  *
  * @package Clearbricks
@@ -14,7 +14,9 @@ declare(strict_types=1);
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class formUrl extends formInput
+namespace Clearbricks\Html\Form;
+
+class Url extends Input
 {
     /**
      * Constructs a new instance.
@@ -26,3 +28,6 @@ class formUrl extends formInput
         parent::__construct($id, 'url');
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Html\Form\Url', 'formUrl');

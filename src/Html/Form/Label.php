@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * @class formLabel
+ * @class Label
  * @brief HTML Forms label creation helpers
  *
  * @package Clearbricks
@@ -14,7 +14,9 @@ declare(strict_types=1);
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class formLabel extends formComponent
+namespace Clearbricks\Html\Form;
+
+class Label extends Component
 {
     private const DEFAULT_ELEMENT = 'label';
 
@@ -123,3 +125,6 @@ class formLabel extends formComponent
         return self::DEFAULT_ELEMENT;
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Html\Form\Label', 'formLabel');

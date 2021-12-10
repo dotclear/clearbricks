@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 /**
- * @class formFile
- * @brief HTML Forms file field creation helpers
+ * @class Password
+ * @brief HTML Forms password field creation helpers
  *
  * @package Clearbricks
  * @subpackage html.form
@@ -14,7 +14,9 @@ declare(strict_types=1);
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class formFile extends formInput
+namespace Clearbricks\Html\Form;
+
+class Password extends Input
 {
     /**
      * Constructs a new instance.
@@ -23,9 +25,12 @@ class formFile extends formInput
      */
     public function __construct(?string $id = null, ?string $value = null)
     {
-        parent::__construct($id, 'file');
+        parent::__construct($id, 'password');
         if ($value !== null) {
             $this->value($value);
         }
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Html\Form\Password', 'formPassword');

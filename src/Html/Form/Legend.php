@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 /**
- * @class formOption
- * @brief HTML Forms option creation helpers
+ * @class Legend
+ * @brief HTML Forms legend creation helpers
  *
  * @package Clearbricks
  * @subpackage html.form
@@ -14,42 +14,41 @@ declare(strict_types=1);
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class formOption extends formComponent
+namespace Clearbricks\Html\Form;
+
+class Legend extends Component
 {
-    private const DEFAULT_ELEMENT = 'option';
+    private const DEFAULT_ELEMENT = 'legend';
 
     /**
      * Constructs a new instance.
      *
-     * @param      string       $name     The option name
-     * @param      string       $value    The option value
+     * @param      string       $text     The text
+     * @param      null|string  $id       The identifier
      * @param      null|string  $element  The element
      */
-    public function __construct(string $name, string $value, ?string $element = null)
+    public function __construct(string $text = '', ?string $id = null, ?string $element = null)
     {
         parent::__construct(__CLASS__, $element ?? self::DEFAULT_ELEMENT);
-        $this
-            ->text($name)
-            ->value($value);
+        $this->text($text);
+        if ($id !== null) {
+            $this
+                ->id($id)
+                ->name($id);
+        }
     }
 
     /**
      * Renders the HTML component.
      *
-     * @param      null|string  $default   The default value
-     *
      * @return     string
      */
-    public function render(?string $default = null): string
+    public function render(): string
     {
-        $buffer = '<' . ($this->getElement() ?? self::DEFAULT_ELEMENT) .
-            ($this->value === $default ? ' selected' : '') .
-            $this->renderCommonAttributes() . '>';
-
+        $buffer = '<' . ($this->getElement() ?? self::DEFAULT_ELEMENT) . $this->renderCommonAttributes() . '>';
         if ($this->text) {
             $buffer .= $this->text;
         }
-
         $buffer .= '</' . ($this->getElement() ?? self::DEFAULT_ELEMENT) . '>' . "\n";
 
         return $buffer;
@@ -65,3 +64,6 @@ class formOption extends formComponent
         return self::DEFAULT_ELEMENT;
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Html\Form\Legend', 'formLegend');

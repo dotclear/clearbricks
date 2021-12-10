@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * @class formTime
+ * @class Time
  * @brief HTML Forms time field creation helpers
  *
  * @package Clearbricks
@@ -14,7 +14,9 @@ declare(strict_types=1);
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class formTime extends formInput
+namespace Clearbricks\Html\Form;
+
+class Time extends Input
 {
     /**
      * Constructs a new instance.
@@ -35,3 +37,6 @@ class formTime extends formInput
         }
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Html\Form\Time', 'formTime');

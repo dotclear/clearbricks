@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 /**
- * @class formDatetime
- * @brief HTML Forms datetime field creation helpers
+ * @class Date
+ * @brief HTML Forms date field creation helpers
  *
  * @package Clearbricks
  * @subpackage html.form
@@ -14,7 +14,9 @@ declare(strict_types=1);
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class formDatetime extends formInput
+namespace Clearbricks\Html\Form;
+
+class Date extends Input
 {
     /**
      * Constructs a new instance.
@@ -23,14 +25,17 @@ class formDatetime extends formInput
      */
     public function __construct(?string $id = null, ?string $value = null)
     {
-        parent::__construct($id, 'datetime-local');
+        parent::__construct($id, 'date');
         $this
-            ->size(16)
-            ->maxlength(16)
-            ->pattern('[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}')
-            ->placeholder('1962-05-13T14:45');
+            ->size(10)
+            ->maxlength(10)
+            ->pattern('[0-9]{4}-[0-9]{2}-[0-9]{2}')
+            ->placeholder('1962-05-13');
         if ($value !== null) {
             $this->value($value);
         }
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Html\Form\Date', 'formDate');

@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * @class formComponent
+ * @class Component
  * @brief HTML Forms creation helpers
  *
  * @package Clearbricks
@@ -14,7 +14,9 @@ declare(strict_types=1);
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-abstract class formComponent
+namespace Clearbricks\Html\Form;
+
+abstract class Component
 {
     private $_type;     // Component type
     private $_element;  // HTML element
@@ -190,12 +192,12 @@ abstract class formComponent
     /**
      * Attaches the label.
      *
-     * @param      formLabel|null  $label     The label
+     * @param      Label|null  $label     The label
      * @param      int|null        $position  The position
      *
      * @return     self
      */
-    public function attachLabel(?formLabel $label = null, ?int $position = null)
+    public function attachLabel(?Label $label = null, ?int $position = null)
     {
         if ($label) {
             $this->label($label);
@@ -388,3 +390,6 @@ abstract class formComponent
      */
     abstract protected function getDefaultElement(): string;
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Html\Form\Component', 'formComponent');

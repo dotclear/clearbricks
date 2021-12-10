@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 /**
- * @class formDate
- * @brief HTML Forms date field creation helpers
+ * @class Email
+ * @brief HTML Forms email field creation helpers
  *
  * @package Clearbricks
  * @subpackage html.form
@@ -14,7 +14,9 @@ declare(strict_types=1);
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class formDate extends formInput
+namespace Clearbricks\Html\Form;
+
+class Email extends Input
 {
     /**
      * Constructs a new instance.
@@ -23,14 +25,12 @@ class formDate extends formInput
      */
     public function __construct(?string $id = null, ?string $value = null)
     {
-        parent::__construct($id, 'date');
-        $this
-            ->size(10)
-            ->maxlength(10)
-            ->pattern('[0-9]{4}-[0-9]{2}-[0-9]{2}')
-            ->placeholder('1962-05-13');
+        parent::__construct($id, 'email');
         if ($value !== null) {
             $this->value($value);
         }
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Html\Form\Email', 'formEmail');

@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 /**
- * @class formCheckbox
- * @brief HTML Forms checkbox button creation helpers
+ * @class Radio
+ * @brief HTML Forms radio button creation helpers
  *
  * @package Clearbricks
  * @subpackage html.form
@@ -14,7 +14,9 @@ declare(strict_types=1);
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class formCheckbox extends formInput
+namespace Clearbricks\Html\Form;
+
+class Radio extends Input
 {
     /**
      * Constructs a new instance.
@@ -23,9 +25,12 @@ class formCheckbox extends formInput
      */
     public function __construct(?string $id = null, ?bool $checked = null)
     {
-        parent::__construct($id, 'checkbox');
+        parent::__construct($id, 'radio');
         if ($checked !== null) {
             $this->checked($checked);
         }
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Html\Form\Radio', 'formRadio');

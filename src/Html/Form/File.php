@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 /**
- * @class formColor
- * @brief HTML Forms color field creation helpers
+ * @class File
+ * @brief HTML Forms file field creation helpers
  *
  * @package Clearbricks
  * @subpackage html.form
@@ -14,7 +14,9 @@ declare(strict_types=1);
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class formColor extends formInput
+namespace Clearbricks\Html\Form;
+
+class File extends Input
 {
     /**
      * Constructs a new instance.
@@ -23,12 +25,12 @@ class formColor extends formInput
      */
     public function __construct(?string $id = null, ?string $value = null)
     {
-        parent::__construct($id, 'color');
-        $this
-            ->size(7)
-            ->maxlength(7);
+        parent::__construct($id, 'file');
         if ($value !== null) {
             $this->value($value);
         }
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Html\Form\File', 'formFile');

@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * @class formTextarea
+ * @class Textarea
  * @brief HTML Forms textarea creation helpers
  *
  * @package Clearbricks
@@ -14,7 +14,9 @@ declare(strict_types=1);
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class formTextarea extends formComponent
+namespace Clearbricks\Html\Form;
+
+class Textarea extends Component
 {
     private const DEFAULT_ELEMENT = 'textarea';
 
@@ -74,3 +76,6 @@ class formTextarea extends formComponent
         return self::DEFAULT_ELEMENT;
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Html\Form\Textarea', 'formTextarea');

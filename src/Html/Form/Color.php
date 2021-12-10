@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 /**
- * @class formHidden
- * @brief HTML Forms hidden field creation helpers
+ * @class Color
+ * @brief HTML Forms color field creation helpers
  *
  * @package Clearbricks
  * @subpackage html.form
@@ -14,19 +14,26 @@ declare(strict_types=1);
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class formHidden extends formInput
+namespace Clearbricks\Html\Form;
+
+class Color extends Input
 {
     /**
      * Constructs a new instance.
      *
      * @param      string  $id     The identifier
      */
-    public function __construct(string $id = null, ?string $value = null)
+    public function __construct(?string $id = null, ?string $value = null)
     {
-        // Label should not be rendered for an input type="hidden"
-        parent::__construct($id, 'hidden', false);
+        parent::__construct($id, 'color');
+        $this
+            ->size(7)
+            ->maxlength(7);
         if ($value !== null) {
             $this->value($value);
         }
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Html\Form\Color', 'formColor');
