@@ -64,6 +64,8 @@ $__autoload = [
     'pager'               => $src . '/Pager/Pager.php',
 
     'sessionDB'           => $src . '/Session/SessionDb.php',
+
+    'wiki2xhtml'          => $src . '/Text/Wiki2xhtml.php',
 ];
 
 # Feed Reader
@@ -103,9 +105,6 @@ $__autoload['tplNodeValueParent']     = dirname(__FILE__) . '/legacy/template/cl
 
 # URL Handler
 $__autoload['urlHandler'] = dirname(__FILE__) . '/legacy/url.handler/class.url.handler.php';
-
-# Wiki to XHTML Converter
-$__autoload['wiki2xhtml'] = dirname(__FILE__) . '/legacy/text.wiki2xhtml/class.wiki2xhtml.php';
 
 # SQL Batch on XML Files
 $__autoload['xmlsql'] = dirname(__FILE__) . '/legacy/xmlsql/class.xmlsql.php';

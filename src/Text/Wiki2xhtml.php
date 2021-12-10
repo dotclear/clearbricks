@@ -1,12 +1,13 @@
 <?php
 /**
- * @class wiki2xhtml
+ * @class Wiki2xhtml
  *
  * @package Clearbricks
  *
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
+namespace Clearbricks\Text;
 
 /*
 Contributor(s):
@@ -146,7 +147,7 @@ History :
 => début de quelque chose pour la reconnaissance auto d'url (avec Mat)
  */
 
-class wiki2xhtml
+class Wiki2xhtml
 {
     public $__version__ = '3.2.23';
 
@@ -1476,3 +1477,6 @@ class wiki2xhtml
         return $res;
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Text\Wiki2xhtml', 'wiki2xhtml');
