@@ -58,6 +58,7 @@ $__autoload = [
     'imageMeta'           => $src . '/Image/ImageMeta.php',
     'imageTools'          => $src . '/Image/ImageTools.php',
 
+    'sessionDB'           => $src . '/Session/SessionDb.php',
 ];
 
 # Feed Reader
@@ -88,9 +89,6 @@ $__autoload['pager'] = dirname(__FILE__) . '/legacy/pager/class.pager.php';
 # REST Server
 $__autoload['restServer'] = dirname(__FILE__) . '/legacy/rest/class.rest.php';
 $__autoload['xmlTag']     = dirname(__FILE__) . '/legacy/rest/class.rest.php';
-
-# Database PHP Session
-$__autoload['sessionDB'] = dirname(__FILE__) . '/legacy/session.db/class.session.db.php';
 
 # Simple Template Systeme
 $__autoload['template']               = dirname(__FILE__) . '/legacy/template/class.template.php';

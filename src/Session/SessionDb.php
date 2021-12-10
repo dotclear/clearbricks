@@ -1,6 +1,6 @@
 <?php
 /**
- * @class sessionDB
+ * @class SessionDB
  * @brief Database Session Handler
  *
  * This class allows you to handle session data in database.
@@ -11,7 +11,11 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class sessionDB
+namespace Clearbricks\Session;
+
+use Clearbricks\Database\Layer\layer;
+
+class SessionDb
 {
     private $con;
     private $table;
@@ -27,7 +31,7 @@ class sessionDB
      *
      * This method creates an instance of sessionDB class.
      *
-     * @param dbLayer    $con            dbLayer inherited database instance
+     * @param Layer    $con            Layer inherited database instance
      * @param string        $table            Table name
      * @param string        $cookie_name    Session cookie name
      * @param string        $cookie_path    Session cookie path
@@ -245,3 +249,6 @@ class sessionDB
         return $id;
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Session\SessionDb', 'sessionDB');
