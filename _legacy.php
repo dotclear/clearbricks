@@ -54,6 +54,10 @@ $__autoload = [
 
     'filemanager'         => $src . '/FileManager/FileManager.php',
     'fileItem'            => $src . '/FileManager/FileItem.php',
+
+    'imageMeta'           => $src . '/Image/ImageMeta.php',
+    'imageTools'          => $src . '/Image/ImageTools.php',
+
 ];
 
 # Feed Reader
@@ -65,10 +69,6 @@ $__autoload['htmlFilter'] = dirname(__FILE__) . '/legacy/html.filter/class.html.
 
 # HTML Validator
 $__autoload['htmlValidator'] = dirname(__FILE__) . '/legacy/html.validator/class.html.validator.php';
-
-# Image Manipulation Tools
-$__autoload['imageMeta']  = dirname(__FILE__) . '/legacy/image/class.image.meta.php';
-$__autoload['imageTools'] = dirname(__FILE__) . '/legacy/image/class.image.tools.php';
 
 # Send Mail Utilities
 $__autoload['mail'] = dirname(__FILE__) . '/legacy/mail/class.mail.php';

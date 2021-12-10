@@ -1,6 +1,6 @@
 <?php
 /**
- * @class imageMeta
+ * @class ImageMeta
  * @brief Image metadata
  *
  * This class reads EXIF, IPTC and XMP metadata from a JPEG file.
@@ -13,7 +13,13 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class imageMeta
+namespace Clearbricks\Image;
+
+use Clearbricks\Common\Exception;
+use Clearbricks\Common\Text;
+use Clearbricks\Common\Html;
+
+class ImageMeta
 {
     protected $xmp  = []; ///< array: Internal XMP array
     protected $iptc = []; ///< array: Internal IPTC array
@@ -147,7 +153,7 @@ class imageMeta
         }
 
         foreach ($this->xmp as $k => $v) {
-            $this->xmp[$k] = html::decodeEntities(text::toUTF8($v));
+            $this->xmp[$k] = Html::decodeEntities(Text::toUTF8($v));
         }
     }
 
@@ -179,7 +185,7 @@ class imageMeta
 
         foreach ($this->iptc_ref as $k => $v) {
             if (isset($iptc[$k]) && isset($this->iptc_to_property[$v])) {
-                $this->iptc[$this->iptc_to_property[$v]] = text::toUTF8(trim(implode(',', $iptc[$k])));
+                $this->iptc[$this->iptc_to_property[$v]] = Text::toUTF8(trim(implode(',', $iptc[$k])));
             }
         }
     }
@@ -207,10 +213,10 @@ class imageMeta
             if (isset($d[$k])) {
                 if (is_array($d[$k])) {
                     foreach ($d[$k] as $kk => $vv) {
-                        $this->exif[$v . '.' . $kk] = text::toUTF8($vv);
+                        $this->exif[$v . '.' . $kk] = Text::toUTF8($vv);
                     }
                 } else {
-                    $this->exif[$v] = text::toUTF8($d[$k]);
+                    $this->exif[$v] = Text::toUTF8($d[$k]);
                 }
             }
         }
@@ -387,3 +393,6 @@ class imageMeta
         //'' => 'Keywords'
     ];
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Image\ImageMeta', 'imageMeta');

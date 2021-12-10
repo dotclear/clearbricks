@@ -1,6 +1,6 @@
 <?php
 /**
- * @class imageTools
+ * @class ImageTools
  * @brief Image manipulations
  *
  * Class to manipulate images. Some methods are based on https://dev.media-box.net/big/
@@ -11,7 +11,12 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class imageTools
+namespace Clearbricks\Image;
+
+use Clearbricks\Common\Exception;
+use Clearbricks\Common\Files;
+
+class ImageTools
 {
     public $res; ///< resource: Image resource
     public $memory_limit = null;
@@ -124,12 +129,12 @@ class imageTools
     {
         $mem_used  = function_exists('memory_get_usage') ? @memory_get_usage() : 4000000;
         $mem_limit = @ini_get('memory_limit');
-        if ($mem_limit && trim((string) $mem_limit) === '-1' || !files::str2bytes($mem_limit)) {
+        if ($mem_limit && trim((string) $mem_limit) === '-1' || !Files::str2bytes($mem_limit)) {
             // Cope with memory_limit set to -1 in PHP.ini
             return;
         }
         if ($mem_used && $mem_limit) {
-            $mem_limit  = files::str2bytes($mem_limit);
+            $mem_limit  = Files::str2bytes($mem_limit);
             $mem_avail  = $mem_limit - $mem_used - (512 * 1024);
             $mem_needed = $w * $h * $bpp;
 
@@ -311,3 +316,6 @@ class imageTools
         return true;
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Image\ImageTools', 'imageTools');
