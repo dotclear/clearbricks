@@ -13,6 +13,7 @@
  */
 namespace Clearbricks\Rest;
 
+use Clearbricks\Common\Exception;
 use Clearbricks\Xml\Tag;
 
 class Server
