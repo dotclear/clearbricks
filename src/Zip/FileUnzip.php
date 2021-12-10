@@ -1,6 +1,6 @@
 <?php
 /**
- * @class fileUnzip
+ * @class FileUnzip
  *
  * @package Clearbricks
  * @subpackage Zip
@@ -8,7 +8,12 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class fileUnzip
+namespace Clearbricks\Zip;
+
+use Clearbricks\Common\Exception;
+use Clearbricks\Common\Files;
+
+class FileUnzip
 {
     protected $file_name;
     protected $compressed_list = [];
@@ -226,7 +231,7 @@ class fileUnzip
             if ($r === false) {
                 throw new Exception(__('Unable to write destination file.'));
             }
-            files::inheritChmod($target);
+            Files::inheritChmod($target);
 
             return true;
         }
@@ -241,7 +246,7 @@ class fileUnzip
         }
 
         if (!is_dir($dir)) {
-            files::makeDir($dir, true);
+            Files::makeDir($dir, true);
         }
     }
 
@@ -520,12 +525,12 @@ class fileUnzip
     {
         $mem_used  = function_exists('memory_get_usage') ? @memory_get_usage() : 4000000;
         $mem_limit = @ini_get('memory_limit');
-        if ($mem_limit && trim((string) $mem_limit) === '-1' || !files::str2bytes($mem_limit)) {
+        if ($mem_limit && trim((string) $mem_limit) === '-1' || !Files::str2bytes($mem_limit)) {
             // Cope with memory_limit set to -1 in PHP.ini
             return;
         }
         if ($mem_used && $mem_limit) {
-            $mem_limit  = files::str2bytes($mem_limit);
+            $mem_limit  = Files::str2bytes($mem_limit);
             $mem_avail  = $mem_limit - $mem_used - (512 * 1024);
             $mem_needed = $size;
 
@@ -541,3 +546,6 @@ class fileUnzip
         }
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Zip\FileUnzip', 'fileUnzip');

@@ -55,6 +55,9 @@ $__autoload = [
     'filemanager'         => $src . '/FileManager/FileManager.php',
     'fileItem'            => $src . '/FileManager/FileItem.php',
 
+    'fileZip'             => $src . '/Zip/FileZip.php',
+    'fileUnzip'           => $src . '/Zip/FileUnzip.php',
+
     'imageMeta'           => $src . '/Image/ImageMeta.php',
     'imageTools'          => $src . '/Image/ImageTools.php',
 
@@ -139,10 +142,6 @@ $__autoload['xmlrpcClient']              = dirname(__FILE__) . '/legacy/net.xmlr
 $__autoload['xmlrpcClientMulticall']     = dirname(__FILE__) . '/legacy/net.xmlrpc/class.net.xmlrpc.php';
 $__autoload['xmlrpcServer']              = dirname(__FILE__) . '/legacy/net.xmlrpc/class.net.xmlrpc.php';
 $__autoload['xmlrpcIntrospectionServer'] = dirname(__FILE__) . '/legacy/net.xmlrpc/class.net.xmlrpc.php';
-
-# Zip tools
-$__autoload['fileUnzip'] = dirname(__FILE__) . '/legacy/zip/class.unzip.php';
-$__autoload['fileZip']   = dirname(__FILE__) . '/legacy/zip/class.zip.php';
 
 # HTML Form helpers
 $__autoload['formComponent'] = dirname(__FILE__) . '/legacy/html.form/class.form.component.php';
