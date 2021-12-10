@@ -1,6 +1,6 @@
 <?php
 /**
- * @class pager
+ * @class Pager
  * @brief (x)HTML Pager
  *
  * This class implements a pager helper to browse any type of results.
@@ -11,7 +11,11 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class pager
+namespace Clearbricks\Pager;
+
+use Clearbricks\Common\Html;
+
+class Pager
 {
     protected $env;
     protected $nb_elements;
@@ -178,7 +182,7 @@ class pager
             $url .= '?' . $this->var_page . '=%1$d';
         }
 
-        $this->page_url = html::escapeHTML($url);
+        $this->page_url = Html::escapeHTML($url);
     }
 
     public function debug()
@@ -197,3 +201,6 @@ class pager
         'Group last page index ....... ' . $this->index_group_end;
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Pager\Pager', 'pager');

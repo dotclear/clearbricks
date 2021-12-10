@@ -58,6 +58,8 @@ $__autoload = [
     'imageMeta'           => $src . '/Image/ImageMeta.php',
     'imageTools'          => $src . '/Image/ImageTools.php',
 
+    'pager'               => $src . '/Pager/Pager.php',
+
     'sessionDB'           => $src . '/Session/SessionDb.php',
 ];
 
@@ -82,9 +84,6 @@ $__autoload['socketMail'] = dirname(__FILE__) . '/legacy/mail/class.socket.mail.
 
 # Mime Message Parser
 $__autoload['mimeMessage'] = dirname(__FILE__) . '/legacy/mail.mime/class.mime.message.php';
-
-# HTML Pager
-$__autoload['pager'] = dirname(__FILE__) . '/legacy/pager/class.pager.php';
 
 # REST Server
 $__autoload['restServer'] = dirname(__FILE__) . '/legacy/rest/class.rest.php';
