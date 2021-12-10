@@ -1,6 +1,6 @@
 <?php
 /**
- * @class mysqlimb4Schema
+ * @class Mysqlimb4
  *
  * @package Clearbricks
  * @subpackage DBSchema
@@ -8,9 +8,9 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-require_once 'class.mysqli.dbschema.php';
+namespace Clearbricks\Database\Schema\Driver;
 
-class mysqlimb4Schema extends mysqliSchema
+class Mysqlimb4 extends Mysqli
 {
     public function db_create_table(string $name, array $fields): void
     {
@@ -45,3 +45,6 @@ class mysqlimb4Schema extends mysqliSchema
         $this->con->execute($sql);
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Database\Schema\Driver\Mysqlimb4', 'mysqlimb4Schema');

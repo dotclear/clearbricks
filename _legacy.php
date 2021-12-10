@@ -37,11 +37,16 @@ $__autoload = [
     'mysqliConnection'    => $src . '/Database/Layer/Driver/Pgsql.php',
     'sqliteConnection'    => $src . '/Database/Layer/Driver/Sqlite.php',
 
-];
+    'dbStruct'            => $src . '/Database/Schema/Struct.php',
+    'dbStructTable'       => $src . '/Database/Schema/StructTable.php',
+    'i_dbSchema'          => $src . '/Database/Schema/InterfaceSchema.php',
+    'dbSchema'            => $src . '/Database/Schema/Schema.php',
 
-# Database Abstraction Layer
-$__autoload['dbStruct'] = dirname(__FILE__) . '/legacy/dbschema/class.dbstruct.php';
-$__autoload['dbSchema'] = dirname(__FILE__) . '/legacy/dbschema/class.dbschema.php';
+    'mysqliSchema'        => $src . '/Database/Schema/Driver/Mysqli.php',
+    'mysqlimb4Schema'     => $src . '/Database/Schema/Driver/Mysqlimb4.php',
+    'pgsqlSchema'         => $src . '/Database/Schema/Driver/Pgsql.php',
+    'sqliteSchema'        => $src . '/Database/Schema/Driver/Sqlite.php',
+];
 
 # Files Manager
 $__autoload['filemanager'] = dirname(__FILE__) . '/legacy/filemanager/class.filemanager.php';
