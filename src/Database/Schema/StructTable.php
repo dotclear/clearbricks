@@ -10,6 +10,8 @@
  */
 namespace Clearbricks\Database\Layer\Schema;
 
+use Clearbricks\Common\Exception;
+
 class StructTable
 {
     protected $name;
@@ -135,7 +137,7 @@ class StructTable
             if ($to_null) {
                 $type = null;
             } else {
-                throw new \Exception('Invalid data type ' . $type . ' in schema');
+                throw new Exception('Invalid data type ' . $type . ' in schema');
             }
         }
 
@@ -159,7 +161,7 @@ class StructTable
     public function primary(string $name, $col)
     {
         if ($this->has_primary) {
-            throw new \Exception(sprintf('Table %s already has a primary key', $this->name));
+            throw new Exception(sprintf('Table %s already has a primary key', $this->name));
         }
 
         $cols = func_get_args();
@@ -232,7 +234,7 @@ class StructTable
     {
         foreach ($cols as $v) {
             if (!preg_match('/^\(.*?\)$/', $v) && !isset($this->fields[$v])) {
-                throw new \Exception(sprintf('Field %s does not exist in table %s', $v, $this->name));
+                throw new Exception(sprintf('Field %s does not exist in table %s', $v, $this->name));
             }
         }
     }

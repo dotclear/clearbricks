@@ -31,7 +31,7 @@ class Http
             //and HTTP_X_FORWARDED_FOR header means it's beeing using
 
             if (!isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
-                throw new \Exception('Reverse proxy parametter is setted, header HTTP_X_FORWARDED_FOR is found but not the X-Forwarded-Proto. Please check your reverse proxy server settings');
+                throw new Exception('Reverse proxy parametter is setted, header HTTP_X_FORWARDED_FOR is found but not the X-Forwarded-Proto. Please check your reverse proxy server settings');
             }
 
             $scheme = $_SERVER['HTTP_X_FORWARDED_PROTO'];

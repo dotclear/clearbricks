@@ -13,6 +13,7 @@
  */
 namespace Clearbricks\Database\Layer\Driver;
 
+use Clearbricks\Common\Exception;
 use Clearbricks\Database\Layer\Layer;
 use Clearbricks\Database\Layer\InterfaceLayer;
 
@@ -26,7 +27,7 @@ class Sqlite extends Layer implements InterfaceLayer
     public function db_connect($host, $user, $password, $database)
     {
         if (!class_exists('\PDO') || !in_array('sqlite', \PDO::getAvailableDrivers())) {
-            throw new \Exception('PDO SQLite class is not available');
+            throw new Exception('PDO SQLite class is not available');
         }
 
         $link = new \PDO('sqlite:' . $database);
@@ -38,7 +39,7 @@ class Sqlite extends Layer implements InterfaceLayer
     public function db_pconnect($host, $user, $password, $database)
     {
         if (!class_exists('\PDO') || !in_array('sqlite', \PDO::getAvailableDrivers())) {
-            throw new \Exception('PDO SQLite class is not available');
+            throw new Exception('PDO SQLite class is not available');
         }
 
         $link = new \PDO('sqlite:' . $database, null, null, [\PDO::ATTR_PERSISTENT => true]);
@@ -120,7 +121,7 @@ class Sqlite extends Layer implements InterfaceLayer
         if ($handle instanceof \PDO) {
             $res = $handle->query($query);
             if ($res === false) {
-                $e = new \Exception($this->db_last_error($handle));
+                $e = new Exception($this->db_last_error($handle));
 
                 throw $e;
             }

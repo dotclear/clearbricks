@@ -11,6 +11,7 @@
  */
 namespace Clearbricks\FileManager;
 
+use Clearbricks\Common\Exception;
 use Clearbricks\Common\Path;
 use Clearbricks\Common\Files;
 

@@ -208,7 +208,7 @@ class Files
         if (is_file($f)) {
             return is_writable(dirname($f));
         } elseif (is_dir($f)) {
-            return (is_writable(dirname($f)) && count(files::scandir($f)) <= 2);
+            return (is_writable(dirname($f)) && count(Files::scandir($f)) <= 2);
         }
 
         return false;
@@ -227,7 +227,7 @@ class Files
         $current_dir = opendir($dir);
         while ($entryname = readdir($current_dir)) {
             if (is_dir($dir . '/' . $entryname) and ($entryname != '.' and $entryname != '..')) {
-                if (!files::deltree($dir . '/' . $entryname)) {
+                if (!Files::deltree($dir . '/' . $entryname)) {
                     return false;
                 }
             } elseif ($entryname != '.' and $entryname != '..') {
@@ -284,7 +284,7 @@ class Files
         }
 
         if ($r) {
-            $dir  = path::real($f, false);
+            $dir  = Path::real($f, false);
             $dirs = [];
 
             while (!is_dir($dir)) {
@@ -471,7 +471,7 @@ class Files
         while ($entry = $d->read()) {
             if (!in_array($entry, $exclude_list)) {
                 if (is_dir($dirName . '/' . $entry)) {
-                    files::getDirList($dirName . '/' . $entry, $contents);
+                    Files::getDirList($dirName . '/' . $entry, $contents);
                 } else {
                     $contents['files'][] = $dirName . '/' . $entry;
                 }
@@ -492,7 +492,7 @@ class Files
      */
     public static function tidyFileName(string $n): string
     {
-        $n = text::deaccent($n);
+        $n = Text::deaccent($n);
         $n = preg_replace('/^[.]/u', '', $n);
 
         return preg_replace('/[^A-Za-z0-9._-]/u', '_', $n);

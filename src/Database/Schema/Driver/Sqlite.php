@@ -10,6 +10,7 @@
  */
 namespace Clearbricks\Database\Schema\Driver;
 
+use Clearbricks\Common\Exception;
 use Clearbricks\Database\Schema\Schema;
 use Clearbricks\Database\Schema\InterfaceSchema;
 
@@ -354,7 +355,7 @@ class Sqlite extends Schema implements InterfaceSchema
         }
 
         if (count($c_cols) > 1 || count($p_cols) > 1) {
-            throw new \Exception('SQLite UDBS does not support multiple columns foreign keys');
+            throw new Exception('SQLite UDBS does not support multiple columns foreign keys');
         }
 
         $c_col = $c_cols[0];
@@ -434,18 +435,18 @@ class Sqlite extends Schema implements InterfaceSchema
     {
         $type = $this->udt2dbt($type, $len, $default);
         if ($type != 'integer' && $type != 'text' && $type != 'timestamp') {
-            throw new \Exception('SQLite fields cannot be changed.');
+            throw new Exception('SQLite fields cannot be changed.');
         }
     }
 
     public function db_alter_primary(string $table, string $name, string $newname, array $cols): void
     {
-        throw new \Exception('SQLite primary key cannot be changed.');
+        throw new Exception('SQLite primary key cannot be changed.');
     }
 
     public function db_alter_unique(string $table, string $name, string $newname, array $cols): void
     {
-        throw new \Exception('SQLite unique index cannot be changed.');
+        throw new Exception('SQLite unique index cannot be changed.');
     }
 
     public function db_alter_index(string $table, string $name, string $newname, string $type, array $cols): void
@@ -468,7 +469,7 @@ class Sqlite extends Schema implements InterfaceSchema
 
     public function db_drop_unique(string $table, string $name): void
     {
-        throw new \Exception('SQLite unique index cannot be removed.');
+        throw new Exception('SQLite unique index cannot be removed.');
     }
 }
 

@@ -14,6 +14,8 @@
 
 namespace Clearbricks\Database\Layer;
 
+use Clearbricks\Common\Exception;
+
 class Cursor
 {
     private $__con;
@@ -218,7 +220,7 @@ class Cursor
     public function insert(): bool
     {
         if (!$this->__table) {
-            throw new \Exception('No table name.');
+            throw new Exception('No table name.');
         }
 
         $insReq = $this->getInsert();
@@ -238,7 +240,7 @@ class Cursor
     public function update(string $where): bool
     {
         if (!$this->__table) {
-            throw new \Exception('No table name.');
+            throw new Exception('No table name.');
         }
 
         $updReq = $this->getUpdate($where);

@@ -10,6 +10,8 @@
  */
 namespace Clearbricks\Database\Layer\Schema;
 
+use Clearbricks\Common\Exception;
+
 class Struct
 {
     protected $con;
@@ -108,7 +110,7 @@ class Struct
         $this->reverse();
 
         if (!($s instanceof self)) {
-            throw new \Exception('Invalid database schema');
+            throw new Exception('Invalid database schema');
         }
 
         $tables = $s->getTables();

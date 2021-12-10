@@ -77,7 +77,7 @@ class FileItem
         $this->d     = is_dir($file);
         $this->f     = is_file($file);
         if ($this->d) {
-            $this->x = File_exists($file . '/.');
+            $this->x = file_exists($file . '/.');
         } else {
             $this->x = false;
         }

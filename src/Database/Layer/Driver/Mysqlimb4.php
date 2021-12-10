@@ -14,6 +14,7 @@
 
 namespace Clearbricks\Database\Layer\Driver;
 
+use Clearbricks\Common\Exception;
 use Clearbricks\Database\Layer\Layer;
 use Clearbricks\Database\Layer\InterfaceLayer;
 
@@ -27,7 +28,7 @@ class Mysqlimb4 extends Layer implements InterfaceLayer
     public function db_connect($host, $user, $password, $database)
     {
         if (!function_exists('mysqli_connect')) {
-            throw new \Exception('PHP MySQLi functions are not available');
+            throw new Exception('PHP MySQLi functions are not available');
         }
 
         $port   = abs((int) ini_get('\MySQLi.default_port'));
@@ -47,7 +48,7 @@ class Mysqlimb4 extends Layer implements InterfaceLayer
             }
         }
         if (($link = @\MySQLi_connect($host, $user, $password, $database, $port, $socket)) === false) {
-            throw new \Exception('Unable to connect to database');
+            throw new Exception('Unable to connect to database');
         }
 
         $this->db_post_connect($link, $database);
@@ -75,7 +76,7 @@ class Mysqlimb4 extends Layer implements InterfaceLayer
             }
             $link->set_charset('utf8mb4');
         } else {
-            throw new \Exception('Unable to connect to an utf8mb4 database');
+            throw new Exception('Unable to connect to an utf8mb4 database');
         }
     }
 
@@ -102,7 +103,7 @@ class Mysqlimb4 extends Layer implements InterfaceLayer
         if ($handle instanceof \MySQLi) {
             $res = @\MySQLi_query($handle, $query);
             if ($res === false) {
-                $e = new \Exception($this->db_last_error($handle));
+                $e = new Exception($this->db_last_error($handle));
 
                 throw $e;
             }
@@ -215,7 +216,7 @@ class Mysqlimb4 extends Layer implements InterfaceLayer
     {
         try {
             $this->execute('LOCK TABLES ' . $this->escapeSystem($table) . ' WRITE');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             # As lock is a privilege in MySQL, we can avoid errors with weak_locks static var
             if (!self::$weak_locks) {
                 throw $e;
@@ -227,7 +228,7 @@ class Mysqlimb4 extends Layer implements InterfaceLayer
     {
         try {
             $this->execute('UNLOCK TABLES');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             if (!self::$weak_locks) {
                 throw $e;
             }

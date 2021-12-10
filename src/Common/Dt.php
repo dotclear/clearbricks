@@ -20,7 +20,7 @@ class Dt
      *
      * @param      string      $src  The strftime() format
      *
-     * @throws     \Exception  Thrown if a invalid format is used
+     * @throws     Exception  Thrown if a invalid format is used
      *
      * @return     string       The date() format
      */
@@ -74,7 +74,7 @@ class Dt
             }
         }
         if (!empty($invalids)) {
-            throw new \Exception('Found these invalid chars: ' . implode(',', $invalids) . ' in ' . $src);
+            throw new Exception('Found these invalid chars: ' . implode(',', $invalids) . ' in ' . $src);
         }
 
         return str_replace(array_keys($converts), array_values($converts), $src);
