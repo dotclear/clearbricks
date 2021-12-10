@@ -58,6 +58,9 @@ $__autoload = [
     'fileZip'             => $src . '/Zip/FileZip.php',
     'fileUnzip'           => $src . '/Zip/FileUnzip.php',
 
+    'htmlFilter'          => $src . '/Html/Filter.php',
+    'htmlValidator'       => $src . '/Html/Validator.php',
+
     'imageMeta'           => $src . '/Image/ImageMeta.php',
     'imageTools'          => $src . '/Image/ImageTools.php',
 
@@ -71,12 +74,6 @@ $__autoload = [
 # Feed Reader
 $__autoload['feedParser'] = dirname(__FILE__) . '/legacy/net.http.feed/class.feed.parser.php';
 $__autoload['feedReader'] = dirname(__FILE__) . '/legacy/net.http.feed/class.feed.reader.php';
-
-# HTML Filter
-$__autoload['htmlFilter'] = dirname(__FILE__) . '/legacy/html.filter/class.html.filter.php';
-
-# HTML Validator
-$__autoload['htmlValidator'] = dirname(__FILE__) . '/legacy/html.validator/class.html.validator.php';
 
 # Send Mail Utilities
 $__autoload['mail'] = dirname(__FILE__) . '/legacy/mail/class.mail.php';

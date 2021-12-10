@@ -1,6 +1,6 @@
 <?php
 /**
- * @class htmlFilter
+ * @class Filter
  * @brief HTML code filter
  *
  * This class removes all unwanted tags and attributes from an HTML string.
@@ -13,7 +13,11 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class htmlFilter
+namespace Clearbricks\Html;
+
+use Clearbricks\Common\Html;
+
+class Filter
 {
     private $parser;
     public $content;
@@ -256,7 +260,7 @@ class htmlFilter
         $str = str_replace('<?', '&gt;?', $str);
         $str = str_replace('?>', '?&lt;', $str);
 
-        $str = html::decodeEntities($str, true);
+        $str = Html::decodeEntities($str, true);
 
         $this->content = '';
         xml_parse($this->parser, '<all>' . $str . '</all>');
@@ -280,7 +284,7 @@ class htmlFilter
     private function miniTidyFixAttr(array $m)
     {
         # Escape entities in attributes value
-        return $m[1] . html::escapeHTML(html::decodeEntities($m[2])) . $m[3];
+        return $m[1] . Html::escapeHTML(Html::decodeEntities($m[2])) . $m[3];
     }
 
     private function argsArray($args)
@@ -325,7 +329,7 @@ class htmlFilter
 
     private function cdata($parser, $cdata)
     {
-        $this->content .= html::escapeHTML($cdata);
+        $this->content .= Html::escapeHTML($cdata);
     }
 
     private function getAttrs($tag, $attrs)
@@ -348,7 +352,7 @@ class htmlFilter
             $value = $this->getURI($value);
         }
 
-        return ' ' . $attr . '="' . html::escapeHTML($value) . '"';
+        return ' ' . $attr . '="' . Html::escapeHTML($value) . '"';
     }
 
     private function getURI($uri)
@@ -755,3 +759,6 @@ class htmlFilter
         // Z
     ];
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Html\Filter', 'htmlFilter');
