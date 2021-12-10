@@ -1,6 +1,6 @@
 <?php
 /**
- * @class mailConvert
+ * @class Convert
  *
  * This class converts mail body to xHTML in a descent fashion.
  * It can also rewrap mail body.
@@ -11,7 +11,11 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class mailConvert
+namespace Clearbricks\Mail;
+
+use Clearbricks\Common\Html;
+
+class Convert
 {
     public $url_pattern = '%(?<![\[\|])(http|https|ftp|news):(//)?(.*?)(["\s\)]|&gt;|&lt;|\Z)%msu'; ///< URL pattern
 
@@ -143,7 +147,7 @@ class mailConvert
 
     protected function htmlParseBlock($str)
     {
-        $str = html::escapeHTML($str);
+        $str = Html::escapeHTML($str);
 
         # Transform links
         $str = preg_replace_callback($this->url_pattern, [$this, 'htmlUrlHandler'], $str);
@@ -156,16 +160,16 @@ class mailConvert
 
     protected function htmlUrlHandler($m)
     {
-        $url     = $m[1] . ':' . html::decodeEntities($m[2] . $m[3]);
+        $url     = $m[1] . ':' . Html::decodeEntities($m[2] . $m[3]);
         $content = $url;
         $title   = '';
 
         if (strlen($url) > 42) {
             $content = substr($url, 0, 42) . '...';
-            $title   = ' title="' . html::escapeHTML($url) . '"';
+            $title   = ' title="' . Html::escapeHTML($url) . '"';
         }
 
-        return '<a href="' . html::escapeHTML($url) . '"' . $title . '>' . html::escapeHTML($content) . '</a>' . $m[4];
+        return '<a href="' . Html::escapeHTML($url) . '"' . $title . '>' . Html::escapeHTML($content) . '</a>' . $m[4];
     }
 
     protected function htmlFormatHandler($m)
@@ -180,3 +184,6 @@ class mailConvert
         }
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Mail\Convert', 'mailConvert');

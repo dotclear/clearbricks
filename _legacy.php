@@ -86,6 +86,11 @@ $__autoload = [
     'imageMeta'              => $src . '/Image/ImageMeta.php',
     'imageTools'             => $src . '/Image/ImageTools.php',
 
+    'mail'                      => $src . '/Mail/Mail.php',
+    'mailConvert'               => $src . '/Mail/Convert.php',
+    'socketMail'                => $src . '/Mail/Socket.php',
+    'mimeMessage'               => $src . '/Mail/Message.php',
+
     'netSocket'                 => $src . '/Network/Socket/Socket.php',
     'netSocketIterator'         => $src . '/Network/Socket/Iterator.php',
     'netNntp'                   => $src . '/Network/Nntp/Nntp.php',
@@ -119,18 +124,6 @@ $__autoload = [
 
     'wiki2xhtml'             => $src . '/Text/Wiki2xhtml.php',
 ];
-
-# Send Mail Utilities
-$__autoload['mail'] = dirname(__FILE__) . '/legacy/mail/class.mail.php';
-
-# Mail Convert and Rewrap
-$__autoload['mailConvert'] = dirname(__FILE__) . '/legacy/mail.convert/class.mail.convert.php';
-
-# Send Mail Through Sockets
-$__autoload['socketMail'] = dirname(__FILE__) . '/legacy/mail/class.socket.mail.php';
-
-# Mime Message Parser
-$__autoload['mimeMessage'] = dirname(__FILE__) . '/legacy/mail.mime/class.mime.message.php';
 
 # REST Server
 $__autoload['restServer'] = dirname(__FILE__) . '/legacy/rest/class.rest.php';

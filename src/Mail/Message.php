@@ -1,6 +1,6 @@
 <?php
 /**
- * @class mimeMessage
+ * @class Message
  *
  * @package Clearbricks
  * @subpackage Mail
@@ -8,7 +8,12 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class mimeMessage
+namespace Clearbricks\Mail;
+
+use Clearbricks\Common\Exception;
+use Clearbricks\Common\Text;
+
+class Message
 {
     protected $from_email       = null;
     protected $from_name        = null;
@@ -167,7 +172,7 @@ class mimeMessage
                     $encoding   = isset($content_transfer_encoding) ? $content_transfer_encoding['value'] : '7bit';
                     $charset    = $this->ctype_parameters['charset'] ?? null;
                     $this->body = $this->decodeBody($body, $encoding);
-                    $this->body = text::cleanUTF8(@text::toUTF8($this->body, $charset));
+                    $this->body = Text::cleanUTF8(@Text::toUTF8($this->body, $charset));
 
                     break;
 
@@ -210,7 +215,7 @@ class mimeMessage
             $this->ctype_primary   = $ctype[0];
             $this->ctype_secondary = $ctype[1];
             $this->body            = $this->decodeBody($body, '7bit');
-            $this->body            = text::cleanUTF8(@text::toUTF8($this->body));
+            $this->body            = Text::cleanUTF8(@Text::toUTF8($this->body));
         }
     }
 
@@ -309,7 +314,7 @@ class mimeMessage
 
         list($charset, $value) = explode("''", $value);
 
-        return @text::toUTF8(rawurldecode($value), $charset);
+        return @Text::toUTF8(rawurldecode($value), $charset);
     }
 
     protected function boundarySplit($input, $boundary)
@@ -339,7 +344,7 @@ class mimeMessage
 
         # Non encoded
         if (!preg_match('/(=\?([^?]+)\?(q|b)\?([^?]*)\?=)/i', $input)) {
-            return @text::toUTF8($input);
+            return @Text::toUTF8($input);
         }
 
         # For each encoded-word...
@@ -364,11 +369,11 @@ class mimeMessage
 
                     break;
             }
-            $text  = @text::toUTF8($text, $charset);
+            $text  = @Text::toUTF8($text, $charset);
             $input = str_replace($encoded, $text, $input);
         }
 
-        return text::cleanUTF8($input);
+        return Text::cleanUTF8($input);
     }
 
     protected function decodeSender($sender)
@@ -426,3 +431,6 @@ class mimeMessage
         return chr(hexdec($m[1]));
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Mail\Message', 'mimeMessage');

@@ -1,6 +1,6 @@
 <?php
 /**
- * @class socketMail
+ * @class Socket
  * @brief Send email through socket
  *
  * @package Clearbricks
@@ -9,7 +9,12 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class socketMail
+namespace Clearbricks\Mail;
+
+use Clearbricks\Common\Exception;
+use Clearbricks\Common\Text;
+
+class Socket
 {
     public static $fp;
     public static $timeout    = 10;   ///< integer: Socket timeout
@@ -43,7 +48,7 @@ class socketMail
         if (self::$smtp_relay != null) {
             $mx = [gethostbyname(self::$smtp_relay) => 1];
         } else {
-            $mx = mail::getMX($to_host);
+            $mx = Mail::getMX($to_host);
         }
 
         foreach ($mx as $h => $w) {
@@ -114,7 +119,7 @@ class socketMail
             $f = trim($m[1]);
         } elseif (preg_match('/^(.+?)\(/si', $f, $m)) {
             $f = trim($m[1]);
-        } elseif (!text::isEmail($f)) {
+        } elseif (!Text::isEmail($f)) {
             $f = trim(ini_get('sendmail_from'));
         }
 
@@ -169,3 +174,6 @@ class socketMail
         self::$fp = null;
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Mail\Socket', 'socketMail');

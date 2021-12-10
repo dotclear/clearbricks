@@ -1,6 +1,6 @@
 <?php
 /**
- * @class mail
+ * @class Mail
  * @brief Email utilities
  *
  * @package Clearbricks
@@ -9,7 +9,12 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class mail
+namespace Clearbricks\Mail;
+
+use Clearbricks\Common\Exception;
+use Clearbricks\Common\Text;
+
+class Mail
 {
     /**
      * Send email
@@ -90,7 +95,7 @@ class mail
             return $str;
         }
 
-        return '=?' . $charset . '?Q?' . text::QPEncode($str) . '?=';
+        return '=?' . $charset . '?Q?' . Text::QPEncode($str) . '?=';
     }
 
     /**
@@ -111,3 +116,6 @@ class mail
         return '=?' . $charset . '?B?' . base64_encode($str) . '?=';
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Mail\Mail', 'mail');
