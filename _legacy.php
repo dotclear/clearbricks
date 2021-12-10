@@ -11,7 +11,6 @@
 
 $src = dirname(__FILE__) . '/src';
 
-# Autoload
 $__autoload = [
     'l10n'                      => $src . '/Common/L10n.php',
     'crypt'                     => $src . '/Common/Crypt.php',
@@ -110,24 +109,20 @@ $__autoload = [
     'urlHandler'                => $src . '/Url/Handler.php',
     'xmlTag'                    => $src . '/Xml/Tag.php',
     'xmlsql'                    => $src . '/Xml/Sql.php',
+    'IXR_Value'                 => $src . '/Xml/Incutio/IXR_Value.php',
+    'IXR_Message'               => $src . '/Xml/Incutio/IXR_Message.php',
+    'IXR_Server'                => $src . '/Xml/Incutio/IXR_Server.php',
+    'IXR_Request'               => $src . '/Xml/Incutio/IXR_Request.php',
+    'IXR_Client'                => $src . '/Xml/Incutio/IXR_Client.php',
+    'IXR_Error'                 => $src . '/Xml/Incutio/IXR_Error.php',
+    'IXR_Date'                  => $src . '/Xml/Incutio/IXR_Date.php',
+    'IXR_Base64'                => $src . '/Xml/Incutio/IXR_Base64.php',
+    'IXR_IntrospectionServer'   => $src . '/Xml/Incutio/IXR_IntrospectionServer.php',
+    'IXR_ClientMulticall'       => $src . '/Xml/Incutio/IXR_ClientMulticall.php',
     'fileZip'                   => $src . '/Zip/FileZip.php',
     'fileUnzip'                 => $src . '/Zip/FileUnzip.php',
 ];
 
-# XML-RPC Client and Server
-$__autoload['IXR_Value']               = dirname(__FILE__) . '/legacy/ext/incutio.ixr_library.php';
-$__autoload['IXR_Message']             = dirname(__FILE__) . '/legacy/ext/incutio.ixr_library.php';
-$__autoload['IXR_Server']              = dirname(__FILE__) . '/legacy/ext/incutio.ixr_library.php';
-$__autoload['IXR_Request']             = dirname(__FILE__) . '/legacy/ext/incutio.ixr_library.php';
-$__autoload['IXR_Client']              = dirname(__FILE__) . '/legacy/ext/incutio.ixr_library.php';
-$__autoload['IXR_Error']               = dirname(__FILE__) . '/legacy/ext/incutio.ixr_library.php';
-$__autoload['IXR_Date']                = dirname(__FILE__) . '/legacy/ext/incutio.ixr_library.php';
-$__autoload['IXR_Base64']              = dirname(__FILE__) . '/legacy/ext/incutio.ixr_library.php';
-$__autoload['IXR_IntrospectionServer'] = dirname(__FILE__) . '/legacy/ext/incutio.ixr_library.php';
-$__autoload['IXR_ClientMulticall']     = dirname(__FILE__) . '/legacy/ext/incutio.ixr_library.php';
-
-
-# autoload for clearbricks
 function cb_autoload($name)
 {
     global $__autoload;
