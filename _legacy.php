@@ -46,11 +46,10 @@ $__autoload = [
     'mysqlimb4Schema'     => $src . '/Database/Schema/Driver/Mysqlimb4.php',
     'pgsqlSchema'         => $src . '/Database/Schema/Driver/Pgsql.php',
     'sqliteSchema'        => $src . '/Database/Schema/Driver/Sqlite.php',
-];
 
-# Files Manager
-$__autoload['filemanager'] = dirname(__FILE__) . '/legacy/filemanager/class.filemanager.php';
-$__autoload['fileItem']    = dirname(__FILE__) . '/legacy/filemanager/class.filemanager.php';
+    'filemanager'         => $src . '/FileManager/FileManager.php',
+    'fileItem'            => $src . '/FileManager/FileItem.php',
+];
 
 # Feed Reader
 $__autoload['feedParser'] = dirname(__FILE__) . '/legacy/net.http.feed/class.feed.parser.php';
