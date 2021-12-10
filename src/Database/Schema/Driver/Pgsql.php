@@ -78,7 +78,7 @@ class pgsqlSchema extends Schema implements InterfaceSchema
             $default = preg_replace('/^\((-?\d*)\)$/', '$1', $default);
 
             // $default from db is a string and is NULL in schema so upgrade failed.
-            if (strtoupper($default) == 'NULL') {
+            if (strtoupper((string) $default) == 'NULL') {
                 $default = null;
             }
 

@@ -204,7 +204,7 @@ class Mysqli extends Layer implements InterfaceLayer
     public function db_escape_string($str, $handle = null)
     {
         if ($handle instanceof \MySQLi) {
-            return \MySQLi_real_escape_string($handle, $str);
+            return \MySQLi_real_escape_string($handle, (string) $str);
         }
 
         return addslashes($str);
