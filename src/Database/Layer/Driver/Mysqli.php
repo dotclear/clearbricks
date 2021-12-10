@@ -14,10 +14,10 @@
 
 namespace Clearbricks\Database\Layer\Driver;
 
-use Clearbricks\Database\Layer\AbstractLayer;
+use Clearbricks\Database\Layer\Layer;
 use Clearbricks\Database\Layer\InterfaceLayer;
 
-class Mysqli extends AbstractLayer implements InterfaceLayer
+class Mysqli extends Layer implements InterfaceLayer
 {
     public static $weak_locks = true; ///< boolean: Enables weak locks if true
 

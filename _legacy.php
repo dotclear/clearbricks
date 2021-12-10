@@ -28,7 +28,7 @@ $__autoload = [
 
     'cursor'              => $src . '/Database/Layer/Cursor.php',
     'i_dbLayer'           => $src . '/Database/Layer/InterfaceLayer.php',
-    'dbLayer'             => $src . '/Database/Layer/AbstractLayer.php',
+    'dbLayer'             => $src . '/Database/Layer/Layer.php',
     'record'              => $src . '/Database/Layer/Record.php',
     'staticRecord'        => $src . '/Database/Layer/StaticRecord.php',
 

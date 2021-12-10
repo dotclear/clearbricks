@@ -16,10 +16,10 @@
 
 namespace Clearbricks\Database\Layer\Driver;
 
-use Clearbricks\Database\Layer\AbstractLayer;
+use Clearbricks\Database\Layer\Layer;
 use Clearbricks\Database\Layer\InterfaceLayer;
 
-class Pgsql extends abstractLayer implements InterfaceLayer
+class Pgsql extends Layer implements InterfaceLayer
 {
     protected $__driver        = 'pgsql';
     protected $__syntax        = 'postgresql';

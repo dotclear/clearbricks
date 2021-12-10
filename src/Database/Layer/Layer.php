@@ -1,6 +1,6 @@
 <?php
 /**
- * @class dbLayer
+ * @class Layer
  * @brief Database Abstraction Layer class
  *
  * Base class for database abstraction. Each driver extends this class and
@@ -14,7 +14,7 @@
  */
 namespace Clearbricks\Database\Layer;
 
-abstract class AbstractLayer
+class Layer
 {
     protected $__driver  = null; ///< string: Driver name
     protected $__syntax  = null; ///< string: SQL syntax name
@@ -509,4 +509,4 @@ abstract class AbstractLayer
 }
 
 /** Backwards compatibility */
-class_alias('Clearbricks\Database\Layer\AbstractLayer', 'dbLayer');
+class_alias('Clearbricks\Database\Layer\Layer', 'dbLayer');

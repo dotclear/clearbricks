@@ -13,10 +13,10 @@
  */
 namespace Clearbricks\Database\Layer\Driver;
 
-use Clearbricks\Database\Layer\AbstractLayer;
+use Clearbricks\Database\Layer\Layer;
 use Clearbricks\Database\Layer\InterfaceLayer;
 
-class Sqlite extends AbstractLayer implements InterfaceLayer
+class Sqlite extends Layer implements InterfaceLayer
 {
     protected $__driver        = 'sqlite';
     protected $__syntax        = 'sqlite';

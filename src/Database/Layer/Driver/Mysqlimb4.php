@@ -1,7 +1,7 @@
 <?php
 /**
- * @class \MySQLimb4
- * @brief \MySQLi utf8-mb4 Database Driver
+ * @class Mysqlimb4
+ * @brief Mysqli utf8-mb4 Database Driver
  *
  * See the {@link dbLayer} documentation for common methods.
  *
@@ -14,10 +14,10 @@
 
 namespace Clearbricks\Database\Layer\Driver;
 
-use Clearbricks\Database\Layer\AbstractLayer;
+use Clearbricks\Database\Layer\Layer;
 use Clearbricks\Database\Layer\InterfaceLayer;
 
-class Mysqlimb4 extends abstractLayer implements InterfaceLayer
+class Mysqlimb4 extends Layer implements InterfaceLayer
 {
     public static $weak_locks = true; ///< boolean: Enables weak locks if true
 
