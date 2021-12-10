@@ -201,7 +201,7 @@ if (class_exists('dbLayer')) {
         public function db_escape_string($str, $handle = null)
         {
             if ($handle instanceof MySQLi) {
-                return mysqli_real_escape_string($handle, $str);
+                return mysqli_real_escape_string($handle, (string) $str);
             }
 
             return addslashes($str);
