@@ -903,3 +903,6 @@ class Form
             ' />' . "\n";
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Common\Form', 'form');

@@ -327,3 +327,6 @@ class Text
         return $res;
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Common\Text', 'text');

@@ -68,3 +68,6 @@ class FormsSelectOption
         return sprintf($this->option, $this->value, $this->name, $attr);
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Common\FormsSelectOption', 'formsSelectOption');

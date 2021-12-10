@@ -144,3 +144,6 @@ class Path
         return $root . '/' . $p;
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Common\Path', 'path');

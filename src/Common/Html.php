@@ -182,3 +182,6 @@ class Html
         return sprintf($link, $url);
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Common\Html', 'html');

@@ -623,3 +623,6 @@ class Forms
         return '<input type="hidden"' . self::commonAttributes($params) . '/>' . "\n";
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Common\Forms', 'forms');

@@ -80,3 +80,6 @@ class Crypt
         return implode('', $pwd);
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Common\Crypt', 'crypt');

@@ -445,3 +445,6 @@ class Http
     {
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Common\Http', 'http');

@@ -1086,6 +1086,9 @@ class L10n
     //@}
 }
 
+/** Backwards compatibility */
+class_alias('Clearbricks\Common\L10n', 'l10n');
+
 } // end clearbricks namespace
 
 namespace { // enter to global namespace to declare root __() function

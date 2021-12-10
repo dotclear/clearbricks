@@ -1,6 +1,6 @@
 <?php
 /**
- * @class cursor
+ * @class Cursor
  * @brief DBLayer Cursor
  *
  * This class implements facilities to insert or update in a table.
@@ -11,7 +11,10 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class cursor
+
+namespace Clearbricks\Database\Layer;
+
+class Cursor
 {
     private $__con;
     private $__data = [];
@@ -39,7 +42,7 @@ class cursor
      * @param dbLayer   $con      Connection object
      * @param string    $table    Table name
      */
-    public function __construct(dbLayer $con, string $table)
+    public function __construct(\dbLayer $con, string $table)
     {
         $this->__con = &$con;
         $this->setTable($table);
@@ -215,7 +218,7 @@ class cursor
     public function insert(): bool
     {
         if (!$this->__table) {
-            throw new Exception('No table name.');
+            throw new \Exception('No table name.');
         }
 
         $insReq = $this->getInsert();
@@ -235,7 +238,7 @@ class cursor
     public function update(string $where): bool
     {
         if (!$this->__table) {
-            throw new Exception('No table name.');
+            throw new \Exception('No table name.');
         }
 
         $updReq = $this->getUpdate($where);
@@ -245,3 +248,6 @@ class cursor
         return true;
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Database\Layer\Cursor', 'cursor');

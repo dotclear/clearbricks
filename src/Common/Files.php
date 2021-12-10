@@ -498,3 +498,6 @@ class Files
         return preg_replace('/[^A-Za-z0-9._-]/u', '_', $n);
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Common\Files', 'files');

@@ -39,7 +39,7 @@ if (!defined('CLEARBRICKS_NO_AUTOLOAD') || CLEARBRICKS_NO_AUTOLOAD !== true) {
 
 // By default Keep compatibility with clearbricks < 2.0
 if (!defined('CLEARBRICKS_NO_COMPAT') || CLEARBRICKS_NO_COMPAT !== true) {
-    require dirname(__FILE__) . '/legacy/_common.php';
+    require dirname(__FILE__) . '/_legacy.php';
 }
 
 # We only need l10n __() function

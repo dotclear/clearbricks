@@ -364,3 +364,6 @@ class Dt
         return __(${$args[1]}[(int) $args[2]]);
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Common\Dt', 'dt');
