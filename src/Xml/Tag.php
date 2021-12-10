@@ -1,19 +1,18 @@
 <?php
 /**
- * @class XmlTag
- * @brief REST Server
+ * @class Tag
  *
  * XML Tree
  *
  * @package Clearbricks
- * @subpackage Rest
+ * @subpackage Xml
  *
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-namespace Clearbricks\Rest;
+namespace Clearbricks\Xml;
 
-class XmlTag
+class Tag
 {
     private $_name;
     private $_attr  = [];
@@ -167,4 +166,4 @@ class XmlTag
 }
 
 /** Backwards compatibility */
-class_alias('Clearbricks\Rest\XmlTag', 'xmlTag');
+class_alias('Clearbricks\Xml\Tag', 'xmlTag');

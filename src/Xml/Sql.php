@@ -1,13 +1,20 @@
 <?php
 /**
- * @class xmlsql
+ * @class Sql
+ *
+ * Xml Sql
  *
  * @package Clearbricks
  *
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class xmlsql
+namespace Clearbricks\Xml;
+
+use Clearbricks\Common\Exception;
+use Clearbricks\Database\Schema\Schema;
+
+class Sql
 {
     protected $con;
     protected $xml;
@@ -23,7 +30,7 @@ class xmlsql
         $this->con = &$con;
         $this->xml = $xml;
 
-        $schema       = dbSchema::init($this->con);
+        $schema       = Schema::init($this->con);
         $this->tables = $schema->getTables();
         unset($schema);
     }

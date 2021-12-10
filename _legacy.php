@@ -98,7 +98,6 @@ $__autoload = [
     'xmlrpcIntrospectionServer' => $src . '/Network/Xmlrpc/IntrospectionServer.php',
     'pager'                     => $src . '/Pager/Pager.php',
     'restServer'                => $src . '/Rest/Server.php',
-    'xmlTag'                    => $src . '/Rest/XmlTag.php',
     'sessionDB'                 => $src . '/Session/SessionDb.php',
     'template'                  => $src . '/Template/Template.php',
     'tplNode'                   => $src . '/Template/Node.php',
@@ -108,15 +107,12 @@ $__autoload = [
     'tplNodeBlockDefinition'    => $src . '/Template/NodeBlockDefinition.php',
     'tplNodeValueParent'        => $src . '/Template/NodeValueParent.php',
     'wiki2xhtml'                => $src . '/Text/Wiki2xhtml.php',
+    'urlHandler'                => $src . '/Url/Handler.php',
+    'xmlTag'                    => $src . '/Xml/Tag.php',
+    'xmlsql'                    => $src . '/Xml/Sql.php',
     'fileZip'                   => $src . '/Zip/FileZip.php',
     'fileUnzip'                 => $src . '/Zip/FileUnzip.php',
 ];
-
-# URL Handler
-$__autoload['urlHandler'] = dirname(__FILE__) . '/legacy/url.handler/class.url.handler.php';
-
-# SQL Batch on XML Files
-$__autoload['xmlsql'] = dirname(__FILE__) . '/legacy/xmlsql/class.xmlsql.php';
 
 # XML-RPC Client and Server
 $__autoload['IXR_Value']               = dirname(__FILE__) . '/legacy/ext/incutio.ixr_library.php';

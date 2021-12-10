@@ -13,6 +13,8 @@
  */
 namespace Clearbricks\Rest;
 
+use Clearbricks\Xml\Tag;
+
 class Server
 {
     public $rsp;                 ///< XmlTag Server response
@@ -23,7 +25,7 @@ class Server
      */
     public function __construct()
     {
-        $this->rsp = new XmlTag('rsp');
+        $this->rsp = new Tag('rsp');
     }
 
     /**
