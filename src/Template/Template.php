@@ -1,6 +1,6 @@
 <?php
 /**
- * @class template
+ * @class Template
  *
  * @package Clearbricks
  * @subpackage Template
@@ -8,7 +8,14 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class template
+namespace Clearbricks\Template;
+
+use Clearbricks\Common\Exception;
+use Clearbricks\Common\Path;
+use Clearbricks\Common\Files;
+use Clearbricks\Common\Html;
+
+class Template
 {
     private $self_name;
 
@@ -50,7 +57,7 @@ class template
             return;
         }
 
-        $src = path::clean($attr['src']);
+        $src = Path::clean($attr['src']);
 
         $tpl_file = $this->getFilePath($src);
         if (!$tpl_file) {
@@ -84,7 +91,7 @@ class template
         }
 
         foreach ($path as $k => $v) {
-            if (($v = path::real($v)) === false) {
+            if (($v = Path::real($v)) === false) {
                 unset($path[$k]);
             }
         }
@@ -107,7 +114,7 @@ class template
             throw new Exception($dir . ' is not writable.');
         }
 
-        $this->cache_dir = path::real($dir) . '/';
+        $this->cache_dir = Path::real($dir) . '/';
     }
 
     public function addBlock(string $name, $callback)
@@ -202,7 +209,7 @@ class template
         # - dest_file size == 0
         # - tpl_file is more recent thant dest_file
         if (!$stat_d || !$this->use_cache || $stat_d['size'] == 0 || $stat_f['mtime'] > $stat_d['mtime']) {
-            files::makeDir(dirname($dest_file), true);
+            Files::makeDir(dirname($dest_file), true);
 
             if (($fp = @fopen($dest_file, 'wb')) === false) {
                 throw new Exception('Unable to create cache file');
@@ -211,7 +218,7 @@ class template
             $fc = $this->compileFile($tpl_file);
             fwrite($fp, $fc);
             fclose($fp);
-            files::inheritChmod($dest_file);
+            Files::inheritChmod($dest_file);
         }
 
         return $dest_file;
@@ -296,7 +303,7 @@ class template
         );
 
         # Next : build semantic tree from tokens.
-        $rootNode          = new tplNode();
+        $rootNode          = new Node();
         $node              = $rootNode;
         $errors            = [];
         $this->parent_file = '';
@@ -306,7 +313,7 @@ class template
                 if (substr($match[0], 1, 1) == '/') {
                     // Closing tag, check if it matches current opened node
                     $tag = $match[3];
-                    if (($node instanceof tplNodeBlock) && $node->getTag() == $tag) {
+                    if (($node instanceof NodeBlock) && $node->getTag() == $tag) {
                         $node->setClosing();
                         $node = $node->getParent();
                     } else {
@@ -319,7 +326,7 @@ class template
                         if ($search->getTag() == $tag) {
                             $errors[] = sprintf(
                                 __('Did not find closing tag for block <tpl:%s>. Content has been ignored.'),
-                                html::escapeHTML($node->getTag())
+                                Html::escapeHTML($node->getTag())
                             );
                             $search->setClosing();
                             $node = $search->getParent();
@@ -344,31 +351,31 @@ class template
                             $this->parent_file = $attr['parent'];
                         }
                     } elseif (strtolower($tag) == 'parent') {
-                        $node->addChild(new tplNodeValueParent($tag, $attr, $str_attr));
+                        $node->addChild(new NodeValueParent($tag, $attr, $str_attr));
                     } else {
-                        $node->addChild(new tplNodeValue($tag, $attr, $str_attr));
+                        $node->addChild(new NodeValue($tag, $attr, $str_attr));
                     }
                 } else {
                     // Opening tag, create new node and dive into it
                     $tag = $match[1];
                     if ($tag == 'Block') {
-                        $newnode = new tplNodeBlockDefinition($tag, isset($match[2]) ? $this->getAttrs($match[2]) : []);
+                        $newnode = new NodeBlockDefinition($tag, isset($match[2]) ? $this->getAttrs($match[2]) : []);
                     } else {
-                        $newnode = new tplNodeBlock($tag, isset($match[2]) ? $this->getAttrs($match[2]) : []);
+                        $newnode = new NodeBlock($tag, isset($match[2]) ? $this->getAttrs($match[2]) : []);
                     }
                     $node->addChild($newnode);
                     $node = $newnode;
                 }
             } else {
                 // Simple text
-                $node->addChild(new tplNodeText($block));
+                $node->addChild(new NodeText($block));
             }
         }
 
-        if (($node instanceof tplNodeBlock) && !$node->isClosed()) {
+        if (($node instanceof NodeBlock) && !$node->isClosed()) {
             $errors[] = sprintf(
                 __('Did not find closing tag for block <tpl:%s>. Content has been ignored.'),
-                html::escapeHTML($node->getTag())
+                Html::escapeHTML($node->getTag())
             );
         }
 
@@ -477,3 +484,6 @@ class template
         return $res;
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Template\Template', 'template');

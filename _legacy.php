@@ -90,6 +90,14 @@ $__autoload = [
 
     'sessionDB'           => $src . '/Session/SessionDb.php',
 
+    'template'               => $src . '/Template/Template.php',
+    'tplNode'                => $src . '/Template/Node.php',
+    'tplNodeBlock'           => $src . '/Template/NodeBlock.php',
+    'tplNodeText'            => $src . '/Template/NodeText.php',
+    'tplNodeValue'           => $src . '/Template/NodeValue.php',
+    'tplNodeBlockDefinition' => $src . '/Template/NodeBlockDefinition.php',
+    'tplNodeValueParent'     => $src . '/Template/NodeValueParent.php',
+
     'wiki2xhtml'          => $src . '/Text/Wiki2xhtml.php',
 ];
 
@@ -112,15 +120,6 @@ $__autoload['mimeMessage'] = dirname(__FILE__) . '/legacy/mail.mime/class.mime.m
 # REST Server
 $__autoload['restServer'] = dirname(__FILE__) . '/legacy/rest/class.rest.php';
 $__autoload['xmlTag']     = dirname(__FILE__) . '/legacy/rest/class.rest.php';
-
-# Simple Template Systeme
-$__autoload['template']               = dirname(__FILE__) . '/legacy/template/class.template.php';
-$__autoload['tplNode']                = dirname(__FILE__) . '/legacy/template/class.tplnode.php';
-$__autoload['tplNodeBlock']           = dirname(__FILE__) . '/legacy/template/class.tplnodeblock.php';
-$__autoload['tplNodeText']            = dirname(__FILE__) . '/legacy/template/class.tplnodetext.php';
-$__autoload['tplNodeValue']           = dirname(__FILE__) . '/legacy/template/class.tplnodevalue.php';
-$__autoload['tplNodeBlockDefinition'] = dirname(__FILE__) . '/legacy/template/class.tplnodeblockdef.php';
-$__autoload['tplNodeValueParent']     = dirname(__FILE__) . '/legacy/template/class.tplnodevalueparent.php';
 
 # URL Handler
 $__autoload['urlHandler'] = dirname(__FILE__) . '/legacy/url.handler/class.url.handler.php';

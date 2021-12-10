@@ -1,6 +1,6 @@
 <?php
 /**
- * @class tplNodeValue
+ * @class NodeValue
  * @brief Value node, for all {{tpl:Tag}}
  *
  * @package Clearbricks
@@ -9,7 +9,9 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class tplNodeValue extends tplNode
+namespace Clearbricks\Template;
+
+class NodeValue extends Node
 {
     protected $attr;
     protected $str_attr;
@@ -25,7 +27,7 @@ class tplNodeValue extends tplNode
         $this->str_attr = $str_attr;
     }
 
-    public function compile(template $tpl): string
+    public function compile(Template $tpl): string
     {
         return $tpl->compileValueNode($this->tag, $this->attr, $this->str_attr);
     }
@@ -35,3 +37,6 @@ class tplNodeValue extends tplNode
         return $this->tag;
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Template\NodeValue', 'tplNodeValue');

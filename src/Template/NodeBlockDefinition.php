@@ -1,6 +1,6 @@
 <?php
 /**
- * @class tplNodeBlockDefinition
+ * @class NodeBlockDefinition
  * @brief Block node, for all <tpl:Tag>...</tpl:Tag>
  *
  * @package Clearbricks
@@ -9,7 +9,9 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class tplNodeBlockDefinition extends tplNodeBlock
+namespace Clearbricks\Template;
+
+class NodeBlockDefinition extends NodeBlock
 {
     protected static $stack         = [];
     protected static $current_block = null;
@@ -39,10 +41,10 @@ class tplNodeBlockDefinition extends tplNodeBlock
     /**
      * Retrieves block defined in call stack
      * @param  string $name the block name
-     * @param  template $tpl  the template engine instance
+     * @param  Template $tpl  the template engine instance
      * @return string       the block (empty string if unavailable)
      */
-    public static function getStackBlock(string $name, template $tpl)
+    public static function getStackBlock(string $name, Template $tpl)
     {
         $stack = &self::$stack[$name];
         $pos   = $stack['pos'];
@@ -100,15 +102,15 @@ class tplNodeBlockDefinition extends tplNodeBlock
         }
         parent::setClosing();
         self::$stack[$this->name]['blocks'][] = $this->children;
-        $this->children                       = new ArrayObject();
+        $this->children                       = new \ArrayObject();
     }
 
     /**
      * Compile the block definition : grab latest block content being defined
-     * @param  template $tpl current template engine instance
+     * @param  Template $tpl current template engine instance
      * @return string      the compiled block
      */
-    public function compile(template $tpl): string
+    public function compile(Template $tpl): string
     {
         return $tpl->compileBlockNode(
             $this->tag,
@@ -117,3 +119,6 @@ class tplNodeBlockDefinition extends tplNodeBlock
         );
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Template\NodeBlockDefinition', 'tplNodeBlockDefinition');

@@ -1,6 +1,6 @@
 <?php
 /**
- * @class tplNodeBlock
+ * @class NodeBlock
  * @brief Block node, for all <tpl:Tag>...</tpl:Tag>
  *
  * @package Clearbricks
@@ -9,7 +9,9 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class tplNodeBlock extends tplNode
+namespace Clearbricks\Template;
+
+class NodeBlock extends Node
 {
     protected $attr;
     protected $tag;
@@ -32,7 +34,7 @@ class tplNodeBlock extends tplNode
     {
         return $this->closed;
     }
-    public function compile(template $tpl): string
+    public function compile(Template $tpl): string
     {
         if ($this->closed) {
             $content = parent::compile($tpl);
@@ -47,3 +49,6 @@ class tplNodeBlock extends tplNode
         return $this->tag;
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Template\NodeBlock', 'tplNodeBlock');

@@ -1,6 +1,6 @@
 <?php
 /**
- * @class tplNodeText
+ * @class NodeText
  * @brief Text node, for any non-tpl content
  *
  * @package Clearbricks
@@ -9,7 +9,9 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class tplNodeText extends tplNode
+namespace Clearbricks\Template;
+
+class NodeText extends Node
 {
     // Simple text node, only holds its content
     protected $content;
@@ -20,7 +22,7 @@ class tplNodeText extends tplNode
         $this->content = $text;
     }
 
-    public function compile(template $tpl): string
+    public function compile(Template $tpl): string
     {
         return $this->content;
     }
@@ -30,3 +32,6 @@ class tplNodeText extends tplNode
         return 'TEXT';
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Template\NodeText', 'tplNodeText');
