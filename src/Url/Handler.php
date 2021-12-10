@@ -1,13 +1,19 @@
 <?php
 /**
- * @class urlHandler
+ * @class Handler
+ *
+ * URL handler
  *
  * @package Clearbricks
  *
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-class urlHandler
+namespace Clearbricks\Url;
+
+use Clearbricks\Common\Exception;
+
+class Handler
 {
     protected $types = [];
     protected $default_handler;
@@ -207,3 +213,6 @@ class urlHandler
         array_multisort($r, SORT_DESC, $this->types);
     }
 }
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Url\Handler', 'urlHandler');
