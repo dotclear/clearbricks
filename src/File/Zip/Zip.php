@@ -1,6 +1,6 @@
 <?php
 /**
- * @class FileZip
+ * @class Zip
  *
  * @package Clearbricks
  * @subpackage Zip
@@ -8,12 +8,12 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-namespace Clearbricks\Zip;
+namespace Clearbricks\File\Zip;
 
 use Clearbricks\Common\Exception;
 use Clearbricks\Common\Files;
 
-class FileZip
+class Zip
 {
     protected $entries  = [];
     protected $root_dir = null;
@@ -357,4 +357,4 @@ class FileZip
 }
 
 /** Backwards compatibility */
-class_alias('Clearbricks\Zip\FileZip', 'fileZip');
+class_alias('Clearbricks\File\Zip\Zip', 'fileZip');

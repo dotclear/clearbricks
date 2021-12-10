@@ -45,8 +45,10 @@ $__autoload = [
     'tidyDiff'                  => $src . '/Diff/TidyDiff.php',
     'tidyDiffChunk'             => $src . '/Diff/TidyDiffChunk.php',
     'tidyDiffLine'              => $src . '/Diff/TidyDiffLine.php',
-    'filemanager'               => $src . '/FileManager/FileManager.php',
-    'fileItem'                  => $src . '/FileManager/FileItem.php',
+    'filemanager'               => $src . '/File/Manager/Manager.php',
+    'fileItem'                  => $src . '/File/Manager/Item.php',
+    'fileZip'                   => $src . '/File/Zip/Zip.php',
+    'fileUnzip'                 => $src . '/File/Zip/Unzip.php',
     'htmlFilter'                => $src . '/Html/Filter.php',
     'htmlValidator'             => $src . '/Html/Validator.php',
     'formComponent'             => $src . '/Html/Form/Component.php',
@@ -119,8 +121,6 @@ $__autoload = [
     'IXR_Base64'                => $src . '/Xml/Incutio/IXR_Base64.php',
     'IXR_IntrospectionServer'   => $src . '/Xml/Incutio/IXR_IntrospectionServer.php',
     'IXR_ClientMulticall'       => $src . '/Xml/Incutio/IXR_ClientMulticall.php',
-    'fileZip'                   => $src . '/Zip/FileZip.php',
-    'fileUnzip'                 => $src . '/Zip/FileUnzip.php',
 ];
 
 function cb_autoload($name)

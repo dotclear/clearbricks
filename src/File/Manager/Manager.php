@@ -1,6 +1,6 @@
 <?php
 /**
- * @class filemanager
+ * @class Manager
  * @brief Files management class
  *
  * @package Clearbricks
@@ -9,13 +9,13 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-namespace Clearbricks\FileManager;
+namespace Clearbricks\File\Manager;
 
 use Clearbricks\Common\Exception;
 use Clearbricks\Common\Path;
 use Clearbricks\Common\Files;
 
-class FileManager
+class Manager
 {
     public $root;                                               ///< string: Files manager root path
     public $root_url;                                           ///< string: Files manager root URL
@@ -44,7 +44,7 @@ class FileManager
         }
 
         if (!$this->root) {
-            throw new \Exception('Invalid root directory.');
+            throw new Exception('Invalid root directory.');
         }
     }
 
@@ -60,11 +60,11 @@ class FileManager
     {
         $realdir = Path::real($this->root . '/' . Path::clean($dir));
         if (!$realdir || !is_dir($realdir)) {
-            throw new \Exception('Invalid directory.');
+            throw new Exception('Invalid directory.');
         }
 
         if ($this->isExclude($realdir)) {
-            throw new \Exception('Directory is excluded.');
+            throw new Exception('Directory is excluded.');
         }
 
         $this->pwd = $realdir;
@@ -220,7 +220,7 @@ class FileManager
 
             if ($this->inJail($fname) && !$this->isExclude($fname)) {
                 if (is_dir($fname) && $file != '.') {
-                    $tmp = new FileItem($fname, $this->root, $this->root_url);
+                    $tmp = new Item($fname, $this->root, $this->root_url);
                     if ($file == '..') {
                         $tmp->parent = true;
                     }
@@ -228,7 +228,7 @@ class FileManager
                 }
 
                 if (is_file($fname) && strpos($file, '.') !== 0 && !$this->isFileExclude($file)) {
-                    $f_res[] = new FileItem($fname, $this->root, $this->root_url);
+                    $f_res[] = new Item($fname, $this->root, $this->root_url);
                 }
             }
         }
@@ -254,7 +254,7 @@ class FileManager
         $dir = [];
 
         foreach ($d['dirs'] as $v) {
-            $dir[] = new FileItem($v, $this->root, $this->root_url);
+            $dir[] = new Item($v, $this->root, $this->root_url);
         }
 
         return $dir;
@@ -282,23 +282,23 @@ class FileManager
         $dest = $this->pwd . '/' . Path::clean($dest);
 
         if ($this->isFileExclude($dest)) {
-            throw new \Exception(__('Uploading this file is not allowed.'));
+            throw new Exception(__('Uploading this file is not allowed.'));
         }
 
         if (!$this->inJail(dirname($dest))) {
-            throw new \Exception(__('Destination directory is not in jail.'));
+            throw new Exception(__('Destination directory is not in jail.'));
         }
 
         if (!$overwrite && file_exists($dest)) {
-            throw new \Exception(__('File already exists.'));
+            throw new Exception(__('File already exists.'));
         }
 
         if (!is_writable(dirname($dest))) {
-            throw new \Exception(__('Cannot write in this directory.'));
+            throw new Exception(__('Cannot write in this directory.'));
         }
 
         if (@move_uploaded_file($tmp, $dest) === false) {
-            throw new \Exception(__('An error occurred while writing the file.'));
+            throw new Exception(__('An error occurred while writing the file.'));
         }
 
         Files::inheritChmod($dest);
@@ -323,7 +323,7 @@ class FileManager
         $dest = $this->pwd . '/' . Path::clean($name);
 
         if ($this->isFileExclude($dest)) {
-            throw new \Exception(__('Uploading this file is not allowed.'));
+            throw new Exception(__('Uploading this file is not allowed.'));
         }
 
         if (!$this->inJail(dirname($dest))) {
@@ -331,12 +331,12 @@ class FileManager
         }
 
         if (!is_writable(dirname($dest))) {
-            throw new \Exception(__('Cannot write in this directory.'));
+            throw new Exception(__('Cannot write in this directory.'));
         }
 
         $fp = @fopen($dest, 'wb');
         if ($fp === false) {
-            throw new \Exception(__('An error occurred while writing the file.'));
+            throw new Exception(__('An error occurred while writing the file.'));
         }
 
         fwrite($fp, $bits);
@@ -373,24 +373,24 @@ class FileManager
         $d = $this->root . '/' . Path::clean($d);
 
         if (($s = Path::real($s)) === false) {
-            throw new \Exception(__('Source file does not exist.'));
+            throw new Exception(__('Source file does not exist.'));
         }
 
         $dest_dir = Path::real(dirname($d));
 
         if (!$this->inJail($s)) {
-            throw new \Exception(__('File is not in jail.'));
+            throw new Exception(__('File is not in jail.'));
         }
         if (!$this->inJail($dest_dir)) {
-            throw new \Exception(__('File is not in jail.'));
+            throw new Exception(__('File is not in jail.'));
         }
 
         if (!is_writable($dest_dir)) {
-            throw new \Exception(__('Destination directory is not writable.'));
+            throw new Exception(__('Destination directory is not writable.'));
         }
 
         if (@rename($s, $d) === false) {
-            throw new \Exception(__('Unable to rename file.'));
+            throw new Exception(__('Unable to rename file.'));
         }
     }
 
@@ -425,15 +425,15 @@ class FileManager
         $f = Path::real($this->pwd . '/' . Path::clean($f));
 
         if (!$this->inJail($f)) {
-            throw new \Exception(__('File is not in jail.'));
+            throw new Exception(__('File is not in jail.'));
         }
 
         if (!Files::isDeletable($f)) {
-            throw new \Exception(__('File cannot be removed.'));
+            throw new Exception(__('File cannot be removed.'));
         }
 
         if (@unlink($f) === false) {
-            throw new \Exception(__('File cannot be removed.'));
+            throw new Exception(__('File cannot be removed.'));
         }
     }
 
@@ -449,15 +449,15 @@ class FileManager
         $d = Path::real($this->pwd . '/' . Path::clean($d));
 
         if (!$this->inJail($d)) {
-            throw new \Exception(__('Directory is not in jail.'));
+            throw new Exception(__('Directory is not in jail.'));
         }
 
         if (!Files::isDeletable($d)) {
-            throw new \Exception(__('Directory cannot be removed.'));
+            throw new Exception(__('Directory cannot be removed.'));
         }
 
         if (@rmdir($d) === false) {
-            throw new \Exception(__('Directory cannot be removed.'));
+            throw new Exception(__('Directory cannot be removed.'));
         }
     }
 
@@ -482,4 +482,4 @@ class FileManager
 }
 
 /** Backwards compatibility */
-class_alias('Clearbricks\FileManager\FileManager', 'fileManager');
+class_alias('Clearbricks\File\Manager\Manager', 'fileManager');

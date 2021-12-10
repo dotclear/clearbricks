@@ -1,6 +1,6 @@
 <?php
 /**
- * @class FileUnzip
+ * @class Unzip
  *
  * @package Clearbricks
  * @subpackage Zip
@@ -8,12 +8,12 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-namespace Clearbricks\Zip;
+namespace Clearbricks\File\Zip;
 
 use Clearbricks\Common\Exception;
 use Clearbricks\Common\Files;
 
-class FileUnzip
+class Unzip
 {
     protected $file_name;
     protected $compressed_list = [];
@@ -548,4 +548,4 @@ class FileUnzip
 }
 
 /** Backwards compatibility */
-class_alias('Clearbricks\Zip\FileUnzip', 'fileUnzip');
+class_alias('Clearbricks\File\Zip\Unzip', 'fileUnzip');

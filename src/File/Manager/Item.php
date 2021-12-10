@@ -1,6 +1,6 @@
 <?php
 /**
- * @class fileItem
+ * @class Item
  * @brief File item
  *
  * File item class used by {@link filemanager}. In this class {@link $file} could
@@ -12,12 +12,12 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-namespace Clearbricks\FileManager;
+namespace Clearbricks\File\Manager;
 
 use Clearbricks\Common\Path;
 use Clearbricks\Common\Files;
 
-class FileItem
+class Item
 {
     public $file;           ///< string: Complete path to file
     public $basename;       ///< string: File basename
@@ -89,4 +89,4 @@ class FileItem
 }
 
 /** Backwards compatibility */
-class_alias('Clearbricks\FileManager\FileItem', 'fileItem');
+class_alias('Clearbricks\File\Manager\Item', 'fileItem');
