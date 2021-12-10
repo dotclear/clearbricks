@@ -11,7 +11,7 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-namespace Clearbricks\Pager;
+namespace Clearbricks\Html;
 
 use Clearbricks\Common\Html;
 
@@ -203,4 +203,4 @@ class Pager
 }
 
 /** Backwards compatibility */
-class_alias('Clearbricks\Pager\Pager', 'pager');
+class_alias('Clearbricks\Html\Pager', 'pager');
