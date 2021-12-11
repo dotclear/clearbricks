@@ -22,7 +22,7 @@ class Mysqlimb4 extends Layer implements InterfaceLayer
 {
     public static $weak_locks = true; ///< boolean: Enables weak locks if true
 
-    protected $__driver = '\MySQLimb4';
+    protected $__driver = 'mysqlimb4';
     protected $__syntax = 'mysql';
 
     public function db_connect($host, $user, $password, $database)
@@ -31,7 +31,7 @@ class Mysqlimb4 extends Layer implements InterfaceLayer
             throw new Exception('PHP MySQLi functions are not available');
         }
 
-        $port   = abs((int) ini_get('\MySQLi.default_port'));
+        $port   = abs((int) ini_get('mysqli.default_port'));
         $socket = '';
         if (strpos($host, ':') !== false) {
             // Port or socket given
@@ -47,7 +47,7 @@ class Mysqlimb4 extends Layer implements InterfaceLayer
                 $port = 0;
             }
         }
-        if (($link = @\MySQLi_connect($host, $user, $password, $database, $port, $socket)) === false) {
+        if (($link = @mysqli_connect($host, $user, $password, $database, $port, $socket)) === false) {
             throw new Exception('Unable to connect to database');
         }
 
@@ -58,7 +58,7 @@ class Mysqlimb4 extends Layer implements InterfaceLayer
 
     public function db_pconnect($host, $user, $password, $database)
     {
-        // No pconnect wtih \MySQLi, below code is for comatibility
+        // No pconnect with mysqli, below code is for comatibility
         return $this->db_connect($host, $user, $password, $database);
     }
 
@@ -83,14 +83,14 @@ class Mysqlimb4 extends Layer implements InterfaceLayer
     public function db_close($handle)
     {
         if ($handle instanceof \MySQLi) {
-            \MySQLi_close($handle);
+            mysqli_close($handle);
         }
     }
 
     public function db_version($handle)
     {
         if ($handle instanceof \MySQLi) {
-            $v = \MySQLi_get_server_version($handle);
+            $v = mysqli_get_server_version($handle);
 
             return sprintf('%s.%s.%s', ($v - ($v % 10000)) / 10000, ($v - ($v % 100)) % 10000 / 100, $v % 100);
         }
@@ -101,7 +101,7 @@ class Mysqlimb4 extends Layer implements InterfaceLayer
     public function db_query($handle, $query)
     {
         if ($handle instanceof \MySQLi) {
-            $res = @\MySQLi_query($handle, $query);
+            $res = @mysqli_query($handle, $query);
             if ($res === false) {
                 $e = new Exception($this->db_last_error($handle));
 
@@ -185,7 +185,7 @@ class Mysqlimb4 extends Layer implements InterfaceLayer
     public function db_changes($handle, $res)
     {
         if ($handle instanceof \MySQLi) {
-            return \MySQLi_affected_rows($handle);
+            return mysqli_affected_rows($handle);
         }
 
         return 0;
@@ -194,7 +194,7 @@ class Mysqlimb4 extends Layer implements InterfaceLayer
     public function db_last_error($handle)
     {
         if ($handle instanceof \MySQLi) {
-            $e = \MySQLi_error($handle);
+            $e = mysqli_error($handle);
             if ($e) {
                 return $e . ' (' . \MySQLi_errno($handle) . ')';
             }
@@ -206,7 +206,7 @@ class Mysqlimb4 extends Layer implements InterfaceLayer
     public function db_escape_string($str, $handle = null)
     {
         if ($handle instanceof \MySQLi) {
-            return \MySQLi_real_escape_string($handle, $str);
+            return mysqli_real_escape_string($handle, $str);
         }
 
         return addslashes($str);

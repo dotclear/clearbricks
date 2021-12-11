@@ -53,7 +53,7 @@ class Record implements \Iterator, \Countable
     /**
      * To staticRecord
      *
-     * Converts this record to a {@link staticRecord} instance.
+     * Converts this record to a {@link StaticRecord} instance.
      */
     public function toStatic()
     {

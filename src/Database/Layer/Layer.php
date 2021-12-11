@@ -137,10 +137,10 @@ class Layer
     /**
      * Run query and get results
      *
-     * Executes a query and return a {@link record} object.
+     * Executes a query and return a {@link Record} object.
      *
      * @param string    $sql            SQL query
-     * @return record
+     * @return Record
      */
     public function select($sql)
     {
@@ -170,9 +170,9 @@ class Layer
     /**
      * Return an empty record
      *
-     * Return an empty {@link record} object (without any information).
+     * Return an empty {@link Record} object (without any information).
      *
-     * @return record
+     * @return Record
      */
     public function nullRecord()
     {
@@ -496,11 +496,11 @@ class Layer
     /**
      * Cursor object
      *
-     * Returns a new instance of {@link cursor} class on <var>$table</var> for
+     * Returns a new instance of {@link Cursor} class on <var>$table</var> for
      * the current connection.
      *
      * @param string        $table    Target table
-     * @return cursor
+     * @return Cursor
      */
     public function openCursor($table)
     {

@@ -5,8 +5,8 @@
  *
  * All methods in this interface should be implemented in your database driver.
  *
- * Database driver is a class that extends {@link dbLayer}, implements
- * {@link i_dbLayer} and has a name of the form (driver name)Connection.
+ * Database driver is a class that extends {@link Layer}, implements
+ * {@link InterfaceLayer} and has a name of the form (driver name)Connection.
  *
  * @package Clearbricks
  * @subpackage DBLayer
@@ -14,7 +14,6 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-
 namespace Clearbricks\Database\Layer;
 
 interface InterfaceLayer

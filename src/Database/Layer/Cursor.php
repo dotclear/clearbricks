@@ -1,7 +1,7 @@
 <?php
 /**
  * @class Cursor
- * @brief DBLayer Cursor
+ * @brief Database Layer Cursor
  *
  * This class implements facilities to insert or update in a table.
  *
@@ -26,7 +26,7 @@ class Cursor
      * Constructor
      *
      * Init cursor object on a given table. Note that you can init it with
-     * {@link dbLayer::openCursor() openCursor()} method of your connection object.
+     * {@link Layer::openCursor() openCursor()} method of your connection object.
      *
      * Example:
      * <code>
@@ -40,11 +40,11 @@ class Cursor
      * ?>
      * </code>
      *
-     * @see dbLayer::openCursor()
-     * @param dbLayer   $con      Connection object
+     * @see Layer::openCursor()
+     * @param Layer   $con      Connection object
      * @param string    $table    Table name
      */
-    public function __construct(\dbLayer $con, string $table)
+    public function __construct(Layer $con, string $table)
     {
         $this->__con = &$con;
         $this->setTable($table);

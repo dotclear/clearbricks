@@ -16,6 +16,7 @@ namespace Clearbricks\Database\Layer\Driver;
 use Clearbricks\Common\Exception;
 use Clearbricks\Database\Layer\Layer;
 use Clearbricks\Database\Layer\InterfaceLayer;
+use Clearbricks\Database\Layer\StaticRecord;
 
 class Sqlite extends Layer implements InterfaceLayer
 {
@@ -54,8 +55,8 @@ class Sqlite extends Layer implements InterfaceLayer
             $this->db_exec($handle, 'PRAGMA short_column_names = 1');
             $this->db_exec($handle, 'PRAGMA encoding = "UTF-8"');
             $handle->sqliteCreateFunction('now', [$this, 'now'], 0);
-            if (class_exists('Collator') && method_exists($handle, 'sqliteCreateCollation')) {
-                $this->utf8_unicode_ci = new Collator('root');
+            if (class_exists('\Collator') && method_exists($handle, 'sqliteCreateCollation')) {
+                $this->utf8_unicode_ci = new \Collator('root');
                 if (!$handle->sqliteCreateCollation('utf8_unicode_ci', [$this->utf8_unicode_ci, 'compare'])) {
                     $this->utf8_unicode_ci = null;
                 }
@@ -113,7 +114,7 @@ class Sqlite extends Layer implements InterfaceLayer
         $info['rows'] = count($data);
         $result->closeCursor(); // @phpstan-ignore-line
 
-        return new staticRecord($data, $info);
+        return new StaticRecord($data, $info);
     }
 
     public function db_query($handle, $query)
@@ -295,7 +296,7 @@ class Sqlite extends Layer implements InterfaceLayer
 
     public function lexFields()
     {
-        $fmt = $this->utf8_unicode_ci instanceof Collator ? '%s COLLATE utf8_unicode_ci' : 'LOWER(%s)';
+        $fmt = $this->utf8_unicode_ci instanceof \Collator ? '%s COLLATE utf8_unicode_ci' : 'LOWER(%s)';
         foreach (func_get_args() as $v) {
             if (is_string($v)) {
                 $res[] = sprintf($fmt, $v);
