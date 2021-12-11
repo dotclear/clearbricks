@@ -8,7 +8,7 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-namespace Clearbricks\Database\Layer\Schema;
+namespace Clearbricks\Database\Schema;
 
 use Clearbricks\Common\Exception;
 
@@ -241,4 +241,4 @@ class StructTable
 }
 
 /** Backwards compatibility */
-class_alias('Clearbricks\Database\Layer\Schema\StructTable', 'dbStructTable');
+class_alias('Clearbricks\Database\Schema\StructTable', 'dbStructTable');
