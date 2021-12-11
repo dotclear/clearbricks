@@ -16,7 +16,7 @@ namespace Clearbricks\Image;
 use Clearbricks\Common\Exception;
 use Clearbricks\Common\Files;
 
-class ImageTools
+class Tools
 {
     public $res; ///< resource: Image resource
     public $memory_limit = null;
@@ -318,4 +318,4 @@ class ImageTools
 }
 
 /** Backwards compatibility */
-class_alias('Clearbricks\Image\ImageTools', 'imageTools');
+class_alias('Clearbricks\Image\Tools', 'imageTools');

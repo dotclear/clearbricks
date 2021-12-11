@@ -1,6 +1,6 @@
 <?php
 /**
- * @class ImageMeta
+ * @class Meta
  * @brief Image metadata
  *
  * This class reads EXIF, IPTC and XMP metadata from a JPEG file.
@@ -19,7 +19,7 @@ use Clearbricks\Common\Exception;
 use Clearbricks\Common\Text;
 use Clearbricks\Common\Html;
 
-class ImageMeta
+class Meta
 {
     protected $xmp  = []; ///< array: Internal XMP array
     protected $iptc = []; ///< array: Internal IPTC array
@@ -395,4 +395,4 @@ class ImageMeta
 }
 
 /** Backwards compatibility */
-class_alias('Clearbricks\Image\ImageMeta', 'imageMeta');
+class_alias('Clearbricks\Image\Meta', 'imageMeta');
