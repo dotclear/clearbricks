@@ -1093,6 +1093,8 @@ class_alias('Clearbricks\Common\L10n', 'l10n');
 
 namespace { // enter to global namespace to declare root __() function
 
+use Clearbricks\Common\L10n;
+
 /* @cond ONCE */
 if (!function_exists('__')) {
     /** @endcond */
