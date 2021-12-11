@@ -19,7 +19,7 @@ if (!defined('CLEARBRICKS_LEGACY')) {
 if (!defined('CLEARBRICKS_AUTOLOAD')) {
     define('CLEARBRICKS_AUTOLOAD', true);
 }
-
+//*
 # Legacy common class
 if (CLEARBRICKS_LEGACY === true) {
     $__autoload = [
@@ -37,7 +37,7 @@ if (CLEARBRICKS_LEGACY === true) {
         'text'              => dirname(__FILE__) . '/Text.php',
     ];
 }
-
+//*/
 # Instanciate Clearbricks PSR-4 autoloader
 if (CLEARBRICKS_AUTOLOAD === true) {
     require_once dirname(__FILE__) . '/Autoloader.php';

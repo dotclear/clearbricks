@@ -268,10 +268,10 @@ class Manager
      * <var>$dest</var> should be in jail. This method will throw exception
      * if the file cannot be written.
      *
-     * You should first verify upload status, with {@link files::uploadStatus()}
+     * You should first verify upload status, with {@link Files::uploadStatus()}
      * or PHP native functions.
      *
-     * @see files::uploadStatus()
+     * @see Files::uploadStatus()
      * @param string    $tmp            Temporary uploaded file path
      * @param string    $dest        Destination file
      * @param boolean    $overwrite    overwrite mode
