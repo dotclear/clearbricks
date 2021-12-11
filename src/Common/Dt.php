@@ -121,7 +121,7 @@ class Dt
 
     public static function strftime_legacy(string $p, $ts = null)
     {
-        return date(dt::strftimeToDateFormat($p), $ts ?? time());
+        return date(Dt::strftimeToDateFormat($p), $ts ?? time());
     }
 
     /**
@@ -136,7 +136,7 @@ class Dt
      */
     public static function dt2str(string $p, string $dt, ?string $tz = null): string
     {
-        return dt::str($p, strtotime($dt), $tz);
+        return Dt::str($p, strtotime($dt), $tz);
     }
 
     /**
