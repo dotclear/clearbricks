@@ -1,0 +1,42 @@
+<?php
+/**
+ * @class Message
+ *
+ * @package Clearbricks
+ * @subpackage Network
+ *
+ * @copyright Olivier Meunier & Association Dotclear
+ * @copyright GPL-2.0-only
+ */
+namespace Clearbricks\Network\Nntp;
+
+use Clearbricks\Mail\Message as mMessage;
+
+class Message extends mMessage
+{
+    public function __construct($message)
+    {
+        parent::__construct($message);
+    }
+
+    public function getTS()
+    {
+        if (isset($this->headers['date'])) {
+            return strtotime($this->headers['date']);
+        }
+
+        return time();
+    }
+
+    public function getReferences()
+    {
+        if (!isset($this->headers['references'])) {
+            return [];
+        }
+
+        return explode(' ', $this->headers['references']);
+    }
+}
+
+/** Backwards compatibility */
+class_alias('Clearbricks\Network\Nntp\Message', 'nntpMessage');
