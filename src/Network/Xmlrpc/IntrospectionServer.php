@@ -119,26 +119,26 @@ class IntrospectionServer extends Server
 
         # Over-rides default call method, adds signature check
         if (!$this->hasMethod($methodname)) {
-            throw new Exception('Server error. Requested method "' . $methodname . '" not specified.', -32601);
+            throw new XmlrpcException('Server error. Requested method "' . $methodname . '" not specified.', -32601);
         }
 
         $method    = $this->callbacks[$methodname];
         $signature = $this->signatures[$methodname];
 
         if (!is_array($signature)) {
-            throw new Exception('Server error. Wrong method signature', -36600);
+            throw new XmlrpcException('Server error. Wrong method signature', -36600);
         }
 
         $return_type = array_shift($signature);
 
         # Check the number of arguments
         if (count($args) > count($signature)) {
-            throw new Exception('Server error. Wrong number of method parameters', -32602);
+            throw new XmlrpcException('Server error. Wrong number of method parameters', -32602);
         }
 
         # Check the argument types
         if (!$this->checkArgs($args, $signature)) {
-            throw new Exception('Server error. Invalid method parameters', -32602);
+            throw new XmlrpcException('Server error. Invalid method parameters', -32602);
         }
 
         # It passed the test - run the "real" method call
@@ -212,7 +212,7 @@ class IntrospectionServer extends Server
     protected function methodSignature($method)
     {
         if (!$this->hasMethod($method)) {
-            throw new Exception('Server error. Requested method "' . $method . '" not specified.', -32601);
+            throw new XmlrpcException('Server error. Requested method "' . $method . '" not specified.', -32601);
         }
 
         # We should be returning an array of types

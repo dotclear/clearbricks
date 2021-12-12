@@ -18,6 +18,7 @@
 namespace Clearbricks\Network\Xmlrpc;
 
 use Clearbricks\Network\Http\Http;
+use Clearbricks\Common\Exception;
 
 class Client extends Http
 {
@@ -82,7 +83,7 @@ class Client extends Http
 
         # Is the message a fault?
         if ($this->message->messageType == 'fault') {
-            throw new Exception($this->message->faultString, $this->message->faultCode);
+            throw new XmlrpcException($this->message->faultString, $this->message->faultCode);
         }
 
         return $this->message->params[0];
