@@ -19,7 +19,7 @@ if (!defined('CLEARBRICKS_LEGACY')) {
 if (!defined('CLEARBRICKS_AUTOLOAD')) {
     define('CLEARBRICKS_AUTOLOAD', true);
 }
-//*
+
 # Legacy common class
 if (CLEARBRICKS_LEGACY === true) {
     $__autoload = [
@@ -37,13 +37,13 @@ if (CLEARBRICKS_LEGACY === true) {
         'text'              => dirname(__FILE__) . '/Text.php',
     ];
 }
-//*/
+
 # Instanciate Clearbricks PSR-4 autoloader
 if (CLEARBRICKS_AUTOLOAD === true) {
     require_once dirname(__FILE__) . '/Autoloader.php';
 
     $clearbricks_autoloader = new Clearbricks\Common\Autoloader();
-    $clearbricks_autoloader->addNamespace('Clearbricks', dirname(__FILE__) . '/../');
+    $clearbricks_autoloader->addNamespace('Clearbricks', dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
 }
 
 # We only need l10n __() function
