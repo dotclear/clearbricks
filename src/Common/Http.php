@@ -193,7 +193,7 @@ class Http
         $uid .= $_SERVER['HTTP_USER_AGENT']     ?? '';
         $uid .= $_SERVER['HTTP_ACCEPT_CHARSET'] ?? '';
 
-        return crypt::hmac($key, $uid);
+        return Crypt::hmac($key, $uid);
     }
 
     /**

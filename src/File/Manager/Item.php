@@ -27,7 +27,7 @@ class Item
     public $extension;      ///< string: File extension
     public $relname;        ///< string: File path relative to <var>$root</var> given in constructor
     public $parent = false; ///< boolean: Parent directory (ie. "..")
-    public $type;           ///< string: File MimeType. See {@link files::getMimeType()}.
+    public $type;           ///< string: File MimeType. See {@link Files::getMimeType()}.
     public $type_prefix;    ///< string
     public $mtime;          ///< integer: File modification timestamp
     public $size;           ///< integer: File size

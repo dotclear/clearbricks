@@ -8,22 +8,16 @@
  * @copyright GPL-2.0-only
  * @version 1.2
  */
+declare(strict_types=1);
 
 $src = dirname(__FILE__) . '/src';
 
-$__autoload = [
-    'l10n'                      => $src . '/Common/L10n.php',
-    'crypt'                     => $src . '/Common/Crypt.php',
-    'dt'                        => $src . '/Common/Dt.php',
-    'files'                     => $src . '/Common/Files.php',
-    'path'                      => $src . '/Common/Path.php',
-    'form'                      => $src . '/Common/Form.php',
-    'formSelectOption'          => $src . '/Common/FormSelectOption.php',
-    'forms'                     => $src . '/Common/Forms.php',
-    'formsSelectOption'         => $src . '/Common/FormsSelectOption.php',
-    'html'                      => $src . '/Common/Html.php',
-    'http'                      => $src . '/Common/Http.php',
-    'text'                      => $src . '/Common/Text.php',
+if (!isset($__autoload) || !is_array($__autoload)) {
+    $__autoload = [];
+}
+
+# Common class are loaded in src/Common/_main.php
+$__autoload = array_merge($__autoload, [
     'cursor'                    => $src . '/Database/Layer/Cursor.php',
     'i_dbLayer'                 => $src . '/Database/Layer/InterfaceLayer.php',
     'dbLayer'                   => $src . '/Database/Layer/Layer.php',
@@ -121,14 +115,4 @@ $__autoload = [
     'IXR_Base64'                => $src . '/Xml/Incutio/IXR_Base64.php',
     'IXR_IntrospectionServer'   => $src . '/Xml/Incutio/IXR_IntrospectionServer.php',
     'IXR_ClientMulticall'       => $src . '/Xml/Incutio/IXR_ClientMulticall.php',
-];
-
-function cb_autoload($name)
-{
-    global $__autoload;
-
-    if (isset($__autoload[$name])) {
-        require_once $__autoload[$name];
-    }
-}
-spl_autoload_register('cb_autoload');
+]);

@@ -134,7 +134,7 @@ class Forms
      * or an array of object of type {@link formsSelectOption}.
      * If **$params['items']** is an array of arrays, optgroups will be created.
      *
-     * @uses form::formSelectOption
+     * @uses Form::formSelectOption
      *
      * @param array         $params     Select parameters
      *      $param[

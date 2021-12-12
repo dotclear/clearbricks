@@ -8,7 +8,7 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-namespace Clearbricks\Database\Layer\Schema;
+namespace Clearbricks\Database\Schema;
 
 class Schema
 {
@@ -222,4 +222,4 @@ class Schema
 }
 
 /** Backwards compatibility */
-class_alias('Clearbricks\Database\Layer\Schema\Schema', 'dbSchema');
+class_alias('Clearbricks\Database\Schema\Schema', 'dbSchema');

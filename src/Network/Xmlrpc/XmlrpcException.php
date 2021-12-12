@@ -11,9 +11,9 @@
  */
 namespace Clearbricks\Network\Xmlrpc;
 
-use Clearbricks\Common\Exception as CbException;
+use Clearbricks\Common\Exception;
 
-class Exception extends CbException
+class XmlrpcException extends Exception
 {
     /**
      * @param string    $message        Exception message
@@ -26,4 +26,4 @@ class Exception extends CbException
 }
 
 /** Backwards compatibility */
-class_alias('Clearbricks\Network\Xmlrpc\Exception', 'xmlrpcException');
+class_alias('Clearbricks\Network\Xmlrpc\XmlrpcException', 'xmlrpcException');

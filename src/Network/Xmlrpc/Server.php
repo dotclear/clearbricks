@@ -21,6 +21,8 @@
  */
 namespace Clearbricks\Network\Xmlrpc;
 
+use Clearbricks\Common\Exception;
+
 class Server
 {
     protected $callbacks = []; ///< array Server methods
@@ -119,7 +121,7 @@ class Server
             $this->message->parse();
 
             if ($this->message->messageType != 'methodCall') {
-                throw new Exception('Server error. Invalid xml-rpc. not conforming to spec. Request must be a methodCall', -32600);
+                throw new XmlrpcException('Server error. Invalid xml-rpc. not conforming to spec. Request must be a methodCall', -32600);
             }
 
             $result = $this->call($this->message->methodName, $this->message->params);
@@ -177,14 +179,14 @@ class Server
     protected function call($methodname, $args)
     {
         if (!$this->hasMethod($methodname)) {
-            throw new Exception('server error. requested method "' . $methodname . '" does not exist.', -32601);
+            throw new XmlrpcException('server error. requested method "' . $methodname . '" does not exist.', -32601);
         }
 
         $method = $this->callbacks[$methodname];
 
         # Perform the callback and send the response
         if (!is_callable($method)) {
-            throw new Exception('server error. internal requested function for "' . $methodname . '" does not exist.', -32601);
+            throw new XmlrpcException('server error. internal requested function for "' . $methodname . '" does not exist.', -32601);
         }
 
         return call_user_func_array($method, $args);
@@ -346,7 +348,7 @@ class Server
 
             try {
                 if ($method == 'system.multicall') {
-                    throw new Exception('Recursive calls to system.multicall are forbidden', -32600);
+                    throw new XmlrpcException('Recursive calls to system.multicall are forbidden', -32600);
                 }
 
                 $result   = $this->call($method, $params);

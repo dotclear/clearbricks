@@ -11,6 +11,8 @@
  */
 namespace Clearbricks\Network\Xmlrpc;
 
+use Clearbricks\Common\Exception;
+
 class Message
 {
     protected $brutxml; ///< string Brut XML message

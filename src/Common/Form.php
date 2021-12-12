@@ -68,7 +68,7 @@ class Form
      * **$default** could be a string or an associative array of any of optional parameters:
      *
      * ```php
-     * form::combo(['name', 'id'], $data, ['class' => 'maximal', 'extra_html' => 'data-language="php"']);
+     * Form::combo(['name', 'id'], $data, ['class' => 'maximal', 'extra_html' => 'data-language="php"']);
      * ```
      *
      * @uses formSelectOption
@@ -299,7 +299,7 @@ class Form
      * $nid could be a string or an array of name and ID.
      * $default could be a string or an associative array of any of optional parameters
      *
-     * @uses form::field
+     * @uses Form::field
      *
      * @param string|array  $nid         Element ID and name
      * @param integer       $size        Element size
@@ -357,7 +357,7 @@ class Form
      * $nid could be a string or an array of name and ID.
      * $size could be a integer or an associative array of any of optional parameters
      *
-     * @uses form::field
+     * @uses Form::field
      *
      * @param string|array   $nid         Element ID and name
      * @param mixed          $size        Element size | associative array of optional parameters
@@ -415,7 +415,7 @@ class Form
      * $nid could be a string or an array of name and ID.
      * $size could be a integer or an associative array of any of optional parameters
      *
-     * @uses form::field
+     * @uses Form::field
      *
      * @param string|array   $nid          Element ID and name
      * @param mixed          $size         Element size | associative array of optional parameters
@@ -473,7 +473,7 @@ class Form
      * $nid could be a string or an array of name and ID.
      * $size could be a integer or an associative array of any of optional parameters
      *
-     * @uses form::field
+     * @uses Form::field
      *
      * @param string|array   $nid          Element ID and name
      * @param mixed          $size         Element size | associative array of optional parameters
@@ -531,7 +531,7 @@ class Form
      * $nid could be a string or an array of name and ID.
      * $size could be a integer or an associative array of any of optional parameters
      *
-     * @uses form::field
+     * @uses Form::field
      *
      * @param string|array   $nid          Element ID and name
      * @param mixed          $size         Element size | associative array of optional parameters
@@ -596,7 +596,7 @@ class Form
      * $nid could be a string or an array of name and ID.
      * $size could be a integer or an associative array of any of optional parameters
      *
-     * @uses form::field
+     * @uses Form::field
      *
      * @param string|array   $nid          Element ID and name
      * @param mixed          $size         Element size | associative array of optional parameters
@@ -661,7 +661,7 @@ class Form
      * $nid could be a string or an array of name and ID.
      * $size could be a integer or an associative array of any of optional parameters
      *
-     * @uses form::field
+     * @uses Form::field
      *
      * @param string|array   $nid          Element ID and name
      * @param mixed          $size         Element size | associative array of optional parameters
