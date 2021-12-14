@@ -34,8 +34,16 @@ class http
 
             $scheme = $_SERVER['HTTP_X_FORWARDED_PROTO'];
 
-            $name_port_array = explode(':', $_SERVER['HTTP_HOST']);
-            $server_name     = $name_port_array[0];
+            if (isset($_SERVER['HTTP_HOST'])) {
+                $name_port_array = explode(':', $_SERVER['HTTP_HOST']);
+            } else {
+                // Fallback to server name and port
+                $name_port_array = [
+                    $_SERVER['SERVER_NAME'],
+                    $_SERVER['SERVER_PORT'],
+                ];
+            }
+            $server_name = $name_port_array[0];
 
             $port = isset($name_port_array[1]) ? ':' . $name_port_array[1] : '';
             if (($port == ':80' && $scheme == 'http') || ($port == ':443' && $scheme == 'https')) {
@@ -45,8 +53,14 @@ class http
             return $scheme . '://' . $server_name . $port;
         }
 
-        $server_name = explode(':', $_SERVER['HTTP_HOST']);
-        $server_name = $server_name[0];
+        if (isset($_SERVER['HTTP_HOST'])) {
+            $server_name = explode(':', $_SERVER['HTTP_HOST']);
+            $server_name = $server_name[0];
+        } else {
+            // Fallback to server name
+            $server_name = $_SERVER['SERVER_NAME'];
+        }
+
         if (self::$https_scheme_on_443 && $_SERVER['SERVER_PORT'] == '443') {
             $scheme = 'https';
             $port   = '';
@@ -288,7 +302,7 @@ class http
 
         # Common headers list
         $headers[] = 'Last-Modified: ' . gmdate('D, d M Y H:i:s', $ts) . ' GMT';
-        $headers[] = 'Cache-Control: must-revalidate, max-age=' . abs((integer) self::$cache_max_age);
+        $headers[] = 'Cache-Control: must-revalidate, max-age=' . abs((int) self::$cache_max_age);
         $headers[] = 'Pragma:';
 
         if ($since >= $ts) {
@@ -386,7 +400,7 @@ class http
                 502 => 'Bad Gateway',
                 503 => 'Service Unavailable',
                 504 => 'Gateway Timeout',
-                505 => 'HTTP Version Not Supported'
+                505 => 'HTTP Version Not Supported',
             ];
 
             $msg = $msg_codes[$code] ?? '-';
