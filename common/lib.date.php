@@ -169,7 +169,7 @@ class dt
         $o  = self::getTimeOffset($tz, $ts);
         $of = sprintf('%02u%02u', abs($o) / 3600, (abs($o) % 3600) / 60);
 
-        return strftime('%a, %d %b %Y %H:%M:%S ' . ($o < 0 ? '-' : '+') . $of, $ts);
+        return self::strftime_legacy('%a, %d %b %Y %H:%M:%S ' . ($o < 0 ? '-' : '+') . $of, $ts);
     }
 
     /**

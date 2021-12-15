@@ -126,99 +126,99 @@ class wiki2xhtml extends atoum
         ]);
         $wiki = <<<EOW
 
-URL: https://dotclear.org/
-((/public/image.jpg))
+            URL: https://dotclear.org/
+            ((/public/image.jpg))
 
-With an ~anchor~ here
+            With an ~anchor~ here
 
-Some __strong__ and ''em'' texts with {{citation}} and ££text££ and @@code@@ plus an ??ACME|american company manufacturing everything?? where we can ++insert++ and --delete-- texts, and ;;with;; some ``<span class="focus">focus</span>`` and a footnote\$\$Footnote content\$\$
+            Some __strong__ and ''em'' texts with {{citation}} and ££text££ and @@code@@ plus an ??ACME|american company manufacturing everything?? where we can ++insert++ and --delete-- texts, and ;;with;; some ``<span class="focus">focus</span>`` and a footnote\$\$Footnote content\$\$
 
-Another ""mark""
+            Another ""mark""
 
-!!!Top level title
+            !!!Top level title
 
-!!Second level title
+            !!Second level title
 
-!Third level title
+            !Third level title
 
-----
+            ----
 
-> Big quote
-> on several lines
+            > Big quote
+            > on several lines
 
-* List item 1
-* List item 2
+            * List item 1
+            * List item 2
 
- Pre code
- Another code line
+             Pre code
+             Another code line
 
-= term
-: definition
+            = term
+            : definition
 
-:-)
+            :-)
 
-) And finally an aside paragraph with a square^2 inside and some CO,,2,,
-)
-) End
+            ) And finally an aside paragraph with a square^2 inside and some CO,,2,,
+            )
+            ) End
 
-|summary of details block
-content of details block
-|
-EOW;
+            |summary of details block
+            content of details block
+            |
+            EOW;
         $html = <<<EOH
-<p>URL: https://dotclear.org/
-((/public/image.jpg))</p>
+            <p>URL: https://dotclear.org/
+            ((/public/image.jpg))</p>
 
 
-<p>With an ~anchor~ here</p>
+            <p>With an ~anchor~ here</p>
 
 
-<p>Some __strong__ and ''em'' texts with {{citation}} and ££text££ and @@code@@ plus an ??ACME|american company manufacturing everything?? where we can ++insert++ and --delete-- texts, and ;;with;; some ``&lt;span class="focus"&gt;focus&lt;/span&gt;`` and a footnote\$\$Footnote content\$\$</p>
+            <p>Some __strong__ and ''em'' texts with {{citation}} and ££text££ and @@code@@ plus an ??ACME|american company manufacturing everything?? where we can ++insert++ and --delete-- texts, and ;;with;; some ``&lt;span class="focus"&gt;focus&lt;/span&gt;`` and a footnote\$\$Footnote content\$\$</p>
 
 
-<p>Another ""mark""</p>
+            <p>Another ""mark""</p>
 
 
-<p>!!!Top level title</p>
+            <p>!!!Top level title</p>
 
 
-<p>!!Second level title</p>
+            <p>!!Second level title</p>
 
 
-<p>!Third level title</p>
+            <p>!Third level title</p>
 
 
-<p>----</p>
+            <p>----</p>
 
 
-<p>&gt; Big quote
-&gt; on several lines</p>
+            <p>&gt; Big quote
+            &gt; on several lines</p>
 
 
-<p>* List item 1
-* List item 2</p>
+            <p>* List item 1
+            * List item 2</p>
 
 
-<p>Pre code
-Another code line</p>
+            <p>Pre code
+            Another code line</p>
 
 
-<p>= term
-: definition</p>
+            <p>= term
+            : definition</p>
 
 
-<p>:-)</p>
+            <p>:-)</p>
 
 
-<p>) And finally an aside paragraph with a square^2 inside and some CO,,2,,
-)
-) End</p>
+            <p>) And finally an aside paragraph with a square^2 inside and some CO,,2,,
+            )
+            ) End</p>
 
 
-<p>|summary of details block
-content of details block
-|</p>
-EOH;
+            <p>|summary of details block
+            content of details block
+            |</p>
+            EOH;
         $this
             ->string($wiki2xhtml->transform($wiki))
             ->isIdenticalTo($html);
@@ -232,14 +232,14 @@ EOH;
 
         $wiki2xhtml->setOpts([
             'active_hr' => 0,
-            'active_br' => 0]);
+            'active_br' => 0, ]);
         $this
             ->string($wiki2xhtml->transform('----' . "\n" . 'Line%%%'))
             ->isIdenticalTo('<p><del></del>' . "\n" . 'Line%%%</p>');
 
         $wiki2xhtml->setOpts([
             'active_hr' => 1,
-            'active_br' => 1]);
+            'active_br' => 1, ]);
         $this
             ->string($wiki2xhtml->transform('----' . "\n" . 'Line%%%'))
             ->isIdenticalTo('<hr />' . "\n\n" . '<p>Line<br /></p>');
@@ -428,7 +428,7 @@ EOH;
         $out_html = "<p>some text</p>\n<p><strong>un</strong> autre</p>\n";
 
         $in                = "///dummy-macro\n<?php\necho 'Hello World!';\n?>\n///";
-        $out_without_macro = "<pre>dummy-macro\n&lt;?php\necho 'Hello World!';\n?&gt;\n</pre>";
+        $out_without_macro = "<pre>dummy-macro\n&lt;?php\necho &#039;Hello World!&#039;;\n?&gt;\n</pre>";
         $out               = "[[<?php\necho 'Hello World!';\n?>\n]]";
 
         $this
@@ -439,7 +439,7 @@ EOH;
             ->isIdenticalTo($out_without_macro);
 
         $this
-            ->if($wiki2xhtml->registerFunction('macro:dummy-macro', function ($s) {return "[[$s]]";}))
+            ->if($wiki2xhtml->registerFunction('macro:dummy-macro', fn ($s) => "[[$s]]"))
             ->object($wiki2xhtml->functions['macro:dummy-macro'])
             ->isCallable()
             ->string($wiki2xhtml->transform($in))
@@ -482,7 +482,7 @@ EOH;
             ->string($wiki2xhtml->transform($in_html))
             ->isIdenticalTo($out_html);
 
-        $wiki2xhtml->registerFunction('wikiword', function ($str) {return strtolower($str);});
+        $wiki2xhtml->registerFunction('wikiword', fn ($str) => strtolower($str));
         $this
             ->string($wiki2xhtml->transform($in_html))
             ->isIdenticalTo($out_html_acronyms);
@@ -500,9 +500,7 @@ EOH;
             ->string($wiki2xhtml->transform($in_html))
             ->isIdenticalTo($out_html);
 
-        $wiki2xhtml->registerFunction('url:wiki', function ($url, $content) {
-            return ['url' => 'https://example.org/wiki/' . substr($url, 5), 'content' => $content, 'title' => 'Wiki'];
-        });
+        $wiki2xhtml->registerFunction('url:wiki', fn ($url, $content) => ['url' => 'https://example.org/wiki/' . substr($url, 5), 'content' => $content, 'title' => 'Wiki']);
         $this
             ->string($wiki2xhtml->transform($in_html))
             ->isIdenticalTo($out_html_special);
@@ -513,36 +511,36 @@ EOH;
         $wiki2xhtml = new \wiki2xhtml();
 
         $in_html = <<<EOW
-) lorem ipsum 1
+            ) lorem ipsum 1
 
-) lorem ipsum 2§§class="title"§§
+            ) lorem ipsum 2§§class="title"§§
 
-) lorem ipsum 3 §§class="title"§§
+            ) lorem ipsum 3 §§class="title"§§
 
-) lorem ipsum 4§§class="title"§§
-) lorem ipsum 5
+            ) lorem ipsum 4§§class="title"§§
+            ) lorem ipsum 5
 
-) lorem ipsum 6
-) lorem ipsum 7§§class="title"§§
-EOW;
+            ) lorem ipsum 6
+            ) lorem ipsum 7§§class="title"§§
+            EOW;
 
         $out_html = <<<EOH
-<aside><p>lorem ipsum 1</p></aside>
+            <aside><p>lorem ipsum 1</p></aside>
 
 
-<aside class="title"><p>lorem ipsum 2</p></aside>
+            <aside class="title"><p>lorem ipsum 2</p></aside>
 
 
-<aside class="title"><p>lorem ipsum 3</p></aside>
+            <aside class="title"><p>lorem ipsum 3</p></aside>
 
 
-<aside class="title"><p>lorem ipsum 4
-lorem ipsum 5</p></aside>
+            <aside class="title"><p>lorem ipsum 4
+            lorem ipsum 5</p></aside>
 
 
-<aside><p>lorem ipsum 6
-lorem ipsum 7</p></aside>
-EOH;
+            <aside><p>lorem ipsum 6
+            lorem ipsum 7</p></aside>
+            EOH;
 
         $this
             ->string($wiki2xhtml->transform($in_html))
@@ -567,7 +565,7 @@ EOH;
             ['sup', ['^', '^']],
             ['sub', [',,', ',,']],
             ['i', ['££', '££']],
-            ['span', [';;', ';;']]
+            ['span', [';;', ';;']],
         ];
     }
 
@@ -575,15 +573,15 @@ EOH;
     {
         return [
             ['\[not a link | not a title label\]',
-                '<p>[not a link | not a title label]</p>', 0],
+                '<p>[not a link | not a title label]</p>', 0, ],
             ['``<strong>%s</strong>%s</p><ul><li>%s</li><li>%s</li></ul>``',
-                '<p><strong>%s</strong>%s</p><ul><li>%s</li><li>%s</li></ul></p>', 4],
+                '<p><strong>%s</strong>%s</p><ul><li>%s</li><li>%s</li></ul></p>', 4, ],
             ["* item 1\n** item 1.1\n** item 1.2\n* item 2\n* item 3\n*# item 3.1",
                 '<ul><li>item 1<ul><li>item 1.1</li><li>item 1.2</li></ul></li>' .
-                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li></ul>', 1],
+                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li></ul>', 1, ],
             ["# item 1\n#* item 1.1\n#* item 1.2\n# item 2\n# item 3\n## item 3.1\n# item 4",
                 '<ol><li>item 1<ul><li>item 1.1</li><li>item 1.2</li></ul></li>' .
-                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li><li>item 4</li></ol>', 1],
+                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li><li>item 4</li></ol>', 1, ],
 
             ['{{%s}}', '<p><q>%s</q></p>', 1],
             ['{{%s|%lang%}}', '<p><q lang="%lang%">%s</q></p>', 1],
@@ -610,10 +608,10 @@ EOH;
 
             ['%s$$%s$$', '<p>%s<sup>[<a href="#wiki-footnote-1" id="rev-wiki-footnote-1">1</a>]</sup></p>' .
                 '<div class="footnotes"><h4>Note</h4><p>[<a href="#rev-wiki-footnote-1" id="wiki-footnote-1">1</a>] ' .
-                '%s</p></div>', 2],
+                '%s</p></div>', 2, ],
             ['%s$$%s$$', '<p>%s<sup>[<a href="#wiki-footnote-1" id="rev-wiki-footnote-1">1</a>]</sup></p>' .
                 '<div class="footnotes"><h4>Note</h4><p>[<a href="#rev-wiki-footnote-1" id="wiki-footnote-1">1</a>] ' .
-                '%s</p></div>', 2],
+                '%s</p></div>', 2, ],
 
             ["* %s\n///\n%s\n///\n", '<ul><li>%s</li></ul><pre>%s</pre>', 2],
             ["# %s\n///\n%s\n///\n", '<ol><li>%s</li></ol><pre>%s</pre>', 2],
@@ -631,31 +629,31 @@ EOH;
 
             ["* item 1§§class=\"title\"§§\n** item 1.1\n** item 1.2\n* item 2\n* item 3\n*# item 3.1",
                 '<ul><li class="title">item 1<ul><li>item 1.1</li><li>item 1.2</li></ul></li>' .
-                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li></ul>', 1],
+                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li></ul>', 1, ],
             ["# item 1§§class=\"title\"§§\n#* item 1.1\n#* item 1.2\n# item 2\n# item 3\n## item 3.1\n# item 4",
                 '<ol><li class="title">item 1<ul><li>item 1.1</li><li>item 1.2</li></ul></li>' .
-                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li><li>item 4</li></ol>', 1],
+                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li><li>item 4</li></ol>', 1, ],
 
             ["* item 1§§class=\"title\"|class=\"parent\"§§\n** item 1.1\n** item 1.2\n* item 2\n* item 3\n*# item 3.1",
                 '<ul class="parent"><li class="title">item 1<ul><li>item 1.1</li><li>item 1.2</li></ul></li>' .
-                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li></ul>', 1],
+                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li></ul>', 1, ],
             ["# item 1§§class=\"title\"|class=\"parent\"§§\n#* item 1.1\n#* item 1.2\n# item 2\n# item 3\n## item 3.1\n# item 4",
                 '<ol class="parent"><li class="title">item 1<ul><li>item 1.1</li><li>item 1.2</li></ul></li>' .
-                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li><li>item 4</li></ol>', 1],
+                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li><li>item 4</li></ol>', 1, ],
 
             ["* item 1§§|class=\"parent\"§§\n** item 1.1\n** item 1.2\n* item 2\n* item 3\n*# item 3.1",
                 '<ul class="parent"><li>item 1<ul><li>item 1.1</li><li>item 1.2</li></ul></li>' .
-                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li></ul>', 1],
+                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li></ul>', 1, ],
             ["# item 1§§|class=\"parent\"§§\n#* item 1.1\n#* item 1.2\n# item 2\n# item 3\n## item 3.1\n# item 4",
                 '<ol class="parent"><li>item 1<ul><li>item 1.1</li><li>item 1.2</li></ul></li>' .
-                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li><li>item 4</li></ol>', 1],
+                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li><li>item 4</li></ol>', 1, ],
 
             ["* item 1§§class=\"title-1\"§§\n** item 1.1\n** item 1.2§§class=\"title-1-2\"§§\n* item 2\n* item 3\n*# item 3.1",
                 '<ul><li class="title-1">item 1<ul><li>item 1.1</li><li class="title-1-2">item 1.2</li></ul></li>' .
-                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li></ul>', 1],
+                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li></ul>', 1, ],
             ["# item 1§§class=\"title-1\"§§\n#* item 1.1\n#* item 1.2§§class=\"title-1-2\"§§\n# item 2\n# item 3\n## item 3.1\n# item 4",
                 '<ol><li class="title-1">item 1<ul><li>item 1.1</li><li class="title-1-2">item 1.2</li></ul></li>' .
-                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li><li>item 4</li></ol>', 1],
+                '<li>item 2</li><li>item 3<ol><li>item 3.1</li></ol></li><li>item 4</li></ol>', 1, ],
 
             ['----§§class="title"§§', '<hr class="title" />', 0],
             [' %s§§class="title"§§', '<pre class="title">%s</pre>', 1],
