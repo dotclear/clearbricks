@@ -32,7 +32,7 @@ if (class_exists('dbLayer')) {
                 if (strpos($host, ':') !== false) {
                     $bits = explode(':', $host);
                     $host = array_shift($bits);
-                    $port = abs((integer) array_shift($bits));
+                    $port = abs((int) array_shift($bits));
                 }
                 $str .= "host = '" . addslashes($host) . "' ";
 
@@ -209,7 +209,11 @@ if (class_exists('dbLayer')) {
 
         public function db_escape_string($str, $handle = null)
         {
-            return pg_escape_string($str);
+            if ($handle instanceof PgSql\Connection) {
+                return pg_escape_string($handle, $str);
+            }
+
+            return addslashes($str);
         }
 
         public function db_write_lock($table)
@@ -236,7 +240,7 @@ if (class_exists('dbLayer')) {
                 '%M' => 'MI',
                 '%m' => 'MM',
                 '%S' => 'SS',
-                '%Y' => 'YYYY'
+                '%Y' => 'YYYY',
             ];
 
             $pattern = str_replace(array_keys($rep), array_values($rep), $pattern);
@@ -248,7 +252,7 @@ if (class_exists('dbLayer')) {
         {
             $default = [
                 'order'   => '',
-                'collate' => false
+                'collate' => false,
             ];
             foreach (func_get_args() as $v) {
                 if (is_string($v)) {
@@ -278,7 +282,7 @@ if (class_exists('dbLayer')) {
                 if (is_string($v)) {
                     $res[] = sprintf($fmt, $v);
                 } elseif (is_array($v)) {
-                    $res = array_map(function ($i) use ($fmt) {return sprintf($fmt, $i);}, $v);
+                    $res = array_map(fn ($i) => sprintf($fmt, $i), $v);
                 }
             }
 
