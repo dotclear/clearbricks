@@ -142,12 +142,12 @@ class sessionDB
     public function getCookieParameters($value = null, $expire = 0)
     {
         return [
-            session_name(),
-            $value,
-            $expire,
-            $this->cookie_path,
-            $this->cookie_domain,
-            $this->cookie_secure,
+            (string) session_name(),
+            (string) $value,
+            (int) $expire,
+            (string) $this->cookie_path,
+            (string) $this->cookie_domain,
+            (bool) $this->cookie_secure,
         ];
     }
 
