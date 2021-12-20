@@ -427,9 +427,9 @@ class wiki2xhtml extends atoum
         $in_html  = "///html\n<p>some text</p>\n<p><strong>un</strong> autre</p>\n///";
         $out_html = "<p>some text</p>\n<p><strong>un</strong> autre</p>\n";
 
-        $in                = "///dummy-macro\n<?php\necho 'Hello World!';\n?>\n///";
-        $out_without_macro = "<pre>dummy-macro\n&lt;?php\necho &#039;Hello World!&#039;;\n?&gt;\n</pre>";
-        $out               = "[[<?php\necho 'Hello World!';\n?>\n]]";
+        $in                = "///dummy-macro\n<?php\necho \"Hello World!\";\n?>\n///";
+        $out_without_macro = "<pre>dummy-macro\n&lt;?php\necho &quot;Hello World!&quot;;\n?&gt;\n</pre>";
+        $out               = "[[<?php\necho \"Hello World!\";\n?>\n]]";
 
         $this
             ->string($wiki2xhtml->transform($in_html))
