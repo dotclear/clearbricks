@@ -209,7 +209,8 @@ if (class_exists('dbLayer')) {
 
         public function db_escape_string($str, $handle = null)
         {
-            if ($handle instanceof PgSql\Connection) {
+            /* @phpstan-ignore-next-line */
+            if (is_resource($handle) || (class_exists('PgSql\Connection') && $handle instanceof PgSql\Connection)) {
                 return pg_escape_string($handle, $str);
             }
 
