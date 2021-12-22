@@ -252,14 +252,14 @@ class xmlTag
         $res = $attr = $content = '';
 
         foreach ($this->_attr as $k => $v) {
-            $attr .= ' ' . $k . '="' . htmlspecialchars($v, ENT_QUOTES, $encoding) . '"';
+            $attr .= ' ' . $k . '="' . htmlspecialchars((string) $v, ENT_QUOTES, $encoding) . '"';
         }
 
         foreach ($this->_nodes as $node) {
             if ($node instanceof self) {
                 $content .= $node->toXML();
             } else {
-                $content .= htmlspecialchars($node, ENT_QUOTES, $encoding);
+                $content .= htmlspecialchars((string) $node, ENT_QUOTES, $encoding);
             }
         }
 
