@@ -56,11 +56,13 @@ class imageMeta
         }
 
         # Fix date format
-        $this->properties['DateTimeOriginal'] = preg_replace(
-            '/^(\d{4}):(\d{2}):(\d{2})/',
-            '$1-$2-$3',
-            $this->properties['DateTimeOriginal']
-        );
+        if ($this->properties['DateTimeOriginal'] !== null) {
+            $this->properties['DateTimeOriginal'] = preg_replace(
+                '/^(\d{4}):(\d{2}):(\d{2})/',
+                '$1-$2-$3',
+                $this->properties['DateTimeOriginal']
+            );
+        }
 
         return $this->properties;
     }
