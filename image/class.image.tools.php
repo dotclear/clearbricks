@@ -220,11 +220,11 @@ class imageTools
         $imgWidth  = $this->getW();
         $imgHeight = $this->getH();
 
-        if (strpos($WIDTH, '%', 0)) {
+        if (strpos((string) $WIDTH, '%', 0)) {
             $WIDTH = $imgWidth * $WIDTH / 100;
         }
 
-        if (strpos($HEIGHT, '%', 0)) {
+        if (strpos((string) $HEIGHT, '%', 0)) {
             $HEIGHT = $imgHeight * $HEIGHT / 100;
         }
 
@@ -296,6 +296,14 @@ class imageTools
         if ($_h < 1) {
             $_h = 1;
         }
+
+        // convert float to int
+        settype($decalW, 'int');
+        settype($decalH, 'int');
+        settype($_w, 'int');
+        settype($_h, 'int');
+        settype($cropW, 'int');
+        settype($cropH, 'int');
 
         # truecolor is 24 bit RGB, ie. 3 bytes per pixel.
         $this->memoryAllocate($_w, $_h, 3);
