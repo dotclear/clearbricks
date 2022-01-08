@@ -125,7 +125,7 @@ class dbSchema
                 require dirname(__FILE__) . '/class.' . $driver . '.dbschema.php';
             } else {
                 trigger_error('Unable to load DB schema layer for ' . $driver, E_USER_ERROR);
-                exit(1);
+                exit(1);    // @phpstan-ignore-line
             }
         }
 
@@ -153,7 +153,7 @@ class dbSchema
             'float8'            => 'float',
             'decimal'           => 'numeric',
             'character varying' => 'varchar',
-            'character'         => 'char'
+            'character'         => 'char',
         ];
 
         if (isset($c[$type])) {

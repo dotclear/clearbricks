@@ -115,9 +115,9 @@ class diff
      */
     public static function uniDiff($src, $dst, $ctx = 2)
     {
-        list($src, $dst) = [explode("\n", $src), explode("\n", $dst)];
-        $cx              = count($src);
-        $cy              = count($dst);
+        [$src, $dst] = [explode("\n", $src), explode("\n", $dst)];  // @phpstan-ignore-line
+        $cx          = count($src);
+        $cy          = count($dst);
 
         $ses = diff::SES($src, $dst);
         $res = '';
@@ -129,7 +129,7 @@ class diff
         $buffer    = '';
 
         foreach ($ses as $cmd) {
-            list($cmd, $x, $y) = [$cmd[0], $cmd[1], $cmd[2]];
+            [$cmd, $x, $y] = [$cmd[0], $cmd[1], $cmd[2]];
 
             # New chunk
             if ($x - $pos_x > 2 * $ctx || $pos_x == 0 && $x > $ctx) {
@@ -249,8 +249,8 @@ class diff
                     throw new Exception(__('Chunk is out of range'));
                 }
 
-                $old_length = (integer) $m[2];
-                $new_length = (integer) $m[4];
+                $old_length = (int) $m[2];
+                $new_length = (int) $m[4];
             }
             # Context
             elseif (preg_match(self::$up_ctx, $line, $m)) {

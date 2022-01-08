@@ -248,7 +248,7 @@ class dbLayer
             $driver_class = $driver . 'Connection';
         } else {
             trigger_error('Unable to load DB layer for ' . $driver, E_USER_ERROR);
-            exit(1);
+            exit(1);    // @phpstan-ignore-line
         }
 
         return new $driver_class($host, $database, $user, $password, $persistent);
@@ -636,7 +636,7 @@ class dbLayer
             if (is_string($v)) {
                 $res[] = sprintf($fmt, $v);
             } elseif (is_array($v)) {
-                $res = array_map(function ($i) use ($fmt) {return sprintf($fmt, $i);}, $v);
+                $res = array_map(fn ($i) => sprintf($fmt, $i), $v);
             }
         }
 
