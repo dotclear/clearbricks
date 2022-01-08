@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cabd0d6b82ac002b4a87258726472f13",
+    "content-hash": "fd0b51d300ef4ccfe9d80190855cbf8f",
     "packages": [],
     "packages-dev": [
         {
@@ -671,7 +671,8 @@
     "stability-flags": {
         "atoum/atoum": 20,
         "fzaninotto/faker": 20,
-        "atoum/reports-extension": 20
+        "atoum/reports-extension": 20,
+        "phpstan/phpstan": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

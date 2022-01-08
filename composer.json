@@ -16,7 +16,7 @@
     "atoum/atoum": "dev-master",
     "fzaninotto/faker": "dev-master",
     "atoum/reports-extension": "dev-master",
-    "phpstan/phpstan": "^1.1"
+    "phpstan/phpstan": "1.4.x-dev"
   },
   "config": {
     "bin-dir": "bin/"
