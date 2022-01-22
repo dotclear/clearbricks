@@ -18,7 +18,7 @@ class mysqlimb4Schema extends mysqliSchema
 
         foreach ($fields as $n => $f) {
             $type    = $f['type'];
-            $len     = (integer) $f['len'];
+            $len     = (int) $f['len'];
             $default = $f['default'];
             $null    = $f['null'];
 

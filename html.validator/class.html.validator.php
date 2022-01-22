@@ -110,7 +110,7 @@ if (class_exists('netHttp')) {
          */
         public static function validate($fragment, $charset = 'UTF-8')
         {
-            $o        = new self;
+            $o        = new self();
             $fragment = $o->getDocument($fragment);
 
             if ($o->perform($fragment, $charset)) {

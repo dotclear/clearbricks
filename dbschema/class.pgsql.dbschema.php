@@ -19,7 +19,7 @@ if (class_exists('dbSchema')) {
             'r' => 'restrict',
             'c' => 'cascade',
             'n' => 'set null',
-            'd' => 'set default'
+            'd' => 'set default',
         ];
 
         public function dbt2udt(string $type, ?int &$len, &$default): string
@@ -85,7 +85,7 @@ if (class_exists('dbSchema')) {
                     'type'    => $type,
                     'len'     => $len,
                     'null'    => $null,
-                    'default' => $default
+                    'default' => $default,
                 ];
             }
 
@@ -116,9 +116,9 @@ if (class_exists('dbSchema')) {
             while ($rs->fetch()) {
                 $k = [
                     'name'    => $rs->idxname,
-                    'primary' => (boolean) $rs->indisprimary,
-                    'unique'  => (boolean) $rs->indisunique,
-                    'cols'    => []
+                    'primary' => (bool) $rs->indisprimary,
+                    'unique'  => (bool) $rs->indisunique,
+                    'cols'    => [],
                 ];
 
                 for ($i = 1; $i <= $rs->indnatts; $i++) {
@@ -157,7 +157,7 @@ if (class_exists('dbSchema')) {
                 $k = [
                     'name' => $rs->idxname,
                     'type' => $rs->amname,
-                    'cols' => []
+                    'cols' => [],
                 ];
 
                 for ($i = 1; $i <= $rs->indnatts; $i++) {
@@ -203,7 +203,7 @@ if (class_exists('dbSchema')) {
                     'p_table' => $rs->reftab,
                     'p_cols'  => [],
                     'update'  => $this->ref_actions_map[$rs->confupdtype],
-                    'delete'  => $this->ref_actions_map[$rs->confdeltype]
+                    'delete'  => $this->ref_actions_map[$rs->confdeltype],
                 ];
 
                 $cols = $this->con->select(sprintf($cols_sql, $rs->conrelid, $conkey, $rs->confrelid, $confkey));
@@ -224,7 +224,7 @@ if (class_exists('dbSchema')) {
 
             foreach ($fields as $n => $f) {
                 $type    = $f['type'];
-                $len     = (integer) $f['len'];
+                $len     = (int) $f['len'];
                 $default = $f['default'];
                 $null    = $f['null'];
 

@@ -29,7 +29,7 @@ class imageMeta
      */
     public static function readMeta($f)
     {
-        $o = new self;
+        $o = new self();
         $o->loadFile($f);
 
         return $o->getMeta();
@@ -242,86 +242,86 @@ class imageMeta
         'Country'           => null,
         'State'             => null,
         'City'              => null,
-        'Keywords'          => null
+        'Keywords'          => null,
     ];
 
     # XMP
     protected $xmp_reg = [
         'Title' => [
-            '%<dc:title>\s*<rdf:Alt>\s*<rdf:li.*?>(.+?)</rdf:li>%msu'
+            '%<dc:title>\s*<rdf:Alt>\s*<rdf:li.*?>(.+?)</rdf:li>%msu',
         ],
         'Description' => [
-            '%<dc:description>\s*<rdf:Alt>\s*<rdf:li.*?>(.+?)</rdf:li>%msu'
+            '%<dc:description>\s*<rdf:Alt>\s*<rdf:li.*?>(.+?)</rdf:li>%msu',
         ],
         'Creator' => [
-            '%<dc:creator>\s*<rdf:Seq>\s*<rdf:li>(.+?)</rdf:li>%msu'
+            '%<dc:creator>\s*<rdf:Seq>\s*<rdf:li>(.+?)</rdf:li>%msu',
         ],
         'Rights' => [
-            '%<dc:rights>\s*<rdf:Alt>\s*<rdf:li.*?>(.+?)</rdf:li>%msu'
+            '%<dc:rights>\s*<rdf:Alt>\s*<rdf:li.*?>(.+?)</rdf:li>%msu',
         ],
         'Make' => [
             '%<tiff:Make>(.+?)</tiff:Make>%msu',
-            '%tiff:Make="(.+?)"%msu'
+            '%tiff:Make="(.+?)"%msu',
         ],
         'Model' => [
             '%<tiff:Model>(.+?)</tiff:Model>%msu',
-            '%tiff:Model="(.+?)"%msu'
+            '%tiff:Model="(.+?)"%msu',
         ],
         'Exposure' => [
             '%<exif:ExposureTime>(.+?)</exif:ExposureTime>%msu',
-            '%exif:ExposureTime="(.+?)"%msu'
+            '%exif:ExposureTime="(.+?)"%msu',
         ],
         'FNumber' => [
             '%<exif:FNumber>(.+?)</exif:FNumber>%msu',
-            '%exif:FNumber="(.+?)"%msu'
+            '%exif:FNumber="(.+?)"%msu',
         ],
         'MaxApertureValue' => [
             '%<exif:MaxApertureValue>(.+?)</exif:MaxApertureValue>%msu',
-            '%exif:MaxApertureValue="(.+?)"%msu'
+            '%exif:MaxApertureValue="(.+?)"%msu',
         ],
         'ExposureProgram' => [
             '%<exif:ExposureProgram>(.+?)</exif:ExposureProgram>%msu',
-            '%exif:ExposureProgram="(.+?)"%msu'
+            '%exif:ExposureProgram="(.+?)"%msu',
         ],
         'ISOSpeedRatings' => [
-            '%<exif:ISOSpeedRatings>\s*<rdf:Seq>\s*<rdf:li>(.+?)</rdf:li>%msu'
+            '%<exif:ISOSpeedRatings>\s*<rdf:Seq>\s*<rdf:li>(.+?)</rdf:li>%msu',
         ],
         'DateTimeOriginal' => [
             '%<exif:DateTimeOriginal>(.+?)</exif:DateTimeOriginal>%msu',
-            '%exif:DateTimeOriginal="(.+?)"%msu'
+            '%exif:DateTimeOriginal="(.+?)"%msu',
         ],
         'ExposureBiasValue' => [
             '%<exif:ExposureBiasValue>(.+?)</exif:ExposureBiasValue>%msu',
-            '%exif:ExposureBiasValue="(.+?)"%msu'
+            '%exif:ExposureBiasValue="(.+?)"%msu',
         ],
         'MeteringMode' => [
             '%<exif:MeteringMode>(.+?)</exif:MeteringMode>%msu',
-            '%exif:MeteringMode="(.+?)"%msu'
+            '%exif:MeteringMode="(.+?)"%msu',
         ],
         'FocalLength' => [
             '%<exif:FocalLength>(.+?)</exif:FocalLength>%msu',
-            '%exif:FocalLength="(.+?)"%msu'
+            '%exif:FocalLength="(.+?)"%msu',
         ],
         'Lens' => [
             '%<aux:Lens>(.+?)</aux:Lens>%msu',
-            '%aux:Lens="(.+?)"%msu'
+            '%aux:Lens="(.+?)"%msu',
         ],
         'CountryCode' => [
             '%<Iptc4xmpCore:CountryCode>(.+?)</Iptc4xmpCore:CountryCode>%msu',
-            '%Iptc4xmpCore:CountryCode="(.+?)"%msu'
+            '%Iptc4xmpCore:CountryCode="(.+?)"%msu',
         ],
         'Country' => [
             '%<photoshop:Country>(.+?)</photoshop:Country>%msu',
-            '%photoshop:Country="(.+?)"%msu'
+            '%photoshop:Country="(.+?)"%msu',
         ],
         'State' => [
             '%<photoshop:State>(.+?)</photoshop:State>%msu',
-            '%photoshop:State="(.+?)"%msu'
+            '%photoshop:State="(.+?)"%msu',
         ],
         'City' => [
             '%<photoshop:City>(.+?)</photoshop:City>%msu',
-            '%photoshop:City="(.+?)"%msu'
-        ]
+            '%photoshop:City="(.+?)"%msu',
+        ],
     ];
 
     # IPTC
@@ -349,7 +349,7 @@ class imageMeta
         '2#116' => 'Iptc.Copyright',             // Copyright Notice (128 chars max)
         '2#118' => 'Iptc.Contact',               // (128 chars max)
         '2#120' => 'Iptc.Caption',               // Caption/Abstract (2000 chars max)
-        '2#122' => 'Iptc.CaptionWriter'         // Caption Writer/Editor (32 chars max)
+        '2#122' => 'Iptc.CaptionWriter',         // Caption Writer/Editor (32 chars max)
     ];
 
     protected $iptc_to_property = [
@@ -361,7 +361,7 @@ class imageMeta
         'Iptc.CountryName'   => 'Country',
         'Iptc.ProvinceState' => 'State',
         'Iptc.City'          => 'City',
-        'Iptc.Keywords'      => 'Keywords'
+        'Iptc.Keywords'      => 'Keywords',
     ];
 
     # EXIF
@@ -380,7 +380,7 @@ class imageMeta
         'DateTimeOriginal'  => 'DateTimeOriginal',
         'ExposureBiasValue' => 'ExposureBiasValue',
         'MeteringMode'      => 'MeteringMode',
-        'FocalLength'       => 'FocalLength'
+        'FocalLength'       => 'FocalLength',
         //'' => 'Lens',
         //'' => 'CountryCode',
         //'' => 'Country',

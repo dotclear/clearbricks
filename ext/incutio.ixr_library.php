@@ -210,7 +210,7 @@ class IXR_Message
 
                 break;
             case 'double':
-                $value                     = (double) trim($this->_currentTagContents);
+                $value                     = (float) trim($this->_currentTagContents);
                 $this->_currentTagContents = '';
                 $valueFlag                 = true;
 
@@ -238,7 +238,7 @@ class IXR_Message
 
                 break;
             case 'boolean':
-                $value                     = (boolean) trim($this->_currentTagContents);
+                $value                     = (bool) trim($this->_currentTagContents);
                 $this->_currentTagContents = '';
                 $valueFlag                 = true;
 
@@ -353,17 +353,17 @@ class IXR_Server
         $resultxml = $r->getXml();
         // Create the XML
         $xml = <<<EOD
-<methodResponse>
-  <params>
-    <param>
-      <value>
-        $resultxml
-      </value>
-    </param>
-  </params>
-</methodResponse>
+            <methodResponse>
+              <params>
+                <param>
+                  <value>
+                    $resultxml
+                  </value>
+                </param>
+              </params>
+            </methodResponse>
 
-EOD;
+            EOD;
         // Send it
         $this->output($xml, $encoding);
     }
@@ -428,16 +428,16 @@ EOD;
         $this->capabilities = [
             'xmlrpc' => [
                 'specUrl'     => 'http://www.xmlrpc.com/spec',
-                'specVersion' => 1
+                'specVersion' => 1,
             ],
             'faults_interop' => [
                 'specUrl'     => 'http://xmlrpc-epi.sourceforge.net/specs/rfc.fault_codes.php',
-                'specVersion' => 20010516
+                'specVersion' => 20010516,
             ],
             'system.multicall' => [
                 'specUrl'     => 'http://www.xmlrpc.com/discuss/msgReader$1208',
-                'specVersion' => 1
-            ]
+                'specVersion' => 1,
+            ],
         ];
     }
     public function getCapabilities($args)
@@ -471,7 +471,7 @@ EOD;
             if ($result instanceof IXR_Error) {
                 $return[] = [
                     'faultCode'   => $result->code,
-                    'faultString' => $result->message
+                    'faultString' => $result->message,
                 ];
             } else {
                 $return[] = [$result];
@@ -492,12 +492,12 @@ class IXR_Request
         $this->method = $method;
         $this->args   = $args;
         $this->xml    = <<<EOD
-<?xml version="1.0"?>
-<methodCall>
-<methodName>{$this->method}</methodName>
-<params>
+            <?xml version="1.0"?>
+            <methodCall>
+            <methodName>{$this->method}</methodName>
+            <params>
 
-EOD;
+            EOD;
         foreach ($this->args as $arg) {
             $this->xml .= '<param><value>';
             $v = new IXR_Value($arg);
@@ -665,24 +665,24 @@ class IXR_Error
     public function getXml()
     {
         $xml = <<<EOD
-<methodResponse>
-  <fault>
-    <value>
-      <struct>
-        <member>
-          <name>faultCode</name>
-          <value><int>{$this->code}</int></value>
-        </member>
-        <member>
-          <name>faultString</name>
-          <value><string>{$this->message}</string></value>
-        </member>
-      </struct>
-    </value>
-  </fault>
-</methodResponse>
+            <methodResponse>
+              <fault>
+                <value>
+                  <struct>
+                    <member>
+                      <name>faultCode</name>
+                      <value><int>{$this->code}</int></value>
+                    </member>
+                    <member>
+                      <name>faultString</name>
+                      <value><string>{$this->message}</string></value>
+                    </member>
+                  </struct>
+                </value>
+              </fault>
+            </methodResponse>
 
-EOD;
+            EOD;
 
         return $xml;
     }
@@ -754,7 +754,7 @@ class IXR_IntrospectionServer extends IXR_Server
         $this->setCapabilities();
         $this->capabilities['introspection'] = [
             'specUrl'     => 'http://xmlrpc.usefulinc.com/doc/reserved.html',
-            'specVersion' => 1
+            'specVersion' => 1,
         ];
         $this->addCallback(
             'system.methodSignature',
@@ -920,7 +920,7 @@ class IXR_ClientMulticall extends IXR_Client
     {
         $struct = [
             'methodName' => $method,
-            'params'     => $args
+            'params'     => $args,
         ];
         $this->calls[] = $struct;
     }

@@ -23,7 +23,7 @@ class mimeMessage
 
     public function __construct($message)
     {
-        list($header, $body) = $this->splitBodyHeader($message);
+        [$header, $body] = $this->splitBodyHeader($message);
         $this->decode($header, $body);
     }
 
@@ -82,7 +82,7 @@ class mimeMessage
             if ($body && $filename) {
                 $parts[] = [
                     'filename' => $filename,
-                    'content'  => $part->getBody()
+                    'content'  => $part->getBody(),
                 ];
             } else {
                 $parts = array_merge($parts, $part->getAllFiles());
@@ -122,7 +122,7 @@ class mimeMessage
             $headers[$k]['name'] = strtolower($headers[$k]['name']);
             switch ($headers[$k]['name']) {
                 case 'from':
-                    list($this->from_name, $this->from_email) = $this->decodeSender($headers[$k]['value']);
+                    [$this->from_name, $this->from_email] = $this->decodeSender($headers[$k]['value']);
 
                     break;
 
@@ -252,7 +252,7 @@ class mimeMessage
 
             $res[] = [
                 'name'  => $hdr_name,
-                'value' => $this->decodeHeader($hdr_value)
+                'value' => $this->decodeHeader($hdr_value),
             ];
         }
 
@@ -307,7 +307,7 @@ class mimeMessage
             return $value;
         }
 
-        list($charset, $value) = explode("''", $value);
+        [$charset, $value] = explode("''", $value);
 
         return @text::toUTF8(rawurldecode($value), $charset);
     }

@@ -225,7 +225,7 @@ class wiki2xhtml
             '%(?<![\[\|])(http://|https://|ftp://|news:)([^"\s\)!]+)%msu'
         );
 
-        $this->setOpt('acronyms_file', dirname(__FILE__) . '/acronyms.txt');
+        $this->setOpt('acronyms_file', __DIR__ . '/acronyms.txt');
 
         $this->setOpt('img_style_left', 'float:left; margin: 0 1em 1em 0;');
         $this->setOpt('img_style_center', 'display:block; margin:0 auto;');
@@ -427,7 +427,7 @@ class wiki2xhtml
             'sup'    => ['^', '^'],
             'sub'    => [',,', ',,'],
             'i'      => ['££', '££'],
-            'span'   => [';;', ';;']
+            'span'   => [';;', ';;'],
         ];
         $this->linetags = [
             'empty'   => 'øøø',
@@ -438,7 +438,7 @@ class wiki2xhtml
             'defl'    => '([=|:]{1} )',
             'pre'     => '[ ]{1}',
             'aside'   => '[\)]{1}',
-            'details' => '[\|]{1}'
+            'details' => '[\|]{1}',
         ];
 
         $this->tags = array_merge($tags, $this->custom_tags);
@@ -1023,7 +1023,7 @@ class wiki2xhtml
             $content  = $data[0];
             $lang     = (!empty($data[2])) ? $this->protectAttr($data[2], true) : '';
             $title    = (!empty($data[3])) ? $data[3] : '';
-            $no_image = (!empty($data[4])) ? (boolean) $data[4] : false;
+            $no_image = (!empty($data[4])) ? (bool) $data[4] : false;
         }
 
         # Remplacement si URL spéciale
@@ -1283,7 +1283,7 @@ class wiki2xhtml
 
     private function __putMacro($id): string
     {
-        $id = is_array($id) ? (integer) $id[1] : (integer) $id;
+        $id = is_array($id) ? (int) $id[1] : (int) $id;
         if (isset($this->macros[$id])) {
             $content = str_replace("\r", '', $this->macros[$id]);
 

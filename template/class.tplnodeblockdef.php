@@ -96,7 +96,7 @@ class tplNodeBlockDefinition extends tplNodeBlock
         if (!isset(self::$stack[$this->name])) {
             self::$stack[$this->name] = [
                 'pos'    => 0, // pos is the pointer to the current block being rendered
-                'blocks' => []];
+                'blocks' => [], ];
         }
         parent::setClosing();
         self::$stack[$this->name]['blocks'][] = $this->children;

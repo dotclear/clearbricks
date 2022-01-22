@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 /**
  * @class forms
@@ -56,7 +57,7 @@ class forms
             (isset($params['name']) ?
                 ' name="' . $params['name'] . '"' :
                 (isset($params['id']) ? ' name="' . $params['id'] . '"' : '')) .
-            (isset($params['id'])   ?
+            (isset($params['id']) ?
                 ' id="' . $params['id'] . '"' :
                 (isset($params['name']) ? ' id="' . $params['name'] . '"' : '')) .
 
@@ -281,7 +282,7 @@ class forms
     {
         return self::field(array_merge(
             [
-                'type' => 'password'
+                'type' => 'password',
             ],
             $params
         ));
@@ -410,7 +411,7 @@ class forms
             $extra[] = 'placeholder="1962-05-13T14:45"';
         }
         if (count($extra)) {
-            $params['extra'] = $params['extra'] ?? '' . implode(' ', $extra);
+            $params['extra'] ??= '' . implode(' ', $extra);
         }
 
         return self::field(array_merge(
@@ -453,7 +454,7 @@ class forms
             $extra[] = 'placeholder="1962-05-13"';
         }
         if (count($extra)) {
-            $params['extra'] = $params['extra'] ?? '' . implode(' ', $extra);
+            $params['extra'] ??= '' . implode(' ', $extra);
         }
 
         return self::field(array_merge(
@@ -496,7 +497,7 @@ class forms
             $extra[] = 'placeholder="14:45"';
         }
         if (count($extra)) {
-            $params['extra'] = $params['extra'] ?? '' . implode(' ', $extra);
+            $params['extra'] ??= '' . implode(' ', $extra);
         }
 
         return self::field(array_merge(

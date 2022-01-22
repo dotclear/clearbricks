@@ -246,7 +246,7 @@ if (class_exists('dbLayer')) {
         {
             $default = [
                 'order'   => '',
-                'collate' => false
+                'collate' => false,
             ];
             foreach (func_get_args() as $v) {
                 if (is_string($v)) {
@@ -268,7 +268,7 @@ if (class_exists('dbLayer')) {
                 if (is_string($v)) {
                     $res[] = sprintf($fmt, $v);
                 } elseif (is_array($v)) {
-                    $res = array_map(function ($i) use ($fmt) {return sprintf($fmt, $i);}, $v);
+                    $res = array_map(fn ($i) => sprintf($fmt, $i), $v);
                 }
             }
 
@@ -312,7 +312,7 @@ if (class_exists('dbLayer')) {
 
                 '7' => 'timestamp',
 
-                '252' => 'blob'
+                '252' => 'blob',
 
             ];
             $type = 'unknown';

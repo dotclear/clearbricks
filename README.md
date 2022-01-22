@@ -56,8 +56,8 @@ Then, you can create a \_common.php file wich will contain:
 
 ```php
 <?php
-require dirname(__FILE__).'/common/_main.php';
-$__autoload['dbLayer'] = dirname(__FILE__).'/dblayer/dblayer.php';
+require __DIR__.'/common/_main.php';
+$__autoload['dbLayer'] = __DIR__.'/dblayer/dblayer.php';
 ```
 
 You're done!

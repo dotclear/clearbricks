@@ -116,7 +116,7 @@ if (class_exists('dbSchema')) {
                 $len = null;
                 if (preg_match('/^(.+?)\(([\d,]+)\)$/si', $type, $m)) {
                     $type = $m[1];
-                    $len  = (integer) $m[2];
+                    $len  = (int) $m[2];
                 }
 
                 // $default from db is a string and is NULL in schema so upgrade failed.
@@ -130,7 +130,7 @@ if (class_exists('dbSchema')) {
                     'type'    => $type,
                     'len'     => $len,
                     'null'    => $null,
-                    'default' => $default
+                    'default' => $default,
                 ];
             }
 
@@ -163,7 +163,7 @@ if (class_exists('dbSchema')) {
                     'name'    => $name,
                     'primary' => $name == 'PRIMARY',
                     'unique'  => $idx['unique'],
-                    'cols'    => array_values($idx['cols'])
+                    'cols'    => array_values($idx['cols']),
                 ];
             }
 
@@ -196,7 +196,7 @@ if (class_exists('dbSchema')) {
                 $res[] = [
                     'name' => $name,
                     'type' => $idx['type'],
-                    'cols' => $idx['cols']
+                    'cols' => $idx['cols'],
                 ];
             }
 
@@ -240,7 +240,7 @@ if (class_exists('dbSchema')) {
                         'p_table' => $match[3][$i],
                         'p_cols'  => $r_cols,
                         'update'  => $on_update,
-                        'delete'  => $on_delete
+                        'delete'  => $on_delete,
                     ];
                 }
             }
@@ -254,7 +254,7 @@ if (class_exists('dbSchema')) {
 
             foreach ($fields as $n => $f) {
                 $type    = $f['type'];
-                $len     = (integer) $f['len'];
+                $len     = (int) $f['len'];
                 $default = $f['default'];
                 $null    = $f['null'];
 

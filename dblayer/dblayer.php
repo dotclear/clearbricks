@@ -14,7 +14,7 @@
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
  */
-require dirname(__FILE__) . '/class.cursor.php';
+require __DIR__ . '/class.cursor.php';
 
 interface i_dbLayer
 {
@@ -243,8 +243,8 @@ class dbLayer
         if ($driver === 'mysql') {
             $driver = 'mysqli';
         }
-        if (file_exists(dirname(__FILE__) . '/class.' . $driver . '.php')) {
-            require_once dirname(__FILE__) . '/class.' . $driver . '.php';
+        if (file_exists(__DIR__ . '/class.' . $driver . '.php')) {
+            require_once __DIR__ . '/class.' . $driver . '.php';
             $driver_class = $driver . 'Connection';
         } else {
             trigger_error('Unable to load DB layer for ' . $driver, E_USER_ERROR);

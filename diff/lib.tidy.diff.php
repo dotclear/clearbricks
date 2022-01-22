@@ -115,8 +115,8 @@ class tidyDiffChunk
             'insert'  => 0,
             'range'   => [
                 'start' => [],
-                'end'   => []
-            ]
+                'end'   => [],
+            ],
         ];
         $this->__data = [];
     }

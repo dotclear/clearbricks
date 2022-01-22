@@ -121,8 +121,8 @@ class dbSchema
         $driver_class = $driver . 'Schema';
 
         if (!class_exists($driver_class)) {
-            if (file_exists(dirname(__FILE__) . '/class.' . $driver . '.dbschema.php')) {
-                require dirname(__FILE__) . '/class.' . $driver . '.dbschema.php';
+            if (file_exists(__DIR__ . '/class.' . $driver . '.dbschema.php')) {
+                require __DIR__ . '/class.' . $driver . '.dbschema.php';
             } else {
                 trigger_error('Unable to load DB schema layer for ' . $driver, E_USER_ERROR);
                 exit(1);    // @phpstan-ignore-line

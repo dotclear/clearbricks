@@ -10,23 +10,23 @@
  */
 class netNntp extends netSocket
 {
-    const SERVER_READY         = 200;
-    const SERVER_READY_NO_POST = 201;
-    const GROUP_SELECTED       = 211;
-    const INFORMATION_FOLLOWS  = 215;
-    const ARTICLE_HEAD_BODY    = 220;
-    const ARTICLE_HEAD         = 221;
-    const ARTICLE_BODY         = 222;
-    const ARTICLE_OVERVIEW     = 224;
-    const NEW_ARTICLES         = 230;
-    const ARTICLE_POST_OK      = 240;
-    const ARTICLE_POST_READY   = 340;
-    const AUTH_ACCEPT          = 281;
-    const MORE_AUTH_INFO       = 381;
-    const AUTH_REQUIRED        = 480;
-    const AUTH_REJECTED        = 482;
-    const NOT_IMPLEMENTED      = 500;
-    const NO_PERMISSION        = 502;
+    public const SERVER_READY         = 200;
+    public const SERVER_READY_NO_POST = 201;
+    public const GROUP_SELECTED       = 211;
+    public const INFORMATION_FOLLOWS  = 215;
+    public const ARTICLE_HEAD_BODY    = 220;
+    public const ARTICLE_HEAD         = 221;
+    public const ARTICLE_BODY         = 222;
+    public const ARTICLE_OVERVIEW     = 224;
+    public const NEW_ARTICLES         = 230;
+    public const ARTICLE_POST_OK      = 240;
+    public const ARTICLE_POST_READY   = 340;
+    public const AUTH_ACCEPT          = 281;
+    public const MORE_AUTH_INFO       = 381;
+    public const AUTH_REQUIRED        = 480;
+    public const AUTH_REJECTED        = 482;
+    public const NOT_IMPLEMENTED      = 500;
+    public const NO_PERMISSION        = 502;
 
     protected $host;
     protected $port;
@@ -51,7 +51,7 @@ class netNntp extends netSocket
     public function __construct($host, $port = 119, $user = null, $password = null, $timeout = 10)
     {
         $this->host     = $host;
-        $this->port     = (integer) $port;
+        $this->port     = (int) $port;
         $this->user     = $user;
         $this->password = $password;
         $this->_timeout = $timeout;
@@ -119,7 +119,7 @@ class netNntp extends netSocket
                         }
                         $rsp = [
                             'status'  => self::NO_PERMISSION, # Assign it to something dummy
-                            'message' => 'No permission'
+                            'message' => 'No permission',
                         ];
 
                         break;
@@ -195,12 +195,12 @@ class netNntp extends netSocket
                     break;
                 }
 
-                list($group, $last, $first, $post) = preg_split('/\s+/', $buf, 4);
-                $result[$group]                    = [
+                [$group, $last, $first, $post] = preg_split('/\s+/', $buf, 4);
+                $result[$group]                = [
                     'desc'  => '',
                     'last'  => trim($last),
                     'first' => trim($first),
-                    'post'  => strtolower(trim($post))
+                    'post'  => strtolower(trim($post)),
                 ];
             }
 
@@ -214,7 +214,7 @@ class netNntp extends netSocket
                         break;
                     }
 
-                    list($group, $desc) = preg_split('/\s+/', $buf, 2);
+                    [$group, $desc] = preg_split('/\s+/', $buf, 2);
                     if (isset($result[$group])) {
                         $result[$group]['desc'] = text::toUTF8(trim($desc));
                     }
@@ -238,7 +238,7 @@ class netNntp extends netSocket
                 'count'    => $result[0],
                 'start_id' => $result[1],
                 'end_id'   => $result[2],
-                'group'    => $result[3]
+                'group'    => $result[3],
             ];
         }
 
@@ -419,7 +419,7 @@ class netNntp extends netSocket
     {
         return [
             'status'  => substr($rsp, 0, 3),
-            'message' => rtrim(substr($rsp, 4), "\r\n")
+            'message' => rtrim(substr($rsp, 4), "\r\n"),
         ];
     }
 

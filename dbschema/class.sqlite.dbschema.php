@@ -119,14 +119,14 @@ if (class_exists('dbSchema')) {
                 $len = null;
                 if (preg_match('/^(.+?)\(([\d,]+)\)$/si', $type, $m)) {
                     $type = $m[1];
-                    $len  = (integer) $m[2];
+                    $len  = (int) $m[2];
                 }
 
                 $res[$field] = [
                     'type'    => $type,
                     'len'     => $len,
                     'null'    => $null,
-                    'default' => $default
+                    'default' => $default,
                 ];
             }
 
@@ -155,7 +155,7 @@ if (class_exists('dbSchema')) {
                         'name'    => $name,
                         'primary' => true,
                         'unique'  => false,
-                        'cols'    => $cols
+                        'cols'    => $cols,
                     ];
                 }
             }
@@ -169,7 +169,7 @@ if (class_exists('dbSchema')) {
                         'name'    => $name,
                         'primary' => false,
                         'unique'  => true,
-                        'cols'    => $cols
+                        'cols'    => $cols,
                     ];
                 }
             }
@@ -197,7 +197,7 @@ if (class_exists('dbSchema')) {
                 $res[] = [
                     'name' => $rs->name,
                     'type' => 'btree',
-                    'cols' => $cols
+                    'cols' => $cols,
                 ];
             }
 
@@ -278,7 +278,7 @@ if (class_exists('dbSchema')) {
                     'p_table' => $p_table,
                     'p_cols'  => [$p_col],
                     'update'  => $on_update,
-                    'delete'  => $on_delete
+                    'delete'  => $on_delete,
                 ];
             }
 
@@ -291,7 +291,7 @@ if (class_exists('dbSchema')) {
 
             foreach ($fields as $n => $f) {
                 $type    = $f['type'];
-                $len     = (integer) $f['len'];
+                $len     = (int) $f['len'];
                 $default = $f['default'];
                 $null    = $f['null'];
 

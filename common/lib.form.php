@@ -91,8 +91,7 @@ class form
         ?string $tabindex = '',
         bool $disabled = false,
         ?string $extra_html = ''
-    ): string
-    {
+    ): string {
         self::getNameAndId($nid, $name, $id);
         if (func_num_args() > 2 && is_array($default)) {
             // Cope with associative array of optional parameters

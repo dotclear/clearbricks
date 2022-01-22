@@ -17,14 +17,14 @@ class mailConvert
 
     public static function toHTML($str)
     {
-        $o = new self;
+        $o = new self();
 
         return $o->html(rtrim($str), true);
     }
 
     public static function rewrap($str, $l = 72)
     {
-        $o = new self;
+        $o = new self();
 
         return $o->wrap($str, $l);
     }
