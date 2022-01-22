@@ -333,12 +333,12 @@ class dbStruct
     private function fieldsDiffer($db_field, $schema_field): bool
     {
         $d_type    = $db_field['type'];
-        $d_len     = (integer) $db_field['len'];
+        $d_len     = (int) $db_field['len'];
         $d_default = $db_field['default'];
         $d_null    = $db_field['null'];
 
         $s_type    = $schema_field['type'];
-        $s_len     = (integer) $schema_field['len'];
+        $s_len     = (int) $schema_field['len'];
         $s_default = $schema_field['default'];
         $s_null    = $schema_field['null'];
 
@@ -398,7 +398,7 @@ class dbStructTable
     protected $allowed_types = [
         'smallint', 'integer', 'bigint', 'real', 'float', 'numeric',
         'date', 'time', 'timestamp',
-        'char', 'varchar', 'text'
+        'char', 'varchar', 'text',
     ];
 
     public function __construct(string $name)
@@ -500,7 +500,7 @@ class dbStructTable
             'type'    => $type,
             'len'     => (int) $len,
             'default' => $default,
-            'null'    => (bool) $null
+            'null'    => (bool) $null,
         ];
 
         return $this;
@@ -510,7 +510,8 @@ class dbStructTable
     {
         array_unshift($args, $name);
 
-        return call_user_func_array([$this, 'field'], $args);
+        // was return call_user_func_array([$this, 'field'], $args);
+        return $this->field(...$args);
     }
 
     public function primary(string $name, $col)
@@ -543,7 +544,7 @@ class dbStructTable
 
         $this->indexes[$name] = [
             'type' => strtolower($type),
-            'cols' => $cols
+            'cols' => $cols,
         ];
 
         return $this;
@@ -565,7 +566,7 @@ class dbStructTable
             'p_table' => $p_table,
             'p_cols'  => $p_cols,
             'update'  => $update,
-            'delete'  => $delete
+            'delete'  => $delete,
         ];
     }
 
@@ -575,7 +576,7 @@ class dbStructTable
 
         $this->keys[$name] = [
             'type' => $type,
-            'cols' => $cols
+            'cols' => $cols,
         ];
 
         if ($type == 'primary') {
