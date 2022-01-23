@@ -204,25 +204,25 @@ class IXR_Message
         switch ($tag) {
             case 'int':
             case 'i4':
-                $value                     = (int) trim($this->_currentTagContents);
+                $value                     = (int) trim((string) $this->_currentTagContents);
                 $this->_currentTagContents = '';
                 $valueFlag                 = true;
 
                 break;
             case 'double':
-                $value                     = (float) trim($this->_currentTagContents);
+                $value                     = (float) trim((string) $this->_currentTagContents);
                 $this->_currentTagContents = '';
                 $valueFlag                 = true;
 
                 break;
             case 'string':
-                $value                     = (string) trim($this->_currentTagContents);
+                $value                     = (string) trim((string) $this->_currentTagContents);
                 $this->_currentTagContents = '';
                 $valueFlag                 = true;
 
                 break;
             case 'dateTime.iso8601':
-                $value = new IXR_Date(trim($this->_currentTagContents));
+                $value = new IXR_Date(trim((string) $this->_currentTagContents));
                 // $value = $iso->getTimestamp();
                 $this->_currentTagContents = '';
                 $valueFlag                 = true;
@@ -238,7 +238,7 @@ class IXR_Message
 
                 break;
             case 'boolean':
-                $value                     = (bool) trim($this->_currentTagContents);
+                $value                     = (bool) trim((string) $this->_currentTagContents);
                 $this->_currentTagContents = '';
                 $valueFlag                 = true;
 
@@ -262,12 +262,12 @@ class IXR_Message
 
                 break;
             case 'name':
-                $this->_currentStructName[] = trim($this->_currentTagContents);
+                $this->_currentStructName[] = trim((string) $this->_currentTagContents);
                 $this->_currentTagContents  = '';
 
                 break;
             case 'methodName':
-                $this->methodName          = trim($this->_currentTagContents);
+                $this->methodName          = trim((string) $this->_currentTagContents);
                 $this->_currentTagContents = '';
 
                 break;

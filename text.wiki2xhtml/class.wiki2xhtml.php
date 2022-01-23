@@ -372,11 +372,11 @@ class wiki2xhtml
                 '/<p>((?:.(?!p>))*?)(<a[^>]*>)?\s*(<figure[^>]*>)(.*?)(<\/figure>)\s*(<\/a>)?(.*?)<\/p>/msu',
                 function ($matches) {
                     $figure = $matches[2] . $matches[3] . $matches[4] . $matches[5] . $matches[6];
-                    $before = trim($matches[1]);
+                    $before = trim((string) $matches[1]);
                     if ($before) {
                         $before = '<p>' . $before . '</p>';
                     }
-                    $after = trim($matches[7]);
+                    $after = trim((string) $matches[7]);
                     if ($after) {
                         $after = '<p>' . $after . '</p>';
                     }
@@ -589,7 +589,7 @@ class wiki2xhtml
             $res .= $this->__openLine($type, $mode, $pre_type, $pre_mode, $attr);
 
             # P dans les blockquotes et les asides
-            if (($type == 'blockquote' || $type == 'aside') && trim($line) == '' && $pre_type == $type) {
+            if (($type == 'blockquote' || $type == 'aside') && trim((string) $line) == '' && $pre_type == $type) {
                 $res .= "</p>\n<p>";
             }
 
@@ -625,13 +625,13 @@ class wiki2xhtml
             $type = null;
         } elseif ($this->getOpt('active_empty') && preg_match('/^øøø(.*)$/', $line, $cap)) {
             $type = null;
-            $line = trim($cap[1]);
+            $line = trim((string) $cap[1]);
         }
         # Titre
         elseif ($this->getOpt('active_title') && preg_match('/^([!]{1,4})(.*?)(§§(.*)§§)?$/', $line, $cap)) {
             $type = 'title';
             $mode = strlen($cap[1]);
-            $line = trim($cap[2]);
+            $line = trim((string) $cap[2]);
             if (isset($cap[4])) {
                 $attr = $cap[4];
             }
@@ -647,7 +647,7 @@ class wiki2xhtml
         # Blockquote
         elseif ($this->getOpt('active_quote') && preg_match('/^(&gt;|;:)(.*?)(§§(.*)§§)?$/', $line, $cap)) {
             $type = 'blockquote';
-            $line = trim($cap[2]);
+            $line = trim((string) $cap[2]);
             if (isset($cap[4])) {
                 $attr = $cap[4];
             }
@@ -684,12 +684,12 @@ class wiki2xhtml
                 $mode = null;
                 $line = '<br />' . $line;
             } else {
-                $line = trim($cap[2]);
+                $line = trim((string) $cap[2]);
             }
         } elseif ($this->getOpt('active_defl') && preg_match('/^([=|:]{1}) (.*?)(§§(.*)§§)?$/', $line, $cap)) {
             $type = 'defl';
             $mode = $cap[1];
-            $line = trim($cap[2]);
+            $line = trim((string) $cap[2]);
             if (isset($cap[4])) {
                 $attr = $cap[4];
             }
@@ -699,13 +699,13 @@ class wiki2xhtml
             $type = 'pre';
             $line = $cap[1];
             if (isset($cap[3])) {
-                $attr = trim($cap[3]);
+                $attr = trim((string) $cap[3]);
             }
         }
         # Aside
         elseif ($this->getOpt('active_aside') && preg_match('/^[\)]{1}(.*?)(§§(.*)§§)?$/', $line, $cap)) {
             $type = 'aside';
-            $line = trim($cap[1]);
+            $line = trim((string) $cap[1]);
             if (isset($cap[3])) {
                 $attr = $cap[3];
             }
@@ -713,7 +713,7 @@ class wiki2xhtml
         # Details
         elseif ($this->getOpt('active_details') && preg_match('/^[\|]{1}(.*?)(§§(.*)§§)?$/', $line, $cap)) {
             $type = 'details';
-            $line = trim($cap[1]);
+            $line = trim((string) $cap[1]);
             $mode = $line == '' ? '0' : '1';
             if (isset($cap[3])) {
                 $attr = $cap[3];
@@ -731,7 +731,7 @@ class wiki2xhtml
                     $attr = $cap[3];
                 }
             }
-            $line = trim($line);
+            $line = trim((string) $line);
         }
 
         return $line;
@@ -1019,7 +1019,7 @@ class wiki2xhtml
             $lang    = '';
             $title   = $url;
         } elseif (count($data) > 1) {
-            $url      = trim($data[1]);
+            $url      = trim((string) $data[1]);
             $content  = $data[0];
             $lang     = (!empty($data[2])) ? $this->protectAttr($data[2], true) : '';
             $title    = (!empty($data[3])) ? $data[3] : '';
@@ -1215,7 +1215,7 @@ class wiki2xhtml
         if (file_exists($file)) {
             if (($fc = @file($file)) !== false) {
                 foreach ($fc as $v) {
-                    $v = trim($v);
+                    $v = trim((string) $v);
                     if ($v != '') {
                         $p = strpos($v, ':');
                         $K = (string) trim(substr($v, 0, $p));
@@ -1290,7 +1290,7 @@ class wiki2xhtml
             $c = explode("\n", $content);
 
             # première ligne, premier mot
-            $fl = trim($c[0]);
+            $fl = trim((string) $c[0]);
             $fw = $fl;
 
             if ($fl) {

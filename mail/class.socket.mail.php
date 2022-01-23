@@ -107,15 +107,15 @@ class socketMail
         $f = '';
 
         if (preg_match('/^from: (.+?)$/msi', $headers, $m)) {
-            $f = trim($m[1]);
+            $f = trim((string) $m[1]);
         }
 
         if (preg_match('/(?:<)(.+?)(?:$|>)/si', $f, $m)) {
-            $f = trim($m[1]);
+            $f = trim((string) $m[1]);
         } elseif (preg_match('/^(.+?)\(/si', $f, $m)) {
-            $f = trim($m[1]);
+            $f = trim((string) $m[1]);
         } elseif (!text::isEmail($f)) {
-            $f = trim(ini_get('sendmail_from'));
+            $f = trim((string) ini_get('sendmail_from'));
         }
 
         if (!$f) {

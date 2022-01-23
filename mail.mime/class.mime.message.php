@@ -295,7 +295,7 @@ class mimeMessage
                 }
             }
         } else {
-            $return['value'] = trim($input);
+            $return['value'] = trim((string) $input);
         }
 
         return $return;

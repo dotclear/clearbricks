@@ -33,7 +33,7 @@ class mail
          * @var        callable $f
          */
         $f   = function_exists('_mail') ? '_mail' : null;
-        $eol = trim(ini_get('sendmail_path')) ? "\n" : "\r\n";
+        $eol = trim((string) ini_get('sendmail_path')) ? "\n" : "\r\n";
 
         if (is_array($headers)) {
             $headers = implode($eol, $headers);

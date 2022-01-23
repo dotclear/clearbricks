@@ -222,15 +222,15 @@ if (class_exists('dbSchema')) {
                     $r_cols = explode(',', $r_cols);
 
                     # ON UPDATE|DELETE
-                    $on        = trim($match[5][$i], ', ');
+                    $on        = trim((string) $match[5][$i], ', ');
                     $on_delete = null;
                     $on_update = null;
                     if ($on != '') {
                         if (preg_match('/ON DELETE (.+?)(?:\s+ON|$)/msi', $on, $m)) {
-                            $on_delete = strtolower(trim($m[1]));
+                            $on_delete = strtolower(trim((string) $m[1]));
                         }
                         if (preg_match('/ON UPDATE (.+?)(?:\s+ON|$)/msi', $on, $m)) {
-                            $on_update = strtolower(trim($m[1]));
+                            $on_update = strtolower(trim((string) $m[1]));
                         }
                     }
 

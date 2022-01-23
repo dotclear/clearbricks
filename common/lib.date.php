@@ -284,7 +284,7 @@ class dt
             $tz  = file(__DIR__ . '/tz.dat');
             $res = [];
             foreach ($tz as $v) {
-                $v = trim($v);
+                $v = trim((string) $v);
                 if ($v) {
                     $res[$v] = str_replace('_', ' ', $v);
                 }

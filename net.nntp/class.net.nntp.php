@@ -198,9 +198,9 @@ class netNntp extends netSocket
                 [$group, $last, $first, $post] = preg_split('/\s+/', $buf, 4);
                 $result[$group]                = [
                     'desc'  => '',
-                    'last'  => trim($last),
-                    'first' => trim($first),
-                    'post'  => strtolower(trim($post)),
+                    'last'  => trim((string) $last),
+                    'first' => trim((string) $first),
+                    'post'  => strtolower(trim((string) $post)),
                 ];
             }
 
@@ -216,7 +216,7 @@ class netNntp extends netSocket
 
                     [$group, $desc] = preg_split('/\s+/', $buf, 2);
                     if (isset($result[$group])) {
-                        $result[$group]['desc'] = text::toUTF8(trim($desc));
+                        $result[$group]['desc'] = text::toUTF8(trim((string) $desc));
                     }
                 }
             }
@@ -256,7 +256,7 @@ class netNntp extends netSocket
                 if (self::eot($buf)) {
                     break;
                 }
-                $res[] = trim($buf);
+                $res[] = trim((string) $buf);
             }
 
             return $res;
@@ -280,7 +280,7 @@ class netNntp extends netSocket
                 if (self::eot($buf)) {
                     break;
                 }
-                $res[] = trim($buf);
+                $res[] = trim((string) $buf);
             }
 
             return $res;

@@ -393,7 +393,7 @@ class l10n
 
                             // multiline value
                             if (!empty($h_key) && !empty($headers[$h_key])) {
-                                $headers[$h_key] = trim($headers[$h_key] . $h_line);
+                                $headers[$h_key] = trim((string) $headers[$h_key] . $h_line);
 
                                 continue;
 

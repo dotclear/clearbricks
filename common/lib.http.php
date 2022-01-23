@@ -221,7 +221,7 @@ class http
         if (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
             $acclang = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
             $L       = explode(';', $acclang[0]);
-            $dlang   = substr(trim($L[0]), 0, 2);
+            $dlang   = substr(trim((string) $L[0]), 0, 2);
         }
 
         return $dlang;
@@ -442,11 +442,11 @@ class http
                 if (is_array($v)) {
                     self::trimRequestInVar($v, $k);
                 } else {
-                    $v = trim($v);
+                    $v = trim((string) $v);
                 }
             }
         } else {
-            $value = trim($value);
+            $value = trim((string) $value);
         }
     }
 

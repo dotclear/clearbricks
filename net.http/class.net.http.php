@@ -221,7 +221,7 @@ if (class_exists('netSocket')) {
             foreach ($this->write($request) as $index => $line) {
                 # Deal with first line of returned data
                 if ($index == 0) {
-                    $line = rtrim($line, "\r\n");
+                    $line = rtrim((string) $line, "\r\n");
                     if (!preg_match('/HTTP\/(\\d\\.\\d)\\s*(\\d+)\\s*(.*)/', $line, $m)) {
                         throw new Exception('Status code line invalid: ' . $line);
                     }
@@ -235,7 +235,7 @@ if (class_exists('netSocket')) {
 
                 # Read headers
                 if ($in_headers) {
-                    $line = rtrim($line, "\r\n");
+                    $line = rtrim((string) $line, "\r\n");
                     if ($line == '') {
                         $in_headers = false;
                         $this->debug('Received Headers', $this->headers);
@@ -250,8 +250,8 @@ if (class_exists('netSocket')) {
                         # Skip to the next header
                         continue;
                     }
-                    $key = strtolower(trim($m[1]));
-                    $val = trim($m[2]);
+                    $key = strtolower(trim((string) $m[1]));
+                    $val = trim((string) $m[2]);
                     # Deal with the possibility of multiple headers of same name
                     if (isset($this->headers[$key])) {
                         if (is_array($this->headers[$key])) {

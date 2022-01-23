@@ -19,7 +19,7 @@ class mailConvert
     {
         $o = new self();
 
-        return $o->html(rtrim($str), true);
+        return $o->html(rtrim((string) $str), true);
     }
 
     public static function rewrap($str, $l = 72)
@@ -102,7 +102,7 @@ class mailConvert
 
         foreach (explode("\n", $str) as $line) {
             if (preg_match('/^(?:\s*)(?:>|\|)(?:\s?)(.*?)$/su', $line, $m)) {
-                if ($type != 'quote' && !trim($m[1])) {
+                if ($type != 'quote' && !trim((string) $m[1])) {
                     continue;
                 }
 
