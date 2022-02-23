@@ -14,71 +14,6 @@ class dt
     private static $timezones = null;
 
     /**
-     * Convert strftime() format to date() format
-     *
-     * @param      string      $src  The strftime() format
-     *
-     * @throws     \Exception  Thrown if a invalid format is used
-     *
-     * @return     string       The date() format
-     */
-    private static function strftimeToDateFormat($src = '')
-    {
-        $invalid  = ['%U', '%V', '%C', '%g', '%G'];
-        $invalids = [];
-
-        // It is important to note that some do not translate accurately ie. lowercase L is supposed to convert to number with a preceding space if it is under 10, there is no accurate conversion so we just use 'g'
-        $converts = [
-            '%a' => 'D',        // day name of week (3 characters)
-            '%A' => 'l',        // day name of week (full)
-            '%d' => 'd',        // day of month (2 digits)
-            '%e' => 'j',        // day of month (trim with date(), with a space for single digit with strftime())
-            '%u' => 'N',        // ISO-8601 numeric representation of the day of the week (1 for monday to 7 for sunday)
-            '%w' => 'w',        // day of the week (0 for sunday to 6 for saturday)
-            '%W' => 'W',        // week of year
-            '%b' => 'M',        // month name (3 characters)
-            '%h' => 'M',
-            '%B' => 'F',        // month name (full)
-            '%m' => 'm',        // month of year (2 digits)
-            '%y' => 'y',        // year (last two digits)
-            '%Y' => 'Y',        // year
-            '%D' => 'm/d/y',    // date
-            '%F' => 'Y-m-d',    // date
-            '%x' => 'm/d/y',    // date
-            '%n' => "\n",       // newline
-            '%t' => "\t",       // tab
-            '%H' => 'H',        // hour (2 digits)
-            '%k' => 'G',        // hour
-            '%I' => 'h',        // hour (12 hour format, 2 digits)
-            '%l' => 'g',        // hour (12 hour format)
-            '%M' => 'i',        // minutes (2 digits)
-            '%p' => 'A',        // AM or PM
-            '%P' => 'a',        // am or pm
-            '%r' => 'h:i:s A',  // time %I:%M:%S %p
-            '%R' => 'H:i',      // time %H:%M
-            '%S' => 's',        // seconds (2 digits)
-            '%T' => 'H:i:s',    // time %H:%M:%S
-            '%X' => 'H:i:s',
-            '%z' => 'O',                // Timezone offset
-            '%Z' => 'T',                // Timezone abbreviation
-            '%c' => 'D M j H:i:s Y',    // date as Sun May 13 02:15:10 1962
-            '%s' => 'U',                // Unix Epoch Time timestamp
-            '%%' => '%',                // literal % character
-        ];
-
-        foreach ($invalid as $format) {
-            if (strpos($src, $format) !== false) {
-                $invalids[] = $format;
-            }
-        }
-        if (!empty($invalids)) {
-            throw new \Exception('Found these invalid chars: ' . implode(',', $invalids) . ' in ' . $src);
-        }
-
-        return str_replace(array_keys($converts), array_values($converts), $src);
-    }
-
-    /**
      * Timestamp formating
      *
      * Returns a date formated like PHP <a href="http://www.php.net/manual/en/function.strftime.php">strftime</a>
@@ -96,30 +31,25 @@ class dt
             $ts = time();
         }
 
+        $hash = '799b4e471dc78154865706469d23d512';
+        $p    = preg_replace('/(?<!%)%(a|A)/', '{{' . $hash . '__$1%w__}}', $p);
+        $p    = preg_replace('/(?<!%)%(b|B)/', '{{' . $hash . '__$1%m__}}', $p);
+
         if ($tz) {
-            $current_tz = self::getTZ();
+            $T = self::getTZ();
             self::setTZ($tz);
         }
 
-        $p = preg_replace('/(?<!%)%a/', '{{__\a%w__}}', $p);
-        $p = preg_replace('/(?<!%)%A/', '{{__\A%w__}}', $p);
-        $p = preg_replace('/(?<!%)%b/', '{{__\b%m__}}', $p);
-        $p = preg_replace('/(?<!%)%B/', '{{__\B%m__}}', $p);
-
-        $res = date(self::strftimeToDateFormat($p), $ts);
-
-        $res = preg_replace_callback('/{{__(a|A|b|B)([0-9]{1,2})__}}/', ['self', '_callback'], $res);
+        // Avoid deprecated notice until PHP 9 should be supported or a correct strftime() replacement
+        $res = @strftime($p, $ts);
 
         if ($tz) {
-            self::setTZ($current_tz);
+            self::setTZ($T);
         }
 
-        return $res;
-    }
+        $res = preg_replace_callback('/{{' . $hash . '__(a|A|b|B)([0-9]{1,2})__}}/', ['self', '_callback'], $res);
 
-    public static function strftime_legacy(string $p, $ts = null)
-    {
-        return date(dt::strftimeToDateFormat($p), $ts ?? time());
+        return $res;
     }
 
     /**
@@ -169,7 +99,8 @@ class dt
         $o  = self::getTimeOffset($tz, $ts);
         $of = sprintf('%02u%02u', abs($o) / 3600, (abs($o) % 3600) / 60);
 
-        return self::strftime_legacy('%a, %d %b %Y %H:%M:%S ' . ($o < 0 ? '-' : '+') . $of, $ts);
+        // Avoid deprecated notice until PHP 9 should be supported or a correct strftime() replacement
+        return @strftime('%a, %d %b %Y %H:%M:%S ' . ($o < 0 ? '-' : '+') . $of, $ts);
     }
 
     /**
@@ -278,13 +209,13 @@ class dt
     {
         if (is_null(self::$timezones)) {
             // Read timezones from file
-            if (!is_readable($f = __DIR__ . '/tz.dat')) {
+            if (!is_readable($f = dirname(__FILE__) . '/tz.dat')) {
                 return [];
             }
-            $tz  = file(__DIR__ . '/tz.dat');
+            $tz  = file(dirname(__FILE__) . '/tz.dat');
             $res = [];
             foreach ($tz as $v) {
-                $v = trim((string) $v);
+                $v = trim($v);
                 if ($v) {
                     $res[$v] = str_replace('_', ' ', $v);
                 }

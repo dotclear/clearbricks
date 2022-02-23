@@ -33,7 +33,8 @@ class dt extends atoum
         \dt::setTZ('UTC');
         $this
             ->string(\dt::str('%d%m%Y'))
-            ->isEqualTo(\dt::strftime_legacy('%d%m%Y'));
+            // Avoid deprecated notice until PHP 9 should be supported or a correct strftime() replacement
+            ->isEqualTo(@strftime('%d%m%Y'));
     }
 
     /**
