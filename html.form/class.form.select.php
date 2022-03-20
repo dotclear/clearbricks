@@ -59,7 +59,7 @@ class formSelect extends formComponent
                     $buffer .= (new formOptgroup($item))->items($value)->render($this->default ?? $default ?? null);
                 } else {
                     /* @phpstan-ignore-next-line */
-                    $buffer .= (new formOption($item, $value))->render($this->default ?? $default ?? null);
+                    $buffer .= (new formOption($item, (string) $value))->render($this->default ?? $default ?? null);
                 }
             }
         }
