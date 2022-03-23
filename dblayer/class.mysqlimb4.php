@@ -80,14 +80,14 @@ if (class_exists('dbLayer')) {
         public function db_close($handle)
         {
             if ($handle instanceof MySQLi) {
-                mysqli_close($handle);
+                $handle->close();
             }
         }
 
         public function db_version($handle)
         {
             if ($handle instanceof MySQLi) {
-                $v = mysqli_get_server_version($handle);
+                $v = $handle->server_version;
 
                 return sprintf('%s.%s.%s', ($v - ($v % 10000)) / 10000, ($v - ($v % 100)) % 10000 / 100, $v % 100);
             }
@@ -98,7 +98,7 @@ if (class_exists('dbLayer')) {
         public function db_query($handle, $query)
         {
             if ($handle instanceof MySQLi) {
-                $res = @mysqli_query($handle, $query);
+                $res = @$handle->query($query);
                 if ($res === false) {
                     $e = new Exception($this->db_last_error($handle));
 
@@ -182,7 +182,7 @@ if (class_exists('dbLayer')) {
         public function db_changes($handle, $res)
         {
             if ($handle instanceof MySQLi) {
-                return mysqli_affected_rows($handle);
+                return $handle->affected_rows;
             }
 
             return 0;
@@ -191,9 +191,9 @@ if (class_exists('dbLayer')) {
         public function db_last_error($handle)
         {
             if ($handle instanceof MySQLi) {
-                $e = mysqli_error($handle);
+                $e = $handle->error($handle);
                 if ($e) {
-                    return $e . ' (' . mysqli_errno($handle) . ')';
+                    return $e . ' (' . $handle->errno . ')';
                 }
             }
 
@@ -203,7 +203,7 @@ if (class_exists('dbLayer')) {
         public function db_escape_string($str, $handle = null)
         {
             if ($handle instanceof MySQLi) {
-                return mysqli_real_escape_string($handle, $str);
+                return $handle->real_escape_string((string) $str);
             }
 
             return addslashes($str);
