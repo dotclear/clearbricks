@@ -310,7 +310,7 @@ $dataTest = [
     [
         'title'    => '',
         'payload'  => "<div id=\"13\"><x repeat=\"template\" repeat-start=\"999999\">0<y repeat=\"template\" repeat-start=\"999999\">1</y></x>//[\"'`-->]]>]</div>",
-        'expected' => '<div id="13">1',
+        'expected' => '<div id="13">01',
     ],
     [
         'title'    => '',
@@ -810,7 +810,7 @@ $dataTest = [
     [
         'title'    => 'view-source',
         'payload'  => '<div id="119"><iframe src="view-source:http://www.example.org/" frameborder="0" style="width:400px;height:180px"></iframe>',
-        'expected' => '<div id="119"><iframe src="#" frameborder="" style="width:400px;height:180px"></iframe>',
+        'expected' => '<div id="119"><iframe src="#" frameborder="0" style="width:400px;height:180px"></iframe>',
     ],
     [
         'title'    => '',
