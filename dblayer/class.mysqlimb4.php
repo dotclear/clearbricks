@@ -191,7 +191,7 @@ if (class_exists('dbLayer')) {
         public function db_last_error($handle)
         {
             if ($handle instanceof MySQLi) {
-                $e = $handle->error($handle);
+                $e = $handle->error;
                 if ($e) {
                     return $e . ' (' . $handle->errno . ')';
                 }
