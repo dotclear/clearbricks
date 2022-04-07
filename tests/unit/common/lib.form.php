@@ -1,4 +1,5 @@
 <?php
+
 # -- BEGIN LICENSE BLOCK ---------------------------------------
 #
 # This file is part of Dotclear 2.
@@ -33,7 +34,7 @@ class formSelectOption extends atoum
             ->string($option->render(1))
             ->match('/<option.*?<\/option>/')
             ->match('/<option.*?value="1".*?>un<\/option>/')
-            ->match('/<option.*?selected="selected".*?>un<\/option>/');
+            ->match('/<option.*?selected.*?>un<\/option>/');
     }
 
     public function testOptionOpt()
@@ -49,7 +50,7 @@ class formSelectOption extends atoum
             ->string($option->render(2))
             ->match('/<option.*?<\/option>/')
             ->match('/<option.*?value="2".*?>deux<\/option>/')
-            ->match('/<option.*?selected="selected".*?>deux<\/option>/');
+            ->match('/<option.*?selected.*?>deux<\/option>/');
     }
 }
 
@@ -71,8 +72,8 @@ class form extends atoum
             ->contains('class="classme"')
             ->contains('id="testID"')
             ->contains('name="testID"')
-            ->contains('tabindex="atabindex"')
-            ->contains('disabled="disabled"')
+            ->contains('tabindex="0"')
+            ->contains('disabled')
             ->contains('data-test="This Is A Test"');
 
         $this
@@ -82,12 +83,12 @@ class form extends atoum
         $this
             ->string(\form::combo('testID', ['one', 'two', 'three'], 'one'))
             ->match('/<option.*?<\/option>/')
-            ->match('/<option\svalue="one"\sselected="selected".*?<\/option>/');
+            ->match('/<option\svalue="one"\sselected.*?<\/option>/');
 
         $this
             ->string(\form::combo('testID', [
                 new \formSelectOption('Un', 1),
-                new \formSelectOption('Deux', 2)]))
+                new \formSelectOption('Deux', 2), ]))
             ->match('/<option.*?<\/option>/')
             ->match('/<option\svalue="2">Deux<\/option>/');
 
@@ -107,8 +108,8 @@ class form extends atoum
                 'tabindex' => 'atabindex',
                 'disabled' => true,
             ]))
-            ->contains('tabindex="atabindex"')
-            ->contains('disabled="disabled"');
+            ->contains('tabindex="0"')
+            ->contains('disabled');
     }
 
     /** Test for <input type="radio"
@@ -120,10 +121,10 @@ class form extends atoum
             ->contains('type="radio"')
             ->contains('name="testID"')
             ->contains('id="testID"')
-            ->contains('checked="checked"')
+            ->contains('checked')
             ->contains('class="aclassname"')
-            ->contains('tabindex="atabindex"')
-            ->contains('disabled="disabled"')
+            ->contains('tabindex="0"')
+            ->contains('disabled')
             ->contains('data-test="A test"');
 
         $this
@@ -140,8 +141,8 @@ class form extends atoum
                 'tabindex' => 'atabindex',
                 'disabled' => true,
             ]))
-            ->contains('tabindex="atabindex"')
-            ->contains('disabled="disabled"');
+            ->contains('tabindex="0"')
+            ->contains('disabled');
     }
 
     /** Test for <input type="checkbox"
@@ -153,10 +154,10 @@ class form extends atoum
             ->contains('type="checkbox"')
             ->contains('name="testID"')
             ->contains('id="testID"')
-            ->contains('checked="checked"')
+            ->contains('checked')
             ->contains('class="aclassname"')
-            ->contains('tabindex="atabindex"')
-            ->contains('disabled="disabled"')
+            ->contains('tabindex="0"')
+            ->contains('disabled')
             ->contains('data-test="A test"');
 
         $this
@@ -173,8 +174,8 @@ class form extends atoum
                 'tabindex' => 'atabindex',
                 'disabled' => true,
             ]))
-            ->contains('tabindex="atabindex"')
-            ->contains('disabled="disabled"');
+            ->contains('tabindex="0"')
+            ->contains('disabled');
     }
 
     public function testField()
@@ -187,8 +188,8 @@ class form extends atoum
             ->contains('name="testID"')
             ->contains('id="testID"')
             ->contains('class="aclassname"')
-            ->contains('tabindex="atabindex"')
-            ->contains('disabled="disabled"')
+            ->contains('tabindex="0"')
+            ->contains('disabled')
             ->contains('data-test="A test"')
             ->contains('value="testvalue"')
             ->contains('required');
@@ -207,8 +208,8 @@ class form extends atoum
                 'tabindex' => 'atabindex',
                 'disabled' => true,
             ]))
-            ->contains('tabindex="atabindex"')
-            ->contains('disabled="disabled"');
+            ->contains('tabindex="0"')
+            ->contains('disabled');
     }
 
     public function testPassword()
@@ -221,8 +222,8 @@ class form extends atoum
             ->contains('name="testID"')
             ->contains('id="testID"')
             ->contains('class="aclassname"')
-            ->contains('tabindex="atabindex"')
-            ->contains('disabled="disabled"')
+            ->contains('tabindex="0"')
+            ->contains('disabled')
             ->contains('data-test="A test"')
             ->contains('value="testvalue"')
             ->contains('required');
@@ -241,8 +242,8 @@ class form extends atoum
                 'tabindex' => 'atabindex',
                 'disabled' => true,
             ]))
-            ->contains('tabindex="atabindex"')
-            ->contains('disabled="disabled"');
+            ->contains('tabindex="0"')
+            ->contains('disabled');
     }
 
     /**
@@ -258,8 +259,8 @@ class form extends atoum
             ->contains('name="testID"')
             ->contains('id="testID"')
             ->contains('class="aclassname"')
-            ->contains('tabindex="atabindex"')
-            ->contains('disabled="disabled"')
+            ->contains('tabindex="0"')
+            ->contains('disabled')
             ->contains('data-test="A test"')
             ->contains('value="#f369a3"')
             ->contains('required');
@@ -280,8 +281,8 @@ class form extends atoum
             ]))
             ->contains('size="7"')
             ->contains('maxlength="7"')
-            ->contains('tabindex="atabindex"')
-            ->contains('disabled="disabled"');
+            ->contains('tabindex="0"')
+            ->contains('disabled');
     }
 
     /**
@@ -297,8 +298,8 @@ class form extends atoum
             ->contains('name="testID"')
             ->contains('id="testID"')
             ->contains('class="aclassname"')
-            ->contains('tabindex="atabindex"')
-            ->contains('disabled="disabled"')
+            ->contains('tabindex="0"')
+            ->contains('disabled')
             ->contains('data-test="A test"')
             ->contains('value="me@example.com"')
             ->contains('required');
@@ -317,8 +318,8 @@ class form extends atoum
                 'tabindex' => 'atabindex',
                 'disabled' => true,
             ]))
-            ->contains('tabindex="atabindex"')
-            ->contains('disabled="disabled"');
+            ->contains('tabindex="0"')
+            ->contains('disabled');
     }
 
     /**
@@ -334,8 +335,8 @@ class form extends atoum
             ->contains('name="testID"')
             ->contains('id="testID"')
             ->contains('class="aclassname"')
-            ->contains('tabindex="atabindex"')
-            ->contains('disabled="disabled"')
+            ->contains('tabindex="0"')
+            ->contains('disabled')
             ->contains('data-test="A test"')
             ->contains('value="https://example.com/"')
             ->contains('required');
@@ -354,8 +355,8 @@ class form extends atoum
                 'tabindex' => 'atabindex',
                 'disabled' => true,
             ]))
-            ->contains('tabindex="atabindex"')
-            ->contains('disabled="disabled"');
+            ->contains('tabindex="0"')
+            ->contains('disabled');
     }
 
     /**
@@ -371,8 +372,8 @@ class form extends atoum
             ->contains('name="testID"')
             ->contains('id="testID"')
             ->contains('class="aclassname"')
-            ->contains('tabindex="atabindex"')
-            ->contains('disabled="disabled"')
+            ->contains('tabindex="0"')
+            ->contains('disabled')
             ->contains('data-test="A test"')
             ->contains('value="1962-05-13T02:15"')
             ->contains('required')
@@ -393,8 +394,8 @@ class form extends atoum
                 'tabindex' => 'atabindex',
                 'disabled' => true,
             ]))
-            ->contains('tabindex="atabindex"')
-            ->contains('disabled="disabled"');
+            ->contains('tabindex="0"')
+            ->contains('disabled');
     }
 
     /**
@@ -410,8 +411,8 @@ class form extends atoum
             ->contains('name="testID"')
             ->contains('id="testID"')
             ->contains('class="aclassname"')
-            ->contains('tabindex="atabindex"')
-            ->contains('disabled="disabled"')
+            ->contains('tabindex="0"')
+            ->contains('disabled')
             ->contains('data-test="A test"')
             ->contains('value="1962-05-13"')
             ->contains('required')
@@ -432,8 +433,8 @@ class form extends atoum
                 'tabindex' => 'atabindex',
                 'disabled' => true,
             ]))
-            ->contains('tabindex="atabindex"')
-            ->contains('disabled="disabled"');
+            ->contains('tabindex="0"')
+            ->contains('disabled');
     }
 
     /**
@@ -449,8 +450,8 @@ class form extends atoum
             ->contains('name="testID"')
             ->contains('id="testID"')
             ->contains('class="aclassname"')
-            ->contains('tabindex="atabindex"')
-            ->contains('disabled="disabled"')
+            ->contains('tabindex="0"')
+            ->contains('disabled')
             ->contains('data-test="A test"')
             ->contains('value="02:15"')
             ->contains('required')
@@ -471,8 +472,8 @@ class form extends atoum
                 'tabindex' => 'atabindex',
                 'disabled' => true,
             ]))
-            ->contains('tabindex="atabindex"')
-            ->contains('disabled="disabled"');
+            ->contains('tabindex="0"')
+            ->contains('disabled');
     }
 
     /**
@@ -486,8 +487,8 @@ class form extends atoum
             ->contains('name="testID"')
             ->contains('id="testID"')
             ->contains('class="aclassname"')
-            ->contains('tabindex="atabindex"')
-            ->contains('disabled="disabled"')
+            ->contains('tabindex="0"')
+            ->contains('disabled')
             ->contains('data-test="A test"')
             ->contains('value="filename.ext"')
             ->contains('required');
@@ -506,8 +507,8 @@ class form extends atoum
                 'tabindex' => 'atabindex',
                 'disabled' => true,
             ]))
-            ->contains('tabindex="atabindex"')
-            ->contains('disabled="disabled"');
+            ->contains('tabindex="0"')
+            ->contains('disabled');
     }
 
     public function testNumber()
@@ -520,8 +521,8 @@ class form extends atoum
             ->contains('name="testID"')
             ->contains('id="testID"')
             ->contains('class="aclassname"')
-            ->contains('tabindex="atabindex"')
-            ->contains('disabled="disabled"')
+            ->contains('tabindex="0"')
+            ->contains('disabled')
             ->contains('data-test="A test"')
             ->contains('value="13"')
             ->contains('required');
@@ -542,8 +543,8 @@ class form extends atoum
             ]))
             ->notContains('min=')
             ->notContains('max=')
-            ->contains('tabindex="atabindex"')
-            ->contains('disabled="disabled"');
+            ->contains('tabindex="0"')
+            ->contains('disabled');
     }
 
     public function testTextArea()
@@ -556,8 +557,8 @@ class form extends atoum
             ->contains('name="testID"')
             ->contains('id="testID"')
             ->contains('class="aclassname"')
-            ->contains('tabindex="atabindex"')
-            ->contains('disabled="disabled"')
+            ->contains('tabindex="0"')
+            ->contains('disabled')
             ->contains('data-test="A test"')
             ->contains('required');
 
@@ -575,8 +576,8 @@ class form extends atoum
                 'tabindex' => 'atabindex',
                 'disabled' => true,
             ]))
-            ->contains('tabindex="atabindex"')
-            ->contains('disabled="disabled"');
+            ->contains('tabindex="0"')
+            ->contains('disabled');
     }
 
     public function testHidden()

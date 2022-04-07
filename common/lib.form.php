@@ -104,8 +104,8 @@ class form
 
         ($id ? 'id="' . $id . '" ' : '') .
         ($class ? 'class="' . $class . '" ' : '') .
-        ($tabindex ? 'tabindex="' . $tabindex . '" ' : '') .
-        ($disabled ? 'disabled="disabled" ' : '') .
+        ($tabindex ? 'tabindex="' . strval((int) $tabindex) . '" ' : '') .
+        ($disabled ? 'disabled ' : '') .
         $extra_html .
 
         '>' . "\n" .
@@ -172,10 +172,10 @@ class form
         return '<input type="radio" name="' . $name . '" value="' . $value . '" ' .
 
             ($id ? 'id="' . $id . '" ' : '') .
-            ($checked ? 'checked="checked" ' : '') .
+            ($checked ? 'checked ' : '') .
             ($class ? 'class="' . $class . '" ' : '') .
-            ($tabindex ? 'tabindex="' . $tabindex . '" ' : '') .
-            ($disabled ? 'disabled="disabled" ' : '') .
+            ($tabindex ? 'tabindex="' . strval((int) $tabindex) . '" ' : '') .
+            ($disabled ? 'disabled ' : '') .
             $extra_html .
 
             '/>' . "\n";
@@ -220,10 +220,10 @@ class form
         return '<input type="checkbox" name="' . $name . '" value="' . $value . '" ' .
 
             ($id ? 'id="' . $id . '" ' : '') .
-            ($checked ? 'checked="checked" ' : '') .
+            ($checked ? 'checked ' : '') .
             ($class ? 'class="' . $class . '" ' : '') .
-            ($tabindex ? 'tabindex="' . $tabindex . '" ' : '') .
-            ($disabled ? 'disabled="disabled" ' : '') .
+            ($tabindex ? 'tabindex="' . strval((int) $tabindex) . '" ' : '') .
+            ($disabled ? 'disabled ' : '') .
             $extra_html .
 
             ' />' . "\n";
@@ -280,8 +280,8 @@ class form
             ($max ? 'maxlength="' . $max . '" ' : '') .
             ($default || $default === '0' ? 'value="' . $default . '" ' : '') .
             ($class ? 'class="' . $class . '" ' : '') .
-            ($tabindex ? 'tabindex="' . $tabindex . '" ' : '') .
-            ($disabled ? 'disabled="disabled" ' : '') .
+            ($tabindex ? 'tabindex="' . strval((int) $tabindex) . '" ' : '') .
+            ($disabled ? 'disabled ' : '') .
             ($required ? 'required ' : '') .
             ($autocomplete ? 'autocomplete="' . $autocomplete . '" ' : '') .
             $extra_html .
@@ -757,8 +757,8 @@ class form
             ($id ? 'id="' . $id . '" ' : '') .
             ($default || $default === '0' ? 'value="' . $default . '" ' : '') .
             ($class ? 'class="' . $class . '" ' : '') .
-            ($tabindex ? 'tabindex="' . $tabindex . '" ' : '') .
-            ($disabled ? 'disabled="disabled" ' : '') .
+            ($tabindex ? 'tabindex="' . strval((int) $tabindex) . '" ' : '') .
+            ($disabled ? 'disabled ' : '') .
             ($required ? 'required ' : '') .
             $extra_html .
 
@@ -814,8 +814,8 @@ class form
             ($max !== null ? 'max="' . $max . '" ' : '') .
             ($default || $default === '0' ? 'value="' . $default . '" ' : '') .
             ($class ? 'class="' . $class . '" ' : '') .
-            ($tabindex ? 'tabindex="' . $tabindex . '" ' : '') .
-            ($disabled ? 'disabled="disabled" ' : '') .
+            ($tabindex ? 'tabindex="' . strval((int) $tabindex) . '" ' : '') .
+            ($disabled ? 'disabled ' : '') .
             ($required ? 'required ' : '') .
             ($autocomplete ? 'autocomplete="' . $autocomplete . '" ' : '') .
             $extra_html .
@@ -868,9 +868,9 @@ class form
         return '<textarea cols="' . $cols . '" rows="' . $rows . '" name="' . $name . '" ' .
 
             ($id ? 'id="' . $id . '" ' : '') .
-            ($tabindex != '' ? 'tabindex="' . $tabindex . '" ' : '') .
+            ($tabindex != '' ? 'tabindex="' . strval((int) $tabindex) . '" ' : '') .
             ($class ? 'class="' . $class . '" ' : '') .
-            ($disabled ? 'disabled="disabled" ' : '') .
+            ($disabled ? 'disabled ' : '') .
             ($required ? 'required ' : '') .
             ($autocomplete ? 'autocomplete="' . $autocomplete . '" ' : '') .
             $extra_html . '>' . $default . '</textarea>' . "\n";
@@ -952,7 +952,7 @@ class formSelectOption
         $attr .= $this->class_name ? ' class="' . $this->class_name . '"' : '';
 
         if ($this->value == $default) {
-            $attr .= ' selected="selected"';
+            $attr .= ' selected';
         }
 
         return sprintf($this->option, $this->value, $this->name, $attr) . "\n";
