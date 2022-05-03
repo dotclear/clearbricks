@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fd0b51d300ef4ccfe9d80190855cbf8f",
+    "content-hash": "f0ffb2b262ac45ea6eb815df87971320",
     "packages": [],
     "packages-dev": [
         {
@@ -212,20 +212,20 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "dev-master",
+            "version": "1.7.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "585073e2a99c54482ed0853fe6782a6200a21f27"
+                "reference": "fc122157206763d39a43bec41534c50ffe12e2be"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/585073e2a99c54482ed0853fe6782a6200a21f27",
-                "reference": "585073e2a99c54482ed0853fe6782a6200a21f27",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/fc122157206763d39a43bec41534c50ffe12e2be",
+                "reference": "fc122157206763d39a43bec41534c50ffe12e2be",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.1|^8.0"
+                "php": "^7.2|^8.0"
             },
             "conflict": {
                 "phpstan/phpstan-shim": "*"
@@ -236,11 +236,6 @@
                 "phpstan.phar"
             ],
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.4-dev"
-                }
-            },
             "autoload": {
                 "files": [
                     "bootstrap.php"
@@ -253,7 +248,7 @@
             "description": "PHPStan - PHP Static Analysis Tool",
             "support": {
                 "issues": "https://github.com/phpstan/phpstan/issues",
-                "source": "https://github.com/phpstan/phpstan/tree/master"
+                "source": "https://github.com/phpstan/phpstan/tree/1.7.x"
             },
             "funding": [
                 {
@@ -273,7 +268,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-01-08T08:39:41+00:00"
+            "time": "2022-05-03T07:46:55+00:00"
         },
         {
             "name": "symfony/filesystem",
@@ -680,5 +675,5 @@
         "php": ">=7.4.0"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.3.0"
 }
