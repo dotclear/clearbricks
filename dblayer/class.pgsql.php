@@ -102,14 +102,14 @@ if (class_exists('dbLayer')) {
 
         public function db_close($handle)
         {
-            if (is_resource($handle)) {
+            if (is_resource($handle) || (class_exists('PgSql\Connection') && $handle instanceof PgSql\Connection)) {
                 pg_close($handle);
             }
         }
 
         public function db_version($handle)
         {
-            if (is_resource($handle)) {
+            if (is_resource($handle) || (class_exists('PgSql\Connection') && $handle instanceof PgSql\Connection)) {
                 return pg_parameter_status($handle, 'server_version');
             }
 
@@ -118,7 +118,7 @@ if (class_exists('dbLayer')) {
 
         public function db_query($handle, $query)
         {
-            if (is_resource($handle)) {
+            if (is_resource($handle) || (class_exists('PgSql\Connection') && $handle instanceof PgSql\Connection)) {
                 $res = @pg_query($handle, $query);
                 if ($res === false) {
                     $e = new Exception($this->db_last_error($handle));
@@ -137,7 +137,7 @@ if (class_exists('dbLayer')) {
 
         public function db_num_fields($res)
         {
-            if (is_resource($res)) {
+            if (is_resource($res) || (class_exists('PgSql\Result') && $res instanceof PgSql\Result)) {
                 return pg_num_fields($res);
             }
 
@@ -146,7 +146,7 @@ if (class_exists('dbLayer')) {
 
         public function db_num_rows($res)
         {
-            if (is_resource($res)) {
+            if (is_resource($res) || (class_exists('PgSql\Result') && $res instanceof PgSql\Result)) {
                 return pg_num_rows($res);
             }
 
@@ -155,7 +155,7 @@ if (class_exists('dbLayer')) {
 
         public function db_field_name($res, $position)
         {
-            if (is_resource($res)) {
+            if (is_resource($res) || (class_exists('PgSql\Result') && $res instanceof PgSql\Result)) {
                 return pg_field_name($res, $position);
             }
 
@@ -164,7 +164,7 @@ if (class_exists('dbLayer')) {
 
         public function db_field_type($res, $position)
         {
-            if (is_resource($res)) {
+            if (is_resource($res) || (class_exists('PgSql\Result') && $res instanceof PgSql\Result)) {
                 return pg_field_type($res, $position);
             }
 
@@ -173,7 +173,7 @@ if (class_exists('dbLayer')) {
 
         public function db_fetch_assoc($res)
         {
-            if (is_resource($res)) {
+            if (is_resource($res) || (class_exists('PgSql\Result') && $res instanceof PgSql\Result)) {
                 return pg_fetch_assoc($res);
             }
 
@@ -182,7 +182,7 @@ if (class_exists('dbLayer')) {
 
         public function db_result_seek($res, $row)
         {
-            if (is_resource($res)) {
+            if (is_resource($res) || (class_exists('PgSql\Result') && $res instanceof PgSql\Result)) {
                 return pg_result_seek($res, (int) $row);
             }
 
@@ -191,7 +191,7 @@ if (class_exists('dbLayer')) {
 
         public function db_changes($handle, $res)
         {
-            if (is_resource($handle) && is_resource($res)) {
+            if (is_resource($res) || (class_exists('PgSql\Result') && $res instanceof PgSql\Result)) {
                 return pg_affected_rows($res);
             }
 
@@ -200,7 +200,7 @@ if (class_exists('dbLayer')) {
 
         public function db_last_error($handle)
         {
-            if (is_resource($handle)) {
+            if (is_resource($handle) || (class_exists('PgSql\Connection') && $handle instanceof PgSql\Connection)) {
                 return pg_last_error($handle);
             }
 
@@ -209,7 +209,6 @@ if (class_exists('dbLayer')) {
 
         public function db_escape_string($str, $handle = null)
         {
-            /* @phpstan-ignore-next-line */
             if (is_resource($handle) || (class_exists('PgSql\Connection') && $handle instanceof PgSql\Connection)) {
                 return pg_escape_string($handle, $str);
             }
