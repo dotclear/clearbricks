@@ -12,7 +12,9 @@
 class html
 {
     public static $url_root;
-    public static $absolute_regs = []; ///< Array of regular expression for {@link absoluteURLs()}
+    public static $absolute_regs = [     ///< Array of regular expression for {@link absoluteURLs()}
+        '/((?:action|background|cite|classid|code|codebase|data|download|formaction|href|longdesc|profile|src|usemap)=")(.*?)(")/msu',
+    ];
 
     /**
      * HTML escape
@@ -139,44 +141,45 @@ class html
     public static function absoluteURLs(?string $str, ?string $root): string
     {
         self::$url_root = $root;
-        $attr           = 'action|background|cite|classid|code|codebase|data|download|formaction|href|longdesc|profile|src|usemap';
+//        $attr           = 'action|background|cite|classid|code|codebase|data|download|formaction|href|longdesc|profile|src|usemap';
 
-        $str = preg_replace_callback('/((?:' . $attr . ')=")(.*?)(")/msu', ['self', 'absoluteURLHandler'], $str);
+//        $str = preg_replace_callback('/((?:' . $attr . ')=")(.*?)(")/msu', ['self', 'absoluteURLHandler'], $str);
 
         foreach (self::$absolute_regs as $r) {
-            $str = preg_replace_callback($r, ['self', 'absoluteURLHandler'], $str);
+            $str = preg_replace_callback(
+                $r,
+                function (array $m) {
+                    $url = $m[2];
+
+                    $link = str_replace('%', '%%', $m[1]) . '%s' . str_replace('%', '%%', $m[3]);
+                    $host = preg_replace('|^([a-z]{3,}://)(.*?)/(.*)$|', '$1$2', self::$url_root);
+
+                    $parse = parse_url($m[2]);
+                    if (empty($parse['scheme'])) {
+                        if (strpos($url, '//') === 0) {
+                            // Nothing to do. Already an absolute URL.
+                        } elseif (strpos($url, '/') === 0) {
+                            // Beginning by a / return host + url
+                            $url = $host . $url;
+                        } elseif (strpos($url, '#') === 0) {
+                            // Beginning by a # return root + hash
+                            $url = self::$url_root . $url;
+                        } elseif (preg_match('|/$|', self::$url_root)) {
+                            // Root is ending by / return root + url
+                            $url = self::$url_root . $url;
+                        } else {
+                            $url = dirname(self::$url_root) . '/' . $url;
+                        }
+                    }
+
+                    return sprintf($link, $url);
+                },
+                $str
+            );
         }
 
         self::$url_root = null;
 
         return $str;
-    }
-
-    private static function absoluteURLHandler(array $m): string
-    {
-        $url = $m[2];
-
-        $link = str_replace('%', '%%', $m[1]) . '%s' . str_replace('%', '%%', $m[3]);
-        $host = preg_replace('|^([a-z]{3,}://)(.*?)/(.*)$|', '$1$2', self::$url_root);
-
-        $parse = parse_url($m[2]);
-        if (empty($parse['scheme'])) {
-            if (strpos($url, '//') === 0) {
-                // Nothing to do. Already an absolute URL.
-            } elseif (strpos($url, '/') === 0) {
-                // Beginning by a / return host + url
-                $url = $host . $url;
-            } elseif (strpos($url, '#') === 0) {
-                // Beginning by a # return root + hash
-                $url = self::$url_root . $url;
-            } elseif (preg_match('|/$|', self::$url_root)) {
-                // Root is ending by / return root + url
-                $url = self::$url_root . $url;
-            } else {
-                $url = dirname(self::$url_root) . '/' . $url;
-            }
-        }
-
-        return sprintf($link, $url);
     }
 }

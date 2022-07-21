@@ -422,16 +422,16 @@ class http
     public static function trimRequest(): void
     {
         if (!empty($_GET)) {
-            array_walk($_GET, ['self', 'trimRequestInVar']);
+            array_walk($_GET, ['self', 'trimRequestInVar']);    // @phpstan-ignore-line
         }
         if (!empty($_POST)) {
-            array_walk($_POST, ['self', 'trimRequestInVar']);
+            array_walk($_POST, ['self', 'trimRequestInVar']);   // @phpstan-ignore-line
         }
         if (!empty($_REQUEST)) {
-            array_walk($_REQUEST, ['self', 'trimRequestInVar']);
+            array_walk($_REQUEST, ['self', 'trimRequestInVar']);    // @phpstan-ignore-line
         }
         if (!empty($_COOKIE)) {
-            array_walk($_COOKIE, ['self', 'trimRequestInVar']);
+            array_walk($_COOKIE, ['self', 'trimRequestInVar']); // @phpstan-ignore-line
         }
     }
 

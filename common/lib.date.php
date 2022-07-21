@@ -47,7 +47,59 @@ class dt
             self::setTZ($T);
         }
 
-        $res = preg_replace_callback('/{{' . $hash . '__(a|A|b|B)([0-9]{1,2})__}}/', ['self', '_callback'], $res);
+        $res = preg_replace_callback(
+            '/{{' . $hash . '__(a|A|b|B)([0-9]{1,2})__}}/',
+            function ($args) {
+                $b = [
+                    1  => '_Jan',
+                    2  => '_Feb',
+                    3  => '_Mar',
+                    4  => '_Apr',
+                    5  => '_May',
+                    6  => '_Jun',
+                    7  => '_Jul',
+                    8  => '_Aug',
+                    9  => '_Sep',
+                    10 => '_Oct',
+                    11 => '_Nov',
+                    12 => '_Dec', ];
+
+                $B = [
+                    1  => 'January',
+                    2  => 'February',
+                    3  => 'March',
+                    4  => 'April',
+                    5  => 'May',
+                    6  => 'June',
+                    7  => 'July',
+                    8  => 'August',
+                    9  => 'September',
+                    10 => 'October',
+                    11 => 'November',
+                    12 => 'December', ];
+
+                $a = [
+                    1 => '_Mon',
+                    2 => '_Tue',
+                    3 => '_Wed',
+                    4 => '_Thu',
+                    5 => '_Fri',
+                    6 => '_Sat',
+                    0 => '_Sun', ];
+
+                $A = [
+                    1 => 'Monday',
+                    2 => 'Tuesday',
+                    3 => 'Wednesday',
+                    4 => 'Thursday',
+                    5 => 'Friday',
+                    6 => 'Saturday',
+                    0 => 'Sunday', ];
+
+                return __(${$args[1]}[(int) $args[2]]);
+            },
+            $res
+        );
 
         return $res;
     }
@@ -240,56 +292,5 @@ class dt
         }
 
         return $res;
-    }
-
-    private static function _callback($args): string
-    {
-        $b = [
-            1  => '_Jan',
-            2  => '_Feb',
-            3  => '_Mar',
-            4  => '_Apr',
-            5  => '_May',
-            6  => '_Jun',
-            7  => '_Jul',
-            8  => '_Aug',
-            9  => '_Sep',
-            10 => '_Oct',
-            11 => '_Nov',
-            12 => '_Dec', ];
-
-        $B = [
-            1  => 'January',
-            2  => 'February',
-            3  => 'March',
-            4  => 'April',
-            5  => 'May',
-            6  => 'June',
-            7  => 'July',
-            8  => 'August',
-            9  => 'September',
-            10 => 'October',
-            11 => 'November',
-            12 => 'December', ];
-
-        $a = [
-            1 => '_Mon',
-            2 => '_Tue',
-            3 => '_Wed',
-            4 => '_Thu',
-            5 => '_Fri',
-            6 => '_Sat',
-            0 => '_Sun', ];
-
-        $A = [
-            1 => 'Monday',
-            2 => 'Tuesday',
-            3 => 'Wednesday',
-            4 => 'Thursday',
-            5 => 'Friday',
-            6 => 'Saturday',
-            0 => 'Sunday', ];
-
-        return __(${$args[1]}[(int) $args[2]]);
     }
 }
