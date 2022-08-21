@@ -23,9 +23,12 @@ class files
         'sxc' => 'application/vnd.sun.xml.calc',
         'sxi' => 'application/vnd.sun.xml.impress',
 
-        'ppt' => 'application/mspowerpoint',
-        'doc' => 'application/msword',
-        'xls' => 'application/msexcel',
+        'ppt'  => 'application/mspowerpoint',
+        'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+        'doc'  => 'application/msword',
+        'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'xls'  => 'application/msexcel',
+        'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
 
         'pdf'  => 'application/pdf',
         'ps'   => 'application/postscript',
