@@ -204,7 +204,7 @@ if (class_exists('netHttp')) {
                         return $feed;
                     }
 
-                    if (($fp = @fopen($cached_file, 'wb'))) {
+                    if ($fp = @fopen($cached_file, 'wb')) {
                         fwrite($fp, serialize($feed));
                         fclose($fp);
                         files::inheritChmod($cached_file);
@@ -233,11 +233,6 @@ if (class_exists('netHttp')) {
                     $headers[] = 'If-Modified-Since: ' . $this->validators['IfModifiedSince'];
                 }
                 if (isset($this->validators['IfNoneMatch'])) {
-                    if (is_array($this->validators['IfNoneMatch'])) {
-                        $etags = implode(',', $this->validators['IfNoneMatch']);
-                    } else {
-                        $etags = $this->validators['IfNoneMatch'];
-                    }
                     $headers[] = '';
                 }
             }

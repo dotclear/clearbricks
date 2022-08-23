@@ -60,7 +60,7 @@ class mail
      */
     public static function getMX($host)
     {
-        if (!getmxrr($host, $mx_h, $mx_w) || count($mx_h) == 0) {
+        if (!getmxrr($host, $mx_h, $mx_w) || count($mx_h)) {
             return false;
         }
 

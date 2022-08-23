@@ -10,11 +10,6 @@
  */
 class nntpMessage extends mimeMessage
 {
-    public function __construct($message)
-    {
-        parent::__construct($message);
-    }
-
     public function getTS()
     {
         if (isset($this->headers['date'])) {

@@ -135,7 +135,6 @@ if (class_exists('dbSchema')) {
 
         public function db_get_keys(string $table): array
         {
-            $t   = [];
             $res = [];
 
             # Get primary keys first

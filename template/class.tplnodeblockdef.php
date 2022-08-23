@@ -48,7 +48,6 @@ class tplNodeBlockDefinition extends tplNodeBlock
         $pos   = $stack['pos'];
         // First check if block position is correct
         if (isset($stack['blocks'][$pos])) {
-            $saved_current_block = self::$current_block;
             self::$current_block = $name;
             if (!is_string($stack['blocks'][$pos])) {
                 // Not a string ==> need to compile the tree

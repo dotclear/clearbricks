@@ -78,7 +78,7 @@ if (class_exists('netHttp')) {
             if (strpos($result, '<p class="success">The document validates according to the specified schema(s).</p>')) {
                 return true;
             }
-            if ($errors = preg_match('#(<ol>.*</ol>)<p class="failure">There were errors.</p>#msU', $result, $matches)) {
+            if (preg_match('#(<ol>.*</ol>)<p class="failure">There were errors.</p>#msU', $result, $matches)) {
                 $this->html_errors = strip_tags($matches[1], '<ol><li><p><code><strong>');
             }
 

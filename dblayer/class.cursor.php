@@ -175,11 +175,9 @@ class cursor
     {
         $data = $this->formatFields();
 
-        $insReq = 'INSERT INTO ' . $this->__con->escapeSystem($this->__table) . " (\n" .
+        return 'INSERT INTO ' . $this->__con->escapeSystem($this->__table) . " (\n" .
         implode(",\n", array_keys($data)) . "\n) VALUES (\n" .
         implode(",\n", array_values($data)) . "\n) ";
-
-        return $insReq;
     }
 
     /**

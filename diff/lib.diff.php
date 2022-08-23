@@ -116,8 +116,6 @@ class diff
     public static function uniDiff($src, $dst, $ctx = 2)
     {
         [$src, $dst] = [explode("\n", $src), explode("\n", $dst)];  // @phpstan-ignore-line
-        $cx          = count($src);
-        $cy          = count($dst);
 
         $ses = diff::SES($src, $dst);
         $res = '';
@@ -141,9 +139,9 @@ class diff
                 # Header for current chunk
                 $res .= sprintf(
                     self::$us_range,
-                    $pos_x + 1 - $old_lines,
+                    $pos_x     + 1 - $old_lines,
                     $old_lines + $i,
-                    $pos_y + 1 - $new_lines,
+                    $pos_y     + 1 - $new_lines,
                     $new_lines + $i
                 ) . $buffer;
 
@@ -196,9 +194,9 @@ class diff
             # Header for current chunk
             $res .= sprintf(
                 self::$us_range,
-                $pos_x + 1 - $old_lines,
+                $pos_x     + 1 - $old_lines,
                 $old_lines + $i,
-                $pos_y + 1 - $new_lines,
+                $pos_y     + 1 - $new_lines,
                 $new_lines + $i
             ) . $buffer;
         }

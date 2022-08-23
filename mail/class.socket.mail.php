@@ -106,7 +106,7 @@ class socketMail
     {
         $f = '';
 
-        if (preg_match('/^from: (.+?)$/msi', $headers, $m)) {
+        if (preg_match('/^from: (.+)$/msi', $headers, $m)) {
             $f = trim((string) $m[1]);
         }
 

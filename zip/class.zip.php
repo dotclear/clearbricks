@@ -220,8 +220,8 @@ class fileZip
             return;
         }
 
-        $size = filesize($file);
-        $this->memoryAllocate($size * 3);
+        $filesize = filesize($file);
+        $this->memoryAllocate($filesize * 3);
 
         $content = file_get_contents($file);
 

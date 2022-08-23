@@ -101,7 +101,7 @@ class mailConvert
         $id      = -1;
 
         foreach (explode("\n", $str) as $line) {
-            if (preg_match('/^(?:\s*)(?:>|\|)(?:\s?)(.*?)$/su', $line, $m)) {
+            if (preg_match('/^(?:\s*)(?:>|\|)(?:\s?)(.*)$/su', $line, $m)) {
                 if ($type != 'quote' && !trim((string) $m[1])) {
                     continue;
                 }

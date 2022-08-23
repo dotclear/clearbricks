@@ -223,7 +223,7 @@ class tidyDiffChunk
         $allowed_types = ['delete', 'insert'];
         $delete        = $insert        = 0;
 
-        foreach ($this->__data as $k => $line) {
+        foreach ($this->__data as $line) {
             if (in_array($line->type, $allowed_types)) {
                 array_push($group, $line);
                 ${$line->type}++;
@@ -246,7 +246,7 @@ class tidyDiffChunk
     {
         $start = 0;
         $limit = min(strlen($str1), strlen($str2));
-        while ($start < $limit and $str1[$start] === $str2[$start]) {
+        while ($start < $limit && $str1[$start] === $str2[$start]) {
             $start++;
         }
 

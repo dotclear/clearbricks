@@ -252,7 +252,7 @@ class netNntp extends netSocket
 
         if ($r['status'] == self::GROUP_SELECTED) {
             $res = [];
-            foreach ($rsp as $i => $buf) {
+            foreach ($rsp as $buf) {
                 if (self::eot($buf)) {
                     break;
                 }

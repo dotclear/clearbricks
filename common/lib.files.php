@@ -227,11 +227,11 @@ class files
     {
         $current_dir = opendir($dir);
         while ($entryname = readdir($current_dir)) {
-            if (is_dir($dir . '/' . $entryname) and ($entryname != '.' and $entryname != '..')) {
+            if (is_dir($dir . '/' . $entryname) && ($entryname != '.' && $entryname != '..')) {
                 if (!files::deltree($dir . '/' . $entryname)) {
                     return false;
                 }
-            } elseif ($entryname != '.' and $entryname != '..') {
+            } elseif ($entryname != '.' && $entryname != '..') {
                 if (!@unlink($dir . '/' . $entryname)) {
                     return false;
                 }

@@ -48,7 +48,7 @@ if (class_exists('dbLayer')) {
                 throw new Exception('Unable to connect to database');
             }
 
-            $this->db_post_connect($link, $database);
+            $this->db_post_connect($link);
 
             return $link;
         }
@@ -59,7 +59,7 @@ if (class_exists('dbLayer')) {
             return $this->db_connect($host, $user, $password, $database);
         }
 
-        private function db_post_connect($link, $database)
+        private function db_post_connect($link)
         {
             if (version_compare($this->db_version($link), '4.1', '>=')) {
                 $this->db_query($link, 'SET NAMES utf8');
@@ -98,9 +98,7 @@ if (class_exists('dbLayer')) {
             if ($handle instanceof MySQLi) {
                 $res = @$handle->query($query);
                 if ($res === false) {
-                    $e = new Exception($this->db_last_error($handle));
-
-                    throw $e;
+                    throw new Exception($this->db_last_error($handle));
                 }
 
                 return $res;
@@ -117,7 +115,6 @@ if (class_exists('dbLayer')) {
         public function db_num_fields($res)
         {
             if ($res instanceof MySQLi_Result) {
-                //return mysql_num_fields($res);
                 return $res->field_count;
             }
 

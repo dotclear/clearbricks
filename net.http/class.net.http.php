@@ -225,9 +225,8 @@ if (class_exists('netSocket')) {
                     if (!preg_match('/HTTP\/(\\d\\.\\d)\\s*(\\d+)\\s*(.*)/', $line, $m)) {
                         throw new Exception('Status code line invalid: ' . $line);
                     }
-                    $http_version        = $m[1]; # not used
                     $this->status        = $m[2];
-                    $this->status_string = $m[3]; # not used
+                    $this->status_string = $m[3];
                     $this->debug($line);
 
                     continue;

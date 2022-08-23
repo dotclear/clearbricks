@@ -323,8 +323,7 @@ class xmlrpcMessage
 
                 break;
             case 'dateTime.iso8601':
-                $value = new xmlrpcDate(trim((string) $this->_currentTagContents));
-                # $value = $iso->getTimestamp();
+                $value                     = new xmlrpcDate(trim((string) $this->_currentTagContents));
                 $this->_currentTagContents = '';
                 $valueFlag                 = true;
 
@@ -350,7 +349,7 @@ class xmlrpcMessage
                 $valueFlag                 = true;
 
                 break;
-            # Deal with stacks of arrays and structs
+                # Deal with stacks of arrays and structs
             case 'data':
             case 'struct':
                 $value = array_pop($this->_arraystructs);
@@ -697,11 +696,6 @@ if (class_exists('xmlrpcClient')) {
     class xmlrpcClientMulticall extends xmlrpcClient
     {
         protected $calls = []; ///< array
-
-        public function __construct($url)
-        {
-            parent::__construct($url);
-        }
 
         /**
          * Add call to stack
@@ -1232,14 +1226,13 @@ if (class_exists('xmlrpcServer')) {
                 throw new xmlrpcException('Server error. Requested method "' . $methodname . '" not specified.', -32601);
             }
 
-            $method    = $this->callbacks[$methodname];
             $signature = $this->signatures[$methodname];
 
             if (!is_array($signature)) {
                 throw new xmlrpcException('Server error. Wrong method signature', -36600);
             }
 
-            $return_type = array_shift($signature);
+            array_shift($signature);
 
             # Check the number of arguments
             if (count($args) > count($signature)) {

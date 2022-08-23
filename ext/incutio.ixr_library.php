@@ -170,7 +170,7 @@ class IXR_Message
 
         return true;
     }
-    public function tag_open($parser, $tag, $attr)
+    public function tag_open($parser, $tag)
     {
         $this->_currentTag = $tag;
         switch ($tag) {
@@ -180,7 +180,7 @@ class IXR_Message
                 $this->messageType = $tag;
 
                 break;
-            /* Deal with stacks of arrays and structs */
+                /* Deal with stacks of arrays and structs */
             case 'data': // data is to all intents and puposes more interesting than array
                 $this->_arraystructstypes[] = 'array';
                 $this->_arraystructs[]      = [];
@@ -222,8 +222,7 @@ class IXR_Message
 
                 break;
             case 'dateTime.iso8601':
-                $value = new IXR_Date(trim((string) $this->_currentTagContents));
-                // $value = $iso->getTimestamp();
+                $value                     = new IXR_Date(trim((string) $this->_currentTagContents));
                 $this->_currentTagContents = '';
                 $valueFlag                 = true;
 
@@ -249,7 +248,7 @@ class IXR_Message
                 $valueFlag                 = true;
 
                 break;
-            /* Deal with stacks of arrays and structs */
+                /* Deal with stacks of arrays and structs */
             case 'data':
             case 'struct':
                 $value = array_pop($this->_arraystructs);
@@ -273,11 +272,6 @@ class IXR_Message
                 break;
         }
         if ($valueFlag) {
-            /*
-            if (!is_array($value) && !is_object($value)) {
-            $value = trim($value);
-            }
-             */
             if (count($this->_arraystructs) > 0) {
                 // Add value to struct or array
                 if ($this->_arraystructstypes[count($this->_arraystructstypes) - 1] == 'struct') {
@@ -440,7 +434,7 @@ class IXR_Server
             ],
         ];
     }
-    public function getCapabilities($args)
+    public function getCapabilities()
     {
         return $this->capabilities;
     }
@@ -450,7 +444,7 @@ class IXR_Server
         $this->callbacks['system.listMethods']     = 'this:listMethods';
         $this->callbacks['system.multicall']       = 'this:multiCall';
     }
-    public function listMethods($args)
+    public function listMethods()
     {
         // Returns a list of methods - uses array_reverse to ensure user defined
         // methods are listed before server defined methods
@@ -664,7 +658,7 @@ class IXR_Error
     }
     public function getXml()
     {
-        $xml = <<<EOD
+        return <<<EOD
             <methodResponse>
               <fault>
                 <value>
@@ -683,8 +677,6 @@ class IXR_Error
             </methodResponse>
 
             EOD;
-
-        return $xml;
     }
 }
 
@@ -797,9 +789,7 @@ class IXR_IntrospectionServer extends IXR_Server
         if (!$this->hasMethod($methodname)) {
             return new IXR_Error(-32601, 'server error. requested method "' . $this->message->methodName . '" not specified.');
         }
-        $method     = $this->callbacks[$methodname];
-        $signature  = $this->signatures[$methodname];
-        $returnType = array_shift($signature);
+        $signature = $this->signatures[$methodname];
         // Check the number of arguments
         if (count($args) != count($signature)) {
             // print 'Num of args: '.count($args).' Num in signature: '.count($signature);

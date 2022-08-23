@@ -435,12 +435,12 @@ class http
         }
     }
 
-    private static function trimRequestInVar(&$value, $key): void
+    private static function trimRequestInVar(&$value): void
     {
         if (is_array($value)) {
             foreach ($value as $k => &$v) {
                 if (is_array($v)) {
-                    self::trimRequestInVar($v, $k);
+                    self::trimRequestInVar($v);
                 } else {
                     $v = trim((string) $v);
                 }

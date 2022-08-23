@@ -51,10 +51,8 @@ class fileUnzip
             return $this->compressed_list;
         }
 
-        if (!$this->loadFileListByEOF($stop_on_file, $exclude)) {
-            if (!$this->loadFileListBySignatures($stop_on_file, $exclude)) {
-                return false;
-            }
+        if (!$this->loadFileListByEOF($stop_on_file, $exclude) && !$this->loadFileListBySignatures($stop_on_file, $exclude)) {
+            return false;
         }
 
         return $this->compressed_list;
@@ -471,7 +469,7 @@ class fileUnzip
             fseek($fp, $file['compressed_size'][1], SEEK_CUR);
 
             # Mount file table
-            $i = [
+            return [
                 'file_name'          => $file['file_name'],
                 'is_dir'             => substr($file['file_name'], -1, 1) == '/',
                 'compression_method' => $file['compression_method'][1],
@@ -487,8 +485,6 @@ class fileUnzip
                 'general_bit_flag'      => str_pad(decbin($file['general_bit_flag'][1]), 8, '0', STR_PAD_LEFT),
                 'contents_start_offset' => $file['contents_start_offset'],
             ];
-
-            return $i;
         }
 
         return false;

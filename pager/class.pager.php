@@ -167,7 +167,7 @@ class pager
         }
 
         # Escape page_url for sprintf
-        $url = preg_replace('/%/', '%%', $url);
+        $url = str_replace('%', '%%', $url);
 
         # Changing page ref
         if (preg_match('/[?&]' . $this->var_page . '=[0-9]+/', $url)) {

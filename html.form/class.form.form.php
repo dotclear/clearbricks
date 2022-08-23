@@ -50,11 +50,9 @@ class formForm extends formComponent
             (isset($this->method) ? ' method="' . $this->method . '"' : '') .
             $this->renderCommonAttributes() . '>' . "\n";
 
-        if (isset($this->fields)) {
-            if (is_array($this->fields)) {
-                foreach ($this->fields as $field) {
-                    $buffer .= sprintf(($fieldFormat ?: '%s'), $field->render());
-                }
+        if (isset($this->fields) && is_array($this->fields)) {
+            foreach ($this->fields as $field) {
+                $buffer .= sprintf(($fieldFormat ?: '%s'), $field->render());
             }
         }
 

@@ -71,15 +71,13 @@ class formFieldset extends formComponent
             $buffer .= $this->legend->render();
         }
 
-        if (isset($this->fields)) {
-            if (is_array($this->fields)) {
-                foreach ($this->fields as $field) {
-                    if (isset($this->legend) && $field->getDefaultElement() === 'legend') {
-                        // Do not put more than one legend in fieldset
-                        continue;
-                    }
-                    $buffer .= $field->render();
+        if (isset($this->fields) && is_array($this->fields)) {
+            foreach ($this->fields as $field) {
+                if (isset($this->legend) && $field->getDefaultElement() === 'legend') {
+                    // Do not put more than one legend in fieldset
+                    continue;
                 }
+                $buffer .= $field->render();
             }
         }
 

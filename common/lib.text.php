@@ -112,7 +112,7 @@ class text
             $str = str_replace(' ', '-', $str);
         }
 
-        $str = preg_replace('/[-]+/', '-', $str);
+        $str = preg_replace('/\-+/', '-', $str);
 
         # Remove path changes in URL
         $str = preg_replace('%^/%', '', $str);
@@ -241,8 +241,7 @@ class text
         '|[\xF1-\xF3][\x80-\xBF]{3}' . # planes 4-15
         '|\xF4[\x80-\x8F][\x80-\xBF]{2}' . # plane 16
         '|(.{1}))'; # invalid byte
-        $pos     = 0;
-        $badList = [];
+        $pos = 0;
 
         while (preg_match('/' . $UTF8_BAD . '/S', $str, $matches)) {
             $bytes = strlen($matches[0]);

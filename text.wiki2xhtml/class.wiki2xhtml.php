@@ -356,7 +356,7 @@ class wiki2xhtml
 
         # On remet les macros
         if ($this->getOpt('active_macros')) {
-            $res = preg_replace_callback('/^##########MACRO#([0-9]+)#$/ms', [$this, '__putMacro'], $res);
+            $res = preg_replace_callback('/^##########MACRO#(\d+)#$/ms', [$this, '__putMacro'], $res);
         }
 
         # Auto line break dans les paragraphes
@@ -533,7 +533,7 @@ class wiki2xhtml
         $this->all_tags    = $this->__getAllTags();
         $this->tag_pattern = $this->__getTagsPattern();
 
-        $this->escape_table = $this->all_tags;
+        $this->escape_table                                = $this->all_tags;
         array_walk($this->escape_table, function (&$a) {$a = '\\' . $a;});
     }
 
@@ -560,7 +560,7 @@ class wiki2xhtml
 
     private function __getTagsPattern(): string
     {
-        $res = $this->all_tags;
+        $res                                = $this->all_tags;
         array_walk($res, function (&$a) {$a = preg_quote($a, '/');});
 
         return '/(?<!\\\)(' . implode('|', $res) . ')/';
@@ -577,7 +577,6 @@ class wiki2xhtml
         for ($i = 0; $i < $max; $i++) {
             $pre_mode = $mode;
             $pre_type = $type;
-            $end      = ($i + 1 == $max);
 
             $line = $this->__getLine($i, $type, $mode, $attr);
 
@@ -953,7 +952,7 @@ class wiki2xhtml
 
                             break;
                         case 'word':
-                            $res = $this->parseWikiWord($res, $tag, $attr, $type);
+                            $res = $this->parseWikiWord($res, $tag);
 
                             break;
                         default:
@@ -1212,18 +1211,16 @@ class wiki2xhtml
         $file = $this->getOpt('acronyms_file');
         $res  = [];
 
-        if (file_exists($file)) {
-            if (($fc = @file($file)) !== false) {
-                foreach ($fc as $v) {
-                    $v = trim((string) $v);
-                    if ($v != '') {
-                        $p = strpos($v, ':');
-                        $K = (string) trim(substr($v, 0, $p));
-                        $V = (string) trim(substr($v, ($p + 1)));
+        if (file_exists($file) && ($fc = @file($file)) !== false) {
+            foreach ($fc as $v) {
+                $v = trim((string) $v);
+                if ($v != '') {
+                    $p = strpos($v, ':');
+                    $K = (string) trim(substr($v, 0, $p));
+                    $V = (string) trim(substr($v, ($p + 1)));
 
-                        if ($K) {
-                            $res[$K] = $V;
-                        }
+                    if ($K) {
+                        $res[$K] = $V;
                     }
                 }
             }
@@ -1233,10 +1230,9 @@ class wiki2xhtml
     }
 
     # Mots wiki (pour héritage)
-    private function parseWikiWord(string $str, &$tag, &$attr, &$type): string
+    private function parseWikiWord(string $str, &$tag): string
     {
         $tag = '';
-//        $attr = '';
 
         if (isset($this->functions['wikiword'])) {
             return call_user_func($this->functions['wikiword'], $str);
@@ -1304,10 +1300,8 @@ class wiki2xhtml
                 $content = implode("\n", array_slice($c, 1));
             }
 
-            if ($fw) {
-                if (isset($this->functions['macro:' . $fw])) {
-                    return call_user_func($this->functions['macro:' . $fw], $content, $fl);
-                }
+            if ($fw && isset($this->functions['macro:' . $fw])) {
+                return call_user_func($this->functions['macro:' . $fw], $content, $fl);
             }
 
             # Si on n'a rien pu faire, on retourne le tout sous

@@ -65,7 +65,7 @@ if (class_exists('dbLayer')) {
                 throw new Exception('Unable to connect to database');
             }
 
-            $this->db_post_connect($link, $database);
+            $this->db_post_connect($link);
 
             return $link;
         }
@@ -82,12 +82,12 @@ if (class_exists('dbLayer')) {
                 throw new Exception('Unable to connect to database');
             }
 
-            $this->db_post_connect($link, $database);
+            $this->db_post_connect($link);
 
             return $link;
         }
 
-        private function db_post_connect($handle, $database)
+        private function db_post_connect($handle)
         {
             if (version_compare($this->db_version($handle), '9.1') >= 0) {
                 // Only for PostgreSQL 9.1+
@@ -121,9 +121,7 @@ if (class_exists('dbLayer')) {
             if (is_resource($handle) || (class_exists('PgSql\Connection') && $handle instanceof PgSql\Connection)) {
                 $res = @pg_query($handle, $query);
                 if ($res === false) {
-                    $e = new Exception($this->db_last_error($handle));
-
-                    throw $e;
+                    throw new Exception($this->db_last_error($handle));
                 }
 
                 return $res;

@@ -408,11 +408,6 @@ class l10n
                         $h_key = substr($h_line, 0, $h_index);
                         $h_val = substr($h_line, $h_index + 1);
 
-                        // unknow header
-                        if (!isset($headers[$h_key])) {
-                            //continue;
-                        }
-
                         // ok it's an header, add it
                         $headers[$h_key] = trim($h_val);
                         $headers_found   = true;
@@ -445,7 +440,7 @@ class l10n
 
                         break;
 
-                    // extracted comments
+                        // extracted comments
                     case '.':
                         if (!isset($desc['extracted-comments'])) {
                             $desc['extracted-comments'] = $str;
@@ -455,7 +450,7 @@ class l10n
 
                         break;
 
-                    // reference
+                        // reference
                     case ':':
                         if (!isset($desc['references'])) {
                             $desc['references'] = [];
@@ -464,7 +459,7 @@ class l10n
 
                         break;
 
-                    // flag
+                        // flag
                     case ',':
                         if (!isset($desc['flags'])) {
                             $desc['flags'] = [];
@@ -473,7 +468,7 @@ class l10n
 
                         break;
 
-                    // previous msgid, msgctxt
+                        // previous msgid, msgctxt
                     case '|':
                         // msgid
                         if (strpos($def[2], 'msgid') === 0) {
@@ -553,7 +548,7 @@ class l10n
                         }
                     }
 
-                    // msgstr
+                // msgstr
                 } else {
                     if (!is_array($entry['msgstr'])) {
                         $entry['msgstr'] .= $str;

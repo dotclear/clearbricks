@@ -254,7 +254,7 @@ class template
         }
         $dest_file = $this->getFile($________);
         ob_start();
-        if (ini_get('display_errors') == true) {
+        if (ini_get('display_errors')) {
             include $dest_file;
         } else {
             @include $dest_file;
@@ -300,7 +300,7 @@ class template
         $node              = $rootNode;
         $errors            = [];
         $this->parent_file = '';
-        foreach ($blocks as $id => $block) {
+        foreach ($blocks as $block) {
             $isblock = preg_match('#<tpl:(\w+)(?:(\s+.*?)>|>)|</tpl:(\w+)>|{{tpl:(\w+)(\s(.*?))?}}#ms', $block, $match);
             if ($isblock == 1) {
                 if (substr($match[0], 1, 1) == '/') {
@@ -373,7 +373,7 @@ class template
         }
 
         $err = '';
-        if (count($errors) > 0) {
+        if (count($errors)) {
             $err = "\n\n<!-- \n" .
             __('WARNING: the following errors have been found while parsing template file :') .
             "\n * " .

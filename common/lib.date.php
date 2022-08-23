@@ -264,7 +264,7 @@ class dt
             if (!is_readable($f = dirname(__FILE__) . '/tz.dat')) {
                 return [];
             }
-            $tz  = file(dirname(__FILE__) . '/tz.dat');
+            $tz  = file($f);
             $res = [];
             foreach ($tz as $v) {
                 $v = trim($v);

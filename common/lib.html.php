@@ -141,9 +141,6 @@ class html
     public static function absoluteURLs(?string $str, ?string $root): string
     {
         self::$url_root = $root;
-//        $attr           = 'action|background|cite|classid|code|codebase|data|download|formaction|href|longdesc|profile|src|usemap';
-
-//        $str = preg_replace_callback('/((?:' . $attr . ')=")(.*?)(")/msu', ['self', 'absoluteURLHandler'], $str);
 
         foreach (self::$absolute_regs as $r) {
             $str = preg_replace_callback(
