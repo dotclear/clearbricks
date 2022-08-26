@@ -266,7 +266,7 @@ class htmlFilter
 
     private function miniTidy(string $str)
     {
-        $str = preg_replace_callback('%(<(?!(\s*?/|!))[^>]*+)%msu', [$this, 'miniTidyFixTag'], $str);
+        $str = preg_replace_callback('%(<(?!(\s*?/|!)).*?>)%msu', [$this, 'miniTidyFixTag'], $str);
 
         return $str;
     }
