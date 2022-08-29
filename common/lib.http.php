@@ -449,11 +449,4 @@ class http
             $value = trim((string) $value);
         }
     }
-
-    /**
-     * Unset global variables (obsolete)
-     */
-    public static function unsetGlobals(): void
-    {
-    }
 }
