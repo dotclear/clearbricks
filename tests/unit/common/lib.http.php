@@ -1,4 +1,5 @@
 <?php
+
 # -- BEGIN LICENSE BLOCK ---------------------------------------
 #
 # This file is part of Dotclear 2.
@@ -353,13 +354,5 @@ class http extends atoum
             ->string['request']->isEqualTo('test\\\'n\\\'test')
             ->array($_COOKIE)
             ->string['cookie']->isEqualTo('test');
-    }
-
-    public function testUnsetGlobals()
-    {
-        $this
-            ->variable(\http::unsetGlobals())
-            ->isNull();
-        // No more test as register_globals is deprecated in PHP 5.3 and removed in PHP 5.4
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 # ***** BEGIN LICENSE BLOCK *****
 # This file is part of Clearbricks.
 # Copyright (c) 2003-2013 Olivier Meunier & Association Dotclear
@@ -243,18 +244,6 @@ class l10n extends atoum
             ->isEqualTo('Dotclear a été mis à jour.');
     }
 
-    public function testUnreadableLangFile()
-    {
-        \l10n::init();
-        chmod(__DIR__ . '/../fixtures/l10n/fr/nopo.lang', 0200); // Write only
-        \l10n::set(__DIR__ . '/../fixtures/l10n/fr/nopo');
-        chmod(__DIR__ . '/../fixtures/l10n/fr/nopo.lang', 0644); // Restore permissions
-
-        $this
-            ->string(__('Dotclear has been upgraded.'))
-            ->isEqualTo('Dotclear has been upgraded.');
-    }
-
     public function testGetFilePath()
     {
         \l10n::init();
@@ -380,11 +369,11 @@ class l10n extends atoum
     public function testGetTextDirection()
     {
         $this
-            ->string(\l10n::getTextDirection('fr'))
+            ->string(\l10n::getLanguageTextDirection('fr'))
             ->isEqualTo('ltr');
 
         $this
-            ->string(\l10n::getTextDirection('ar'))
+            ->string(\l10n::getLanguageTextDirection('ar'))
             ->isEqualTo('rtl');
     }
 
