@@ -817,12 +817,9 @@ class xmlrpcServer
                     throw new Exception('No Host Specified', 400);
                 }
 
-                global $HTTP_RAW_POST_DATA;
-                if (!$HTTP_RAW_POST_DATA) {
-                    $HTTP_RAW_POST_DATA = @file_get_contents('php://input');
-                    if (!$HTTP_RAW_POST_DATA) {
-                        throw new Exception('No Message', 400);
-                    }
+                $data = @file_get_contents('php://input');
+                if (!$data) {
+                    throw new Exception('No Message', 400);
                 }
 
                 if ($this->strict_check) {
@@ -841,8 +838,6 @@ class xmlrpcServer
                         throw new Exception('Invalid Content-Lenth', 400);
                     }
                 }
-
-                $data = $HTTP_RAW_POST_DATA;
             } catch (Exception $e) {
                 if ($e->getCode() == 400) {
                     $this->head(400, 'Bad Request');
