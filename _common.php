@@ -59,6 +59,22 @@ class Autoload
             $this->stack = array_merge($this->stack, $stack);
         }
     }
+
+    /**
+     * Get the source file of a registered class
+     *
+     * @param      string  $class  The class
+     *
+     * @return     mixed   source file of class, false is not set
+     */
+    public function source(string $class)
+    {
+        if (isset($this->stack[$class])) {
+            return $this->stack[$class];
+        }
+
+        return false;
+    }
 }
 
 class Clearbricks
