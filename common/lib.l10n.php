@@ -742,20 +742,6 @@ class l10n
     }
 
     /**
-     * Text direction
-     *
-     * @deprecated
-     * @see l10n::getLanguageTextDirection()
-     *
-     * @param string    $lang    Language code
-     * @return string ltr or rtl
-     */
-    public static function getTextDirection(string $lang): string
-    {
-        return self::getLanguageTextDirection($lang);
-    }
-
-    /**
      * Get a number of plurals according to a language code
      *
      * @param string $code Language code
