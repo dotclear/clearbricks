@@ -36,6 +36,9 @@ if (!function_exists('__')) {
 /** @endcond */
 class l10n
 {
+    public static $files   = [];
+    public static $locales = [];
+
     /// @name Languages properties
     //@{
     protected static $languages_definitions      = [];
@@ -55,12 +58,6 @@ class l10n
     protected static $language_pluralfunction   = null;
     //@}
 
-    /** @deprecated */
-    public static $text_direction;
-
-    /** @deprecated */
-    protected static $langs = [];
-
     public static function bootstrap()
     {
         // May be used to have __() function defined if necessary via autoload system.
@@ -76,7 +73,21 @@ class l10n
      */
     public static function init($code = 'en')
     {
-        $GLOBALS['__l10n'] = $GLOBALS['__l10n_files'] = [];
+        self::$locales = self::$files = [];
+
+        /*
+         * @deprecated Since 1.3
+         *
+         * Used by generated *.lang.php in old 3rd party modules
+         */
+        $GLOBALS['__l10n'] = &self::$locales;
+
+        /*
+         * @deprecated Since 1.3
+         *
+         * Used by generated *.lang.php in old 3rd party modules
+         */
+        $GLOBALS['__l10n_files'] = &self::$files;
 
         self::lang($code);
     }
@@ -103,9 +114,6 @@ class l10n
                 self::$language_pluralsnumber,
                 self::$language_pluralexpression
             );
-
-            // Backwards compatibility
-            self::$text_direction = self::$language_textdirection;
         }
 
         return self::$language_code;
@@ -130,13 +138,12 @@ class l10n
             return '';
 
         // If no l10n translation loaded or exists
-        } elseif ((!array_key_exists('__l10n', $GLOBALS) || empty($GLOBALS['__l10n'])
-            || !array_key_exists($singular, $GLOBALS['__l10n'])) && is_null($count)) {
+        } elseif ((empty(self::$locales) || !array_key_exists($singular, self::$locales)) && is_null($count)) {
             return $singular;
 
         // If no $plural form or if current language has no plural form return $singular translation
         } elseif ($plural === null || $count === null || self::$language_pluralsnumber == 1) {
-            $t = !empty($GLOBALS['__l10n'][$singular]) ? $GLOBALS['__l10n'][$singular] : $singular;
+            $t = !empty(self::$locales[$singular]) ? self::$locales[$singular] : $singular;
 
             return is_array($t) ? $t[0] : $t;
 
@@ -145,17 +152,17 @@ class l10n
         $i = self::index($count);
 
         // If it is a plural and translation exists in "singular" form
-        if ($i > 0 && !empty($GLOBALS['__l10n'][$plural])) {
-            $t = $GLOBALS['__l10n'][$plural];
+        if ($i > 0 && !empty(self::$locales[$plural])) {
+            $t = self::$locales[$plural];
 
             return is_array($t) ? $t[0] : $t;
 
         // If it is plural and index exists in plurals translations
-        } elseif (!empty($GLOBALS['__l10n'][$singular])
-                && is_array($GLOBALS['__l10n'][$singular])
-                && array_key_exists($i, $GLOBALS['__l10n'][$singular])
-                && !empty($GLOBALS['__l10n'][$singular][$i])) {
-            return $GLOBALS['__l10n'][$singular][$i];
+        } elseif (!empty(self::$locales[$singular])
+                && is_array(self::$locales[$singular])
+                && array_key_exists($i, self::$locales[$singular])
+                && !empty(self::$locales[$singular][$i])) {
+            return self::$locales[$singular][$i];
 
             // Else return input string according to "en" plural form
         }
@@ -187,18 +194,14 @@ class l10n
      */
     public static function set(string $file): bool
     {
-        $lang_file = $file . '.lang';
-        $po_file   = $file . '.po';
-        $php_file  = $file . '.lang.php';
+        $po_file  = $file . '.po';
+        $php_file = $file . '.lang.php';
 
         if (file_exists($php_file)) {
             require $php_file;
         } elseif (($tmp = self::getPoFile($po_file)) !== false) {
-            $GLOBALS['__l10n_files'][] = $po_file;
-            $GLOBALS['__l10n']         = $tmp + $GLOBALS['__l10n']; // "+" erase numeric keys unlike array_merge
-        } elseif (($tmp = self::getLangFile($lang_file)) !== false) {
-            $GLOBALS['__l10n_files'][] = $lang_file;
-            $GLOBALS['__l10n']         = $tmp + $GLOBALS['__l10n']; // "+" erase numeric keys unlike array_merge
+            self::$files[] = $po_file;
+            self::$locales = $tmp + self::$locales; // "+" erase numeric keys unlike array_merge
         } else {
             return false;
         }
@@ -226,36 +229,6 @@ class l10n
         }
 
         return file_exists($f) ? $f : false;
-    }
-
-    /** @deprecated */
-    public static function getLangFile(string $file)
-    {
-        if (!file_exists($file)) {
-            return false;
-        }
-
-        $fp = @fopen($file, 'r');
-        if ($fp === false) {
-            return false;
-        }
-
-        $res = [];
-        while ($l = fgets($fp)) {
-            $l = trim($l);
-            # Comment
-            if (substr($l, 0, 1) == '#') {
-                continue;
-            }
-
-            # Original text
-            if (substr($l, 0, 1) == ';' && ($t = fgets($fp)) !== false && trim($t) != '') {
-                $res[substr($l, 1)] = trim($t);
-            }
-        }
-        fclose($fp);
-
-        return $res;
     }
 
     /// @name Gettext PO methods
@@ -305,20 +278,22 @@ class l10n
 
         $strings  = self::getPoFile($po_file);
         $fcontent = "<?php\n" .
-            $license_block .
-            "#\n#\n#\n" .
-            "#        DOT NOT MODIFY THIS FILE !\n\n\n\n\n";
+            $license_block . "\n" .
+            "#\n" .
+            "# DOT NOT MODIFY THIS FILE !\n" .
+            "#\n" .
+            "\n";
 
         foreach ($strings as $vo => $tr) {
             $vo = str_replace("'", "\\'", $vo);
             if (is_array($tr)) {
                 foreach ($tr as $i => $t) {
                     $t = str_replace("'", "\\'", $t);
-                    $fcontent .= '$GLOBALS[\'__l10n\'][\'' . $vo . '\'][' . $i . '] = \'' . $t . '\';' . "\n";
+                    $fcontent .= 'l10n::$locales[\'' . $vo . '\'][' . $i . '] = \'' . $t . '\';' . "\n";
                 }
             } else {
                 $tr = str_replace("'", "\\'", $tr);
-                $fcontent .= '$GLOBALS[\'__l10n\'][\'' . $vo . '\'] = \'' . $tr . '\';' . "\n";
+                $fcontent .= 'l10n::$locales[\'' . $vo . '\'] = \'' . $tr . '\';' . "\n";
             }
         }
 
@@ -734,9 +709,6 @@ class l10n
     {
         if (empty(self::$languages_name)) {
             self::$languages_name = self::getLanguagesDefinitions(3);
-
-            // Backwards compatibility
-            self::$langs = self::$languages_name;
         }
 
         return self::$languages_name;
