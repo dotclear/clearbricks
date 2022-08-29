@@ -101,17 +101,6 @@ $__autoload['netNntp']     = __DIR__ . '/net.nntp/class.net.nntp.php';
 $__autoload['nntpMessage'] = __DIR__ . '/net.nntp/class.nntp.message.php';
 
 # XML-RPC Client and Server
-$__autoload['IXR_Value']               = __DIR__ . '/ext/incutio.ixr_library.php';
-$__autoload['IXR_Message']             = __DIR__ . '/ext/incutio.ixr_library.php';
-$__autoload['IXR_Server']              = __DIR__ . '/ext/incutio.ixr_library.php';
-$__autoload['IXR_Request']             = __DIR__ . '/ext/incutio.ixr_library.php';
-$__autoload['IXR_Client']              = __DIR__ . '/ext/incutio.ixr_library.php';
-$__autoload['IXR_Error']               = __DIR__ . '/ext/incutio.ixr_library.php';
-$__autoload['IXR_Date']                = __DIR__ . '/ext/incutio.ixr_library.php';
-$__autoload['IXR_Base64']              = __DIR__ . '/ext/incutio.ixr_library.php';
-$__autoload['IXR_IntrospectionServer'] = __DIR__ . '/ext/incutio.ixr_library.php';
-$__autoload['IXR_ClientMulticall']     = __DIR__ . '/ext/incutio.ixr_library.php';
-
 $__autoload['xmlrpcValue']               = __DIR__ . '/net.xmlrpc/class.net.xmlrpc.php';
 $__autoload['xmlrpcMessage']             = __DIR__ . '/net.xmlrpc/class.net.xmlrpc.php';
 $__autoload['xmlrpcRequest']             = __DIR__ . '/net.xmlrpc/class.net.xmlrpc.php';
