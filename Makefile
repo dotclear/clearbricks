@@ -11,14 +11,16 @@ config:
 	
 	## Copy needed files and folders
 	find ./ -mindepth 1 -maxdepth 1 -type d \
-	-not -regex '.*svn.*' \
+	-not -name '.git' \
 	-not -name '_dist' \
-	-not -name 'debian' \
+	-not -name 'coverage' \
+	-not -name 'doxygen' \
 	-not -name 'tests' \
+	-not -name 'vendor' \
 	-exec cp -r \{\} ./$(CB) \;
 	
 	## Copy _common.php and README files
-	cp _common.php README.md ./$(CB)/
+	cp _common.php LICENSE README.md ./$(CB)/
 	
 	## Remove .svn folders
 	find ./$(CB)/ -type d -name '.svn' -print0 | xargs -0 rm -rf
@@ -27,17 +29,13 @@ config:
 
 dist: config dist-tgz dist-zip
 
-deb:
-	cp ./README.md debian/README
-	dpkg-buildpackage -rfakeroot
-
 dist-tgz:
 	[ -f config-stamp ]
-	cd $(DIST) && tar cfz clearbricks-$$(grep CLEARBRICKS_VERSION clearbricks/common/_main.php | cut -d"'" -f4).tar.gz ./clearbricks
+	cd $(DIST) && tar cfz clearbricks-$$(grep CLEARBRICKS_VERSION clearbricks/_common.php | cut -d"'" -f4).tar.gz ./clearbricks
 
 dist-zip:
 	[ -f config-stamp ]
-	cd $(DIST) && zip -r9 clearbricks-$$(grep CLEARBRICKS_VERSION clearbricks/common/_main.php | cut -d"'" -f4).zip ./clearbricks
+	cd $(DIST) && zip -r9 clearbricks-$$(grep CLEARBRICKS_VERSION clearbricks/_common.php | cut -d"'" -f4).zip ./clearbricks
 
 clean:
 	[ -f config-stamp ]
