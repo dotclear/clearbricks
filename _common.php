@@ -22,123 +22,224 @@
  *
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
- * @version 1.0
+ * @version 1.3
  */
-require __DIR__ . '/common/_main.php';
+define('CLEARBRICKS_VERSION', '1.3');
 
-# Database Abstraction Layer
-$__autoload['dbLayer']  = __DIR__ . '/dblayer/dblayer.php';
-$__autoload['dbStruct'] = __DIR__ . '/dbschema/class.dbstruct.php';
-$__autoload['dbSchema'] = __DIR__ . '/dbschema/class.dbschema.php';
+// Autoload for clearbricks
+class Autoload
+{
+    public $stack = [];
 
-# Files Manager
-$__autoload['filemanager'] = __DIR__ . '/filemanager/class.filemanager.php';
-$__autoload['fileItem']    = __DIR__ . '/filemanager/class.filemanager.php';
+    public function __construct()
+    {
+        spl_autoload_register([$this, 'loadClass']);
 
-# Feed Reader
-$__autoload['feedParser'] = __DIR__ . '/net.http.feed/class.feed.parser.php';
-$__autoload['feedReader'] = __DIR__ . '/net.http.feed/class.feed.reader.php';
+        /*
+         * @deprecated since 1.3, use Clearbricks::lib()->autoload() instead
+         */
+        $GLOBALS['__autoload'] = &$this->stack;
+    }
 
-# HTML Filter
-$__autoload['htmlFilter'] = __DIR__ . '/html.filter/class.html.filter.php';
+    public function loadClass(string $name)
+    {
+        if (isset($this->stack[$name]) && is_file($this->stack[$name])) {
+            require_once $this->stack[$name];
+        }
+    }
 
-# HTML Validator
-$__autoload['htmlValidator'] = __DIR__ . '/html.validator/class.html.validator.php';
+    /**
+     * Add class(es) to autoloader stack
+     *
+     * @param      array  $stack  Array of class => file (strings)
+     */
+    public function add(array $stack)
+    {
+        if (is_array($stack)) {
+            $this->stack = array_merge($this->stack, $stack);
+        }
+    }
+}
 
-# Image Manipulation Tools
-$__autoload['imageMeta']  = __DIR__ . '/image/class.image.meta.php';
-$__autoload['imageTools'] = __DIR__ . '/image/class.image.tools.php';
+class Clearbricks
+{
+    private static $instance = null;
 
-# Send Mail Utilities
-$__autoload['mail'] = __DIR__ . '/mail/class.mail.php';
+    /**
+     * @var Autoload instance
+     */
+    private $autoloader;
 
-# Mail Convert and Rewrap
-$__autoload['mailConvert'] = __DIR__ . '/mail.convert/class.mail.convert.php';
+    public function __construct()
+    {
+        // Singleton mode
+        if (self::$instance) {
+            throw new Exception('Library can not be loaded twice.', 500);
+        }
+        self::$instance = $this;
 
-# Send Mail Through Sockets
-$__autoload['socketMail'] = __DIR__ . '/mail/class.socket.mail.php';
+        $this->autoloader = new Autoload();
 
-# Mime Message Parser
-$__autoload['mimeMessage'] = __DIR__ . '/mail.mime/class.mime.message.php';
+        $this->autoloader->add([
+            // Common helpers
+            'crypt'             => __DIR__ . '/common/lib.crypt.php',
+            'dt'                => __DIR__ . '/common/lib.date.php',
+            'files'             => __DIR__ . '/common/lib.files.php',
+            'path'              => __DIR__ . '/common/lib.files.php',
+            'form'              => __DIR__ . '/common/lib.form.php',
+            'formSelectOption'  => __DIR__ . '/common/lib.form.php',
+            'forms'             => __DIR__ . '/common/lib.forms.php',
+            'formsSelectOption' => __DIR__ . '/common/lib.forms.php',
+            'html'              => __DIR__ . '/common/lib.html.php',
+            'http'              => __DIR__ . '/common/lib.http.php',
+            'l10n'              => __DIR__ . '/common/lib.l10n.php',
+            'text'              => __DIR__ . '/common/lib.text.php',
 
-# HTML Pager
-$__autoload['pager'] = __DIR__ . '/pager/class.pager.php';
+            // Database Abstraction Layer
+            'dbLayer'  => __DIR__ . '/dblayer/dblayer.php',
+            'dbStruct' => __DIR__ . '/dbschema/class.dbstruct.php',
+            'dbSchema' => __DIR__ . '/dbschema/class.dbschema.php',
 
-# REST Server
-$__autoload['restServer'] = __DIR__ . '/rest/class.rest.php';
-$__autoload['xmlTag']     = __DIR__ . '/rest/class.rest.php';
+            // Files Manager
+            'filemanager' => __DIR__ . '/filemanager/class.filemanager.php',
+            'fileItem'    => __DIR__ . '/filemanager/class.filemanager.php',
 
-# Database PHP Session
-$__autoload['sessionDB'] = __DIR__ . '/session.db/class.session.db.php';
+            // Feed Reader
+            'feedParser' => __DIR__ . '/net.http.feed/class.feed.parser.php',
+            'feedReader' => __DIR__ . '/net.http.feed/class.feed.reader.php',
 
-# Simple Template Systeme
-$__autoload['template']               = __DIR__ . '/template/class.template.php';
-$__autoload['tplNode']                = __DIR__ . '/template/class.tplnode.php';
-$__autoload['tplNodeBlock']           = __DIR__ . '/template/class.tplnodeblock.php';
-$__autoload['tplNodeText']            = __DIR__ . '/template/class.tplnodetext.php';
-$__autoload['tplNodeValue']           = __DIR__ . '/template/class.tplnodevalue.php';
-$__autoload['tplNodeBlockDefinition'] = __DIR__ . '/template/class.tplnodeblockdef.php';
-$__autoload['tplNodeValueParent']     = __DIR__ . '/template/class.tplnodevalueparent.php';
+            // HTML Filter
+            'htmlFilter' => __DIR__ . '/html.filter/class.html.filter.php',
 
-# URL Handler
-$__autoload['urlHandler'] = __DIR__ . '/url.handler/class.url.handler.php';
+            // HTML Validator
+            'htmlValidator' => __DIR__ . '/html.validator/class.html.validator.php',
 
-# Wiki to XHTML Converter
-$__autoload['wiki2xhtml'] = __DIR__ . '/text.wiki2xhtml/class.wiki2xhtml.php';
+            // Image Manipulation Tools
+            'imageMeta'  => __DIR__ . '/image/class.image.meta.php',
+            'imageTools' => __DIR__ . '/image/class.image.tools.php',
 
-# SQL Batch on XML Files
-$__autoload['xmlsql'] = __DIR__ . '/xmlsql/class.xmlsql.php';
+            // Send Mail Utilities
+            'mail' => __DIR__ . '/mail/class.mail.php',
 
-# Common Socket Class
-$__autoload['netSocket'] = __DIR__ . '/net/class.net.socket.php';
+            // Mail Convert and Rewrap
+            'mailConvert' => __DIR__ . '/mail.convert/class.mail.convert.php',
 
-# HTTP Client
-$__autoload['netHttp']    = __DIR__ . '/net.http/class.net.http.php';
-$__autoload['HttpClient'] = __DIR__ . '/net.http/class.net.http.php';
+            // Send Mail Through Sockets
+            'socketMail' => __DIR__ . '/mail/class.socket.mail.php',
 
-# NNTP Client
-$__autoload['netNntp']     = __DIR__ . '/net.nntp/class.net.nntp.php';
-$__autoload['nntpMessage'] = __DIR__ . '/net.nntp/class.nntp.message.php';
+            // Mime Message Parser
+            'mimeMessage' => __DIR__ . '/mail.mime/class.mime.message.php',
 
-# XML-RPC Client and Server
-$__autoload['xmlrpcValue']               = __DIR__ . '/net.xmlrpc/class.net.xmlrpc.php';
-$__autoload['xmlrpcMessage']             = __DIR__ . '/net.xmlrpc/class.net.xmlrpc.php';
-$__autoload['xmlrpcRequest']             = __DIR__ . '/net.xmlrpc/class.net.xmlrpc.php';
-$__autoload['xmlrpcDate']                = __DIR__ . '/net.xmlrpc/class.net.xmlrpc.php';
-$__autoload['xmlrpcBase64']              = __DIR__ . '/net.xmlrpc/class.net.xmlrpc.php';
-$__autoload['xmlrpcClient']              = __DIR__ . '/net.xmlrpc/class.net.xmlrpc.php';
-$__autoload['xmlrpcClientMulticall']     = __DIR__ . '/net.xmlrpc/class.net.xmlrpc.php';
-$__autoload['xmlrpcServer']              = __DIR__ . '/net.xmlrpc/class.net.xmlrpc.php';
-$__autoload['xmlrpcIntrospectionServer'] = __DIR__ . '/net.xmlrpc/class.net.xmlrpc.php';
+            // HTML Pager
+            'pager' => __DIR__ . '/pager/class.pager.php',
 
-# Zip tools
-$__autoload['fileUnzip'] = __DIR__ . '/zip/class.unzip.php';
-$__autoload['fileZip']   = __DIR__ . '/zip/class.zip.php';
+            // REST Server
+            'restServer' => __DIR__ . '/rest/class.rest.php',
+            'xmlTag'     => __DIR__ . '/rest/class.rest.php',
 
-# Diff tools
-$__autoload['diff']     = __DIR__ . '/diff/lib.diff.php';
-$__autoload['tidyDiff'] = __DIR__ . '/diff/lib.tidy.diff.php';
+            // Database PHP Session
+            'sessionDB' => __DIR__ . '/session.db/class.session.db.php',
 
-# HTML Form helpers
-$__autoload['formComponent'] = __DIR__ . '/html.form/class.form.component.php';
-$__autoload['formForm']      = __DIR__ . '/html.form/class.form.form.php';
-$__autoload['formTextarea']  = __DIR__ . '/html.form/class.form.textarea.php';
-$__autoload['formInput']     = __DIR__ . '/html.form/class.form.input.php';
-$__autoload['formCheckbox']  = __DIR__ . '/html.form/class.form.checkbox.php';
-$__autoload['formColor']     = __DIR__ . '/html.form/class.form.color.php';
-$__autoload['formDate']      = __DIR__ . '/html.form/class.form.date.php';
-$__autoload['formDatetime']  = __DIR__ . '/html.form/class.form.datetime.php';
-$__autoload['formEmail']     = __DIR__ . '/html.form/class.form.email.php';
-$__autoload['formFile']      = __DIR__ . '/html.form/class.form.file.php';
-$__autoload['formHidden']    = __DIR__ . '/html.form/class.form.hidden.php';
-$__autoload['formNumber']    = __DIR__ . '/html.form/class.form.number.php';
-$__autoload['formPassword']  = __DIR__ . '/html.form/class.form.password.php';
-$__autoload['formRadio']     = __DIR__ . '/html.form/class.form.radio.php';
-$__autoload['formTime']      = __DIR__ . '/html.form/class.form.time.php';
-$__autoload['formUrl']       = __DIR__ . '/html.form/class.form.url.php';
-$__autoload['formLabel']     = __DIR__ . '/html.form/class.form.label.php';
-$__autoload['formFieldset']  = __DIR__ . '/html.form/class.form.fieldset.php';
-$__autoload['formLegend']    = __DIR__ . '/html.form/class.form.legend.php';
-$__autoload['formSelect']    = __DIR__ . '/html.form/class.form.select.php';
-$__autoload['formOptgroup']  = __DIR__ . '/html.form/class.form.optgroup.php';
-$__autoload['formOption']    = __DIR__ . '/html.form/class.form.option.php';
+            // Simple Template Systeme
+            'template'               => __DIR__ . '/template/class.template.php',
+            'tplNode'                => __DIR__ . '/template/class.tplnode.php',
+            'tplNodeBlock'           => __DIR__ . '/template/class.tplnodeblock.php',
+            'tplNodeText'            => __DIR__ . '/template/class.tplnodetext.php',
+            'tplNodeValue'           => __DIR__ . '/template/class.tplnodevalue.php',
+            'tplNodeBlockDefinition' => __DIR__ . '/template/class.tplnodeblockdef.php',
+            'tplNodeValueParent'     => __DIR__ . '/template/class.tplnodevalueparent.php',
+
+            // URL Handler
+            'urlHandler' => __DIR__ . '/url.handler/class.url.handler.php',
+
+            // Wiki to XHTML Converter
+            'wiki2xhtml' => __DIR__ . '/text.wiki2xhtml/class.wiki2xhtml.php',
+
+            // SQL Batch on XML Files
+            'xmlsql' => __DIR__ . '/xmlsql/class.xmlsql.php',
+
+            // Common Socket Class
+            'netSocket' => __DIR__ . '/net/class.net.socket.php',
+
+            // HTTP Client
+            'netHttp'    => __DIR__ . '/net.http/class.net.http.php',
+            'HttpClient' => __DIR__ . '/net.http/class.net.http.php',
+
+            // NNTP Client
+            'netNntp'     => __DIR__ . '/net.nntp/class.net.nntp.php',
+            'nntpMessage' => __DIR__ . '/net.nntp/class.nntp.message.php',
+
+            // XML-RPC Client and Server
+            'xmlrpcValue'               => __DIR__ . '/net.xmlrpc/class.net.xmlrpc.php',
+            'xmlrpcMessage'             => __DIR__ . '/net.xmlrpc/class.net.xmlrpc.php',
+            'xmlrpcRequest'             => __DIR__ . '/net.xmlrpc/class.net.xmlrpc.php',
+            'xmlrpcDate'                => __DIR__ . '/net.xmlrpc/class.net.xmlrpc.php',
+            'xmlrpcBase64'              => __DIR__ . '/net.xmlrpc/class.net.xmlrpc.php',
+            'xmlrpcClient'              => __DIR__ . '/net.xmlrpc/class.net.xmlrpc.php',
+            'xmlrpcClientMulticall'     => __DIR__ . '/net.xmlrpc/class.net.xmlrpc.php',
+            'xmlrpcServer'              => __DIR__ . '/net.xmlrpc/class.net.xmlrpc.php',
+            'xmlrpcIntrospectionServer' => __DIR__ . '/net.xmlrpc/class.net.xmlrpc.php',
+
+            // Zip tools
+            'fileUnzip' => __DIR__ . '/zip/class.unzip.php',
+            'fileZip'   => __DIR__ . '/zip/class.zip.php',
+
+            // Diff tools
+            'diff'     => __DIR__ . '/diff/lib.diff.php',
+            'tidyDiff' => __DIR__ . '/diff/lib.tidy.diff.php',
+
+            // HTML Form helpers
+            'formComponent' => __DIR__ . '/html.form/class.form.component.php',
+            'formForm'      => __DIR__ . '/html.form/class.form.form.php',
+            'formTextarea'  => __DIR__ . '/html.form/class.form.textarea.php',
+            'formInput'     => __DIR__ . '/html.form/class.form.input.php',
+            'formCheckbox'  => __DIR__ . '/html.form/class.form.checkbox.php',
+            'formColor'     => __DIR__ . '/html.form/class.form.color.php',
+            'formDate'      => __DIR__ . '/html.form/class.form.date.php',
+            'formDatetime'  => __DIR__ . '/html.form/class.form.datetime.php',
+            'formEmail'     => __DIR__ . '/html.form/class.form.email.php',
+            'formFile'      => __DIR__ . '/html.form/class.form.file.php',
+            'formHidden'    => __DIR__ . '/html.form/class.form.hidden.php',
+            'formNumber'    => __DIR__ . '/html.form/class.form.number.php',
+            'formPassword'  => __DIR__ . '/html.form/class.form.password.php',
+            'formRadio'     => __DIR__ . '/html.form/class.form.radio.php',
+            'formTime'      => __DIR__ . '/html.form/class.form.time.php',
+            'formUrl'       => __DIR__ . '/html.form/class.form.url.php',
+            'formLabel'     => __DIR__ . '/html.form/class.form.label.php',
+            'formFieldset'  => __DIR__ . '/html.form/class.form.fieldset.php',
+            'formLegend'    => __DIR__ . '/html.form/class.form.legend.php',
+            'formSelect'    => __DIR__ . '/html.form/class.form.select.php',
+            'formOptgroup'  => __DIR__ . '/html.form/class.form.optgroup.php',
+            'formOption'    => __DIR__ . '/html.form/class.form.option.php',
+        ]);
+
+        // We may need l10n __() function
+        l10n::bootstrap();
+
+        // We set default timezone to avoid warning
+        dt::setTZ('UTC');
+    }
+
+    /**
+     * Get Clearbricks singleton instance
+     *
+     * @return     Clearbricks
+     */
+    public static function lib(): Clearbricks
+    {
+        return self::$instance;
+    }
+
+    /**
+     * Autoloader
+     *
+     * @param      array  $stack  Array of class => file (strings)
+     */
+    public function autoload(array $stack)
+    {
+        $this->autoloader->add($stack);
+    }
+}
+
+// Create singleton
+new Clearbricks();

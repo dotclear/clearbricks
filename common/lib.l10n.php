@@ -61,6 +61,11 @@ class l10n
     /** @deprecated */
     protected static $langs = [];
 
+    public static function bootstrap()
+    {
+        // May be used to have __() function defined if necessary via autoload system.
+    }
+
     /**
      * L10N initialization
      *
