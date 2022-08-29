@@ -16,7 +16,6 @@ parameters:
     - dblayer
     - dbschema
     - diff
-    - ext
     - filemanager
     - html.filter
     - html.form

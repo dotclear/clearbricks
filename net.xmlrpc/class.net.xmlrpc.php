@@ -834,7 +834,7 @@ class xmlrpcServer
                     }
 
                     # Check CONTENT_LENGTH
-                    if (!isset($_SERVER['CONTENT_LENGTH']) || $_SERVER['CONTENT_LENGTH'] != strlen($HTTP_RAW_POST_DATA)) {
+                    if (!isset($_SERVER['CONTENT_LENGTH']) || $_SERVER['CONTENT_LENGTH'] != strlen($data)) {
                         throw new Exception('Invalid Content-Lenth', 400);
                     }
                 }
