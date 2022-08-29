@@ -247,13 +247,25 @@ class Clearbricks
     }
 
     /**
-     * Autoloader
+     * Autoload: register class(es)
      *
      * @param      array  $stack  Array of class => file (strings)
      */
     public function autoload(array $stack)
     {
         $this->autoloader->add($stack);
+    }
+
+    /**
+     * Return source file associated with a registered class
+     *
+     * @param      string  $class  The class
+     *
+     * @return     mixed   Source file or false
+     */
+    public function autoloadSource(string $class)
+    {
+        return $this->autoloader->source($class);
     }
 }
 
