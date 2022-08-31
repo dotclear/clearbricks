@@ -19,10 +19,14 @@ class formUrl extends formInput
     /**
      * Constructs a new instance.
      *
-     * @param      string  $id     The identifier
+     * @param      mixed  $id     The identifier
+     * @param      string $value  The value
      */
-    public function __construct(string $id = null)
+    public function __construct($id = null, ?string $value = null)
     {
         parent::__construct($id, 'url');
+        if ($value !== null) {
+            $this->value($value);
+        }
     }
 }

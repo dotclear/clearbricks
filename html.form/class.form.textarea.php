@@ -21,15 +21,14 @@ class formTextarea extends formComponent
     /**
      * Constructs a new instance.
      *
-     * @param      string  $id     The identifier
+     * @param      mixed  $id     The identifier
+     * @param      string $value  The value
      */
-    public function __construct(?string $id = null, ?string $value = null)
+    public function __construct($id = null, ?string $value = null)
     {
         parent::__construct(__CLASS__, self::DEFAULT_ELEMENT);
         if ($id !== null) {
-            $this
-                ->id($id)
-                ->name($id);
+            $this->setIdentifier($id);
         }
         if ($value !== null) {
             $this->value = $value;
@@ -53,7 +52,7 @@ class formTextarea extends formComponent
             (isset($this->cols) ? ' cols="' . strval((int) $this->cols) . '"' : '') .
             (isset($this->rows) ? ' rows="' . strval((int) $this->rows) . '"' : '') .
             '>' .
-            ($this->value ?? '') .
+            ($this->value               ?? '') .
             '</' . ($this->getElement() ?? self::DEFAULT_ELEMENT) . '>' . "\n";
 
         if (isset($this->label) && isset($this->id)) {

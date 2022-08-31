@@ -19,9 +19,10 @@ class formCheckbox extends formInput
     /**
      * Constructs a new instance.
      *
-     * @param      string  $id     The identifier
+     * @param      mixed   $id      The identifier
+     * @param      bool    $checked Is checked
      */
-    public function __construct(?string $id = null, ?bool $checked = null)
+    public function __construct($id = null, ?bool $checked = null)
     {
         parent::__construct($id, 'checkbox');
         if ($checked !== null) {

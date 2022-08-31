@@ -19,9 +19,10 @@ class formDatetime extends formInput
     /**
      * Constructs a new instance.
      *
-     * @param      string  $id     The identifier
+     * @param      mixed  $id     The identifier
+     * @param      string $value  The value
      */
-    public function __construct(?string $id = null, ?string $value = null)
+    public function __construct($id = null, ?string $value = null)
     {
         parent::__construct($id, 'datetime-local');
         $this

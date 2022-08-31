@@ -19,9 +19,10 @@ class formHidden extends formInput
     /**
      * Constructs a new instance.
      *
-     * @param      string  $id     The identifier
+     * @param      mixed  $id     The identifier
+     * @param      string $value  The value
      */
-    public function __construct(string $id = null, ?string $value = null)
+    public function __construct($id = null, ?string $value = null)
     {
         // Label should not be rendered for an input type="hidden"
         parent::__construct($id, 'hidden', false);

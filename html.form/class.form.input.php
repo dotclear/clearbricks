@@ -28,19 +28,17 @@ class formInput extends formComponent
     /**
      * Constructs a new instance.
      *
-     * @param      string  $id           The identifier
+     * @param      mixed   $id           The identifier
      * @param      string  $type         The input type
      * @param      bool    $renderLabel  Render label if present
      */
-    public function __construct(string $id = null, string $type = 'text', bool $renderLabel = true)
+    public function __construct($id = null, string $type = 'text', bool $renderLabel = true)
     {
         parent::__construct(__CLASS__, self::DEFAULT_ELEMENT);
         $this->type($type);
         $this->renderLabel = $renderLabel;
         if ($id !== null) {
-            $this
-                ->id($id)
-                ->name($id);
+            $this->setIdentifier($id);
         }
     }
 

@@ -21,18 +21,16 @@ class formLegend extends formComponent
     /**
      * Constructs a new instance.
      *
-     * @param      string       $text     The text
-     * @param      null|string  $id       The identifier
-     * @param      null|string  $element  The element
+     * @param      string $text     The text
+     * @param      mixed  $id       The identifier
+     * @param      string $element  The element
      */
-    public function __construct(string $text = '', ?string $id = null, ?string $element = null)
+    public function __construct(string $text = '', $id = null, ?string $element = null)
     {
         parent::__construct(__CLASS__, $element ?? self::DEFAULT_ELEMENT);
         $this->text($text);
         if ($id !== null) {
-            $this
-                ->id($id)
-                ->name($id);
+            $this->setIdentifier($id);
         }
     }
 

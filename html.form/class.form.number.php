@@ -19,9 +19,12 @@ class formNumber extends formInput
     /**
      * Constructs a new instance.
      *
-     * @param      string  $id     The identifier
+     * @param      mixed  $id     The identifier
+     * @param      int    $min    The minimum value
+     * @param      int    $max    The maximum value
+     * @param      int    $value  The value
      */
-    public function __construct(string $id = null, ?int $min = null, ?int $max = null, ?int $value = null)
+    public function __construct($id = null, ?int $min = null, ?int $max = null, ?int $value = null)
     {
         parent::__construct($id, 'number');
         $this

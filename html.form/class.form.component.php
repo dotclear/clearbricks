@@ -225,6 +225,32 @@ abstract class formComponent
     }
 
     /**
+     * Sets the identifier (name/id).
+     *
+     * If the given identifier is a string, set name = id = given string
+     * If it is an array of only one element, name = [first element]
+     * Else name = [first element], id = [second element]
+     *
+     * @param      string|array|null $identifier (string or array)
+     *
+     * @return     self
+     */
+    public function setIdentifier($identifier)
+    {
+        if (is_string($identifier)) {
+            $this->name = $identifier;
+            $this->id   = $identifier;
+        } elseif (is_array($identifier)) {
+            $this->name = $identifier[0];
+            if (isset($identifier[1])) {
+                $this->id = $identifier[1];
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * Check mandatory attributes in properties, at least name or id must be present
      *
      * @return     bool
@@ -293,14 +319,10 @@ abstract class formComponent
                 ' type="' . $this->type . '"' : '') .
 
             // Identifier
-            // - use $this->name for name attribute else $this->id if exists
-            // - use $this->id for id attribute else $this->name if exists
             (isset($this->name) ?
-                ' name="' . $this->name . '"' :
-                (isset($this->id) ? ' name="' . $this->id . '"' : '')) .
+                 ' name="' . $this->name . '"' : '') .
             (isset($this->id) ?
-                ' id="' . $this->id . '"' :
-                (isset($this->name) ? ' id="' . $this->name . '"' : '')) .
+                ' id="' . $this->id . '"' : '') .
 
             // Value
             // - $this->default will be used as value if exists and $this->value does not
