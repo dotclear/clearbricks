@@ -354,11 +354,11 @@ class htmlFilter
     /**
      * xml_set_element_handler() open tag handler
      *
-     * @param      XMLParser  $parser  The parser
-     * @param      string     $tag     The tag
-     * @param      array      $attrs   The attributes
+     * @param      XMLParser|resource   $parser  The parser
+     * @param      string               $tag     The tag
+     * @param      array                $attrs   The attributes
      */
-    private function tag_open(XMLParser $parser, string $tag, array $attrs): void
+    private function tag_open($parser, string $tag, array $attrs): void
     {
         $this->tag = strtolower($tag);
 
@@ -380,10 +380,10 @@ class htmlFilter
     /**
      * xml_set_element_handler() close tag handler
      *
-     * @param      XMLParser  $parser  The parser
-     * @param      string     $tag     The tag
+     * @param      XMLParser|resource   $parser  The parser
+     * @param      string               $tag     The tag
      */
-    private function tag_close(XMLParser $parser, string $tag): void
+    private function tag_close($parser, string $tag): void
     {
         if (!in_array($tag, $this->single_tags) && $this->allowedTag($tag)) {
             $this->content .= '</' . $tag . '>';
@@ -393,10 +393,10 @@ class htmlFilter
     /**
      * xml_set_character_data_handler() data handler
      *
-     * @param      XMLParser  $parser  The parser
-     * @param      string     $cdata   The cdata
+     * @param      XMLParser|resource   $parser  The parser
+     * @param      string               $cdata   The cdata
      */
-    private function cdata(XMLParser $parser, string $cdata): void
+    private function cdata($parser, string $cdata): void
     {
         $this->content .= html::escapeHTML($cdata);
     }
