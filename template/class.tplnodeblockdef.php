@@ -11,16 +11,33 @@
  */
 class tplNodeBlockDefinition extends tplNodeBlock
 {
-    protected static $stack         = [];
-    protected static $current_block = null;
-    protected static $c             = 1;
+    /**
+     * Stack of blocks
+     *
+     * @var        array
+     */
+    protected static $stack = [];
 
+    /**
+     * Current block
+     *
+     * @var string|null
+     */
+    protected static $current_block = null;
+
+    /**
+     * Block name
+     *
+     * @var string
+     */
     protected $name;
 
     /**
      * Renders the parent block of currently being displayed block
-     * @param  template $tpl the current template engine instance
-     * @return string      the compiled parent block
+     *
+     * @param  template     $tpl    The current template engine instance
+     *
+     * @return string      The compiled parent block
      */
     public static function renderParent(template $tpl)
     {
@@ -38,14 +55,17 @@ class tplNodeBlockDefinition extends tplNodeBlock
 
     /**
      * Retrieves block defined in call stack
-     * @param  string $name the block name
-     * @param  template $tpl  the template engine instance
-     * @return string       the block (empty string if unavailable)
+     *
+     * @param  string       $name   The block name
+     * @param  template     $tpl    The current template engine instance
+     *
+     * @return string       The block (empty string if unavailable)
      */
     public static function getStackBlock(string $name, template $tpl)
     {
         $stack = &self::$stack[$name];
         $pos   = $stack['pos'];
+
         // First check if block position is correct
         if (isset($stack['blocks'][$pos])) {
             self::$current_block = $name;
@@ -68,14 +88,16 @@ class tplNodeBlockDefinition extends tplNodeBlock
 
             return $ret;
         }
+
         // Not found => return empty
         return '';
     }
 
     /**
      * Block definition specific constructor : keep block name in mind
-     * @param string $tag  Current tag (might be "Block")
-     * @param array $attr Tag attributes (must contain "name" attribute)
+     *
+     * @param string    $tag  Current tag (might be "Block")
+     * @param array     $attr Tag attributes (must contain "name" attribute)
      */
     public function __construct(string $tag, array $attr)
     {
@@ -90,7 +112,7 @@ class tplNodeBlockDefinition extends tplNodeBlock
      * Override tag closing processing. Here we enrich the block stack to
      * keep block history.
      */
-    public function setClosing()
+    public function setClosing(): void
     {
         if (!isset(self::$stack[$this->name])) {
             self::$stack[$this->name] = [
@@ -104,8 +126,10 @@ class tplNodeBlockDefinition extends tplNodeBlock
 
     /**
      * Compile the block definition : grab latest block content being defined
-     * @param  template $tpl current template engine instance
-     * @return string      the compiled block
+     *
+     * @param  template     $tpl    The current template engine instance
+     *
+     * @return string       The compiled block
      */
     public function compile(template $tpl): string
     {

@@ -11,10 +11,19 @@
  */
 class files
 {
-    public static $dir_mode = null; ///< Default directories mode
+    /**
+     * Default directories mode
+     *
+     * @var        int|null
+     */
+    public static $dir_mode = null;
 
-    public static $mimeType = ///< MIME types
-    [
+    /**
+     * MIME types
+     *
+     * @var        array
+     */
+    public static $mime_types = [
         'odt' => 'application/vnd.oasis.opendocument.text',
         'odp' => 'application/vnd.oasis.opendocument.presentation',
         'ods' => 'application/vnd.oasis.opendocument.spreadsheet',
@@ -106,23 +115,24 @@ class files
      *
      * Returns a directory child files and directories.
      *
-     * @param string    $d        Path to scan
-     * @param boolean    $order    Order results
+     * @param string     $directory     Path to scan
+     * @param boolean    $order         Order results
+     *
      * @return array
      */
-    public static function scandir(string $d, bool $order = true): array
+    public static function scandir(string $directory, bool $order = true): array
     {
-        $res = [];
-        $dh  = @opendir($d);
+        $res    = [];
+        $handle = @opendir($directory);
 
-        if ($dh === false) {
+        if ($handle === false) {
             throw new Exception(__('Unable to open directory.'));
         }
 
-        while (($f = readdir($dh)) !== false) {
-            $res[] = $f;
+        while (($file = readdir($handle)) !== false) {
+            $res[] = $file;
         }
-        closedir($dh);
+        closedir($handle);
 
         if ($order) {
             sort($res);
@@ -136,33 +146,27 @@ class files
      *
      * Returns a file extension.
      *
-     * @param string    $f    File name
+     * @param string    $filename    File name
+     *
      * @return string
      */
-    public static function getExtension(string $f): string
+    public static function getExtension(string $filename): string
     {
-        if (function_exists('pathinfo')) {
-            return strtolower(pathinfo($f, PATHINFO_EXTENSION));
-        }
-        $f = explode('.', basename($f));
-        if (count($f) <= 1) {
-            return '';
-        }
-
-        return strtolower($f[count($f) - 1]);
+        return strtolower(pathinfo($filename, PATHINFO_EXTENSION));
     }
 
     /**
      * MIME type
      *
-     * Returns a file MIME type, based on static var {@link $mimeType}
+     * Returns a file MIME type, based on static var {@link $mime_types}
      *
-     * @param string    $f    File name
+     * @param string    $filename    File name
+     *
      * @return string
      */
-    public static function getMimeType(string $f): string
+    public static function getMimeType(string $filename): string
     {
-        $ext   = self::getExtension($f);
+        $ext   = self::getExtension($filename);
         $types = self::mimeTypes();
 
         if (isset($types[$ext])) {
@@ -181,7 +185,7 @@ class files
      */
     public static function mimeTypes(): array
     {
-        return self::$mimeType;
+        return self::$mime_types;
     }
 
     /**
@@ -189,11 +193,11 @@ class files
      *
      * Append new MIME types to defined MIME types.
      *
-     * @param array        $tab        New MIME types.
+     * @param array        $types        New MIME types.
      */
-    public static function registerMimeTypes(array $tab): void
+    public static function registerMimeTypes(array $types): void
     {
-        self::$mimeType = array_merge(self::$mimeType, $tab);
+        self::$mime_types = array_merge(self::$mime_types, $types);
     }
 
     /**
@@ -201,15 +205,16 @@ class files
      *
      * Returns true if $f is a file or directory and is deletable.
      *
-     * @param string    $f    File or directory
+     * @param string    $filename    File or directory
+     *
      * @return boolean
      */
-    public static function isDeletable(string $f): bool
+    public static function isDeletable(string $filename): bool
     {
-        if (is_file($f)) {
-            return is_writable(dirname($f));
-        } elseif (is_dir($f)) {
-            return (is_writable(dirname($f)) && count(files::scandir($f)) <= 2);
+        if (is_file($filename)) {
+            return is_writable(dirname($filename));
+        } elseif (is_dir($filename)) {
+            return (is_writable(dirname($filename)) && count(files::scandir($filename)) <= 2);
         }
 
         return false;
@@ -220,26 +225,27 @@ class files
      *
      * Remove recursively a directory.
      *
-     * @param string    $dir        Directory patch
+     * @param string    $directory        Directory patch
+     *
      * @return boolean
      */
-    public static function deltree(string $dir): bool
+    public static function deltree(string $directory): bool
     {
-        $current_dir = opendir($dir);
-        while ($entryname = readdir($current_dir)) {
-            if (is_dir($dir . '/' . $entryname) && ($entryname != '.' && $entryname != '..')) {
-                if (!files::deltree($dir . '/' . $entryname)) {
+        $current_dir = opendir($directory);
+        while ($filename = readdir($current_dir)) {
+            if (is_dir($directory . '/' . $filename) && ($filename != '.' && $filename != '..')) {
+                if (!files::deltree($directory . '/' . $filename)) {
                     return false;
                 }
-            } elseif ($entryname != '.' && $entryname != '..') {
-                if (!@unlink($dir . '/' . $entryname)) {
+            } elseif ($filename != '.' && $filename != '..') {
+                if (!@unlink($directory . '/' . $filename)) {
                     return false;
                 }
             }
         }
         closedir($current_dir);
 
-        return @rmdir($dir);
+        return @rmdir($directory);
     }
 
     /**
@@ -247,17 +253,12 @@ class files
      *
      * Set file modification time to now.
      *
-     * @param string    $f        File to change
+     * @param string    $filename        File to change
      */
-    public static function touch(string $f): void
+    public static function touch(string $filename): void
     {
-        if (is_writable($f)) {
-            if (function_exists('touch')) {
-                @touch($f);
-            } else {
-                # Very bad hack
-                @file_put_contents($f, file_get_contents($f));
-            }
+        if (is_writable($filename)) {
+            @touch($filename);
         }
     }
 
@@ -267,43 +268,43 @@ class files
      * Creates directory $f. If $r is true, attempts to create needed parents
      * directories.
      *
-     * @param string    $f        Directory to create
-     * @param boolean    $r        Create parent directories
+     * @param string     $name              Directory to create
+     * @param boolean    $recursive         Create parent directories
      */
-    public static function makeDir(string $f, bool $r = false): void
+    public static function makeDir(string $name, bool $recursive = false): void
     {
-        if (empty($f)) {
+        if (empty($name)) {
             return;
         }
 
         if (DIRECTORY_SEPARATOR == '\\') {
-            $f = str_replace('/', '\\', $f);
+            $name = str_replace('/', '\\', $name);
         }
 
-        if (is_dir($f)) {
+        if (is_dir($name)) {
             return;
         }
 
-        if ($r) {
-            $dir  = path::real($f, false);
-            $dirs = [];
+        if ($recursive) {
+            $path        = path::real($name, false);
+            $directories = [];
 
-            while (!is_dir($dir)) {
-                array_unshift($dirs, basename($dir));
-                $dir = dirname($dir);
+            while (!is_dir($path)) {
+                array_unshift($directories, basename($path));
+                $path = dirname($path);
             }
 
-            foreach ($dirs as $d) {
-                $dir .= DIRECTORY_SEPARATOR . $d;
-                if ($d != '' && !is_dir($dir)) {
-                    self::makeDir($dir);
+            foreach ($directories as $directory) {
+                $path .= DIRECTORY_SEPARATOR . $directory;
+                if ($directory != '' && !is_dir($path)) {
+                    self::makeDir($path);
                 }
             }
         } else {
-            if (@mkdir($f) === false) {
+            if (@mkdir($name) === false) {
                 throw new Exception(__('Unable to create directory.'));
             }
-            self::inheritChmod($f);
+            self::inheritChmod($name);
         }
     }
 
@@ -316,15 +317,11 @@ class files
      */
     public static function inheritChmod(string $file): bool
     {
-        if (!function_exists('fileperms') || !function_exists('chmod')) {
-            return false;
+        if (self::$dir_mode === null) {
+            return @chmod($file, @fileperms(dirname($file)));
         }
 
-        if (self::$dir_mode != null) {
-            return @chmod($file, self::$dir_mode);
-        }
-
-        return @chmod($file, fileperms(dirname($file)));
+        return @chmod($file, self::$dir_mode);
     }
 
     /**
@@ -332,23 +329,25 @@ class files
      *
      * Writes $f_content into $f file.
      *
-     * @param string    $f            File to edit
-     * @param string    $f_content    Content to write
+     * @param string    $file       File to edit
+     * @param string    $content    Content to write
+     *
+     * @return bool
      */
-    public static function putContent(string $f, string $f_content): bool
+    public static function putContent(string $file, string $content): bool
     {
-        if (file_exists($f) && !is_writable($f)) {
+        if (file_exists($file) && !is_writable($file)) {
             throw new Exception(__('File is not writable.'));
         }
 
-        $fp = @fopen($f, 'w');
+        $handle = @fopen($file, 'w');
 
-        if ($fp === false) {
+        if ($handle === false) {
             throw new Exception(__('Unable to open file.'));
         }
 
-        fwrite($fp, $f_content, strlen($f_content));
-        fclose($fp);
+        fwrite($handle, $content, strlen($content));
+        fclose($handle);
 
         return true;
     }
@@ -357,6 +356,7 @@ class files
      * Human readable file size.
      *
      * @param integer    $size        Bytes
+     *
      * @return string
      */
     public static function size(int $size): string
@@ -382,24 +382,25 @@ class files
     /**
      * Converts a human readable file size to bytes.
      *
-     * @param string    $v            Size
+     * @param string    $size            Size
+     *
      * @return float
      */
-    public static function str2bytes(string $v): float
+    public static function str2bytes(string $size): float
     {
-        $v    = trim($v);
-        $last = strtolower(substr($v, -1, 1));
-        $v    = (float) substr($v, 0, -1);
+        $size = trim($size);
+        $last = strtolower(substr($size, -1, 1));
+        $size = (float) substr($size, 0, -1);
         switch ($last) {
             case 'g':
-                $v *= 1024;
+                $size *= 1024;
             case 'm':
-                $v *= 1024;
+                $size *= 1024;
             case 'k':
-                $v *= 1024;
+                $size *= 1024;
         }
 
-        return $v;
+        return $size;
     }
 
     /**
@@ -408,6 +409,7 @@ class files
      * Returns true if upload status is ok, throws an exception instead.
      *
      * @param array        $file        File array as found in $_FILES
+     *
      * @return boolean
      */
     public static function uploadStatus(array $file): bool
@@ -439,48 +441,53 @@ class files
 
     # Packages generation methods
     #
+
     /**
      * Recursive directory scanning
      *
-     * Returns an array of a given directory's content. The array contains
-     * two arrays: dirs and files. Directory's content is fetched recursively.
+     * Returns an array of a given directory's content. The array contains two arrays: dirs and files.
+     * Directory's content is fetched recursively.
      *
-     * @param string        $dirName        Directory name
-     * @param array        $contents        Contents array. Leave it empty
+     * @param string        $directory    Directory name
+     * @param array         $list         Contents array (leave it empty)
+     *
      * @return array
      */
-    public static function getDirList(string $dirName, array &$contents = null): array
+    public static function getDirList(string $directory, array &$list = null): array
     {
-        if (!$contents) {
-            $contents = ['dirs' => [], 'files' => []];
+        if (!$list) {
+            $list = [
+                'dirs'  => [],
+                'files' => [],
+            ];
         }
 
-        $exclude_list = ['.', '..', '.svn'];
-        $dirName      = preg_replace('|/$|', '', $dirName);
+        $exclude_list = ['.', '..', '.svn', '.git', '.hg'];
 
-        if (!is_dir($dirName)) {
-            throw new Exception(sprintf(__('%s is not a directory.'), $dirName));
+        $directory = preg_replace('|/$|', '', $directory);
+        if (!is_dir($directory)) {
+            throw new Exception(sprintf(__('%s is not a directory.'), $directory));
         }
 
-        $contents['dirs'][] = $dirName;
+        $list['dirs'][] = $directory;
 
-        $d = @dir($dirName);
-        if ($d === false) {
+        $handle = @dir($directory);
+        if ($handle === false) {
             throw new Exception(__('Unable to open directory.'));
         }
 
-        while ($entry = $d->read()) {
-            if (!in_array($entry, $exclude_list)) {
-                if (is_dir($dirName . '/' . $entry)) {
-                    files::getDirList($dirName . '/' . $entry, $contents);
+        while ($file = $handle->read()) {
+            if (!in_array($file, $exclude_list)) {
+                if (is_dir($directory . '/' . $file)) {
+                    files::getDirList($directory . '/' . $file, $list);
                 } else {
-                    $contents['files'][] = $dirName . '/' . $entry;
+                    $list['files'][] = $directory . '/' . $file;
                 }
             }
         }
-        $d->close();
+        $handle->close();
 
-        return $contents;
+        return $list;
     }
 
     /**
@@ -488,15 +495,15 @@ class files
      *
      * Removes unwanted characters in a filename.
      *
-     * @param string    $n        Filename
+     * @param string    $filename        Filename
+     *
      * @return string
      */
-    public static function tidyFileName(string $n): string
+    public static function tidyFileName(string $filename): string
     {
-        $n = text::deaccent($n);
-        $n = preg_replace('/^[.]/u', '', $n);
+        $filename = preg_replace('/^[.]/u', '', text::deaccent($filename));
 
-        return preg_replace('/[^A-Za-z0-9._-]/u', '_', $n);
+        return preg_replace('/[^A-Za-z0-9._-]/u', '_', $filename);
     }
 }
 
@@ -515,87 +522,94 @@ class path
      * If parameter $strict is true, file should exist. Returns false if
      * file does not exist.
      *
-     * @param string    $p        Filename
+     * @param string    $filename        Filename
      * @param boolean    $strict    File should exists
+     *
      * @return string|false
      */
-    public static function real(string $p, bool $strict = true)
+    public static function real(string $filename, bool $strict = true)
     {
         $os = (DIRECTORY_SEPARATOR == '\\') ? 'win' : 'nix';
 
         # Absolute path?
         if ($os == 'win') {
-            $_abs = preg_match('/^\w+:/', $p);
+            $absolute = preg_match('/^\w+:/', $filename);
         } else {
-            $_abs = substr($p, 0, 1) == '/';
+            $absolute = substr($filename, 0, 1) == '/';
         }
 
         # Standard path form
         if ($os == 'win') {
-            $p = str_replace('\\', '/', $p);
+            $filename = str_replace('\\', '/', $filename);
         }
 
         # Adding root if !$_abs
-        if (!$_abs) {
-            $p = dirname($_SERVER['SCRIPT_FILENAME']) . '/' . $p;
+        if (!$absolute) {
+            $filename = dirname($_SERVER['SCRIPT_FILENAME']) . '/' . $filename;
         }
 
         # Clean up
-        $p = preg_replace('|/+|', '/', $p);
+        $filename = preg_replace('|/+|', '/', $filename);
 
-        if (strlen($p) > 1) {
-            $p = preg_replace('|/$|', '', $p);
+        if (strlen($filename) > 1) {
+            $filename = preg_replace('|/$|', '', $filename);
         }
 
-        $_start = '';
+        $prefix = '';
         if ($os == 'win') {
-            [$_start, $p] = explode(':', $p);
-            $_start .= ':/';
+            [$prefix, $filename] = explode(':', $filename);
+            $prefix .= ':/';
         } else {
-            $_start = '/';
+            $prefix = '/';
         }
-        $p = substr($p, 1);
+        $filename = substr($filename, 1);
 
         # Go through
-        $P   = explode('/', $p);
-        $res = [];
+        $parts = explode('/', $filename);
+        $res   = [];
 
-        for ($i = 0; $i < count($P); $i++) {
-            if ($P[$i] == '.') {
+        for ($i = 0; $i < count($parts); $i++) {
+            if ($parts[$i] == '.') {
                 continue;
             }
 
-            if ($P[$i] == '..') {
+            if ($parts[$i] == '..') {
                 if (count($res) > 0) {
                     array_pop($res);
                 }
             } else {
-                array_push($res, $P[$i]);
+                array_push($res, $parts[$i]);
             }
         }
 
-        $p = $_start . implode('/', $res);
+        $filename = $prefix . implode('/', $res);
 
-        if ($strict && !@file_exists($p)) {
+        if ($strict && !@file_exists($filename)) {
             return false;
         }
 
-        return $p;
+        return $filename;
     }
 
     /**
      * Returns a clean file path
      *
-     * @param string    $p        File path
+     * @param string    $filename        File path
+     *
      * @return string
      */
-    public static function clean(?string $p): string
+    public static function clean(?string $filename): string
     {
-        $p = preg_replace(['|^\.\.|', '|/\.\.|', '|\.\.$|'], '', (string) $p);   // Remove double point (upper directory)
-        $p = preg_replace('|/{2,}|', '/', (string) $p);                          // Replace double slashes by one
-        $p = preg_replace('|/$|', '', (string) $p);                              // Remove trailing slash
+        // Remove double point (upper directory)
+        $filename = preg_replace(['|^\.\.|', '|/\.\.|', '|\.\.$|'], '', (string) $filename);
 
-        return $p;
+        // Replace double slashes by one
+        $filename = preg_replace('|/{2,}|', '/', (string) $filename);
+
+        // Remove trailing slash
+        $filename = preg_replace('|/$|', '', (string) $filename);
+
+        return $filename;
     }
 
     /**
@@ -607,16 +621,18 @@ class path
      * - extension
      * - base (basename without extension)
      *
-     * @param string    $f        File path
+     * @param string    $filename        File path
+     *
+     * @return array
      */
-    public static function info(string $f): array
+    public static function info(string $filename): array
     {
-        $p   = pathinfo($f);
-        $res = [];
+        $pathinfo = pathinfo($filename);
+        $res      = [];
 
-        $res['dirname']   = (string) $p['dirname'];
-        $res['basename']  = (string) $p['basename'];
-        $res['extension'] = $p['extension'] ?? '';
+        $res['dirname']   = (string) $pathinfo['dirname'];
+        $res['basename']  = (string) $pathinfo['basename'];
+        $res['extension'] = $pathinfo['extension'] ?? '';
         $res['base']      = preg_replace('/\.' . preg_quote($res['extension'], '/') . '$/', '', $res['basename']);
 
         return $res;
@@ -627,16 +643,17 @@ class path
      *
      * Returns a path with root concatenation unless path begins with a slash
      *
-     * @param string    $p        File path
-     * @param string    $root    Root path
+     * @param string    $path       File path
+     * @param string    $root       Root path
+     *
      * @return string
      */
-    public static function fullFromRoot(string $p, string $root): string
+    public static function fullFromRoot(string $path, string $root): string
     {
-        if (substr($p, 0, 1) == '/') {
-            return $p;
+        if (substr($path, 0, 1) == '/') {
+            return $path;
         }
 
-        return $root . '/' . $p;
+        return $root . '/' . $path;
     }
 }

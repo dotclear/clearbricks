@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @class tidyDiff
  * @brief TIDY diff
@@ -13,12 +14,19 @@
  */
 class tidyDiff
 {
-    protected $__data = []; ///< array: Chunks array
+    // Constants
 
-    private $up_range = '/^@@ -([\d]+),([\d]+) \+([\d]+),([\d]+) @@/m';
-    private $up_ctx   = '/^ (.*)$/';
-    private $up_ins   = '/^\+(.*)$/';
-    private $up_del   = '/^-(.*)$/';
+    private const UP_RANGE = '/^@@ -([\d]+),([\d]+) \+([\d]+),([\d]+) @@/m';
+    private const UP_CTX   = '/^ (.*)$/';
+    private const UP_INS   = '/^\+(.*)$/';
+    private const UP_DEL   = '/^-(.*)$/';
+
+    /**
+     * Chunks array
+     *
+     * @var        array
+     */
+    protected $__data = [];
 
     /**
      * Constructor
@@ -26,15 +34,15 @@ class tidyDiff
      * Creates a diff representation from unified diff.
      *
      * @param string    $udiff            Unified diff
-     * @param boolean   $inline_changes   Find inline changes
+     * @param bool      $inline_changes   Find inline changes
      */
-    public function __construct($udiff, $inline_changes = false)
+    public function __construct(string $udiff, bool $inline_changes = false)
     {
         diff::uniCheck($udiff);
 
-        preg_match_all($this->up_range, $udiff, $context);
+        preg_match_all(self::UP_RANGE, $udiff, $context);
 
-        $chunks = preg_split($this->up_range, $udiff, -1, PREG_SPLIT_NO_EMPTY);
+        $chunks = preg_split(self::UP_RANGE, $udiff, -1, PREG_SPLIT_NO_EMPTY);
 
         foreach ($chunks as $k => $chunk) {
             $tidy_chunk = new tidyDiffChunk();
@@ -50,18 +58,18 @@ class tidyDiff
 
             foreach (explode("\n", $chunk) as $line) {
                 # context
-                if (preg_match($this->up_ctx, $line, $m)) {
+                if (preg_match(self::UP_CTX, $line, $m)) {
                     $tidy_chunk->addLine('context', [$old_line, $new_line], $m[1]);
                     $old_line++;
                     $new_line++;
                 }
                 # insertion
-                if (preg_match($this->up_ins, $line, $m)) {
+                if (preg_match(self::UP_INS, $line, $m)) {
                     $tidy_chunk->addLine('insert', [$old_line, $new_line], $m[1]);
                     $new_line++;
                 }
                 # deletion
-                if (preg_match($this->up_del, $line, $m)) {
+                if (preg_match(self::UP_DEL, $line, $m)) {
                     $tidy_chunk->addLine('delete', [$old_line, $new_line], $m[1]);
                     $old_line++;
                 }
@@ -82,7 +90,7 @@ class tidyDiff
      *
      * @return array
      */
-    public function getChunks()
+    public function getChunks(): array
     {
         return $this->__data;
     }
@@ -99,8 +107,19 @@ class tidyDiff
  */
 class tidyDiffChunk
 {
-    protected $__info; ///< array: Chunk information array
-    protected $__data; ///< array: Chunk data array
+    /**
+     * Chunk information array
+     *
+     * @var array
+     */
+    protected $__info;
+
+    /**
+     * Chunk data array
+     *
+     * @var array
+     */
+    protected $__data;
 
     /**
      * Constructor
@@ -126,12 +145,12 @@ class tidyDiffChunk
      *
      * Sets chunk range in TIDY chunk object.
      *
-     * @param integer    $line_start        Old start line number
-     * @param integer    $offest_start        Old offset number
-     * @param integer    $line_end            new start line number
-     * @param integer    $offset_end        New offset number
+     * @param int    $line_start        Old start line number
+     * @param int    $offest_start        Old offset number
+     * @param int    $line_end            new start line number
+     * @param int    $offset_end        New offset number
      */
-    public function setRange($line_start, $offest_start, $line_end, $offset_end)
+    public function setRange(int $line_start, int $offest_start, int $line_end, int $offset_end): void
     {
         $this->__info['range']['start'] = [$line_start, $offest_start];
         $this->__info['range']['end']   = [$line_end, $offset_end];
@@ -143,10 +162,10 @@ class tidyDiffChunk
      * Adds TIDY line object for TIDY chunk object.
      *
      * @param string    $type        Tine type
-     * @param array        $lines        Line number for old and new context
-     * @param string    $content        Line content
+     * @param array     $lines       Line number for old and new context
+     * @param string    $content     Line content
      */
-    public function addLine($type, $lines, $content)
+    public function addLine(string $type, array $lines, string $content): void
     {
         $tidy_line = new tidyDiffLine($type, $lines, $content);
 
@@ -161,7 +180,7 @@ class tidyDiffChunk
      *
      * @return array
      */
-    public function getLines()
+    public function getLines(): array
     {
         return $this->__data;
     }
@@ -172,7 +191,8 @@ class tidyDiffChunk
      * Returns chunk information according to the given name, null otherwise.
      *
      * @param string    $n            Info name
-     * @return string
+     *
+     * @return mixed
      */
     public function getInfo($n)
     {
@@ -185,7 +205,7 @@ class tidyDiffChunk
      * Finds changes inside lines for each groups of diff lines. Wraps changes
      * by string \0 and \1
      */
-    public function findInsideChanges()
+    public function findInsideChanges(): void
     {
         $groups = $this->getGroups();
 
@@ -217,7 +237,7 @@ class tidyDiffChunk
         }
     }
 
-    private function getGroups()
+    private function getGroups(): array
     {
         $res           = $group           = [];
         $allowed_types = ['delete', 'insert'];
@@ -242,7 +262,7 @@ class tidyDiffChunk
         return $res;
     }
 
-    private function getChangeExtent($str1, $str2)
+    private function getChangeExtent(string $str1, string $str2): array
     {
         $start = 0;
         $limit = min(strlen($str1), strlen($str2));
@@ -272,9 +292,26 @@ class tidyDiffChunk
  */
 class tidyDiffLine
 {
-    protected $type;    ///< string: Line type
-    protected $lines;   ///< array: Line number for old and new context
-    protected $content; ///< string: Line content
+    /**
+     * Line type
+     *
+     * @var string
+     */
+    protected $type;
+
+    /**
+     * Line number for old and new context
+     *
+     * @var array
+     */
+    protected $lines;
+
+    /**
+     * Line content
+     *
+     * @var string
+     */
+    protected $content;
 
     /**
      * Constructor
@@ -282,11 +319,10 @@ class tidyDiffLine
      * Creates a line representation for a tidy chunk.
      *
      * @param string    $type        Tine type
-     * @param array        $lines        Line number for old and new context
-     * @param string    $content        Line content
-     * @return object
+     * @param array     $lines       Line number for old and new context
+     * @param string    $content     Line content
      */
-    public function __construct($type, $lines, $content)
+    public function __construct(string $type, ?array $lines, ?string $content)
     {
         $allowed_type = ['context', 'delete', 'insert'];
 
@@ -303,9 +339,10 @@ class tidyDiffLine
      * Returns field content according to the given name, null otherwise.
      *
      * @param string    $n            Field name
-     * @return string
+     *
+     * @return mixed
      */
-    public function __get($n)
+    public function __get(string $n)
     {
         return $this->{$n} ?? null;
     }
@@ -317,7 +354,7 @@ class tidyDiffLine
      *
      * @param string    $content        Line content
      */
-    public function overwrite($content)
+    public function overwrite(?string $content): void
     {
         if (is_string($content)) {
             $this->content = $content;

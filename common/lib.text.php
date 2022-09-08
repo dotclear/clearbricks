@@ -17,7 +17,8 @@ class text
      * Returns true if $email is a valid email address.
      *
      * @param string    $email    Email string
-     * @return boolean
+     *
+     * @return bool
      */
     public static function isEmail(string $email): bool
     {
@@ -31,6 +32,7 @@ class text
      * representation.
      *
      * @param    string    $str        String to deaccent
+     *
      * @return    string
      */
     public static function deaccent(string $str): string
@@ -78,7 +80,8 @@ class text
      * Transforms a string to a proper URL.
      *
      * @param string    $str            String to transform
-     * @param boolean    $with_slashes    Keep slashes in URL
+     * @param bool      $with_slashes   Keep slashes in URL
+     *
      * @return string
      */
     public static function str2URL(string $str, bool $with_slashes = true): string
@@ -93,8 +96,9 @@ class text
      * URL cleanup
      *
      * @param string    $str            URL to tidy
-     * @param boolean    $keep_slashes    Keep slashes in URL
-     * @param boolean    $keep_spaces    Keep spaces in URL
+     * @param bool      $keep_slashes   Keep slashes in URL
+     * @param bool      $keep_spaces    Keep spaces in URL
+     *
      * @return string
      */
     public static function tidyURL(string $str, bool $keep_slashes = true, bool $keep_spaces = false): string
@@ -126,25 +130,26 @@ class text
      *
      * Returns a cuted string on spaced at given length $l.
      *
-     * @param    string    $str        String to cut
-     * @param    integer    $l        Length to keep
+     * @param    string    $str           String to cut
+     * @param    integer   $length        Length to keep
+     *
      * @return    string
      */
-    public static function cutString(string $str, int $l): string
+    public static function cutString(string $str, int $length): string
     {
         $s = preg_split('/([\s]+)/u', $str, -1, PREG_SPLIT_DELIM_CAPTURE);
 
         $res = '';
         $L   = 0;
 
-        if (mb_strlen($s[0]) >= $l) {
-            return mb_substr($s[0], 0, $l);
+        if (mb_strlen($s[0]) >= $length) {
+            return mb_substr($s[0], 0, $length);
         }
 
         foreach ($s as $v) {
             $L = $L + mb_strlen($v);
 
-            if ($L > $l) {
+            if ($L > $length) {
                 break;
             }
             $res .= $v;
@@ -159,6 +164,7 @@ class text
      * Returns an array of words from a given string.
      *
      * @param string    $str        Words to split
+     *
      * @return array
      */
     public static function splitWords(string $str): array
@@ -181,15 +187,29 @@ class text
      * Returns the encoding (in lowercase) of given $str.
      *
      * @param string    $str        String
+     *
      * @return string
      */
     public static function detectEncoding(string $str): string
     {
-        return strtolower(mb_detect_encoding(
-            $str . ' ',
-            'UTF-8,ISO-8859-1,ISO-8859-2,ISO-8859-3,' .
-            'ISO-8859-4,ISO-8859-5,ISO-8859-6,ISO-8859-7,ISO-8859-8,' .
-            'ISO-8859-9,ISO-8859-10,ISO-8859-13,ISO-8859-14,ISO-8859-15'
+        return strtolower((string) mb_detect_encoding(
+            $str,
+            [
+                'UTF-8',
+                'ISO-8859-1',
+                'ISO-8859-2',
+                'ISO-8859-3',
+                'ISO-8859-4',
+                'ISO-8859-5',
+                'ISO-8859-6',
+                'ISO-8859-7',
+                'ISO-8859-8',
+                'ISO-8859-9',
+                'ISO-8859-10',
+                'ISO-8859-13',
+                'ISO-8859-14',
+                'ISO-8859-15',
+            ]
         ));
     }
 
@@ -199,8 +219,9 @@ class text
      * Returns an UTF-8 converted string. If $encoding is not specified, the
      * function will try to detect encoding.
      *
-     * @param string    $str        String to convert
+     * @param string    $str         String to convert
      * @param string    $encoding    Optionnal "from" encoding
+     *
      * @return string
      */
     public static function toUTF8(string $str, ?string $encoding = null): string
@@ -209,7 +230,7 @@ class text
             $encoding = self::detectEncoding($str);
         }
 
-        if ($encoding != 'utf-8') {
+        if ($encoding !== 'utf-8') {
             $str = iconv($encoding, 'UTF-8', $str);
         }
 
@@ -228,6 +249,7 @@ class text
      * @copyright Harry Fuecks (http://phputf8.sourceforge.net <a href="http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html">GNU LGPL 2.1</a>)
      *
      * @param string    $str        String to search
+     *
      * @return integer|false
      */
     public static function utf8badFind(string $str)
@@ -256,14 +278,15 @@ class text
     }
 
     /**
-     * UTF8 cleanup
+     * UTF-8 cleanup
      *
-     * Replaces non utf8 bytes in $str by $repl.
+     * Replaces non UTF-8 bytes in $str by $repl.
      *
      * @copyright Harry Fuecks (http://phputf8.sourceforge.net <a href="http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html">GNU LGPL 2.1</a>)
      *
      * @param string    $str        String to clean
-     * @param string    $repl    Replacement string
+     * @param string    $repl       Replacement string
+     *
      * @return string
      */
     public static function cleanUTF8(string $str, string $repl = '?'): string
@@ -276,17 +299,18 @@ class text
     }
 
     /**
-     * BOM removal
+     * BOM removal (UTF-8 only)
      *
      * Removes BOM from the begining of a string if present.
      *
      * @param string    $str        String to clean
+     *
      * @return string
      */
     public static function removeBOM(string $str): string
     {
-        if (substr_count($str, '﻿')) {
-            return str_replace('﻿', '', $str);
+        if (substr_count($str, "\xEF\xBB\xBF")) {
+            return str_replace("\xEF\xBB\xBF", '', $str);
         }
 
         return $str;
@@ -298,6 +322,7 @@ class text
      * Encodes given str to quoted printable
      *
      * @param string    $str        String to encode
+     *
      * @return string
      */
     public static function QPEncode(string $str): string

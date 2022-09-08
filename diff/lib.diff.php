@@ -13,15 +13,17 @@
  */
 class diff
 {
-    private static $us_range = "@@ -%s,%s +%s,%s @@\n";
-    private static $us_ctx   = " %s\n";
-    private static $us_ins   = "+%s\n";
-    private static $us_del   = "-%s\n";
+    // Constants
 
-    private static $up_range = '/^@@ -([\d]+),([\d]+) \+([\d]+),([\d]+) @@/';
-    private static $up_ctx   = '/^ (.*)$/';
-    private static $up_ins   = '/^\+(.*)$/';
-    private static $up_del   = '/^-(.*)$/';
+    private const US_RANGE = "@@ -%s,%s +%s,%s @@\n";
+    private const US_CTX   = " %s\n";
+    private const US_INS   = "+%s\n";
+    private const US_DEL   = "-%s\n";
+
+    private const UP_RANGE = '/^@@ -([\d]+),([\d]+) \+([\d]+),([\d]+) @@/';
+    private const UP_CTX   = '/^ (.*)$/';
+    private const UP_INS   = '/^\+(.*)$/';
+    private const UP_DEL   = '/^-(.*)$/';
 
     /**
      * Finds the shortest edit script using a fast algorithm taken from paper
@@ -30,9 +32,10 @@ class diff
      *
      * @param array        $src            Original data
      * @param array        $dst            New data
+     *
      * @return array
      */
-    public static function SES($src, $dst)
+    public static function SES(array $src, array $dst): array
     {
         $x = $y = $k = 0;
 
@@ -111,11 +114,12 @@ class diff
      * @param string        $src        Original data
      * @param string        $dst        New data
      * @param int           $ctx        Context length
+     *
      * @return string
      */
-    public static function uniDiff($src, $dst, $ctx = 2)
+    public static function uniDiff(string $src, string $dst, int $ctx = 2): string
     {
-        [$src, $dst] = [explode("\n", $src), explode("\n", $dst)];  // @phpstan-ignore-line
+        [$src, $dst] = [explode("\n", $src), explode("\n", $dst)];
 
         $ses = diff::SES($src, $dst);
         $res = '';
@@ -133,12 +137,12 @@ class diff
             if ($x - $pos_x > 2 * $ctx || $pos_x == 0 && $x > $ctx) {
                 # Footer for current chunk
                 for ($i = 0; $buffer && $i < $ctx; $i++) {
-                    $buffer .= sprintf(self::$us_ctx, $src[$pos_x + $i]);
+                    $buffer .= sprintf(self::US_CTX, $src[$pos_x + $i]);
                 }
 
                 # Header for current chunk
                 $res .= sprintf(
-                    self::$us_range,
+                    self::US_RANGE,
                     $pos_x     + 1 - $old_lines,
                     $old_lines + $i,
                     $pos_y     + 1 - $new_lines,
@@ -153,7 +157,7 @@ class diff
 
                 # Header for next chunk
                 for ($i = $ctx; $i > 0; $i--) {
-                    $buffer .= sprintf(self::$us_ctx, $src[$pos_x - $i]);
+                    $buffer .= sprintf(self::US_CTX, $src[$pos_x - $i]);
                     $old_lines++;
                     $new_lines++;
                 }
@@ -163,20 +167,20 @@ class diff
             while ($x > $pos_x) {
                 $old_lines++;
                 $new_lines++;
-                $buffer .= sprintf(self::$us_ctx, $src[$pos_x]);
+                $buffer .= sprintf(self::US_CTX, $src[$pos_x]);
                 $pos_x++;
                 $pos_y++;
             }
             # Deletion
             if ($cmd == 'd') {
                 $old_lines++;
-                $buffer .= sprintf(self::$us_del, $src[$x]);
+                $buffer .= sprintf(self::US_DEL, $src[$x]);
                 $pos_x++;
             }
             # Insertion
             elseif ($cmd == 'i') {
                 $new_lines++;
-                $buffer .= sprintf(self::$us_ins, $dst[$y]);
+                $buffer .= sprintf(self::US_INS, $dst[$y]);
                 $pos_y++;
             }
         }
@@ -188,12 +192,12 @@ class diff
                 if (!isset($src[$pos_x + $i])) {
                     break;
                 }
-                $buffer .= sprintf(self::$us_ctx, $src[$pos_x + $i]);
+                $buffer .= sprintf(self::US_CTX, $src[$pos_x + $i]);
             }
 
             # Header for current chunk
             $res .= sprintf(
-                self::$us_range,
+                self::US_RANGE,
                 $pos_x     + 1 - $old_lines,
                 $old_lines + $i,
                 $pos_y     + 1 - $new_lines,
@@ -208,11 +212,12 @@ class diff
      * Applies a unified patch to a piece of text.
      * Throws an exception on invalid or not applicable diff.
      *
-     * @param string        $src            Source text
-     * @param string        $diff        Patch to apply
+     * @param string        $src        Source text
+     * @param string        $diff       Patch to apply
+     *
      * @return string
      */
-    public static function uniPatch($src, $diff)
+    public static function uniPatch(string $src, string $diff): string
     {
         $dst  = [];
         $src  = explode("\n", $src);
@@ -223,7 +228,7 @@ class diff
 
         foreach ($diff as $line) {
             # New chunk
-            if (preg_match(self::$up_range, $line, $m)) {
+            if (preg_match(self::UP_RANGE, $line, $m)) {
                 $m[1]--;
                 $m[3]--;
 
@@ -251,7 +256,7 @@ class diff
                 $new_length = (int) $m[4];
             }
             # Context
-            elseif (preg_match(self::$up_ctx, $line, $m)) {
+            elseif (preg_match(self::UP_CTX, $line, $m)) {
                 if (array_shift($src) !== $m[1]) {
                     throw new Exception(__('Bad context'));
                 }
@@ -260,12 +265,12 @@ class diff
                 $new_length--;
             }
             # Addition
-            elseif (preg_match(self::$up_ins, $line, $m)) {
+            elseif (preg_match(self::UP_INS, $line, $m)) {
                 $dst[] = $m[1];
                 $new_length--;
             }
             # Deletion
-            elseif (preg_match(self::$up_del, $line, $m)) {
+            elseif (preg_match(self::UP_DEL, $line, $m)) {
                 if (array_shift($src) !== $m[1]) {
                     throw new Exception(__('Bad context (in deletion)'));
                 }
@@ -289,7 +294,7 @@ class diff
      *
      * @param string        $diff        Diff text to check
      */
-    public static function uniCheck($diff)
+    public static function uniCheck(string $diff): void
     {
         $diff = explode("\n", $diff);
 
@@ -301,7 +306,7 @@ class diff
 
         foreach ($diff as $line) {
             # New chunk
-            if (preg_match(self::$up_range, $line, $m)) {
+            if (preg_match(self::UP_RANGE, $line, $m)) {
                 if ($cur_line > $m[1]) {
                     throw new Exception(__('Invalid range'));
                 }
@@ -321,19 +326,19 @@ class diff
                 $new_length = $m[4];
             }
             # Context
-            elseif (preg_match(self::$up_ctx, $line, $m)) {
+            elseif (preg_match(self::UP_CTX, $line, $m)) {
                 $ins_lines++;
                 $cur_line++;
                 $old_length--;
                 $new_length--;
             }
             # Addition
-            elseif (preg_match(self::$up_ins, $line, $m)) {
+            elseif (preg_match(self::UP_INS, $line, $m)) {
                 $ins_lines++;
                 $new_length--;
             }
             # Deletion
-            elseif (preg_match(self::$up_del, $line, $m)) {
+            elseif (preg_match(self::UP_DEL, $line, $m)) {
                 $cur_line++;
                 $old_length--;
             }

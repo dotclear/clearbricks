@@ -11,9 +11,26 @@
  */
 class http
 {
-    public static $https_scheme_on_443 = false; ///< boolean: Force HTTPS scheme on server port 443 in {@link getHost()}
-    public static $cache_max_age       = 0;     ///< integer: Cache max age for {@link cache()}
-    public static $reverse_proxy       = false; ///< bolean: use X-FORWARD headers on getHost();
+    /**
+     * Force HTTPS scheme on server port 443 in {@link getHost()}
+     *
+     * @var        bool
+     */
+    public static $https_scheme_on_443 = false;
+
+    /**
+     * Cache max age for {@link cache()}
+     *
+     * @var        int
+     */
+    public static $cache_max_age = 0;
+
+    /**
+     * use X-FORWARD headers on getHost()
+     *
+     * @var        bool
+     */
+    public static $reverse_proxy = false;
 
     /**
      * Self root URI
@@ -111,31 +128,32 @@ class http
     /**
      * Prepare a full redirect URI from a relative or absolute URL
      *
-     * @param      string $page Relative URL
+     * @param      string $relative_url Relative URL
+     *
      * @return     string full URI
      */
-    protected static function prepareRedirect(string $page): string
+    protected static function prepareRedirect(string $relative_url): string
     {
-        if (preg_match('%^http[s]?://%', $page)) {
-            $redir = $page;
+        if (preg_match('%^http[s]?://%', $relative_url)) {
+            $full_url = $relative_url;
         } else {
             $host = self::getHost();
 
-            if (substr($page, 0, 1) == '/') {
-                $redir = $host . $page;
+            if (substr($relative_url, 0, 1) == '/') {
+                $full_url = $host . $relative_url;
             } else {
-                $dir = str_replace(DIRECTORY_SEPARATOR, '/', dirname($_SERVER['PHP_SELF']));
-                if (substr($dir, -1) == '/') {
-                    $dir = substr($dir, 0, -1);
+                $path = str_replace(DIRECTORY_SEPARATOR, '/', dirname($_SERVER['PHP_SELF']));
+                if (substr($path, -1) == '/') {
+                    $path = substr($path, 0, -1);
                 }
-                if ($dir == '.') {
-                    $dir = '';
+                if ($path == '.') {
+                    $path = '';
                 }
-                $redir = $host . $dir . '/' . $page;
+                $full_url = $host . $path . '/' . $relative_url;
             }
         }
 
-        return $redir;
+        return $full_url;
     }
 
     /**
@@ -143,31 +161,32 @@ class http
      *
      * Performs a conforming HTTP redirect for a relative URL.
      *
-     * @param string    $page        Relative URL
+     * @param string    $relative_url        Relative URL
      */
-    public static function redirect(string $page): string
+    public static function redirect(string $relative_url): string
     {
         # Close session if exists
         if (session_id()) {
             session_write_close();
         }
 
-        header('Location: ' . self::prepareRedirect($page));
+        header('Location: ' . self::prepareRedirect($relative_url));
         exit;
     }
 
     /**
      * Concat URL and path
      *
-     * Appends a path to a given URL. If path begins with "/" it will replace the
-     * original URL path.
+     * Appends a path to a given URL. If path begins with "/" it will replace the original URL path.
      *
      * @param string    $url        URL
-     * @param string    $path    Path to append
+     * @param string    $path       Path to append
+     *
      * @return string
      */
     public static function concatURL(string $url, string $path): string
     {
+        // Ensure there is a trailing slash
         if (substr($url, -1, 1) != '/') {
             $url .= '/';
         }
@@ -197,15 +216,12 @@ class http
      * Returns a "almost" safe client unique ID.
      *
      * @param string    $key        HMAC key
+     *
      * @return string
      */
     public static function browserUID(string $key): string
     {
-        $uid = '';
-        $uid .= $_SERVER['HTTP_USER_AGENT']     ?? '';
-        $uid .= $_SERVER['HTTP_ACCEPT_CHARSET'] ?? '';
-
-        return crypt::hmac($key, $uid);
+        return crypt::hmac($key, ($_SERVER['HTTP_USER_AGENT'] ?? '') . ($_SERVER['HTTP_ACCEPT_CHARSET'] ?? ''));
     }
 
     /**
@@ -217,14 +233,15 @@ class http
      */
     public static function getAcceptLanguage(): string
     {
-        $dlang = '';
+        $client_language_code = '';
+
         if (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-            $acclang = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
-            $L       = explode(';', $acclang[0]);
-            $dlang   = substr(trim((string) $L[0]), 0, 2);
+            $accepted_languages       = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
+            $first_acccepted_language = explode(';', $accepted_languages[0]);
+            $client_language_code     = substr(trim((string) $first_acccepted_language[0]), 0, 2);
         }
 
-        return $dlang;
+        return $client_language_code;
     }
 
     /**
@@ -237,34 +254,35 @@ class http
      */
     public static function getAcceptLanguages(): array
     {
-        $langs = [];
+        $accepted_languages = [];
+
         if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
 
             // break up string into pieces (languages and q factors)
             preg_match_all(
                 '/([a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*(1|0\.[0-9]+))?/i',
                 $_SERVER['HTTP_ACCEPT_LANGUAGE'],
-                $lang_parse
+                $matches
             );
 
-            if (count($lang_parse[1])) {
+            if (count($matches[1])) {
                 // create a list like "en" => 0.8
-                $langs = array_combine($lang_parse[1], $lang_parse[4]);
+                $accepted_languages = array_combine($matches[1], $matches[4]);
 
                 // set default to 1 for any without q factor
-                foreach ($langs as $lang => $val) {
-                    if ($val === '') {
-                        $langs[$lang] = 1;
+                foreach ($accepted_languages as $language => $q_factor) {
+                    if ($q_factor === '') {
+                        $accepted_languages[$language] = 1;
                     }
                 }
 
                 // sort list based on value
-                arsort($langs, SORT_NUMERIC);
-                $langs = array_map('strtolower', array_keys($langs));
+                arsort($accepted_languages, SORT_NUMERIC);
+                $accepted_languages = array_map('strtolower', array_keys($accepted_languages));
             }
         }
 
-        return $langs;
+        return $accepted_languages;
     }
 
     /**
@@ -273,24 +291,28 @@ class http
      * Sends HTTP cache headers (304) according to a list of files and an optionnal.
      * list of timestamps.
      *
-     * @param array        $files        Files on which check mtime
-     * @param array        $mod_ts        List of timestamps
+     * @param array        $mod_files           Files on which check mtime
+     * @param array        $mod_timestamps      List of timestamps
      */
-    public static function cache(array $files, array $mod_ts = []): void
+    public static function cache(array $mod_files, array $mod_timestamps = []): void
     {
-        if (empty($files) || !is_array($files)) {
+        if (empty($mod_files) || !is_array($mod_files)) {
             return;
         }
 
-        array_walk($files, function (&$v) {
-            $v = filemtime($v);
+        // Replace each files in array by its last modification timestamp
+        array_walk($mod_files, function (&$mod_timestamp) {
+            $mod_timestamp = filemtime($mod_timestamp);
         });
 
-        $array_ts = array_merge($mod_ts, $files);
+        // Merge both array of timestamps
+        $timestamps = array_merge($mod_timestamps, $mod_files);
 
-        rsort($array_ts);
-        $now = time();
-        $ts  = min($array_ts[0], $now);
+        // Sort (reverse) the resulting timestamps: most recent first [0]
+        rsort($timestamps);
+
+        $now       = time();
+        $timestamp = min($timestamps[0], $now);
 
         $since = null;
         if (!empty($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
@@ -301,20 +323,21 @@ class http
         }
 
         # Common headers list
-        $headers[] = 'Last-Modified: ' . gmdate('D, d M Y H:i:s', $ts) . ' GMT';
+        $headers[] = 'Last-Modified: ' . gmdate('D, d M Y H:i:s', $timestamp) . ' GMT';
         $headers[] = 'Cache-Control: must-revalidate, max-age=' . abs((int) self::$cache_max_age);
         $headers[] = 'Pragma:';
 
-        if ($since >= $ts) {
+        if ($since >= $timestamp) {
             self::head(304, 'Not Modified');
-            foreach ($headers as $v) {
-                header($v);
+            foreach ($headers as $header) {
+                header($header);
             }
             exit;
         }
+
         header('Date: ' . gmdate('D, d M Y H:i:s', $now) . ' GMT');
-        foreach ($headers as $v) {
-            header($v);
+        foreach ($headers as $header) {
+            header($header);
         }
     }
 
@@ -323,16 +346,15 @@ class http
      *
      * Sends HTTP cache headers (304) according to a list of etags in client request.
      */
-    public static function etag(): void
+    public static function etag(...$args): void
     {
-        # We create an etag from all arguments
-        $args = func_get_args();
         if (empty($args)) {
             return;
         }
 
+        // We create an etag from all arguments (given arrays are flattened)
+        $args = iterator_to_array(new \RecursiveIteratorIterator(new \RecursiveArrayIterator($args)), false);
         $etag = '"' . md5(implode('', $args)) . '"';
-        unset($args);
 
         header('ETag: ' . $etag);
 
@@ -352,8 +374,8 @@ class http
      *
      * Sends an HTTP code and message to client.
      *
-     * @param int    $code        HTTP code
-     * @param string    $msg            Message
+     * @param int       $code        HTTP code
+     * @param string    $msg         Message
      */
     public static function head(int $code, $msg = null): void
     {
@@ -421,32 +443,19 @@ class http
      */
     public static function trimRequest(): void
     {
+        $cleanup = function (&$value) { $value = trim((string) $value); };
+
         if (!empty($_GET)) {
-            array_walk($_GET, ['self', 'trimRequestInVar']);    // @phpstan-ignore-line
+            array_walk_recursive($_GET, $cleanup);
         }
         if (!empty($_POST)) {
-            array_walk($_POST, ['self', 'trimRequestInVar']);   // @phpstan-ignore-line
+            array_walk_recursive($_POST, $cleanup);
         }
         if (!empty($_REQUEST)) {
-            array_walk($_REQUEST, ['self', 'trimRequestInVar']);    // @phpstan-ignore-line
+            array_walk_recursive($_REQUEST, $cleanup);
         }
         if (!empty($_COOKIE)) {
-            array_walk($_COOKIE, ['self', 'trimRequestInVar']); // @phpstan-ignore-line
-        }
-    }
-
-    private static function trimRequestInVar(&$value): void
-    {
-        if (is_array($value)) {
-            foreach ($value as $k => &$v) {
-                if (is_array($v)) {
-                    self::trimRequestInVar($v);
-                } else {
-                    $v = trim((string) $v);
-                }
-            }
-        } else {
-            $value = trim((string) $value);
+            array_walk_recursive($_COOKIE, $cleanup);
         }
     }
 }

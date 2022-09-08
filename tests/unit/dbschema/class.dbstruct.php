@@ -1,4 +1,5 @@
 <?php
+
 # ***** BEGIN LICENSE BLOCK *****
 # This file is part of Clearbricks.
 # Copyright (c) 2003-2013 Olivier Meunier & Association Dotclear
@@ -32,13 +33,21 @@ class dbStruct extends atoum
 {
     private $prefix = 'dc_';
 
-    public function testMustEscapeNameInCreateTable($driver, $query)
+    private function getConnection($driver)
     {
         $controller              = new \atoum\atoum\mock\controller();
         $controller->__construct = function () {};
 
-        $driver_class_name = sprintf('\mock\%sConnection', $driver);
-        $con               = new $driver_class_name($driver, $controller);
+        $class_name                  = sprintf('\mock\%sConnection', $driver);
+        $con                         = new $class_name($driver, $controller);
+        $this->calling($con)->driver = $driver;
+
+        return $con;
+    }
+
+    public function testMustEscapeNameInCreateTable($driver, $query)
+    {
+        $con = $this->getConnection($driver);
 
         $s = new \dbStruct($con, $this->prefix);
         $s->blog->blog_id('varchar', 32, false);
@@ -74,7 +83,7 @@ class dbStruct extends atoum
         return [
             ['pgsql', $create_query['pgsql']],
             ['mysqli', $create_query['mysqli']],
-            ['mysqlimb4', $create_query['mysqlimb4']]
+            ['mysqlimb4', $create_query['mysqlimb4']],
         ];
     }
 }

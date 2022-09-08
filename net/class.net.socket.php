@@ -13,24 +13,53 @@
  */
 class netSocket
 {
-    protected $_host;           ///< string: Server host
-    protected $_port;           ///< integer: Server port
-    protected $_transport = ''; ///< string: Server transport
-    protected $_timeout;        ///< integer: Connection timeout
-    protected $_handle;         ///< resource: Resource handler
+    /**
+     * Server host
+     *
+     * @var string
+     */
+    protected $_host;
+
+    /**
+     * Server port
+     *
+     * @var int
+     */
+    protected $_port;
+
+    /**
+     * Server transport
+     *
+     * @var string
+     */
+    protected $_transport = '';
+
+    /**
+     * Connection timeout
+     *
+     * @var int
+     */
+    protected $_timeout;
+
+    /**
+     * Resource handler
+     *
+     * @var resource|null
+     */
+    protected $_handle;
 
     /**
      * Class constructor
      *
-     * @param string        $host        Server host
-     * @param string         $port        Server port
-     * @param int        $timeout        Connection timeout
+     * @param string      $host        Server host
+     * @param int         $port        Server port
+     * @param int         $timeout     Connection timeout
      */
-    public function __construct($host, $port, $timeout = 10)
+    public function __construct(string $host, int $port, int $timeout = 10)
     {
         $this->_host    = $host;
-        $this->_port    = abs((int) $port);
-        $this->_timeout = abs((int) $timeout);
+        $this->_port    = abs($port);
+        $this->_timeout = abs($timeout);
     }
 
     /**
@@ -50,9 +79,10 @@ class netSocket
      * Otherwise, returns {@link $_host} value.
      *
      * @param string    $host            Server host
+     *
      * @return string|true
      */
-    public function host($host = null)
+    public function host(?string $host = null)
     {
         if ($host) {
             $this->_host = $host;
@@ -69,13 +99,14 @@ class netSocket
      * If <var>$port</var> is set, set {@link $_port} and returns true.
      * Otherwise, returns {@link $_port} value.
      *
-     * @param integer    $port            Server port
-     * @return integer|true
+     * @param int    $port            Server port
+     *
+     * @return int|true
      */
-    public function port($port = null)
+    public function port(?int $port = null)
     {
         if ($port) {
-            $this->_port = abs((int) $port);
+            $this->_port = abs($port);
 
             return true;
         }
@@ -89,13 +120,14 @@ class netSocket
      * If <var>$timeout</var> is set, set {@link $_timeout} and returns true.
      * Otherwise, returns {@link $_timeout} value.
      *
-     * @param integer    $timeout            Connection timeout
-     * @return string|true
+     * @param int    $timeout            Connection timeout
+     *
+     * @return int|true
      */
-    public function timeout($timeout = null)
+    public function timeout(?int $timeout = null)
     {
         if ($timeout) {
-            $this->_timeout = abs((int) $timeout);
+            $this->_timeout = abs($timeout);
 
             return true;
         }
@@ -108,16 +140,17 @@ class netSocket
      *
      * Sets blocking or non-blocking mode on the socket.
      *
-     * @param integer    $i        1 for yes, 0 for no
+     * @param   bool    $block
+     *
      * @return    boolean
      */
-    public function setBlocking($i)
+    public function setBlocking(bool $block): bool
     {
         if (!$this->isOpen()) {
             return false;
         }
 
-        return stream_set_blocking($this->_handle, (bool) $i);
+        return stream_set_blocking($this->_handle, $block);
     }
 
     /**
@@ -142,7 +175,7 @@ class netSocket
     /**
      * Closes socket connection
      */
-    public function close()
+    public function close(): void
     {
         if ($this->isOpen()) {
             fclose($this->_handle);
@@ -174,7 +207,8 @@ class netSocket
      * ?>
      * </code>
      *
-     * @param string|array    $data        Data to send
+     * @param   string|array    $data        Data to send
+     *
      * @return    netSocketIterator|false
      */
     public function write($data)
@@ -225,7 +259,7 @@ class netSocket
      *
      * Returns true if socket connection is open.
      *
-     * @return    boolean
+     * @return    bool
      */
     public function isOpen()
     {
@@ -244,8 +278,19 @@ class netSocket
  */
 class netSocketIterator implements Iterator
 {
-    protected $_handle; ///< resource: Socket resource handler
-    protected $_index;  ///< integer: Current index position
+    /**
+     * Socket resource handler
+     *
+     * @var resource
+     */
+    protected $_handle;
+
+    /**
+     * Current index position
+     *
+     * @var int
+     */
+    protected $_index;
 
     /**
      * Constructor
@@ -275,10 +320,9 @@ class netSocketIterator implements Iterator
     /**
      * Valid
      *
-     * @return boolean    True if EOF of handler
+     * @return bool    True if EOF of handler
      */
-    #[\ReturnTypeWillChange]
-    public function valid()
+    public function valid(): bool
     {
         return !feof($this->_handle);
     }
@@ -295,10 +339,9 @@ class netSocketIterator implements Iterator
     /**
      * Current index
      *
-     * @return integer    Current index
+     * @return int    Current index
      */
-    #[\ReturnTypeWillChange]
-    public function key()
+    public function key(): int
     {
         return $this->_index;
     }

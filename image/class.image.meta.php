@@ -15,24 +15,42 @@
  */
 class imageMeta
 {
-    protected $xmp  = []; ///< array: Internal XMP array
-    protected $iptc = []; ///< array: Internal IPTC array
-    protected $exif = []; ///< array: Internal EXIF array
+    /**
+     * Internal XMP array
+     *
+     * @var        array
+     */
+    protected $xmp = [];
+
+    /**
+     * Internal IPTC array
+     *
+     * @var        array
+     */
+    protected $iptc = [];
+
+    /**
+     * Internal EXIF array
+     *
+     * @var        array
+     */
+    protected $exif = [];
 
     /**
      * Read metadata
      *
      * Returns all image metadata in an array as defined in {@link $properties}.
      *
-     * @param string    $f        Image file path
+     * @param string    $filename        Image file path
+     *
      * @return array
      */
-    public static function readMeta($f)
+    public static function readMeta($filename)
     {
-        $o = new self();
-        $o->loadFile($f);
+        $instance = new self();
+        $instance->loadFile($filename);
 
-        return $o->getMeta();
+        return $instance->getMeta();
     }
 
     /**
@@ -43,9 +61,9 @@ class imageMeta
      *
      * @return array
      */
-    public function getMeta()
+    public function getMeta(): array
     {
-        foreach ($this->properties as $k => $v) {
+        foreach (array_keys($this->properties) as $k) {
             if (!empty($this->xmp[$k])) {
                 $this->properties[$k] = $this->xmp[$k];
             } elseif (!empty($this->iptc[$k])) {
@@ -72,17 +90,17 @@ class imageMeta
      *
      * Loads a file and read its metadata.
      *
-     * @param string    $f        Image file path
+     * @param string    $filename        Image file path
      */
-    public function loadFile($f)
+    public function loadFile($filename): void
     {
-        if (!is_file($f) || !is_readable($f)) {
+        if (!is_file($filename) || !is_readable($filename)) {
             throw new Exception('Unable to read file');
         }
 
-        $this->readXMP($f);
-        $this->readIPTC($f);
-        $this->readExif($f);
+        $this->readXMP($filename);
+        $this->readIPTC($filename);
+        $this->readExif($filename);
     }
 
     /**
@@ -90,11 +108,11 @@ class imageMeta
      *
      * Reads XML metadata and assigns values to {@link $xmp}.
      *
-     * @param string    $f        Image file path
+     * @param string    $filename        Image file path
      */
-    protected function readXMP($f)
+    protected function readXMP($filename)
     {
-        if (($fp = @fopen($f, 'rb')) === false) {
+        if (($fp = @fopen($filename, 'rb')) === false) {
             throw new Exception('Unable to open image file');
         }
 
@@ -135,17 +153,17 @@ class imageMeta
 
         foreach ($this->xmp_reg as $code => $patterns) {
             foreach ($patterns as $p) {
-                if (preg_match($p, $xmp, $m)) {
-                    $this->xmp[$code] = $m[1];
+                if (preg_match($p, $xmp, $matches)) {
+                    $this->xmp[$code] = $matches[1];
 
                     break;
                 }
             }
         }
 
-        if (preg_match('%<dc:subject>\s*<rdf:Bag>(.+?)</rdf:Bag%msu', $xmp, $m)
-            && preg_match_all('%<rdf:li>(.+?)</rdf:li>%msu', $m[1], $m)) {
-            $this->xmp['Keywords'] = implode(',', $m[1]);
+        if (preg_match('%<dc:subject>\s*<rdf:Bag>(.+?)</rdf:Bag%msu', $xmp, $rdf_bag)
+            && preg_match_all('%<rdf:li>(.+?)</rdf:li>%msu', $rdf_bag[1], $rdf_bag_li)) {
+            $this->xmp['Keywords'] = implode(',', $rdf_bag_li[1]);
         }
 
         foreach ($this->xmp as $k => $v) {
@@ -158,16 +176,16 @@ class imageMeta
      *
      * Reads IPTC metadata and assigns values to {@link $iptc}.
      *
-     * @param string    $f        Image file path
+     * @param string    $filename        Image file path
      */
-    protected function readIPTC($f)
+    protected function readIPTC($filename)
     {
         if (!function_exists('iptcparse')) {
             return;
         }
 
         $imageinfo = null;
-        @getimagesize($f, $imageinfo);
+        @getimagesize($filename, $imageinfo);
 
         if (!is_array($imageinfo) || !isset($imageinfo['APP13'])) {
             return;
@@ -191,28 +209,28 @@ class imageMeta
      *
      * Reads EXIF metadata and assigns values to {@link $exif}.
      *
-     * @param string    $f        Image file path
+     * @param string    $filename        Image file path
      */
-    protected function readEXIF($f)
+    protected function readEXIF($filename)
     {
         if (!function_exists('exif_read_data')) {
             return;
         }
 
-        $d = @exif_read_data($f, 'ANY_TAG');
+        $data = @exif_read_data($filename, 'ANY_TAG');
 
-        if (!is_array($d)) {
+        if (!is_array($data)) {
             return;
         }
 
         foreach ($this->exif_to_property as $k => $v) {
-            if (isset($d[$k])) {
-                if (is_array($d[$k])) {
-                    foreach ($d[$k] as $kk => $vv) {
+            if (isset($data[$k])) {
+                if (is_array($data[$k])) {
+                    foreach ($data[$k] as $kk => $vv) {
                         $this->exif[$v . '.' . $kk] = text::toUTF8($vv);
                     }
                 } else {
-                    $this->exif[$v] = text::toUTF8($d[$k]);
+                    $this->exif[$v] = text::toUTF8($data[$k]);
                 }
             }
         }

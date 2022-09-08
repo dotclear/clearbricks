@@ -1,4 +1,5 @@
 <?php
+
 # -- BEGIN LICENSE BLOCK ---------------------------------------
 #
 # This file is part of Dotclear 2.
@@ -41,47 +42,47 @@ class htmlFilter extends atoum
     {
         $filter = new \htmlFilter();
         $str    = <<<EODTIDY
-<p>Hello</p>
-<div aria-role="navigation">
- <a href="javascript:alert('bouh!')">Bouh</a>
- <p data-customattribute="will be an error">bla</p>
- <img src="/public/sample.jpg" />
- <p>bla</p>
-</div>
-<div>
- <p>Hi there!</p>
- <div>
-  <p>Opps, a mistake</px>
- </div>
-</div>
-EODTIDY;
+            <p>Hello</p>
+            <div aria-role="navigation">
+             <a href="javascript:alert('bouh!')">Bouh</a>
+             <p data-customattribute="will be an error">bla</p>
+             <img src="/public/sample.jpg" />
+             <p>bla</p>
+            </div>
+            <div>
+             <p>Hi there!</p>
+             <div>
+              <p>Opps, a mistake</px>
+             </div>
+            </div>
+            EODTIDY;
         $validStr = <<<EODTIDYV
-<p>Hello</p>
-<div><a href="#">Bouh</a>
-<p>bla</p>
-<img src="/public/sample.jpg" />
-<p>bla</p>
-</div>
-<div>
-<p>Hi there!</p>
-<div>
-<p>Opps, a mistake</p>
-</div>
-</div>
-EODTIDYV;
+            <p>Hello</p>
+            <div><a href="#">Bouh</a>
+            <p>bla</p>
+            <img src="/public/sample.jpg" />
+            <p>bla</p>
+            </div>
+            <div>
+            <p>Hi there!</p>
+            <div>
+            <p>Opps, a mistake</p>
+            </div>
+            </div>
+            EODTIDYV;
         $validStrMiniTidy = <<<EODTIDYVMT
-<p>Hello</p>
-<div>
- <a href="#">Bouh</a>
- <p>bla</p>
- <img src="/public/sample.jpg" />
- <p>bla</p>
-</div>
-<div>
- <p>Hi there!</p>
- <div>
-  <p>Opps, a mistake
-EODTIDYVMT;
+            <p>Hello</p>
+            <div>
+             <a href="#">Bouh</a>
+             <p>bla</p>
+             <img src="/public/sample.jpg" />
+             <p>bla</p>
+            </div>
+            <div>
+             <p>Hi there!</p>
+             <div>
+              <p>Opps, a mistake
+            EODTIDYVMT;
         if (extension_loaded('tidy') && class_exists('tidy')) {
             $this->string($filter->apply($str))
                 ->isIdenticalTo($validStr . "\n");
@@ -169,31 +170,31 @@ EODTIDYVMT;
     {
         $filter = new \htmlFilter();
         $str    = <<<EOD
-<p>Hello</p>
-<div aria-role="navigation">
- <p data-customattribute="will be an error">bla</p>
- <img src="/public/sample.jpg" />
- <p>bla</p>
-</div>
-<div>
- <p>Hi there!</p>
- <div>
-  <p>Opps, a mistake</px>
- </div>
-</div>
-EOD;
+            <p>Hello</p>
+            <div aria-role="navigation">
+             <p data-customattribute="will be an error">bla</p>
+             <img src="/public/sample.jpg" />
+             <p>bla</p>
+            </div>
+            <div>
+             <p>Hi there!</p>
+             <div>
+              <p>Opps, a mistake</px>
+             </div>
+            </div>
+            EOD;
         $validStr = <<<EODV
-<p>Hello</p>
-<div>
- <p>bla</p>
- <img src="/public/sample.jpg" />
- <p>bla</p>
-</div>
-<div>
- <p>Hi there!</p>
- <div>
-  <p>Opps, a mistake
-EODV;
+            <p>Hello</p>
+            <div>
+             <p>bla</p>
+             <img src="/public/sample.jpg" />
+             <p>bla</p>
+            </div>
+            <div>
+             <p>Hi there!</p>
+             <div>
+              <p>Opps, a mistake
+            EODV;
         $this->string($filter->apply($str, false))
             ->isIdenticalTo($validStr);
     }
@@ -202,31 +203,31 @@ EODV;
     {
         $filter = new \htmlFilter(true);
         $str    = <<<EODA
-<p>Hello</p>
-<div aria-role="navigation">
- <p data-customattribute="will be an error">bla</p>
- <img src="/public/sample.jpg" />
- <p>bla</p>
-</div>
-<div>
- <p>Hi there!</p>
- <div>
-  <p>Opps, a mistake</px>
- </div>
-</div>
-EODA;
+            <p>Hello</p>
+            <div aria-role="navigation">
+             <p data-customattribute="will be an error">bla</p>
+             <img src="/public/sample.jpg" />
+             <p>bla</p>
+            </div>
+            <div>
+             <p>Hi there!</p>
+             <div>
+              <p>Opps, a mistake</px>
+             </div>
+            </div>
+            EODA;
         $validStr = <<<EODVA
-<p>Hello</p>
-<div aria-role="navigation">
- <p>bla</p>
- <img src="/public/sample.jpg" />
- <p>bla</p>
-</div>
-<div>
- <p>Hi there!</p>
- <div>
-  <p>Opps, a mistake
-EODVA;
+            <p>Hello</p>
+            <div aria-role="navigation">
+             <p>bla</p>
+             <img src="/public/sample.jpg" />
+             <p>bla</p>
+            </div>
+            <div>
+             <p>Hi there!</p>
+             <div>
+              <p>Opps, a mistake
+            EODVA;
         $this->string($filter->apply($str, false))
             ->isIdenticalTo($validStr);
     }

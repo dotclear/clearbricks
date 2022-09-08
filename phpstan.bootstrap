@@ -1,0 +1,4 @@
+<?php
+// Mock some global constants
+define('HTTP_PROXY_HOST', '');
+define('HTTP_PROXY_PORT', 0);

@@ -228,8 +228,6 @@ class wiki2xhtml extends atoum
     {
         $wiki2xhtml = new \wiki2xhtml();
 
-        $wiki2xhtml->setOpts('fake');
-
         $wiki2xhtml->setOpts([
             'active_hr' => 0,
             'active_br' => 0, ]);

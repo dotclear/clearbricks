@@ -11,9 +11,26 @@
  */
 class socketMail
 {
+    /**
+     * Socket handle
+     *
+     * @var        resource|null|false
+     */
     public static $fp;
-    public static $timeout    = 10;   ///< integer: Socket timeout
-    public static $smtp_relay = null; ///< string: SMTP Relay to user
+
+    /**
+     * Connection timeout (in seconds)
+     *
+     * @var        int
+     */
+    public static $timeout = 10;
+
+    /**
+     * SMTP Relay to user
+     *
+     * @var        string
+     */
+    public static $smtp_relay = null;
 
     /**
      * Send email through socket
@@ -22,17 +39,19 @@ class socketMail
      * If {@link $smtp_relay} is set, it will be used as a relay to send the
      * email. Instead, email is sent directly to MX host of domain.
      *
-     * @param string        $to            Email destination
-     * @param string        $subject        Email subject
-     * @param string        $message        Email message
-     * @param string|array    $headers        Email headers
+     * @param string            $to             Email destination
+     * @param string            $subject        Email subject
+     * @param string            $message        Email message
+     * @param string|array      $headers        Email headers
+     *
      * @throws Exception
      */
-    public static function mail($to, $subject, $message, $headers = null)
+    public static function mail(string $to, string $subject, string $message, $headers = null): void
     {
+        if (!is_null($headers) && !is_array($headers)) {
+            $headers = [$headers];
+        }
         $from = self::getFrom($headers);
-
-        $H = 'Return-Path: <' . $from . ">\r\n";
 
         $from_host = explode('@', $from);
         $from_host = $from_host[1];
@@ -46,8 +65,8 @@ class socketMail
             $mx = mail::getMX($to_host);
         }
 
-        foreach ($mx as $h => $w) {
-            self::$fp = @fsockopen($h, 25, $errno, $errstr, self::$timeout);
+        foreach (array_keys($mx) as $mx_host) {
+            self::$fp = @fsockopen($mx_host, 25, $errno, $errstr, self::$timeout);
 
             if (self::$fp !== false) {
                 break;
@@ -86,14 +105,17 @@ class socketMail
         }
 
         # Compose mail and send it with DATA
-        $H = 'Return-Path: <' . $from . ">\r\n";
-        $H .= 'To: <' . $to . ">\r\n";
-        $H .= 'Subject: ' . $subject . "\r\n";
-        $H .= $headers . "\r\n";
+        $buffer = 'Return-Path: <' . $from . ">\r\n" .
+            'To: <' . $to . ">\r\n" .
+            'Subject: ' . $subject . "\r\n";
 
-        $message = $H . "\r\n\r\n" . $message;
+        foreach ($headers as $header) {
+            $buffer .= $header . "\r\n";
+        }
 
-        if (!self::sendMessage($message, $data)) {
+        $buffer .= "\r\n\r\n" . $message;
+
+        if (!self::sendMessage($buffer, $data)) {
             self::quit();
 
             throw new Exception($data);
@@ -102,30 +124,58 @@ class socketMail
         self::quit();
     }
 
-    private static function getFrom($headers)
+    /**
+     * Gets the from.
+     *
+     * @param      array      $headers  The headers
+     *
+     * @throws     Exception
+     *
+     * @return     string     The from.
+     */
+    private static function getFrom(?array $headers): string
     {
-        $f = '';
+        if (!is_null($headers)) {
+            // Try to find a from:… in header(s)
+            foreach ($headers as $header) {
+                $from = '';
 
-        if (preg_match('/^from: (.+?)$/msi', $headers, $m)) {
-            $f = trim((string) $m[1]);
+                if (preg_match('/^from: (.+?)$/msi', $header, $m)) {
+                    $from = trim((string) $m[1]);
+                }
+
+                if (preg_match('/(?:<)(.+?)(?:$|>)/si', $from, $m)) {
+                    $from = trim((string) $m[1]);
+                } elseif (preg_match('/^(.+?)\(/si', $from, $m)) {
+                    $from = trim((string) $m[1]);
+                } elseif (!text::isEmail($from)) {
+                    $from = '';
+                }
+
+                if ($from !== '') {
+                    return $from;
+                }
+            }
         }
 
-        if (preg_match('/(?:<)(.+?)(?:$|>)/si', $f, $m)) {
-            $f = trim((string) $m[1]);
-        } elseif (preg_match('/^(.+?)\(/si', $f, $m)) {
-            $f = trim((string) $m[1]);
-        } elseif (!text::isEmail($f)) {
-            $f = trim((string) ini_get('sendmail_from'));
+        // Is a from set in configuration options ?
+        $from = trim((string) ini_get('sendmail_from'));
+        if ($from !== '') {
+            return $from;
         }
 
-        if (!$f) {
-            throw new Exception('No valid from e-mail address');
-        }
-
-        return $f;
+        throw new Exception('No valid from e-mail address');
     }
 
-    private static function cmd($out, &$data = '')
+    /**
+     * Send SMTP command
+     *
+     * @param      string  $out    The out
+     * @param      string  $data   The received data
+     *
+     * @return     bool
+     */
+    private static function cmd(string $out, string &$data = ''): bool
     {
         fwrite(self::$fp, $out . "\r\n");
         $data = self::data();
@@ -137,19 +187,32 @@ class socketMail
         return true;
     }
 
-    private static function data()
+    /**
+     * Get data from opened stream
+     *
+     * @return     string
+     */
+    private static function data(): string
     {
-        $s = '';
+        $buffer = '';
         stream_set_timeout(self::$fp, 2);
 
         for ($i = 0; $i < 2; $i++) {
-            $s .= fgets(self::$fp, 1024);
+            $buffer .= fgets(self::$fp, 1024);
         }
 
-        return $s;
+        return $buffer;
     }
 
-    private static function sendMessage($msg, &$data)
+    /**
+     * Sends a message body.
+     *
+     * @param      string  $msg    The message
+     * @param      string  $data   The data
+     *
+     * @return     bool
+     */
+    private static function sendMessage(string $msg, string &$data): bool
     {
         $msg .= "\r\n.";
 
@@ -162,7 +225,10 @@ class socketMail
         return self::cmd($msg, $data);
     }
 
-    private static function quit()
+    /**
+     * Send QUIT command and close socket handle
+     */
+    private static function quit(): void
     {
         self::cmd('QUIT');
         fclose(self::$fp);

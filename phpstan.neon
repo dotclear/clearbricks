@@ -8,6 +8,9 @@
 parameters:
   level: 5
 
+  bootstrapFiles:
+    - phpstan.bootstrap
+
   scanFiles:
     - _common.php
 
@@ -22,8 +25,6 @@ parameters:
     - html.validator
     - image
     - mail
-    - mail.convert
-    - mail.mime
     - net
     - net.http
     - net.http.feed
@@ -34,8 +35,11 @@ parameters:
     - template
     - text.wiki2xhtml
     - url.handler
-    - xmlsql
     - zip
+
+  dynamicConstantNames:
+    - HTTP_PROXY_HOST
+    - HTTP_PROXY_PORT
 
   reportUnmatchedIgnoredErrors: false
 
@@ -47,11 +51,23 @@ parameters:
   ignoreErrors:
 
     # Intensive use of magic __set/__get/__call/__invoke causes theses wrong warnings
+
     - message: '#Call to an undefined method form#'
       paths:
       - html.form/*
 
-    # Intensive use of magic __set/__get/__call/__invoke causes theses wrong warnings
     - message: '#Access to an undefined property form#'
       paths:
       - html.form/*
+
+    - message: '#Call to an undefined method xmlTag#'
+      paths:
+      - rest/*
+
+    - message: '#Access to an undefined property xmlTag#'
+      paths:
+      - rest/*
+
+    - message: '#Access to an undefined property cursor#'
+      paths:
+      - session.db/*

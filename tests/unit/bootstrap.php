@@ -1,4 +1,5 @@
 <?php
+
 # ***** BEGIN LICENSE BLOCK *****
 # This file is part of Clearbricks.
 # Copyright (c) 2003-2013 Olivier Meunier & Association Dotclear

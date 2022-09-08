@@ -14,15 +14,61 @@
  */
 class feedParser
 {
-    public $feed_type;   ///< string Feed type
-    public $title;       ///< string Feed title
-    public $link;        ///< string Feed link
-    public $description; ///< string Feed description
-    public $pubdate;     ///< string Feed publication date
-    public $generator;   ///< string Feed generator
-    public $items = [];  ///< array Feed items
+    /**
+     * Feed type
+     *
+     * @var string
+     */
+    public $feed_type;
 
-    protected $xml; ///< SimpleXMLElement Feed XML content
+    /**
+     * Feed title
+     *
+     * @var string
+     */
+    public $title;
+
+    /**
+     * Feed link
+     *
+     * @var string
+     */
+    public $link;
+
+    /**
+     * Feed description
+     *
+     * @var string
+     */
+    public $description;
+
+    /**
+     * Feed publication date
+     *
+     * @var string
+     */
+    public $pubdate;
+
+    /**
+     * Feed generator
+     *
+     * @var string
+     */
+    public $generator;
+
+    /**
+     * Feed items
+     *
+     * @var array
+     */
+    public $items = [];
+
+    /**
+     * Feed XML content
+     *
+     * @var SimpleXMLElement|false
+     */
+    protected $xml;
 
     /**
      * Constructor.
@@ -33,7 +79,7 @@ class feedParser
      *
      * @param string    $data            XML stream
      */
-    public function __construct($data)
+    public function __construct(string $data)
     {
         $this->xml = @simplexml_load_string($data);
 
@@ -57,7 +103,7 @@ class feedParser
     /**
      * RSS 1.0 parser.
      */
-    protected function parseRSSRDF()
+    protected function parseRSSRDF(): void
     {
         $this->feed_type = 'rss 1.0 (rdf)';
 
@@ -67,10 +113,10 @@ class feedParser
         $this->pubdate     = (string) $this->xml->channel->children('http://purl.org/dc/elements/1.1/')->date;
 
         # Feed generator agent
-        $g = $this->xml->channel->children('http://webns.net/mvcb/')->generatorAgent;
-        if ($g) {
-            $g               = $g->attributes('http://www.w3.org/1999/02/22-rdf-syntax-ns#');
-            $this->generator = (string) $g['resource'];
+        $generator = $this->xml->channel->children('http://webns.net/mvcb/')->generatorAgent;
+        if ($generator) {
+            $generator       = $generator->attributes('http://www.w3.org/1999/02/22-rdf-syntax-ns#');
+            $this->generator = (string) $generator['resource'];
         }
 
         if (empty($this->xml->item)) {
@@ -100,7 +146,7 @@ class feedParser
     /**
      * RSS 2.0 parser
      */
-    protected function parseRSS()
+    protected function parseRSS(): void
     {
         $this->feed_type = 'rss ' . $this->xml['version'];
 
@@ -147,7 +193,7 @@ class feedParser
     /**
      * Atom 0.3 parser
      */
-    protected function parseAtom03()
+    protected function parseAtom03(): void
     {
         $this->feed_type = 'atom 0.3';
 
@@ -197,7 +243,7 @@ class feedParser
     /**
      * Atom 1.0 parser
      */
-    protected function parseAtom10()
+    protected function parseAtom10(): void
     {
         $this->feed_type = 'atom 1.0';
 
@@ -250,9 +296,10 @@ class feedParser
      * Converts a SimpleXMLElement to an array.
      *
      * @param SimpleXMLElement    $node    SimpleXML Node
+     *
      * @return array
      */
-    protected function nodes2array(&$node)
+    protected function nodes2array(SimpleXMLElement &$node): array
     {
         if (empty($node)) {
             return [];

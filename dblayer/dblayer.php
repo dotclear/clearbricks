@@ -21,30 +21,30 @@ interface i_dbLayer
     /**
      * Open connection
      *
-     * This method should open a database connection and return a new resource
-     * link.
+     * This method should open a database connection and return a new resource link.
      *
-     * @param string    $host        Database server host
-     * @param string    $user        Database user name
-     * @param string    $password        Database password
-     * @param string    $database        Database name
+     * @param string    $host           Database server host
+     * @param string    $user           Database user name
+     * @param string    $password       Database password
+     * @param string    $database       Database name
+     *
      * @return mixed
      */
-    public function db_connect($host, $user, $password, $database);
+    public function db_connect(string $host, string $user, string $password, string $database);
 
     /**
      * Open persistent connection
      *
-     * This method should open a persistent database connection and return a new
-     * resource link.
+     * This method should open a persistent database connection and return a new resource link.
      *
-     * @param string    $host        Database server host
-     * @param string    $user        Database user name
-     * @param string    $password        Database password
-     * @param string    $database        Database name
+     * @param string    $host           Database server host
+     * @param string    $user           Database user name
+     * @param string    $password       Database password
+     * @param string    $database       Database name
+     *
      * @return mixed
      */
-    public function db_pconnect($host, $user, $password, $database);
+    public function db_pconnect(string $host, string $user, string $password, string $database);
 
     /**
      * Close connection
@@ -60,52 +60,57 @@ interface i_dbLayer
      *
      * This method should return database version number.
      *
-     * @param mixed    $handle        Resource link
+     * @param mixed     $handle        Resource link
+     *
      * @return string
      */
-    public function db_version($handle);
+    public function db_version($handle): string;
 
     /**
      * Database query
      *
      * This method should run an SQL query and return a resource result.
      *
-     * @param mixed    $handle        Resource link
+     * @param mixed     $handle       Resource link
      * @param string    $query        SQL query string
+     *
      * @return mixed
      */
-    public function db_query($handle, $query);
+    public function db_query($handle, string $query);
 
     /**
      * Database exec query
      *
      * This method should run an SQL query and return a resource result.
      *
-     * @param mixed    $handle        Resource link
+     * @param mixed     $handle       Resource link
      * @param string    $query        SQL query string
-     * @return resource
+     *
+     * @return mixed
      */
-    public function db_exec($handle, $query);
+    public function db_exec($handle, string $query);
 
     /**
      * Result columns count
      *
      * This method should return the number of fields in a result.
      *
-     * @param mixed    $res            Resource result
-     * @return integer
+     * @param mixed   $res           Resource result
+     *
+     * @return int
      */
-    public function db_num_fields($res);
+    public function db_num_fields($res): int;
 
     /**
      * Result rows count
      *
      * This method should return the number of rows in a result.
      *
-     * @param mixed    $res            Resource result
-     * @return integer
+     * @param mixed     $res            Resource result
+     *
+     * @return int
      */
-    public function db_num_rows($res);
+    public function db_num_rows($res): int;
 
     /**
      * Field name
@@ -114,10 +119,11 @@ interface i_dbLayer
      * <var>$position</var>.
      *
      * @param mixed    $res            Resource result
-     * @param integer    $position        Field position
+     * @param int      $position       Field position
+     *
      * @return string
      */
-    public function db_field_name($res, $position);
+    public function db_field_name($res, int $position): string;
 
     /**
      * Field type
@@ -125,11 +131,12 @@ interface i_dbLayer
      * This method should return the field type a the given position
      * <var>$position</var>.
      *
-     * @param mixed    $res            Resource result
-     * @param integer    $position        Field position
+     * @param mixed     $res            Resource result
+     * @param int       $position       Field position
+     *
      * @return string
      */
-    public function db_field_type($res, $position);
+    public function db_field_type($res, int $position): string;
 
     /**
      * Fetch result
@@ -137,7 +144,8 @@ interface i_dbLayer
      * This method should fetch one line of result and return an associative array
      * with field name as key and field value as value.
      *
-     * @param mixed    $res            Resource result
+     * @param mixed     $res            Resource result
+     *
      * @return array|false
      */
     public function db_fetch_assoc($res);
@@ -148,11 +156,12 @@ interface i_dbLayer
      * This method should move result cursor on given row position <var>$row</var>
      * and return true on success.
      *
-     * @param mixed    $res            Resource result
-     * @param integer    $row        Row position
+     * @param mixed     $res        Resource result
+     * @param int       $row        Row position
+     *
      * @return boolean
      */
-    public function db_result_seek($res, $row);
+    public function db_result_seek($res, int $row): bool;
 
     /**
      * Affected rows
@@ -160,18 +169,20 @@ interface i_dbLayer
      * This method should return number of rows affected by INSERT, UPDATE or
      * DELETE queries.
      *
-     * @param mixed    $handle        Resource link
-     * @param mixed    $res            Resource result
-     * @return integer
+     * @param mixed      $handle         Resource link
+     * @param mixed      $res            Resource result
+     *
+     * @return int
      */
-    public function db_changes($handle, $res);
+    public function db_changes($handle, $res): int;
 
     /**
      * Last error
      *
      * This method should return the last error string for the current connection.
      *
-     * @param mixed    $handle        Resource link
+     * @param mixed     $handle        Resource link
+     *
      * @return string|false
      */
     public function db_last_error($handle);
@@ -181,11 +192,12 @@ interface i_dbLayer
      *
      * This method should return an escaped string for the current connection.
      *
-     * @param string    $str            String to escape
-     * @param mixed     $handle        Resource link
+     * @param mixed     $str            String to escape
+     * @param mixed     $handle         Resource link
+     *
      * @return string
      */
-    public function db_escape_string($str, $handle = null);
+    public function db_escape_string($str, $handle = null): string;
 
     /**
      * Acquiere Write lock
@@ -194,14 +206,14 @@ interface i_dbLayer
      *
      * @param string    $table        Table name
      */
-    public function db_write_lock($table);
+    public function db_write_lock(string $table): void;
 
     /**
      * Release lock
      *
      * This method should releases an acquiered lock.
      */
-    public function db_unlock();
+    public function db_unlock(): void;
 }
 
 /**
@@ -216,11 +228,46 @@ interface i_dbLayer
  */
 class dbLayer
 {
-    protected $__driver  = null; ///< string: Driver name
-    protected $__syntax  = null; ///< string: SQL syntax name
-    protected $__version = null; ///< string: Database version
-    protected $__link;           ///< resource: Database resource link
-    protected $__last_result;    ///< resource: Last result resource link
+    /**
+     * Driver name
+     *
+     * @var        string
+     */
+    protected $__driver;
+
+    /**
+     * Syntax name
+     *
+     * @var        string
+     */
+    protected $__syntax;
+
+    /**
+     * Database driver version
+     *
+     * @var        string
+     */
+    protected $__version; ///< string: Database version
+
+    /**
+     * Database driver handle (resource)
+     *
+     * @var mixed
+     */
+    protected $__link;
+
+    /**
+     * Last result resource link
+     *
+     * @var mixed
+     */
+    protected $__last_result;
+
+    /**
+     * Database name
+     *
+     * @var string;
+     */
     protected $__database;
 
     /**
@@ -229,15 +276,16 @@ class dbLayer
      * Static function to use to init database layer. Returns a object extending
      * dbLayer.
      *
-     * @param string    $driver        Driver name
-     * @param string    $host        Database hostname
-     * @param string    $database        Database name
-     * @param string    $user        User ID
-     * @param string    $password        Password
-     * @param boolean   $persistent    Persistent connection
-     * @return object
+     * @param string    $driver         Driver name
+     * @param string    $host           Database hostname
+     * @param string    $database       Database name
+     * @param string    $user           User ID
+     * @param string    $password       Password
+     * @param bool      $persistent     Persistent connection
+     *
+     * @return mixed
      */
-    public static function init($driver, $host, $database, $user = '', $password = '', $persistent = false)
+    public static function init(string $driver, string $host, string $database, string $user = '', string $password = '', bool $persistent = false)
     {
         // PHP 7.0 mysql driver is obsolete, map to mysqli
         if ($driver === 'mysql') {
@@ -256,12 +304,12 @@ class dbLayer
 
     /**
      * @param string    $host        Database hostname
-     * @param string    $database        Database name
+     * @param string    $database    Database name
      * @param string    $user        User ID
-     * @param string    $password        Password
-     * @param boolean   $persistent    Persistent connection
+     * @param string    $password    Password
+     * @param bool      $persistent  Persistent connection
      */
-    public function __construct($host, $database, $user = '', $password = '', $persistent = false)
+    public function __construct(string $host, string $database, string $user = '', string $password = '', bool $persistent = false)
     {
         if ($persistent) {
             /* @phpstan-ignore-next-line */
@@ -279,7 +327,7 @@ class dbLayer
     /**
      * Closes database connection.
      */
-    public function close()
+    public function close(): void
     {
         /* @phpstan-ignore-next-line */
         $this->db_close($this->__link);
@@ -290,7 +338,7 @@ class dbLayer
      *
      * @return string
      */
-    public function driver()
+    public function driver(): string
     {
         return $this->__driver;
     }
@@ -300,7 +348,7 @@ class dbLayer
      *
      * @return string
      */
-    public function syntax()
+    public function syntax(): string
     {
         return $this->__syntax;
     }
@@ -310,7 +358,7 @@ class dbLayer
      *
      * @return string
      */
-    public function version()
+    public function version(): string
     {
         return $this->__version;
     }
@@ -320,7 +368,7 @@ class dbLayer
      *
      * @return string
      */
-    public function database()
+    public function database(): string
     {
         return $this->__database;
     }
@@ -328,7 +376,7 @@ class dbLayer
     /**
      * Returns link resource
      *
-     * @return resource
+     * @return mixed
      */
     public function link()
     {
@@ -341,9 +389,10 @@ class dbLayer
      * Executes a query and return a {@link record} object.
      *
      * @param string    $sql            SQL query
+     *
      * @return record
      */
-    public function select($sql)
+    public function select(string $sql): record
     {
         /* @phpstan-ignore-next-line */
         $result = $this->db_query($this->__link, $sql);
@@ -375,7 +424,7 @@ class dbLayer
      *
      * @return record
      */
-    public function nullRecord()
+    public function nullRecord(): record
     {
         $result = false;
 
@@ -394,9 +443,10 @@ class dbLayer
      * Executes a query and return true if succeed
      *
      * @param string    $sql            SQL query
-     * @return true
+     *
+     * @return bool true
      */
-    public function execute($sql)
+    public function execute(string $sql): bool
     {
         /* @phpstan-ignore-next-line */
         $result = $this->db_exec($this->__link, $sql);
@@ -412,7 +462,7 @@ class dbLayer
      * Begins a transaction. Transaction should be {@link commit() commited}
      * or {@link rollback() rollbacked}.
      */
-    public function begin()
+    public function begin(): void
     {
         $this->execute('BEGIN');
     }
@@ -422,7 +472,7 @@ class dbLayer
      *
      * Commits a previoulsy started transaction.
      */
-    public function commit()
+    public function commit(): void
     {
         $this->execute('COMMIT');
     }
@@ -432,7 +482,7 @@ class dbLayer
      *
      * Rollbacks a previously started transaction.
      */
-    public function rollback()
+    public function rollback(): void
     {
         $this->execute('ROLLBACK');
     }
@@ -444,7 +494,7 @@ class dbLayer
      *
      * @param string    $table        Table name
      */
-    public function writeLock($table)
+    public function writeLock(string $table): void
     {
         /* @phpstan-ignore-next-line */
         $this->db_write_lock($table);
@@ -455,7 +505,7 @@ class dbLayer
      *
      * This method releases an acquiered lock.
      */
-    public function unlock()
+    public function unlock(): void
     {
         /* @phpstan-ignore-next-line */
         $this->db_unlock();
@@ -466,7 +516,7 @@ class dbLayer
      *
      * @param string    $table        Table name
      */
-    public function vacuum($table)
+    public function vacuum(string $table): void
     {
     }
 
@@ -476,9 +526,9 @@ class dbLayer
      * Returns the number of lines affected by the last DELETE, INSERT or UPDATE
      * query.
      *
-     * @return integer
+     * @return int
      */
-    public function changes()
+    public function changes(): int
     {
         /* @phpstan-ignore-next-line */
         return $this->db_changes($this->__link, $this->__last_result);
@@ -518,10 +568,11 @@ class dbLayer
      * - %Y : Year, numeric, four digits
      *
      * @param string    $field            Field name
-     * @param string    $pattern            Date format
+     * @param string    $pattern          Date format
+     *
      * @return string
      */
-    public function dateFormat($field, $pattern)
+    public function dateFormat(string $field, string $pattern): string
     {
         return
         'TO_CHAR(' . $field . ',' . "'" . $this->escape($pattern) . "') ";
@@ -534,11 +585,12 @@ class dbLayer
      * offset and limit or an integer which is only limit. If <var>$arg2</var>
      * is given and <var>$arg1</var> is an integer, it would become limit.
      *
-     * @param array|integer    $arg1        array or integer with limit intervals
-     * @param array|null        $arg2        integer or null
+     * @param array|int      $arg1        array or integer with limit intervals
+     * @param int|null       $arg2        integer or null
+     *
      * @return string
      */
-    public function limit($arg1, $arg2 = null)
+    public function limit($arg1, ?int $arg2 = null): string
     {
         if (is_array($arg1)) {
             $arg1 = array_values($arg1);
@@ -549,7 +601,7 @@ class dbLayer
         if ($arg2 === null) {
             $sql = ' LIMIT ' . (int) $arg1 . ' ';
         } else {
-            $sql = ' LIMIT ' . (int) $arg2 . ' OFFSET ' . (int) $arg1 . ' ';
+            $sql = ' LIMIT ' . $arg2 . ' OFFSET ' . (int) $arg1 . ' ';
         }
 
         return $sql;
@@ -561,10 +613,11 @@ class dbLayer
      * Returns a IN query fragment where $in could be an array, a string,
      * an integer or null
      *
-     * @param array|string|integer|null        $in        "IN" values
+     * @param array|string|int|null        $in        "IN" values
+     *
      * @return string
      */
-    public function in($in)
+    public function in($in): string
     {
         if (is_null($in)) {
             return ' IN (NULL) ';
@@ -591,22 +644,22 @@ class dbLayer
      * Returns a ORDER BY query fragment where arguments could be an array or a string
      *
      * array param:
-     *    key        : decription
+     *    key      : decription
      *    field    : field name (string)
-     *    collate    : True or False (boolean) (Alphabetical order / Binary order)
+     *    collate  : True or False (boolean) (Alphabetical order / Binary order)
      *    order    : ASC or DESC (string) (Ascending order / Descending order)
      *
      * string param field name (Binary ascending order)
      *
      * @return string
      */
-    public function orderBy()
+    public function orderBy(...$args): string
     {
         $default = [
             'order'   => '',
             'collate' => false,
         ];
-        foreach (func_get_args() as $v) {
+        foreach ($args as $v) {
             if (is_string($v)) {
                 $res[] = $v;
             } elseif (is_array($v) && !empty($v['field'])) {
@@ -629,10 +682,10 @@ class dbLayer
      *
      * @return string
      */
-    public function lexFields()
+    public function lexFields(...$args): string
     {
         $fmt = 'LOWER(%s)';
-        foreach (func_get_args() as $v) {
+        foreach ($args as $v) {
             if (is_string($v)) {
                 $res[] = sprintf($fmt, $v);
             } elseif (is_array($v)) {
@@ -651,10 +704,8 @@ class dbLayer
      *
      * @return string
      */
-    public function concat()
+    public function concat(...$args): string
     {
-        $args = func_get_args();
-
         return implode(' || ', $args);
     }
 
@@ -664,6 +715,7 @@ class dbLayer
      * Returns SQL protected string or array values.
      *
      * @param string|array    $i        String or array to protect
+     *
      * @return string|array
      */
     public function escape($i)
@@ -687,9 +739,10 @@ class dbLayer
      * Returns SQL system protected string.
      *
      * @param string        $str        String to protect
+     *
      * @return string
      */
-    public function escapeSystem($str)
+    public function escapeSystem(string $str): string
     {
         return '"' . $str . '"';
     }
@@ -701,9 +754,10 @@ class dbLayer
      * the current connection.
      *
      * @param string        $table    Target table
+     *
      * @return cursor
      */
-    public function openCursor($table)
+    public function openCursor(string $table): cursor
     {
         return new cursor($this, $table);
     }
@@ -722,13 +776,53 @@ class dbLayer
  */
 class record implements Iterator, Countable
 {
-    protected $__link;             ///< resource: Database resource link
-    protected $__result;           ///< resource: Query result resource
-    protected $__info;             ///< array: Result information array
-    protected $__extend = []; ///< array: List of static functions that extend record
-    protected $__index  = 0;       ///< integer: Current result position
-    protected $__row    = false;   ///< array: Current result row content
+    /**
+     * Database resource link
+     *
+     * @var mixed
+     */
+    protected $__link;
 
+    /**
+     * Query result resource
+     *
+     * @var mixed
+     */
+    protected $__result;
+
+    /**
+     * Result information array
+     *
+     * @var array
+     */
+    protected $__info;
+
+    /**
+     * List of static functions that extend record
+     *
+     * @var        array
+     */
+    protected $__extend = [];
+
+    /**
+     * Current result position
+     *
+     * @var        int
+     */
+    protected $__index = 0;
+
+    /**
+     * Current result row content
+     *
+     * @var        bool|array
+     */
+    protected $__row = false;
+
+    /**
+     * Fetch occured once?
+     *
+     * @var        bool
+     */
     private $__fetch = false;
 
     /**
@@ -746,7 +840,7 @@ class record implements Iterator, Countable
      * @param mixed        $result      Resource result
      * @param array        $info        Information array
      */
-    public function __construct($result, $info)
+    public function __construct($result, array $info)
     {
         $this->__result = $result;
         $this->__info   = $info;
@@ -759,7 +853,7 @@ class record implements Iterator, Countable
      *
      * Converts this record to a {@link staticRecord} instance.
      */
-    public function toStatic()
+    public function toStatic(): staticRecord
     {
         if ($this instanceof staticRecord) {
             return $this;
@@ -774,14 +868,15 @@ class record implements Iterator, Countable
      * Magic call function. Calls function added by {@link extend()} if exists, passing it
      * self object and arguments.
      *
+     * @param string $f     Function name
+     * @param mixed  $args  Arguments
+     *
      * @return mixed
      */
-    public function __call($f, $args)
+    public function __call(string $f, $args)
     {
         if (isset($this->__extend[$f])) {
-            array_unshift($args, $this);
-
-            return call_user_func_array($this->__extend[$f], $args);
+            return $this->__extend[$f]($this, ...$args);
         }
 
         trigger_error('Call to undefined method record::' . $f . '()', E_USER_ERROR);
@@ -792,8 +887,9 @@ class record implements Iterator, Countable
      *
      * Alias for {@link field()}.
      *
-     * @param string|integer    $n        Field name
-     * @return string
+     * @param string|int    $n        Field name or field position
+     *
+     * @return mixed
      */
     public function __get($n)
     {
@@ -805,8 +901,9 @@ class record implements Iterator, Countable
      *
      * Alias for {@link field()}.
      *
-     * @param string|integer    $n        Field name
-     * @return string
+     * @param string|int    $n        Field name or field position
+     *
+     * @return mixed
      */
     public function f($n)
     {
@@ -818,8 +915,9 @@ class record implements Iterator, Countable
      *
      * Retrieve field value by its name or column position.
      *
-     * @param string|integer    $n        Field name
-     * @return string
+     * @param string|int    $n        Field name or field position
+     *
+     * @return mixed
      */
     public function field($n)
     {
@@ -832,9 +930,10 @@ class record implements Iterator, Countable
      * Returns true if a field exists.
      *
      * @param string        $n        Field name
-     * @return boolean
+     *
+     * @return bool
      */
-    public function exists($n)
+    public function exists($n): bool
     {
         return isset($this->__row[$n]);
     }
@@ -845,9 +944,10 @@ class record implements Iterator, Countable
      * Returns true if a field exists (magic method from PHP 5.1).
      *
      * @param string        $n        Field name
-     * @return string
+     *
+     * @return bool
      */
-    public function __isset($n)
+    public function __isset(string $n): bool
     {
         return isset($this->__row[$n]);
     }
@@ -863,7 +963,7 @@ class record implements Iterator, Countable
      *
      * @param string    $class        Class name
      */
-    public function extend($class)
+    public function extend(string $class): void
     {
         if (!class_exists($class)) {
             return;
@@ -882,17 +982,22 @@ class record implements Iterator, Countable
      *
      * @return  array
      */
-    public function extensions()
+    public function extensions(): array
     {
         return $this->__extend;
     }
 
-    private function setRow()
+    /**
+     * Sets the row data from result.
+     *
+     * @return     bool
+     */
+    private function setRow(): bool
     {
         $this->__row = $this->__info['con']->db_fetch_assoc($this->__result);
 
         if ($this->__row !== false) {
-            foreach ($this->__row as $k => $v) {
+            foreach (array_keys($this->__row) as $k) {
                 $this->__row[] = &$this->__row[$k];
             }
 
@@ -906,10 +1011,11 @@ class record implements Iterator, Countable
      * Returns the current index position (0 is first) or move to <var>$row</var> if
      * specified.
      *
-     * @param integer    $row            Row number to move
-     * @return integer|boolean
+     * @param int    $row            Row number to move
+     *
+     * @return int|boolean
      */
-    public function index($row = null)
+    public function index(?int $row = null)
     {
         if ($row === null) {
             return $this->__index === null ? 0 : $this->__index;
@@ -943,9 +1049,9 @@ class record implements Iterator, Countable
      * ?>
      * </code>
      *
-     * @return boolean
+     * @return bool
      */
-    public function fetch()
+    public function fetch(): bool
     {
         if (!$this->__fetch) {
             $this->__fetch = true;
@@ -967,74 +1073,73 @@ class record implements Iterator, Countable
     /**
      * Moves index to first position.
      *
-     * @return boolean
+     * @return bool
      */
-    public function moveStart()
+    public function moveStart(): bool
     {
         $this->__fetch = false;
 
-        return $this->index(0);
+        return (bool) $this->index(0);
     }
 
     /**
      * Moves index to last position.
      *
-     * @return boolean
+     * @return bool
      */
-    public function moveEnd()
+    public function moveEnd(): bool
     {
-        return $this->index($this->__info['rows'] - 1);
+        return (bool) $this->index($this->__info['rows'] - 1);
     }
 
     /**
      * Moves index to next position.
      *
-     * @return boolean
+     * @return bool
      */
-    public function moveNext()
+    public function moveNext(): bool
     {
-        return $this->index($this->__index + 1);
+        return (bool) $this->index($this->__index + 1);
     }
 
     /**
      * Moves index to previous position.
      *
-     * @return boolean
+     * @return bool
      */
-    public function movePrev()
+    public function movePrev(): bool
     {
-        return $this->index($this->__index - 1);
+        return (bool) $this->index($this->__index - 1);
     }
 
     /**
-     * @return boolean    true if index is at last position
+     * @return bool   true if index is at last position
      */
-    public function isEnd()
+    public function isEnd(): bool
     {
-        return $this->__index + 1 == $this->count();
+        return $this->__index + 1 === $this->count();
     }
 
     /**
-     * @return boolean    true if index is at first position.
+     * @return bool    true if index is at first position.
      */
-    public function isStart()
+    public function isStart(): bool
     {
         return $this->__index <= 0;
     }
 
     /**
-     * @return boolean    true if record contains no result.
+     * @return bool    true if record contains no result.
      */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
-        return $this->count() == 0;
+        return $this->count() === 0;
     }
 
     /**
-     * @return integer    number of rows in record
+     * @return int    number of rows in record
      */
-    #[\ReturnTypeWillChange]
-    public function count()
+    public function count(): int
     {
         return $this->__info['rows'];
     }
@@ -1042,7 +1147,7 @@ class record implements Iterator, Countable
     /**
      * @return array    array of columns, with name as key and type as value.
      */
-    public function columns()
+    public function columns(): array
     {
         return $this->__info['info']['name'];
     }
@@ -1050,7 +1155,7 @@ class record implements Iterator, Countable
     /**
      * @return array    all rows in record.
      */
-    public function rows()
+    public function rows(): array
     {
         return $this->getData();
     }
@@ -1062,17 +1167,17 @@ class record implements Iterator, Countable
      *
      * @return array
      */
-    protected function getData()
+    protected function getData(): array
     {
         $res = [];
 
-        if ($this->count() == 0) {
+        if ($this->count() === 0) {
             return $res;
         }
 
         $this->__info['con']->db_result_seek($this->__result, 0);
         while (($r = $this->__info['con']->db_fetch_assoc($this->__result)) !== false) {
-            foreach ($r as $k => $v) {
+            foreach (array_keys($r) as $k) {
                 $r[] = &$r[$k];
             }
             $res[] = $r;
@@ -1085,7 +1190,7 @@ class record implements Iterator, Countable
     /**
      * @return array    current rows.
      */
-    public function row()
+    public function row(): array
     {
         return $this->__row;
     }
@@ -1112,8 +1217,7 @@ class record implements Iterator, Countable
     /**
      * @see Iterator::next
      */
-    #[\ReturnTypeWillChange]
-    public function next()
+    public function next(): void
     {
         $this->fetch();
     }
@@ -1121,8 +1225,7 @@ class record implements Iterator, Countable
     /**
      * @see Iterator::rewind
      */
-    #[\ReturnTypeWillChange]
-    public function rewind()
+    public function rewind(): void
     {
         $this->moveStart();
         $this->fetch();
@@ -1131,8 +1234,7 @@ class record implements Iterator, Countable
     /**
      * @see Iterator::valid
      */
-    #[\ReturnTypeWillChange]
-    public function valid()
+    public function valid(): bool
     {
         return $this->__fetch;
     }
@@ -1149,12 +1251,34 @@ class record implements Iterator, Countable
  */
 class staticRecord extends record
 {
-    public $__data = []; ///< array: Data array
+    /**
+     * Data arrat
+     *
+     * @var        array
+     */
+    public $__data = [];
 
+    /**
+     * Sort field name
+     *
+     * @var string|int|null
+     */
     private $__sortfield;
+
+    /**
+     * Sort order (1 or -1)
+     *
+     * @var int|null
+     */
     private $__sortsign;
 
-    public function __construct($result, $info)
+    /**
+     * Constructs a new instance.
+     *
+     * @param      mixed   $result  The result
+     * @param      array   $info    The information
+     */
+    public function __construct($result, ?array $info)
     {
         if (is_array($result)) {
             $this->__info = $info;
@@ -1173,9 +1297,10 @@ class staticRecord extends record
      * Returns a new instance of object from an associative array.
      *
      * @param array        $data        Data array
+     *
      * @return staticRecord
      */
-    public static function newFromArray($data)
+    public static function newFromArray(?array $data): staticRecord
     {
         if (!is_array($data)) {
             $data = [];
@@ -1199,17 +1324,38 @@ class staticRecord extends record
         return new self($data, $info);
     }
 
+    /**
+     * Get field value
+     *
+     * @param      string|int  $n      Field name|position
+     *
+     * @return     mixed
+     */
     public function field($n)
     {
         return $this->__data[$this->__index][$n];
     }
 
-    public function exists($n)
+    /**
+     * Check if a field exists
+     *
+     * @param      string|int  $n      Field name|position
+     *
+     * @return     bool
+     */
+    public function exists($n): bool
     {
         return isset($this->__data[$this->__index][$n]);
     }
 
-    public function index($row = null)
+    /**
+     * Get current index
+     *
+     * @param      int   $row    The row
+     *
+     * @return     bool|int
+     */
+    public function index(?int $row = null)
     {
         if ($row === null) {
             return $this->__index;
@@ -1224,7 +1370,12 @@ class staticRecord extends record
         return true;
     }
 
-    public function rows()
+    /**
+     * Get record rows
+     *
+     * @return     array
+     */
+    public function rows(): array
     {
         return $this->__data;
     }
@@ -1232,8 +1383,10 @@ class staticRecord extends record
     /**
      * Changes value of a given field in the current row.
      *
-     * @param string    $n            Field name
-     * @param string    $v            Field value
+     * @param string|int    $n            Field name|position
+     * @param mixed         $v            Field value
+     *
+     * @return mixed
      */
     public function set($n, $v)
     {
@@ -1247,10 +1400,12 @@ class staticRecord extends record
     /**
      * Sorts values by a field in a given order.
      *
-     * @param string    $field        Field name
-     * @param string    $order        Sort type (asc or desc)
+     * @param string|int    $field        Field name|position
+     * @param string        $order        Sort type (asc or desc)
+     *
+     * @return mixed
      */
-    public function sort($field, $order = 'asc')
+    public function sort($field, string $order = 'asc')
     {
         if (!isset($this->__data[0][$field])) {
             return false;

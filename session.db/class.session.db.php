@@ -13,13 +13,62 @@
  */
 class sessionDB
 {
+    /**
+     * dbLayer handler
+     *
+     * @var dbLayer
+     */
     private $con;
+
+    /**
+     * Table name
+     *
+     * @var string
+     */
     private $table;
+
+    /**
+     * Cookie name
+     *
+     * @var string
+     */
     private $cookie_name;
+
+    /**
+     * Cookie path
+     *
+     * @var string|null
+     */
     private $cookie_path;
+
+    /**
+     * Cookie domain
+     *
+     * @var string|null
+     */
     private $cookie_domain;
+
+    /**
+     * Secure cookie
+     *
+     * @var bool
+     */
     private $cookie_secure;
-    private $ttl       = '-120 minutes';
+
+    /**
+     * TTL (must be a negative duration as '-120 minutes')
+     *
+     * @var        string
+     */
+    private $ttl = '-120 minutes';
+
+    /**
+     * Transient session
+     *
+     * No DB optimize on session destruction if true
+     *
+     * @var        bool
+     */
     private $transient = false;
 
     /**
@@ -27,24 +76,24 @@ class sessionDB
      *
      * This method creates an instance of sessionDB class.
      *
-     * @param dbLayer    $con            dbLayer inherited database instance
-     * @param string        $table            Table name
-     * @param string        $cookie_name    Session cookie name
-     * @param string        $cookie_path    Session cookie path
-     * @param string        $cookie_domain    Session cookie domaine
-     * @param boolean    $cookie_secure    Session cookie is available only through SSL if true
-     * @param string     $ttl             TTL (default -120 minutes)
-     * @param boolean    $transient        Transient session : no db optimize on session destruction if true
+     * @param dbLayer    $con               dbLayer inherited database instance
+     * @param string     $table             Table name
+     * @param string     $cookie_name       Session cookie name
+     * @param string     $cookie_path       Session cookie path
+     * @param string     $cookie_domain     Session cookie domaine
+     * @param bool       $cookie_secure     Session cookie is available only through SSL if true
+     * @param string     $ttl               TTL (default -120 minutes)
+     * @param bool       $transient         Transient session : no db optimize on session destruction if true
      */
     public function __construct(
-        $con,
-        $table,
-        $cookie_name,
-        $cookie_path = null,
-        $cookie_domain = null,
-        $cookie_secure = false,
-        $ttl = null,
-        $transient = false
+        dbLayer $con,
+        string $table,
+        string $cookie_name,
+        ?string $cookie_path = null,
+        ?string $cookie_domain = null,
+        bool $cookie_secure = false,
+        ?string $ttl = null,
+        bool $transient = false
     ) {
         $this->con           = &$con;
         $this->table         = $table;
@@ -83,18 +132,18 @@ class sessionDB
     /**
      * Session Start
      */
-    public function start()
+    public function start(): void
     {
         session_set_save_handler(
-            [&$this, '_open'],
-            [&$this, '_close'],
-            [&$this, '_read'],
-            [&$this, '_write'],
-            [&$this, '_destroy'],
-            [&$this, '_gc']
+            [$this, '_open'],
+            [$this, '_close'],
+            [$this, '_read'],
+            [$this, '_write'],
+            [$this, '_destroy'],
+            [$this, '_gc']
         );
 
-        if (isset($_SESSION) && session_name() != $this->cookie_name) {
+        if (isset($_SESSION) && session_name() !== $this->cookie_name) {
             $this->destroy();
         }
 
@@ -111,7 +160,7 @@ class sessionDB
      *
      * This method destroies all session data and removes cookie.
      */
-    public function destroy()
+    public function destroy(): void
     {
         $_SESSION = [];
         session_unset();
@@ -124,9 +173,9 @@ class sessionDB
      *
      * This method set the transient flag of the session
      *
-     * @param boolean     $transient     Session transient flag
+     * @param bool     $transient     Session transient flag
      */
-    public function setTransientSession($transient = false)
+    public function setTransientSession(bool $transient = false): void
     {
         $this->transient = $transient;
     }
@@ -136,34 +185,54 @@ class sessionDB
      *
      * This method returns an array of all session cookie parameters.
      *
-     * @param mixed        $value        Cookie value
-     * @param integer    $expire        Cookie expiration timestamp
+     * @param mixed         $value        Cookie value
+     * @param int           $expire       Cookie expiration timestamp
      */
-    public function getCookieParameters($value = null, $expire = 0)
+    public function getCookieParameters($value = null, int $expire = 0)
     {
         return [
             (string) session_name(),
             (string) $value,
-            (int) $expire,
+            $expire,
             (string) $this->cookie_path,
             (string) $this->cookie_domain,
             (bool) $this->cookie_secure,
         ];
     }
 
-    public function _open($path, $name)
+    /**
+     * Session handler callback called on session open
+     *
+     * @param      string  $path   The save path
+     * @param      string  $name   The session name
+     *
+     * @return     bool
+     */
+    public function _open(string $path, string $name): bool
     {
         return true;
     }
 
-    public function _close()
+    /**
+     * Session handler callback called on session close
+     *
+     * @return     bool  ( description_of_the_return_value )
+     */
+    public function _close(): bool
     {
         $this->_gc();
 
         return true;
     }
 
-    public function _read($ses_id)
+    /**
+     * Session handler callback called on session read
+     *
+     * @param      string  $ses_id  The session identifier
+     *
+     * @return     string
+     */
+    public function _read(string $ses_id): string
     {
         $strReq = 'SELECT ses_value FROM ' . $this->table . ' ' .
         'WHERE ses_id = \'' . $this->checkID($ses_id) . '\' ';
@@ -177,7 +246,15 @@ class sessionDB
         return $rs->f('ses_value');
     }
 
-    public function _write($ses_id, $data)
+    /**
+     * Session handler callback called on session write
+     *
+     * @param      string  $ses_id  The session identifier
+     * @param      string  $data    The data
+     *
+     * @return     bool
+     */
+    public function _write(string $ses_id, string $data): bool
     {
         $strReq = 'SELECT ses_id ' .
         'FROM ' . $this->table . ' ' .
@@ -192,7 +269,7 @@ class sessionDB
         if (!$rs->isEmpty()) {
             $cur->update("WHERE ses_id = '" . $this->checkID($ses_id) . "' ");
         } else {
-            $cur->ses_id    = (string) $this->checkID($ses_id);
+            $cur->ses_id    = $this->checkID($ses_id);
             $cur->ses_start = (string) time();
 
             $cur->insert();
@@ -201,7 +278,14 @@ class sessionDB
         return true;
     }
 
-    public function _destroy($ses_id)
+    /**
+     * Session handler callback called on session destroy
+     *
+     * @param      string  $ses_id  The session identifier
+     *
+     * @return     bool
+     */
+    public function _destroy(string $ses_id): bool
     {
         $strReq = 'DELETE FROM ' . $this->table . ' ' .
         'WHERE ses_id = \'' . $this->checkID($ses_id) . '\' ';
@@ -215,7 +299,12 @@ class sessionDB
         return true;
     }
 
-    public function _gc()
+    /**
+     * Session handler callback called on session garbage collect
+     *
+     * @return     bool
+     */
+    public function _gc(): bool
     {
         $ses_life = strtotime($this->ttl);
 
@@ -231,17 +320,23 @@ class sessionDB
         return true;
     }
 
-    private function _optimize()
+    /**
+     * Optimize the session table
+     */
+    private function _optimize(): void
     {
         $this->con->vacuum($this->table);
     }
 
-    private function checkID($id)
+    /**
+     * Check a session id
+     *
+     * @param      string  $id     The identifier
+     *
+     * @return     string
+     */
+    private function checkID(string $id)
     {
-        if (!preg_match('/^([0-9a-f]{40})$/i', (string) $id)) {
-            return;
-        }
-
-        return $id;
+        return preg_match('/^([0-9a-f]{40})$/i', $id) ? $id : '';
     }
 }

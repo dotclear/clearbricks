@@ -13,8 +13,19 @@
  */
 class cursor
 {
+    /**
+     * @var        dbLayer
+     */
     private $__con;
+
+    /**
+     * @var        array
+     */
     private $__data = [];
+
+    /**
+     * @var        string
+     */
     private $__table;
 
     /**
@@ -36,6 +47,7 @@ class cursor
      * </code>
      *
      * @see dbLayer::openCursor()
+     *
      * @param dbLayer   $con      Connection object
      * @param string    $table    Table name
      */
@@ -61,19 +73,20 @@ class cursor
     /**
      * Set field
      *
-     * Set value <var>$v</var> to a field named <var>$n</var>. Value could be
+     * Set value <var>$value</var> to a field named <var>$name</var>. Value could be
      * an string, an integer, a float, a null value or an array.
      *
      * If value is an array, its first value will be interpreted as a SQL
      * command. String values will be automatically escaped.
      *
      * @see __set()
-     * @param string    $n        Field name
-     * @param mixed        $v        Field value
+     *
+     * @param string    $name        Field name
+     * @param mixed     $value        Field value
      */
-    public function setField(string $n, $v): void
+    public function setField(string $name, $value): void
     {
-        $this->__data[$n] = $v;
+        $this->__data[$name] = $value;
     }
 
     /**
@@ -81,33 +94,34 @@ class cursor
      *
      * Remove a field from data set.
      *
-     * @param string    $n        Field name
+     * @param string    $name        Field name
      */
-    public function unsetField(string $n): void
+    public function unsetField(string $name): void
     {
-        unset($this->__data[$n]);
+        unset($this->__data[$name]);
     }
 
     /**
      * Field exists
      *
-     * @return boolean    true if field named <var>$n</var> exists
+     * @return boolean    true if field named <var>$name</var> exists
      */
-    public function isField(string $n): bool
+    public function isField(string $name): bool
     {
-        return isset($this->__data[$n]);
+        return isset($this->__data[$name]);
     }
 
     /**
      * Field value
      *
      * @see __get()
-     * @return mixed    value for a field named <var>$n</var>
+     *
+     * @return mixed    value for a field named <var>$name</var>
      */
-    public function getField(string $n)
+    public function getField(string $name)
     {
-        if (isset($this->__data[$n])) {
-            return $this->__data[$n];
+        if (isset($this->__data[$name])) {
+            return $this->__data[$name];
         }
     }
 
@@ -116,9 +130,9 @@ class cursor
      *
      * Magic alias for {@link setField()}
      */
-    public function __set(string $n, $v): void
+    public function __set(string $name, $value): void
     {
-        $this->setField($n, $v);
+        $this->setField($name, $value);
     }
 
     /**
@@ -128,9 +142,9 @@ class cursor
      *
      * @return mixed    value for a field named <var>$n</var>
      */
-    public function __get(string $n)
+    public function __get(string $name)
     {
-        return $this->getField($n);
+        return $this->getField($name);
     }
 
     /**
@@ -186,6 +200,7 @@ class cursor
      * Returns the generated UPDATE query
      *
      * @param string    $where        WHERE condition
+     *
      * @return string
      */
     public function getUpdate(string $where): string

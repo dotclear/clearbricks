@@ -13,75 +13,188 @@
  */
 class pager
 {
+    /**
+     * Current page index
+     *
+     * @var int
+     */
     protected $env;
+
+    /**
+     * Total number of elements
+     *
+     * @var int
+     */
     protected $nb_elements;
+
+    /**
+     * Number of elements per page
+     *
+     * @var int
+     */
     protected $nb_per_page;
+
+    /**
+     * Number of pages per group
+     *
+     * @var int
+     */
     protected $nb_pages_per_group;
 
+    /**
+     * Total number of pages
+     *
+     * @var int
+     */
     protected $nb_pages;
+
+    /**
+     * Total number of grourps
+     *
+     * @var int
+     */
     protected $nb_groups;
+
+    /**
+     * Current group index
+     *
+     * @var int
+     */
     protected $env_group;
+
+    /**
+     * First page index of current group
+     *
+     * @var int
+     */
     protected $index_group_start;
+
+    /**
+     * Last page index of current group
+     *
+     * @var int
+     */
     protected $index_group_end;
 
+    /**
+     * Page URI
+     *
+     * @var string|null
+     */
     protected $page_url = null;
 
-    public $index_start; ///< integer Start index
-    public $index_end;   ///< integer End index
+    /**
+     * First element index of current page
+     *
+     * @var int
+     */
+    public $index_start;
 
-    public $base_url = null; ///< string Base URL
+    /**
+     * Last element index of current page
+     *
+     * @var int
+     */
+    public $index_end;
 
-    public $var_page = 'page'; ///< string GET param name for current page
+    /**
+     * Base URI
+     *
+     * @var string|null
+     */
+    public $base_url = null;
 
-    public $html_cur_page = '<strong>%s</strong>'; ///< string Current page HTML
-    public $html_link_sep = '-';                   ///< string Link separator
-    public $html_prev     = '&#171;prev.';         ///< string Previous HTML code
-    public $html_next     = 'next&#187;';          ///< string Next HTML code
-    public $html_prev_grp = '...';                 ///< string Next group HTML code
-    public $html_next_grp = '...';                 ///< string Previous group HTML code
+    /**
+     * GET param name for current page
+     *
+     * @var string
+     */
+    public $var_page = 'page';
+
+    /**
+     * Current page format (HTML)
+     *
+     * @var string
+     */
+    public $html_cur_page = '<strong>%s</strong>';
+
+    /**
+     * Link separator
+     *
+     * @var string
+     */
+    public $html_link_sep = '-';
+
+    /**
+     * Previous HTML code
+     *
+     * @var string
+     */
+    public $html_prev = '&#171;prev.';
+
+    /**
+     * Next HTML code
+     *
+     * @var string
+     */
+    public $html_next = 'next&#187;';
+
+    /**
+     * Next group HTML code
+     *
+     * @var string
+     */
+    public $html_prev_grp = '...';
+
+    /**
+     * Previous group HTML code
+     *
+     * @var string
+     */
+    public $html_next_grp = '...';
 
     /**
      * Constructor
      *
-     * @param integer    $env                Current page index
-     * @param integer    $nb_elements        Total number of elements
-     * @param integer    $nb_per_page        Number of items per page
-     * @param integer    $nb_pages_per_group    Number of pages per group
+     * @param int    $env                   Current page index
+     * @param int    $nb_elements           Total number of elements
+     * @param int    $nb_per_page           Number of items per page
+     * @param int    $nb_pages_per_group    Number of pages per group
      */
-    public function __construct($env, $nb_elements, $nb_per_page = 10, $nb_pages_per_group = 10)
+    public function __construct(int $env, int $nb_elements, int $nb_per_page = 10, int $nb_pages_per_group = 10)
     {
-        $this->env                = abs((int) $env);
-        $this->nb_elements        = abs((int) $nb_elements);
-        $this->nb_per_page        = abs((int) $nb_per_page);
-        $this->nb_pages_per_group = abs((int) $nb_pages_per_group);
+        $this->env                = abs($env);
+        $this->nb_elements        = abs($nb_elements);
+        $this->nb_per_page        = abs($nb_per_page);
+        $this->nb_pages_per_group = abs($nb_pages_per_group);
 
-        # Pages count
-        $this->nb_pages = ceil($this->nb_elements / $this->nb_per_page);
+        // Pages count
+        $this->nb_pages = (int) ceil($this->nb_elements / $this->nb_per_page);
 
-        # Fix env value
+        // Fix env value
         if ($this->env > $this->nb_pages || $this->env < 1) {
             $this->env = 1;
         }
 
-        # Groups count
+        // Groups count
         $this->nb_groups = (int) ceil($this->nb_pages / $this->nb_pages_per_group);
 
-        # Page first element index
+        // Page first element index
         $this->index_start = ($this->env - 1) * $this->nb_per_page;
 
-        # Page last element index
+        // Page last element index
         $this->index_end = $this->index_start + $this->nb_per_page - 1;
         if ($this->index_end >= $this->nb_elements) {
             $this->index_end = $this->nb_elements - 1;
         }
 
-        # Current group
+        // Current group
         $this->env_group = (int) ceil($this->env / $this->nb_pages_per_group);
 
-        # Group first page index
+        // Group first page index
         $this->index_group_start = ($this->env_group - 1) * $this->nb_pages_per_group + 1;
 
-        # Group last page index
+        // Group last page index
         $this->index_group_end = $this->index_group_start + $this->nb_pages_per_group - 1;
         if ($this->index_group_end > $this->nb_pages) {
             $this->index_group_end = $this->nb_pages;
@@ -95,7 +208,7 @@ class pager
      *
      * @return string
      */
-    public function getLinks()
+    public function getLinks(): string
     {
         $htmlLinks   = '';
         $htmlPrev    = '';
@@ -106,39 +219,35 @@ class pager
         $this->setURL();
 
         for ($i = $this->index_group_start; $i <= $this->index_group_end; $i++) {
-            if ($i == $this->env) {
+            if ($i === $this->env) {
                 $htmlLinks .= sprintf($this->html_cur_page, $i);
             } else {
                 $htmlLinks .= '<a href="' . sprintf($this->page_url, $i) . '">' . $i . '</a>';
             }
 
-            if ($i != $this->index_group_end) {
+            if ($i !== $this->index_group_end) {
                 $htmlLinks .= $this->html_link_sep;
             }
         }
 
         # Previous page
-        if ($this->env != 1) {
-            $htmlPrev = '<a href="' . sprintf($this->page_url, $this->env - 1) . '">' .
-            $htmlPrev .= $this->html_prev . '</a>&nbsp;';
+        if ($this->env !== 1) {
+            $htmlPrev = '<a href="' . sprintf($this->page_url, $this->env - 1) . '">' . $this->html_prev . '</a>&nbsp;';
         }
 
         # Next page
-        if ($this->env != $this->nb_pages) {
-            $htmlNext = '&nbsp;<a href="' . sprintf($this->page_url, $this->env + 1) . '">';
-            $htmlNext .= $this->html_next . '</a>';
+        if ($this->env !== $this->nb_pages) {
+            $htmlNext = '&nbsp;<a href="' . sprintf($this->page_url, $this->env + 1) . '">' . $this->html_next . '</a>';
         }
 
         # Previous group
         if ($this->env_group != 1) {
-            $htmlPrevGrp = '&nbsp;<a href="' . sprintf($this->page_url, $this->index_group_start - $this->nb_pages_per_group) . '">';
-            $htmlPrevGrp .= $this->html_prev_grp . '</a>&nbsp;';
+            $htmlPrevGrp = '&nbsp;<a href="' . sprintf($this->page_url, $this->index_group_start - $this->nb_pages_per_group) . '">' . $this->html_prev_grp . '</a>&nbsp;';
         }
 
         # Next group
         if ($this->env_group != $this->nb_groups) {
-            $htmlNextGrp = '&nbsp;<a href="' . sprintf($this->page_url, $this->index_group_end + 1) . '">';
-            $htmlNextGrp .= $this->html_next_grp . '</a>&nbsp;';
+            $htmlNextGrp = '&nbsp;<a href="' . sprintf($this->page_url, $this->index_group_end + 1) . '">' . $this->html_next_grp . '</a>&nbsp;';
         }
 
         $res = $htmlPrev .
@@ -150,6 +259,9 @@ class pager
         return $this->nb_elements > 0 ? $res : '';
     }
 
+    /**
+     * Sets the page URI
+     */
     protected function setURL()
     {
         if ($this->base_url !== null) {
@@ -170,8 +282,8 @@ class pager
         $url = str_replace('%', '%%', $url);
 
         # Changing page ref
-        if (preg_match('/[?&]' . $this->var_page . '=[0-9]+/', $url)) {
-            $url = preg_replace('/([?&]' . $this->var_page . '=)[0-9]+/', '$1%1$d', $url);
+        if (preg_match('/[?&]' . $this->var_page . '=\d+/', $url)) {
+            $url = preg_replace('/([?&]' . $this->var_page . '=)\d+/', '$1%1$d', $url);
         } elseif (preg_match('/[?]/', $url)) {
             $url .= '&' . $this->var_page . '=%1$d';
         } else {

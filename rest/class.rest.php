@@ -13,8 +13,19 @@
  */
 class restServer
 {
-    public $rsp;                 ///< xmlTag Server response
-    public $functions = []; ///< array Server's functions
+    /**
+     * Server response (XML)
+     *
+     * @var xmlTag
+     */
+    public $rsp;
+
+    /**
+     * Server's functions
+     *
+     * @var        array of array [callback, xml?]
+     */
+    public $functions = [];
 
     /**
      * Constructor
@@ -31,10 +42,10 @@ class restServer
      * a valid PHP callback. Callback function takes two arguments: GET and
      * POST values.
      *
-     * @param string    $name        Function name
-     * @param callable  $callback        Callback function
+     * @param string            $name        Function name
+     * @param callable|array    $callback    Callback function
      */
-    public function addFunction($name, $callback)
+    public function addFunction(string $name, $callback): void
     {
         if (is_callable($callback)) {
             $this->functions[$name] = $callback;
@@ -47,11 +58,12 @@ class restServer
      * This method calls callback named <var>$name</var>.
      *
      * @param string    $name        Function name
-     * @param array        $get            GET values
-     * @param array        $post        POST values
+     * @param array     $get         GET values
+     * @param array     $post        POST values
+     *
      * @return mixed
      */
-    protected function callFunction($name, $get, $post)
+    protected function callFunction(string $name, array $get, array $post)
     {
         if (isset($this->functions[$name])) {
             return call_user_func($this->functions[$name], $get, $post);
@@ -64,8 +76,10 @@ class restServer
      * This method creates the main server.
      *
      * @param string    $encoding        Server charset
+     *
+     * @return bool
      */
-    public function serve($encoding = 'UTF-8')
+    public function serve(string $encoding = 'UTF-8'): bool
     {
         $get  = $_GET ?: [];
         $post = $_POST ?: [];
@@ -97,18 +111,21 @@ class restServer
         }
 
         $this->rsp->status = 'ok';
-
         $this->rsp->insertNode($res);
-
         $this->getXML($encoding);
 
         return true;
     }
 
+    /**
+     * Stream the XML data (header and body)
+     *
+     * @param      string  $encoding  The encoding
+     */
     private function getXML($encoding = 'UTF-8')
     {
         header('Content-Type: text/xml; charset=' . $encoding);
-        echo $this->rsp->toXML(1, $encoding);
+        echo $this->rsp->toXML(true, $encoding);
     }
 }
 
@@ -122,8 +139,25 @@ class restServer
  */
 class xmlTag
 {
+    /**
+     * XML tag name
+     *
+     * @var mixed
+     */
     private $_name;
-    private $_attr  = [];
+
+    /**
+     * XML tag attributes
+     *
+     * @var        array
+     */
+    private $_attr = [];
+
+    /**
+     * XML tag nodes (childs)
+     *
+     * @var        array
+     */
     private $_nodes = [];
 
     /**
@@ -132,10 +166,10 @@ class xmlTag
      * Creates the root XML tag named <var>$name</var>. If content is given,
      * it will be appended to root tag with {@link insertNode()}
      *
-     * @param string    $name        Tag name
-     * @param mixed        $content        Tag content
+     * @param string        $name           Tag name
+     * @param mixed         $content        Tag content
      */
-    public function __construct($name = null, $content = null)
+    public function __construct(?string $name = null, $content = null)
     {
         $this->_name = $name;
 
@@ -150,10 +184,11 @@ class xmlTag
      * Magic __set method to add an attribute.
      *
      * @param string    $name        Attribute name
-     * @param string    $value        Attribute value
+     * @param mixed     $value       Attribute value
+     *
      * @see insertAttr()
      */
-    public function __set($name, $value)
+    public function __set(string $name, mixed $value): void
     {
         $this->insertAttr($name, $value);
     }
@@ -164,11 +199,11 @@ class xmlTag
      * This magic __call method appends a tag to XML tree.
      *
      * @param string    $name        Tag name
-     * @param array        $args        Function arguments, the first one would be tag content
+     * @param array     $args        Function arguments, the first one would be tag content
      */
-    public function __call($name, $args)
+    public function __call(string $name, array $args)
     {
-        if (!preg_match('#^[a-z_]#', (string) $name)) {
+        if (!preg_match('#^[a-z_]#', $name)) {
             return false;
         }
 
@@ -180,13 +215,13 @@ class xmlTag
     }
 
     /**
-     * Add CDTA
+     * Add CDATA
      *
      * Appends CDATA to current tag.
      *
      * @param string    $value        Tag CDATA content
      */
-    public function CDATA($value)
+    public function CDATA(string $value): void
     {
         $this->insertNode($value);
     }
@@ -196,11 +231,12 @@ class xmlTag
      *
      * This method adds an attribute to current tag.
      *
-     * @param string    $name        Attribute name
-     * @param string    $value        Attribute value
+     * @param string    $name         Attribute name
+     * @param mixed     $value        Attribute value
+     *
      * @see insertAttr()
      */
-    public function insertAttr($name, $value)
+    public function insertAttr(string $name, mixed $value): void
     {
         $this->_attr[$name] = $value;
     }
@@ -211,9 +247,9 @@ class xmlTag
      * This method adds a new XML node. Node could be a instance of xmlTag, an
      * array of valid values, a boolean or a string.
      *
-     * @param xmlTag|array|boolean|string    $node    Node value
+     * @param xmlTag|array|bool|string    $node    Node value
      */
-    public function insertNode($node = null)
+    public function insertNode($node = null): void
     {
         if ($node instanceof self) {
             $this->_nodes[] = $node;
@@ -235,18 +271,19 @@ class xmlTag
      *
      * Returns a string with XML content.
      *
-     * @param boolean    $prolog        Append prolog to result
+     * @param bool      $prolog          Append prolog to result
      * @param string    $encoding        Result charset
+     *
      * @return string
      */
-    public function toXML($prolog = false, $encoding = 'UTF-8')
+    public function toXML(bool $prolog = false, string $encoding = 'UTF-8'): string
     {
         if ($this->_name && count($this->_nodes) > 0) {
-            $p = '<%1$s%2$s>%3$s</%1$s>';
-        } elseif ($this->_name && count($this->_nodes) == 0) {
-            $p = '<%1$s%2$s/>';
+            $format = '<%1$s%2$s>%3$s</%1$s>';
+        } elseif ($this->_name && count($this->_nodes) === 0) {
+            $format = '<%1$s%2$s/>';
         } else {
-            $p = '%3$s';
+            $format = '%3$s';
         }
 
         $res = $attr = $content = '';
@@ -263,7 +300,7 @@ class xmlTag
             }
         }
 
-        $res = sprintf($p, $this->_name, $attr, $content);
+        $res = sprintf($format, $this->_name, $attr, $content);
 
         if ($prolog && $this->_name) {
             $res = '<?xml version="1.0" encoding="' . $encoding . '" ?>' . "\n" . $res;

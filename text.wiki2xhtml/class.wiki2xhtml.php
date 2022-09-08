@@ -27,7 +27,7 @@ History :
 => Ajout support bloc détail (|summary en première ligne du bloc, | en dernière ligne du bloc, contenu du bloc libre)
 
 3.2.23 - Franck
-=> Ajout support attributs supplémentaires (§attributs§) pour les éléments en ligne (sans d'imbrication)
+=> Ajout support attributs supplémentaires (§attributs§) pour les éléments en ligne (sans imbrication)
 => Ajout support ;;span;;
 
 3.2.22 - Franck
@@ -148,26 +148,128 @@ History :
 
 class wiki2xhtml
 {
-    public $__version__ = '3.2.23';
+    // Constants
 
-    public $T;
+    public const VERSION = '3.2.23';
+
+    public const MACRO_FN_PREFIX = 'macro:';
+
+    private const MACRO_PREFIX = '##########MACRO#';
+    private const MACRO_SUFFIX = '#';
+
+    // Properties
+
+    /**
+     * Stack of options
+     *
+     * @var array
+     */
     public $opt;
-    public $line;
+
+    /**
+     * Stack of accronyms
+     *
+     * @var array
+     */
     public $acro_table;
+
+    /**
+     * Stack of footnotes
+     *
+     * @var array
+     */
     public $foot_notes;
+
+    /**
+     * Stack of macros
+     *
+     * @var array
+     */
     public $macros;
+
+    /**
+     * Stack of registered functions
+     *
+     * @var array of name => callable
+     */
     public $functions;
 
-    public $tags;
-    public $linetags;
-    public $open_tags;
-    public $close_tags;
-    public $custom_tags = [];
-    public $all_tags;
-    public $tag_pattern;
-    public $escape_table;
-    public $allowed_inline = [];
+    /**
+     * Stack of Wiki content lines
+     *
+     * @var array of string
+     */
+    public $wiki_lines;
 
+    /**
+     * Inline tags
+     *
+     * @var array of name => [ opening string, closing string ]
+     */
+    public $tags;
+
+    /**
+     * User-defined inline tags
+     *
+     * Will be merged with self::$tags
+     *
+     * @var        array
+     */
+    public $custom_tags = [];
+
+    /**
+     * Inline tags, opening strings
+     *
+     * @var array of name => opening string
+     */
+    public $open_tags;
+
+    /**
+     * Inline tags, closing strings
+     *
+     * Populate from self::$tags
+     *
+     * @var array of name => closing string
+     */
+    public $close_tags;
+
+    /**
+     * All opening and closing strings known
+     *
+     * Populate from self::$tags
+     *
+     * @var array of string
+     */
+    public $all_tags;
+
+    /**
+     * Copy of self::$all_tags with escaped strings (\\string)
+     *
+     * @var array of string
+     */
+    public $escape_table;
+
+    /**
+     * PCRE pattern with all opening and closing strings known
+     *
+     * Populate from self::$all_tags
+     *
+     * @var string
+     */
+    public $tag_pattern;
+
+    /**
+     * Full line tags
+     *
+     * Populate from self::$tags
+     *
+     * @var array of name => opening string (at begining of line)
+     */
+    public $linetags;
+
+    /**
+     * Constructs a new instance.
+     */
     public function __construct()
     {
         # Mise en place des options
@@ -236,43 +338,77 @@ class wiki2xhtml
         $this->functions  = [];
         $this->macros     = [];
 
-        $this->registerFunction('macro:html', [$this, '__macroHTML']);
+        /*
+         * Macro syntax:
+         *
+         *  ///macro_name
+         *  ...
+         *  ///
+         */
+        $this->registerFunction(self::MACRO_FN_PREFIX . 'html', [$this, '__macroHTML']);
     }
 
-    public function setOpt(string $option, $value)
+    /**
+     * Sets the option.
+     *
+     * @param      string  $option  The option
+     * @param      mixed   $value   The value
+     */
+    public function setOpt(string $option, $value): void
     {
         $this->opt[$option] = $value;
 
-        if ($option == 'acronyms_file' && isset($this->opt[$option]) && file_exists($this->opt[$option])) {
+        if ($option === 'acronyms_file' && isset($this->opt[$option]) && file_exists($this->opt[$option])) {
             // Parse and merge new acronyms
             $this->acro_table = array_merge($this->acro_table, $this->__getAcronyms());
         }
     }
 
-    public function setOpts($options): void
+    /**
+     * Sets the options.
+     *
+     * @param      array  $options  The options
+     */
+    public function setOpts(array $options): void
     {
-        if (!is_array($options)) {
-            return;
-        }
-
         foreach ($options as $k => $v) {
             $this->opt[$k] = $v;
         }
     }
 
+    /**
+     * Gets the option.
+     *
+     * @param      string  $option  The option
+     *
+     * @return     mixed  The option.
+     */
     public function getOpt(string $option)
     {
         return (!empty($this->opt[$option])) ? $this->opt[$option] : false;
     }
 
-    public function registerFunction(string $type, $name)
+    /**
+     * Register a function
+     *
+     * @param      string           $type   The type
+     * @param      callable|array   $name   The name
+     */
+    public function registerFunction(string $type, $name): void
     {
         if (is_callable($name)) {
             $this->functions[$type] = $name;
         }
     }
 
-    public function transform(string $in): string
+    /**
+     * Convert wiki string to HTML
+     *
+     * @param      string  $wiki
+     *
+     * @return     string
+     */
+    public function transform(string $wiki): string
     {
         # Initialisation des tags
         $this->__initTags();
@@ -280,7 +416,7 @@ class wiki2xhtml
 
         # Récupération des macros
         if ($this->getOpt('active_macros')) {
-            $in = preg_replace_callback('#^///(.*?)///($|\r)#ms', [$this, '__getMacro'], $in);
+            $wiki = preg_replace_callback('#^///(.*?)///($|\r)#ms', [$this, '__getMacro'], $wiki);
         }
 
         # Vérification du niveau de titre
@@ -288,19 +424,19 @@ class wiki2xhtml
             $this->setOpt('first_title_level', 4);
         }
 
-        $res = str_replace("\r", '', $in);
+        $html = str_replace("\r", '', $wiki);
 
         $escape_pattern = [];
 
         # traitement des titres à la setext
         if ($this->getOpt('active_setext_title') && $this->getOpt('active_title')) {
-            $res = preg_replace('/^(.*)\n[=]{5,}$/m', '!!!$1', $res);
-            $res = preg_replace('/^(.*)\n[-]{5,}$/m', '!!$1', $res);
+            $html = preg_replace('/^(.*)\n[=]{5,}$/m', '!!!$1', $html);
+            $html = preg_replace('/^(.*)\n[-]{5,}$/m', '!!$1', $html);
         }
 
         # Transformation des mots Wiki
         if ($this->getOpt('active_wikiwords') && $this->getOpt('words_pattern')) {
-            $res = preg_replace('/' . $this->getOpt('words_pattern') . '/msu', '¶¶¶$1¶¶¶', $res);
+            $html = preg_replace('/' . $this->getOpt('words_pattern') . '/msu', '¶¶¶$1¶¶¶', $html);
         }
 
         # Transformation des URLs automatiques
@@ -312,61 +448,62 @@ class wiki2xhtml
 
             # If urls are not active, escape URLs tags
             if (!$active_urls) {
-                $res = preg_replace(
+                $html = preg_replace(
                     '%(?<!\\\\)([' . preg_quote(implode('', $this->tags['a'])) . '])%msU',
                     '\\\$1',
-                    $res
+                    $html
                 );
             }
 
             # Transforms urls while preserving tags.
-            $tree = preg_split($this->tag_pattern, $res, -1, PREG_SPLIT_DELIM_CAPTURE);
+            $tree = preg_split($this->tag_pattern, $html, -1, PREG_SPLIT_DELIM_CAPTURE);
             foreach ($tree as &$leaf) {
                 $leaf = preg_replace($this->getOpt('auto_url_pattern'), '[$1$2]', $leaf);
             }
             unset($leaf);
-            $res = implode($tree);
+            $html = implode($tree);
         }
 
-        $this->T   = explode("\n", $res);
-        $this->T[] = '';
+        $this->wiki_lines   = explode("\n", $html);
+        $this->wiki_lines[] = '';
 
         # Parse les blocs
-        $res = $this->__parseBlocks();
+        $html = $this->__parseBlocks();
 
         # Line break
         if ($this->getOpt('active_br')) {
-            $res              = preg_replace('/(?<!\\\)%%%/', '<br />', $res);
+            $html             = preg_replace('/(?<!\\\)%%%/', '<br />', $html);
             $escape_pattern[] = '%%%';
         }
 
         # Nettoyage des \s en trop
-        $res = preg_replace('/([\s]+)(<\/p>|<\/li>|<\/pre>)/u', '$2', $res);
-        $res = preg_replace('/(<li>)([\s]+)/u', '$1', $res);
+        $html = preg_replace('/([\s]+)(<\/p>|<\/li>|<\/pre>)/u', '$2', $html);
+        $html = preg_replace('/(<li>)([\s]+)/u', '$1', $html);
 
         # On vire les escapes
         if (!empty($escape_pattern)) {
-            $res = preg_replace('/\\\(' . implode('|', $escape_pattern) . ')/', '$1', $res);
+            $html = preg_replace('/\\\(' . implode('|', $escape_pattern) . ')/', '$1', $html);
         }
 
         # On vire les ¶¶¶MotWiki¶¶¶ qui sont resté (dans les url...)
         if ($this->getOpt('active_wikiwords') && $this->getOpt('words_pattern')) {
-            $res = preg_replace('/¶¶¶' . $this->getOpt('words_pattern') . '¶¶¶/msu', '$1', $res);
+            $html = preg_replace('/¶¶¶' . $this->getOpt('words_pattern') . '¶¶¶/msu', '$1', $html);
         }
 
         # On remet les macros
         if ($this->getOpt('active_macros')) {
-            $res = preg_replace_callback('/^##########MACRO#(\d+)#$/ms', [$this, '__putMacro'], $res);
+            $macro_pattern = '/^' . self::MACRO_PREFIX . '(\d+)' . self::MACRO_SUFFIX . '$/ms';
+            $html          = preg_replace_callback($macro_pattern, [$this, '__putMacro'], $html);
         }
 
         # Auto line break dans les paragraphes
         if ($this->getOpt('active_auto_br')) {
-            $res = preg_replace_callback('%(<p>)(.*?)(</p>)%msu', [$this, '__autoBR'], $res);
+            $html = preg_replace_callback('%(<p>)(.*?)(</p>)%msu', [$this, '__autoBR'], $html);
         }
 
         # Remove wrapping p around figure
         # Adapted from https://micahjon.com/2016/removing-wrapping-p-paragraph-tags-around-images-wordpress/
-        $ret = $res;
+        $ret = $html;
         while (preg_match('/<p>((?:.(?!p>))*?)(<a[^>]*>)?\s*(<figure[^>]*>)(.*?)(<\/figure>)\s*(<\/a>)?(.*?)<\/p>/msu', $ret)) {
             $ret = preg_replace_callback(
                 '/<p>((?:.(?!p>))*?)(<a[^>]*>)?\s*(<figure[^>]*>)(.*?)(<\/figure>)\s*(<\/a>)?(.*?)<\/p>/msu',
@@ -387,21 +524,21 @@ class wiki2xhtml
             );
         }
         if (!is_null($ret)) {
-            $res = $ret;
+            $html = $ret;
         }
 
         # On ajoute les notes
         if (count($this->foot_notes) > 0) { // @phpstan-ignore-line
-            $res_notes = '';
-            $i         = 1;
+            $html_notes  = '';
+            $note_number = 1;
             foreach ($this->foot_notes as $k => $v) {
-                $res_notes .= "\n" . '<p>[<a href="#rev-' . $k . '" id="' . $k . '">' . $i . '</a>] ' . $v . '</p>';
-                $i++;
+                $html_notes .= "\n" . '<p>[<a href="#rev-' . $k . '" id="' . $k . '">' . $note_number . '</a>] ' . $v . '</p>';
+                $note_number++;
             }
-            $res .= sprintf("\n" . (count($this->foot_notes) > 1 ? $this->getOpt('note_str') : $this->getOpt('note_str_single')) . "\n", $res_notes);
+            $html .= sprintf("\n" . (count($this->foot_notes) > 1 ? $this->getOpt('note_str') : $this->getOpt('note_str_single')) . "\n", $html_notes);
         }
 
-        return $res;
+        return $html;
     }
 
     /* PRIVATE
@@ -409,26 +546,30 @@ class wiki2xhtml
 
     private function __initTags()
     {
-        $tags = [
-            'em'     => ["''", "''"],
-            'strong' => ['__', '__'],
-            'abbr'   => ['??', '??'],
-            'a'      => ['[', ']'],
-            'img'    => ['((', '))'],
-            'q'      => ['{{', '}}'],
-            'code'   => ['@@', '@@'],
-            'anchor' => ['~', '~'],
-            'del'    => ['--', '--'],
-            'ins'    => ['++', '++'],
-            'inline' => ['``', '``'],
-            'note'   => ['$$', '$$'],
-            'word'   => ['¶¶¶', '¶¶¶'],
-            'mark'   => ['""', '""'],
-            'sup'    => ['^', '^'],
-            'sub'    => [',,', ',,'],
-            'i'      => ['££', '££'],
-            'span'   => [';;', ';;'],
-        ];
+        $this->tags = array_merge(
+            [
+                'em'     => ["''", "''"],
+                'strong' => ['__', '__'],
+                'abbr'   => ['??', '??'],
+                'a'      => ['[', ']'],
+                'img'    => ['((', '))'],
+                'q'      => ['{{', '}}'],
+                'code'   => ['@@', '@@'],
+                'anchor' => ['~', '~'],
+                'del'    => ['--', '--'],
+                'ins'    => ['++', '++'],
+                'inline' => ['``', '``'],
+                'note'   => ['$$', '$$'],
+                'word'   => ['¶¶¶', '¶¶¶'],
+                'mark'   => ['""', '""'],
+                'sup'    => ['^', '^'],
+                'sub'    => [',,', ',,'],
+                'i'      => ['££', '££'],
+                'span'   => [';;', ';;'],
+            ],
+            $this->custom_tags
+        );
+
         $this->linetags = [
             'empty'   => 'øøø',
             'title'   => '([!]{1,4})',
@@ -440,8 +581,6 @@ class wiki2xhtml
             'aside'   => '[\)]{1}',
             'details' => '[\|]{1}',
         ];
-
-        $this->tags = array_merge($tags, $this->custom_tags);
 
         # Suppression des tags selon les options
         if (!$this->getOpt('active_urls')) {
@@ -533,10 +672,18 @@ class wiki2xhtml
         $this->all_tags    = $this->__getAllTags();
         $this->tag_pattern = $this->__getTagsPattern();
 
-        $this->escape_table                                = $this->all_tags;
+        $this->escape_table = $this->all_tags;
+
         array_walk($this->escape_table, function (&$a) {$a = '\\' . $a;});
     }
 
+    /**
+     * Gets the tags.
+     *
+     * @param      bool   $open   The opening strings if true, else closing strings of inline tags
+     *
+     * @return     array  The tags.
+     */
     private function __getTags(bool $open = true): array
     {
         $res = [];
@@ -547,6 +694,11 @@ class wiki2xhtml
         return $res;
     }
 
+    /**
+     * Gets all opening and closing strings of inline tags.
+     *
+     * @return     array  All tags.
+     */
     private function __getAllTags(): array
     {
         $res = [];
@@ -558,9 +710,15 @@ class wiki2xhtml
         return array_values(array_unique($res));
     }
 
+    /**
+     * Gets the inline tags opening and closing strings pattern.
+     *
+     * @return     string  The tags pattern.
+     */
     private function __getTagsPattern(): string
     {
-        $res                                = $this->all_tags;
+        $res = $this->all_tags;
+
         array_walk($res, function (&$a) {$a = preg_quote($a, '/');});
 
         return '/(?<!\\\)(' . implode('|', $res) . ')/';
@@ -568,28 +726,42 @@ class wiki2xhtml
 
     /* Blocs
     --------------------------------------------------- */
+
+    /**
+     * Parse blocks
+     *
+     * @return     string
+     */
     private function __parseBlocks(): string
     {
-        $mode = $type = $attr = null;
-        $res  = '';
-        $max  = count($this->T);
+        $mode = null;
+        $type = null;
+        $attr = null;
 
-        for ($i = 0; $i < $max; $i++) {
-            $pre_mode = $mode;
-            $pre_type = $type;
+        $html = '';
+
+        $nb_lines = count($this->wiki_lines);
+
+        for ($i = 0; $i < $nb_lines; $i++) {
+            $previous_mode = $mode;
+            $previous_type = $type;
 
             $line = $this->__getLine($i, $type, $mode, $attr);
 
             if ($type != 'pre' || $this->getOpt('parse_pre')) {
+                // Parse current line
                 $line = $line ? $this->__inlineWalk($line) : '';
             }
 
-            $res .= $this->__closeLine($type, $mode, $pre_type, $pre_mode);
-            $res .= $this->__openLine($type, $mode, $pre_type, $pre_mode, $attr);
+            // Close previously opened block if necessary
+            $html .= $this->__closeLine($type, $mode, $previous_type, $previous_mode);
+
+            // Open a new block if necessary
+            $html .= $this->__openLine($type, $mode, $previous_type, $previous_mode, $attr);
 
             # P dans les blockquotes et les asides
-            if (($type == 'blockquote' || $type == 'aside') && trim((string) $line) == '' && $pre_type == $type) {
-                $res .= "</p>\n<p>";
+            if (($type == 'blockquote' || $type == 'aside') && trim((string) $line) == '' && $previous_type == $type) {
+                $html .= "</p>\n<p>";
             }
 
             # Correction de la syntaxe FR dans tous sauf pre et hr
@@ -600,78 +772,95 @@ class wiki2xhtml
                 $line = preg_replace('%(\x{00AB})[ ]+%u', '$1&nbsp;', $line);
             }
 
-            $res .= $line;
+            $html .= $line;
         }
 
-        return trim($res);
+        return trim($html);
     }
 
-    private function __getLine(int $i, &$type, &$mode, &$attr)
+    /**
+     * Parse a full line
+     *
+     * @param      int          $i      Wiki line index
+     * @param      null|string  $type   The type
+     * @param      null|string  $mode   The mode
+     * @param      null|string  $attr   The attribute
+     *
+     * @return     bool|string  The line.
+     */
+    private function __getLine(int $i, ?string &$type, ?string &$mode, ?string &$attr)
     {
-        $pre_type = $type;
-        $pre_mode = $mode;
-        $type     = $mode     = null;
-        $attr     = null;
+        $current_type = $type;
+        $current_mode = $mode;
 
-        if (empty($this->T[$i])) {
+        $type = null;
+        $mode = null;
+        $attr = null;
+
+        if (empty($this->wiki_lines[$i])) {
             return false;
         }
 
-        $line = htmlspecialchars($this->T[$i], ENT_NOQUOTES);
+        $line = htmlspecialchars($this->wiki_lines[$i], ENT_NOQUOTES);
 
-        # Ligne vide
+        // Ligne vide
         if (empty($line)) {
             $type = null;
         } elseif ($this->getOpt('active_empty') && preg_match('/^øøø(.*)$/', $line, $cap)) {
+            // Peut contenir un numéro de macro
             $type = null;
             $line = trim((string) $cap[1]);
         }
-        # Titre
+        // Titre
         elseif ($this->getOpt('active_title') && preg_match('/^([!]{1,4})(.*?)(§§(.*)§§)?$/', $line, $cap)) {
             $type = 'title';
             $mode = strlen($cap[1]);
             $line = trim((string) $cap[2]);
             if (isset($cap[4])) {
+                // Attribut HTML présent
                 $attr = $cap[4];
             }
         }
-        # Ligne HR
+        // Ligne HR
         elseif ($this->getOpt('active_hr') && preg_match('/^[-]{4}[- ]*?(§§(.*)§§)?$/', $line, $cap)) {
             $type = 'hr';
             $line = null;
             if (isset($cap[2])) {
+                // Attribut HTML présent
                 $attr = $cap[2];
             }
         }
-        # Blockquote
+        // Blockquote
         elseif ($this->getOpt('active_quote') && preg_match('/^(&gt;|;:)(.*?)(§§(.*)§§)?$/', $line, $cap)) {
             $type = 'blockquote';
             $line = trim((string) $cap[2]);
             if (isset($cap[4])) {
+                // Attribut HTML présent
                 $attr = $cap[4];
             }
         }
-        # Liste
+        // Liste
         elseif ($this->getOpt('active_lists') && preg_match('/^([*#]+)(.*?)(§§(.*)§§)?$/', $line, $cap)) {
             $type = 'list';
             $mode = $cap[1];
             if (isset($cap[4])) {
+                // Attribut HTML présent
                 $attr = $cap[4];
             }
             $valid = true;
 
-            # Vérification d'intégrité
-            $dl    = ($type != $pre_type) ? 0 : strlen($pre_mode);
+            // Vérification d'intégrité
+            $dl    = ($type != $current_type) ? 0 : strlen($current_mode);
             $d     = strlen($mode);
             $delta = $d - $dl;
 
-            if ($delta < 0 && strpos($pre_mode, $mode) !== 0) {
+            if ($delta < 0 && strpos($current_mode, $mode) !== 0) {
                 $valid = false;
             }
-            if ($delta > 0 && $type == $pre_type && strpos($mode, $pre_mode) !== 0) {
+            if ($delta > 0 && $type == $current_type && strpos($mode, $current_mode) !== 0) {
                 $valid = false;
             }
-            if ($delta == 0 && $mode != $pre_mode) {
+            if ($delta == 0 && $mode != $current_mode) {
                 $valid = false;
             }
             if ($delta > 1) {
@@ -690,35 +879,39 @@ class wiki2xhtml
             $mode = $cap[1];
             $line = trim((string) $cap[2]);
             if (isset($cap[4])) {
+                // Attribut HTML présent
                 $attr = $cap[4];
             }
         }
-        # Préformaté
+        // Préformaté
         elseif ($this->getOpt('active_pre') && preg_match('/^[ ]{1}(.*?)(§§(.*)§§)?$/', $line, $cap)) {
             $type = 'pre';
             $line = $cap[1];
             if (isset($cap[3])) {
+                // Attribut HTML présent
                 $attr = trim((string) $cap[3]);
             }
         }
-        # Aside
+        // Aside
         elseif ($this->getOpt('active_aside') && preg_match('/^[\)]{1}(.*?)(§§(.*)§§)?$/', $line, $cap)) {
             $type = 'aside';
             $line = trim((string) $cap[1]);
             if (isset($cap[3])) {
+                // Attribut HTML présent
                 $attr = $cap[3];
             }
         }
-        # Details
+        // Details
         elseif ($this->getOpt('active_details') && preg_match('/^[\|]{1}(.*?)(§§(.*)§§)?$/', $line, $cap)) {
             $type = 'details';
             $line = trim((string) $cap[1]);
             $mode = $line == '' ? '0' : '1';
             if (isset($cap[3])) {
+                // Attribut HTML présent
                 $attr = $cap[3];
             }
         }
-        # Paragraphe
+        // Paragraphe
         else {
             $type = 'p';
             if (preg_match('/^\\\((?:(' . implode('|', $this->linetags) . ')).*)$/', $line, $cap)) {
@@ -727,6 +920,7 @@ class wiki2xhtml
             if (preg_match('/^(.*?)(§§(.*)§§)?$/', $line, $cap)) {
                 $line = $cap[1];
                 if (isset($cap[3])) {
+                    // Attribut HTML présent
                     $attr = $cap[3];
                 }
             }
@@ -736,9 +930,20 @@ class wiki2xhtml
         return $line;
     }
 
-    private function __openLine($type, $mode, $pre_type, $pre_mode, $attr = null)
+    /**
+     * Cope with opening HTML part of a block
+     *
+     * @param      null|string      $type           The type
+     * @param      null|string      $mode           The mode
+     * @param      null|string      $previous_type  The pre type
+     * @param      null|string      $previous_mode  The pre mode
+     * @param      null|string      $attr           The attribute
+     *
+     * @return     string
+     */
+    private function __openLine(?string $type, ?string $mode, ?string $previous_type, ?string $previous_mode, ?string $attr = null)
     {
-        $open = ($type != $pre_type);
+        $open = ($type != $previous_type);
 
         $attr_parent = $attr_child = '';
         if ($attr) {
@@ -752,10 +957,10 @@ class wiki2xhtml
             return "\n<p" . $attr_child . '>';
         } elseif ($open && $type == 'blockquote') {
             return "\n<blockquote" . $attr_child . '><p>';
-        } elseif (($open || $mode != $pre_mode) && $type == 'title') {
+        } elseif (($open || $mode != $previous_mode) && $type == 'title') {
             $fl = $this->getOpt('first_title_level');
             $fl = $fl + 3;
-            $l  = $fl - $mode;
+            $l  = $fl - (int) $mode;
 
             return "\n<h" . ($l) . $attr_child . '>';
         } elseif ($open && $type == 'pre') {
@@ -769,7 +974,7 @@ class wiki2xhtml
         } elseif ($open && $type == 'hr') {
             return "\n<hr" . $attr_child . ' />';
         } elseif ($type == 'list') {
-            $dl    = ($open) ? 0 : strlen($pre_mode);
+            $dl    = ($open) ? 0 : strlen($previous_mode);
             $d     = strlen($mode);
             $delta = $d - $dl;
             $res   = '';
@@ -783,7 +988,7 @@ class wiki2xhtml
             } elseif ($delta < 0) {
                 $res .= "</li>\n";
                 for ($j = 0; $j < abs($delta); $j++) {
-                    if (substr($pre_mode, (0 - $j - 1), 1) == '*') {
+                    if (substr($previous_mode, (0 - $j - 1), 1) == '*') {
                         $res .= "</ul>\n</li>\n";
                     } else {
                         $res .= "</ol>\n</li>\n";
@@ -795,10 +1000,10 @@ class wiki2xhtml
 
             return $res . '<li' . $attr_child . '>';
         } elseif ($type == 'defl') {
-            $res = ($pre_mode !== '=' && $pre_mode !== ':' ? '<dl' . $attr_parent . ">\n" : '');
-            if ($pre_mode == '=') {
+            $res = ($previous_mode !== '=' && $previous_mode !== ':' ? '<dl' . $attr_parent . ">\n" : '');
+            if ($previous_mode == '=') {
                 $res .= "</dt>\n";
-            } elseif ($pre_mode == ':') {
+            } elseif ($previous_mode == ':') {
                 $res .= "</dd>\n";
             }
             if ($mode == '=') {
@@ -809,32 +1014,44 @@ class wiki2xhtml
 
             return $res;
         }
+
+        return '';
     }
 
-    private function __closeLine($type, $mode, $pre_type, $pre_mode)
+    /**
+     * Cope with closing HTML part of a block
+     *
+     * @param      null|string  $type           The type
+     * @param      null|string  $mode           The mode
+     * @param      null|string  $previous_type  The pre type
+     * @param      null|string  $previous_mode  The pre mode
+     *
+     * @return     string
+     */
+    private function __closeLine(?string $type, ?string $mode, ?string $previous_type, ?string $previous_mode): string
     {
-        $close = ($type != $pre_type);
+        $close = ($type != $previous_type);
 
-        if ($close && $pre_type == 'p') {
+        if ($close && $previous_type == 'p') {
             return "</p>\n";
-        } elseif ($close && $pre_type == 'blockquote') {
+        } elseif ($close && $previous_type == 'blockquote') {
             return "</p></blockquote>\n";
-        } elseif (($close || $mode != $pre_mode) && $pre_type == 'title') {
+        } elseif (($close || $mode != $previous_mode) && $previous_type == 'title') {
             $fl = $this->getOpt('first_title_level');
             $fl = $fl + 3;
-            $l  = $fl - $pre_mode;
+            $l  = $fl - (int) $previous_mode;
 
             return '</h' . ($l) . ">\n";
-        } elseif ($close && $pre_type == 'pre') {
+        } elseif ($close && $previous_type == 'pre') {
             return "</pre>\n";
-        } elseif ($close && $pre_type == 'aside') {
+        } elseif ($close && $previous_type == 'aside') {
             return "</p></aside>\n";
-        } elseif ($close && $pre_type == 'details' && $pre_mode == '1') {
+        } elseif ($close && $previous_type == 'details' && $previous_mode == '1') {
             return "</summary>\n";
-        } elseif ($close && $pre_type == 'list') {
+        } elseif ($close && $previous_type == 'list') {
             $res = '';
-            for ($j = 0; $j < strlen($pre_mode); $j++) {
-                if (substr($pre_mode, (0 - $j - 1), 1) == '*') {
+            for ($j = 0; $j < strlen($previous_mode); $j++) {
+                if (substr($previous_mode, (0 - $j - 1), 1) == '*') {
                     $res .= "</li>\n</ul>\n";
                 } else {
                     $res .= "</li>\n</ol>\n";
@@ -842,9 +1059,9 @@ class wiki2xhtml
             }
 
             return $res;
-        } elseif ($close && $pre_type == 'defl') {
+        } elseif ($close && $previous_type == 'defl') {
             $res = '';
-            if ($pre_mode == '=') {
+            if ($previous_mode == '=') {
                 $res .= "</dt>\n</dl>\n";
             } else {
                 $res .= "</dd>\n</dl>\n";
@@ -858,11 +1075,20 @@ class wiki2xhtml
 
     /* Inline
     --------------------------------------------------- */
-    private function __inlineWalk(string $str, $allow_only = null): string
+
+    /**
+     * Parse inline tags in a line
+     *
+     * @param      string  $str         The string
+     * @param      array   $allow_only  The allow only
+     *
+     * @return     string
+     */
+    private function __inlineWalk(string $str, ?array $allow_only = null): string
     {
         $tree = preg_split($this->tag_pattern, $str, -1, PREG_SPLIT_DELIM_CAPTURE);
 
-        $res = '';
+        $html = '';
         for ($i = 0; $i < count($tree); $i++) {
             $attr = '';
 
@@ -872,32 +1098,44 @@ class wiki2xhtml
 
                 if (($tidy = $this->__makeTag($tree, $tag, $i, $i, $attr, $tag_type)) !== false) {
                     if ($tag != '') {
-                        $res .= '<' . $tag . $attr;
-                        $res .= ($tag_type == 'open') ? '>' : ' />';
+                        $html .= '<' . $tag . $attr;
+                        $html .= ($tag_type == 'open') ? '>' : ' />';
                     }
-                    $res .= $tidy;
+                    $html .= $tidy;
                 } else {
-                    $res .= $tree[$i];
+                    $html .= $tree[$i];
                 }
             } else {
-                $res .= $tree[$i];
+                $html .= $tree[$i];
             }
         }
 
-        # Suppression des echappements
-        $res = str_replace($this->escape_table, $this->all_tags, $res);
+        // Suppression des echappements
+        $html = str_replace($this->escape_table, $this->all_tags, $html);
 
-        return $res;
+        return $html;
     }
 
-    private function __makeTag(&$tree, &$tag, $position, &$j, &$attr, &$type)
+    /**
+     * Parse an inline tag.
+     *
+     * @param      array        $tree               The tree
+     * @param      string       $tag                The tag
+     * @param      int          $position           The position
+     * @param      int          $next_position      The next position
+     * @param      string       $attr               The attribute
+     * @param      string       $type               The type
+     *
+     * @return     bool|string
+     */
+    private function __makeTag(array &$tree, string &$tag, int $position, int &$next_position, string &$attr, string &$type)
     {
-        $res    = '';
+        $html   = '';
         $closed = false;
 
         $itag = $this->close_tags[$tag];
 
-        # Recherche fermeture
+        // Recherche fermeture
         for ($i = $position + 1; $i < count($tree); $i++) {
             if ($tree[$i] == $itag) {
                 $closed = true;
@@ -906,85 +1144,92 @@ class wiki2xhtml
             }
         }
 
-        # Résultat
+        // Résultat
         if ($closed) {
             for ($i = $position + 1; $i < count($tree); $i++) {
                 if ($tree[$i] != $itag) {
-                    $res .= $tree[$i];
+                    $html .= $tree[$i];
                 } else {
                     switch ($tag) {
                         case 'a':
-                            $res = $this->__parseLink($res, $tag, $attr, $type);
+                            $html = $this->__parseLink($html, $tag, $attr, $type);
 
                             break;
                         case 'img':
                             $type = 'close';
-                            if (($res = $this->__parseImg($res, $attr, $tag)) !== null) {
+                            if (($html = $this->__parseImg($html, $attr, $tag)) !== null) {
                                 $type = 'open';
                             }
 
                             break;
                         case 'abbr':
-                            $res = $this->__parseAcronym($res, $attr);
+                            $html = $this->__parseAcronym($html, $attr);
 
                             break;
                         case 'q':
-                            $res = $this->__parseQ($res, $attr);
+                            $html = $this->__parseQ($html, $attr);
 
                             break;
                         case 'i':
-                            $res = $this->__parseI($res, $attr);
+                            $html = $this->__parseI($html, $attr);
 
                             break;
                         case 'anchor':
-                            $tag = 'a';
-                            $res = $this->__parseAnchor($res, $attr);
+                            $tag  = 'a';
+                            $html = $this->__parseAnchor($html, $attr);
 
                             break;
                         case 'note':
-                            $tag = '';
-                            $res = $this->__parseNote($res);
+                            $tag  = '';
+                            $html = $this->__parseNote($html);
 
                             break;
                         case 'inline':
-                            $tag = '';
-                            $res = $this->__parseInlineHTML($res);
+                            $tag  = '';
+                            $html = $this->__parseInlineHTML($html);
 
                             break;
                         case 'word':
-                            $res = $this->parseWikiWord($res, $tag);
+                            $html = $this->parseWikiWord($html, $tag);
 
                             break;
                         default:
-                            $res = $this->__inlineWalk($res);
+                            $html = $this->__inlineWalk($html);
 
                             break;
                     }
 
                     if ($type == 'open' && $tag != '') {
-                        $res .= '</' . $tag . '>';
+                        $html .= '</' . $tag . '>';
                     }
-                    $j = $i;
+                    $next_position = $i;
 
                     break;
                 }
 
-                # Recherche attributs
-                if (preg_match('/^(.*?)(§(.*)§)?$/', $res, $cap)) {
-                    $res = $cap[1];
+                // Recherche attributs
+                if (preg_match('/^(.*?)(§(.*)§)?$/', $html, $cap)) {
+                    $html = $cap[1];
                     if (isset($cap[3])) {
                         $attr .= ' ' . $cap[3];
                     }
                 }
             }
 
-            return $res;
+            return $html;
         }
 
         return false;
     }
 
-    private function __splitTagsAttr($str)
+    /**
+     * Splits a tags attribute.
+     *
+     * @param      string  $str    The string
+     *
+     * @return     array   of tags attributes
+     */
+    private function __splitTagsAttr(string $str): array
     {
         $res = preg_split('/(?<!\\\)\|/', $str);
 
@@ -995,7 +1240,13 @@ class wiki2xhtml
         return $res;
     }
 
-    # Antispam (Jérôme Lipowicz)
+    /**
+     * Antispam helper (Jérôme Lipowicz)
+     *
+     * @param      string  $str    The string
+     *
+     * @return     string
+     */
     private function __antiSpam(string $str): string
     {
         $encoded = bin2hex($str);
@@ -1005,13 +1256,21 @@ class wiki2xhtml
         return $encoded;
     }
 
-    private function __parseLink(string $str, &$tag, &$attr, &$type)
+    /**
+     * Parse an URI
+     *
+     * @param      string  $str    The string
+     * @param      string  $tag    The tag
+     * @param      string  $attr   The attribute
+     * @param      string  $type   The type
+     */
+    private function __parseLink(string $str, string &$tag, string &$attr, string &$type)
     {
         $n_str    = $this->__inlineWalk($str, ['abbr', 'img', 'em', 'strong', 'i', 'code', 'del', 'ins', 'mark', 'sup', 'sub', 'span']);
         $data     = $this->__splitTagsAttr($n_str);
         $no_image = false;
 
-        # Only URL in data
+        // Only URL in data
         if (count($data) == 1) {
             $url     = trim($str);
             $content = strlen($url) > 35 ? substr($url, 0, 35) . '...' : $url;
@@ -1025,15 +1284,15 @@ class wiki2xhtml
             $no_image = (!empty($data[4])) ? (bool) $data[4] : false;
         }
 
-        # Remplacement si URL spéciale
+        // Remplacement si URL spéciale
         $this->__specialUrls($url, $content, $lang, $title);
 
-        # On vire les &nbsp; dans l'url
+        // On vire les &nbsp; dans l'url
         $url = str_replace('&nbsp;', ' ', $url);
 
         if (preg_match('/^(.+)[.](gif|jpg|jpeg|png)$/', $url) && !$no_image && $this->getOpt('active_auto_img')) {
-            # On ajoute les dimensions de l'image si locale
-            # Idée de Stephanie
+            // On ajoute les dimensions de l'image si locale
+            // Idée de Stephanie
             $img_size = null;
             if (!preg_match('#[a-zA-Z]+://#', $url)) {
                 if (preg_match('#^/#', $url)) {
@@ -1068,7 +1327,15 @@ class wiki2xhtml
         return $content;
     }
 
-    private function __specialUrls(&$url, &$content, &$lang, &$title)
+    /**
+     * Cope with special URI
+     *
+     * @param      string  $url      The url
+     * @param      string  $content  The content
+     * @param      string  $lang     The language
+     * @param      string  $title    The title
+     */
+    private function __specialUrls(string &$url, string &$content, string &$lang, string &$title): void
     {
         foreach ($this->functions as $k => $v) {
             if (strpos($k, 'url:') === 0 && strpos($url, substr($k, 4)) === 0) {
@@ -1084,7 +1351,16 @@ class wiki2xhtml
         }
     }
 
-    private function __parseImg(string $str, string &$attr, &$tag)
+    /**
+     * Parge an image
+     *
+     * @param      string  $str    The string
+     * @param      string  $attr   The attribute
+     * @param      string  $tag    The tag
+     *
+     * @return     mixed
+     */
+    private function __parseImg(string $str, string &$attr, string &$tag)
     {
         $data = $this->__splitTagsAttr($str);
 
@@ -1132,6 +1408,14 @@ class wiki2xhtml
         }
     }
 
+    /**
+     * Parse a quote element
+     *
+     * @param      string  $str    The string
+     * @param      string  $attr   The attribute
+     *
+     * @return     string
+     */
     private function __parseQ(string $str, string &$attr): string
     {
         $str  = $this->__inlineWalk($str);
@@ -1146,6 +1430,14 @@ class wiki2xhtml
         return $content;
     }
 
+    /**
+     * Parse an i element
+     *
+     * @param      string  $str    The string
+     * @param      string  $attr   The attribute
+     *
+     * @return     string
+     */
     private function __parseI(string $str, string &$attr): string
     {
         $str  = $this->__inlineWalk($str);
@@ -1159,6 +1451,12 @@ class wiki2xhtml
         return $content;
     }
 
+    /**
+     * Parse an anchro
+     *
+     * @param      string  $str    The string
+     * @param      string  $attr   The attribute
+     */
     private function __parseAnchor(string $str, string &$attr)
     {
         $name = $this->protectAttr($str, true);
@@ -1166,8 +1464,17 @@ class wiki2xhtml
         if ($name != '') {
             $attr .= ' id="' . $name . '"';
         }
+
+        return '';
     }
 
+    /**
+     * Parse a footnote
+     *
+     * @param      string  $str    The string
+     *
+     * @return     string
+     */
     private function __parseNote(string $str): string
     {
         $i                     = count($this->foot_notes) + 1;
@@ -1177,12 +1484,26 @@ class wiki2xhtml
         return '<sup>\[<a href="#' . $id . '" id="rev-' . $id . '">' . $i . '</a>\]</sup>';
     }
 
+    /**
+     * Parse inline HTML
+     *
+     * @param      string  $str    The string
+     *
+     * @return     string
+     */
     private function __parseInlineHTML(string $str): string
     {
         return str_replace(['&gt;', '&lt;'], ['>', '<'], $str);
     }
 
-    # Obtenir un acronyme
+    /**
+     * Parse an acronym
+     *
+     * @param      string  $str    The string
+     * @param      string  $attr   The attribute
+     *
+     * @return     string
+     */
     private function __parseAcronym(string $str, string &$attr): string
     {
         $data = $this->__splitTagsAttr($str);
@@ -1205,7 +1526,11 @@ class wiki2xhtml
         return $acronym;
     }
 
-    # Définition des acronymes, dans le fichier acronyms.txt
+    /**
+     * Gets the acronyms.
+     *
+     * @return     array  The acronyms.
+     */
     private function __getAcronyms(): array
     {
         $file = $this->getOpt('acronyms_file');
@@ -1229,8 +1554,15 @@ class wiki2xhtml
         return $res;
     }
 
-    # Mots wiki (pour héritage)
-    private function parseWikiWord(string $str, &$tag): string
+    /**
+     * Parse wiki words (legacy)
+     *
+     * @param      string  $str    The string
+     * @param      string  $tag    The tag
+     *
+     * @return     string
+     */
+    private function parseWikiWord(string $str, string &$tag): string
     {
         $tag = '';
 
@@ -1241,7 +1573,14 @@ class wiki2xhtml
         return $str;
     }
 
-    /* Protection des attributs */
+    /**
+     * Protect attributes
+     *
+     * @param      string  $str    The string
+     * @param      bool    $name   The name
+     *
+     * @return     string
+     */
     private function protectAttr(string $str, bool $name = false): string
     {
         if ($name && !preg_match('/^[A-Za-z][A-Za-z0-9_:.-]*$/', $str)) {
@@ -1251,7 +1590,13 @@ class wiki2xhtml
         return str_replace(["'", '"'], ['&#039;', '&quot;'], $str);
     }
 
-    /* Protection des urls */
+    /**
+     * Protect URI
+     *
+     * @param      string  $str    The string
+     *
+     * @return     string
+     */
     private function protectUrls(string $str): string
     {
         if (preg_match('/^javascript:/', $str)) {
@@ -1261,64 +1606,98 @@ class wiki2xhtml
         return $str;
     }
 
-    /* Auto BR */
-    private function __autoBR(array $m): string
+    /**
+     * Parse auto BR
+     *
+     * @param      array         $matches      The matches
+     *
+     * @return     string
+     */
+    private function __autoBR(array $matches): string
     {
-        return $m[1] . str_replace("\n", "<br />\n", $m[2]) . $m[3];
+        return $matches[1] . str_replace("\n", "<br />\n", $matches[2]) . $matches[3];
     }
 
     /* Macro
     --------------------------------------------------- */
-    private function __getMacro($s): string
-    {
-        $s              = is_array($s) ? $s[1] : $s;
-        $this->macros[] = str_replace('\"', '"', $s);
 
-        return 'øøø##########MACRO#' . (count($this->macros) - 1) . '#';
+    /**
+     * Prepare future macro treatment
+     *
+     * @param      array   $matches  The matches
+     *
+     * @return     string  The macro.
+     */
+    private function __getMacro(array $matches): string
+    {
+        // Stack the macro name
+        $this->macros[] = str_replace('\"', '"', $matches[1]);
+
+        return 'øøø' . self::MACRO_PREFIX . (count($this->macros) - 1) . self::MACRO_SUFFIX;
     }
 
-    private function __putMacro($id): string
+    /**
+     * Execute a macro.
+     *
+     * @param      array  $matches     The matches
+     *
+     * @return     string
+     */
+    private function __putMacro(array $matches): string
     {
-        $id = is_array($id) ? (int) $id[1] : (int) $id;
-        if (isset($this->macros[$id])) {
-            $content = str_replace("\r", '', $this->macros[$id]);
+        $macro_id = (int) $matches[1];
+        if (isset($this->macros[$macro_id])) {
+            $content = str_replace("\r", '', $this->macros[$macro_id]);
 
-            $c = explode("\n", $content);
+            $lines = explode("\n", $content);
 
             # première ligne, premier mot
-            $fl = trim((string) $c[0]);
-            $fw = $fl;
+            $first_line = trim((string) $lines[0]);
+            $first_word = $first_line;
 
-            if ($fl) {
-                if (strpos($fl, ' ') !== false) {
-                    $fw = substr($fl, 0, strpos($fl, ' '));
+            if ($first_line) {
+                if (strpos($first_line, ' ') !== false) {
+                    $first_word = substr($first_line, 0, strpos($first_line, ' '));
                 }
-                $content = implode("\n", array_slice($c, 1));
+                $content = implode("\n", array_slice($lines, 1));
             }
 
-            if ($c[0] == "\n") {
-                $content = implode("\n", array_slice($c, 1));
+            if ($lines[0] == "\n") {
+                $content = implode("\n", array_slice($lines, 1));
             }
 
-            if ($fw && isset($this->functions['macro:' . $fw])) {
-                return call_user_func($this->functions['macro:' . $fw], $content, $fl);
+            if ($first_word && isset($this->functions[self::MACRO_FN_PREFIX . $first_word])) {
+                return call_user_func($this->functions[self::MACRO_FN_PREFIX . $first_word], $content, $first_line);
             }
 
             # Si on n'a rien pu faire, on retourne le tout sous
             # forme de <pre>
-            return '<pre>' . htmlspecialchars($this->macros[$id]) . '</pre>';
+            return '<pre>' . htmlspecialchars($this->macros[$macro_id]) . '</pre>';
         }
 
         return '';
     }
 
-    private function __macroHTML($s): string
+    /**
+     * Macro ///html callback
+     *
+     * @param      string  $content      content
+     *
+     * @return     string
+     */
+    private function __macroHTML($content): string
     {
-        return $s;
+        return $content;
     }
 
     /* Aide et debug
     --------------------------------------------------- */
+
+    /**
+     * Return wiki syntax help
+     *
+     * @return     string
+     */
     public function help(): string
     {
         $help['b'] = [];

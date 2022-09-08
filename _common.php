@@ -22,9 +22,9 @@
  *
  * @copyright Olivier Meunier & Association Dotclear
  * @copyright GPL-2.0-only
- * @version 1.3
+ * @version 1.4
  */
-define('CLEARBRICKS_VERSION', '1.3');
+define('CLEARBRICKS_VERSION', '1.4');
 
 // Autoload for clearbricks
 class Autoload
@@ -98,18 +98,16 @@ class Clearbricks
 
         $this->autoloader->add([
             // Common helpers
-            'crypt'             => __DIR__ . '/common/lib.crypt.php',
-            'dt'                => __DIR__ . '/common/lib.date.php',
-            'files'             => __DIR__ . '/common/lib.files.php',
-            'path'              => __DIR__ . '/common/lib.files.php',
-            'form'              => __DIR__ . '/common/lib.form.php',
-            'formSelectOption'  => __DIR__ . '/common/lib.form.php',
-            'forms'             => __DIR__ . '/common/lib.forms.php',
-            'formsSelectOption' => __DIR__ . '/common/lib.forms.php',
-            'html'              => __DIR__ . '/common/lib.html.php',
-            'http'              => __DIR__ . '/common/lib.http.php',
-            'l10n'              => __DIR__ . '/common/lib.l10n.php',
-            'text'              => __DIR__ . '/common/lib.text.php',
+            'crypt'            => __DIR__ . '/common/lib.crypt.php',
+            'dt'               => __DIR__ . '/common/lib.date.php',
+            'files'            => __DIR__ . '/common/lib.files.php',
+            'path'             => __DIR__ . '/common/lib.files.php',
+            'form'             => __DIR__ . '/common/lib.form.php',
+            'formSelectOption' => __DIR__ . '/common/lib.form.php',
+            'html'             => __DIR__ . '/common/lib.html.php',
+            'http'             => __DIR__ . '/common/lib.http.php',
+            'l10n'             => __DIR__ . '/common/lib.l10n.php',
+            'text'             => __DIR__ . '/common/lib.text.php',
 
             // Database Abstraction Layer
             'dbLayer'  => __DIR__ . '/dblayer/dblayer.php',
@@ -137,14 +135,8 @@ class Clearbricks
             // Send Mail Utilities
             'mail' => __DIR__ . '/mail/class.mail.php',
 
-            // Mail Convert and Rewrap
-            'mailConvert' => __DIR__ . '/mail.convert/class.mail.convert.php',
-
             // Send Mail Through Sockets
             'socketMail' => __DIR__ . '/mail/class.socket.mail.php',
-
-            // Mime Message Parser
-            'mimeMessage' => __DIR__ . '/mail.mime/class.mime.message.php',
 
             // HTML Pager
             'pager' => __DIR__ . '/pager/class.pager.php',
@@ -171,19 +163,12 @@ class Clearbricks
             // Wiki to XHTML Converter
             'wiki2xhtml' => __DIR__ . '/text.wiki2xhtml/class.wiki2xhtml.php',
 
-            // SQL Batch on XML Files
-            'xmlsql' => __DIR__ . '/xmlsql/class.xmlsql.php',
-
             // Common Socket Class
             'netSocket' => __DIR__ . '/net/class.net.socket.php',
 
             // HTTP Client
             'netHttp'    => __DIR__ . '/net.http/class.net.http.php',
             'HttpClient' => __DIR__ . '/net.http/class.net.http.php',
-
-            // NNTP Client
-            'netNntp'     => __DIR__ . '/net.nntp/class.net.nntp.php',
-            'nntpMessage' => __DIR__ . '/net.nntp/class.nntp.message.php',
 
             // XML-RPC Client and Server
             'xmlrpcValue'               => __DIR__ . '/net.xmlrpc/class.net.xmlrpc.php',

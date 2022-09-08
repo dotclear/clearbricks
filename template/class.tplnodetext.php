@@ -11,7 +11,11 @@
  */
 class tplNodeText extends tplNode
 {
-    // Simple text node, only holds its content
+    /**
+     * Simple text node, only holds its content
+     *
+     * @var string
+     */
     protected $content;
 
     public function __construct(string $text)
@@ -20,11 +24,23 @@ class tplNodeText extends tplNode
         $this->content = $text;
     }
 
+    /**
+     * Compile node text
+     *
+     * @param  template     $tpl    The current template engine instance
+     *
+     * @return     string
+     */
     public function compile(template $tpl): string
     {
         return $this->content;
     }
 
+    /**
+     * Gets the tag.
+     *
+     * @return     string  The tag.
+     */
     public function getTag(): string
     {
         return 'TEXT';

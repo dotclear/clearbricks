@@ -10,31 +10,130 @@
  */
 class template
 {
+    /**
+     * Instance self name
+     *
+     * Will be use in compiled template to call instance method or use instance properties
+     *
+     * @var string
+     */
     private $self_name;
 
+    /**
+     * Use cache for compiled template files
+     *
+     * @var        bool
+     */
     public $use_cache = true;
 
+    /**
+     * Stack of node blocks callbacks
+     *
+     * @var        array
+     */
     protected $blocks = [];
+
+    /**
+     * Stack of node values callbacks
+     *
+     * @var        array
+     */
     protected $values = [];
 
+    /**
+     * Remove PHP from template file
+     *
+     * @var        bool
+     */
     protected $remove_php = true;
 
+    /**
+     * Unknown node value callback
+     *
+     * @var        callable|array|null
+     */
     protected $unknown_value_handler = null;
+
+    /**
+     * Unknown node block callback
+     *
+     * @var        callable|array|null
+     */
     protected $unknown_block_handler = null;
 
+    /**
+     * Stack of template file paths
+     *
+     * @var        array
+     */
     protected $tpl_path = [];
+
+    /**
+     * Cache directory
+     *
+     * @var        string
+     */
     protected $cache_dir;
+
+    /**
+     * Parent file
+     *
+     * May be a filename or "__parent__"
+     *
+     * @var        string
+     */
     protected $parent_file;
 
+    /**
+     * Stack of compiled template files
+     *
+     * @var        array
+     */
     protected $compile_stack = [];
-    protected $parent_stack  = [];
 
-    # Inclusion variables
+    /**
+     * Stack of parent template files
+     *
+     * @var        array
+     */
+    protected $parent_stack = [];
+
+    // Inclusion variables
+
+    /**
+     * Super globals
+     *
+     * @var        array
+     */
     protected static $superglobals = ['GLOBALS', '_SERVER', '_GET', '_POST', '_COOKIE', '_FILES', '_ENV', '_REQUEST', '_SESSION'];
+
+    /**
+     * Stacks of globals keys
+     *
+     * @var        array
+     */
     protected static $_k;
+
+    /**
+     * Working globals key name
+     *
+     * @var        string
+     */
     protected static $_n;
+
+    /**
+     * Working output buffer
+     *
+     * @var        string|false
+     */
     protected static $_r;
 
+    /**
+     * Constructs a new instance.
+     *
+     * @param      string  $cache_dir  The cache dir
+     * @param      string  $self_name  The self name
+     */
     public function __construct(string $cache_dir, string $self_name)
     {
         $this->setCacheDir($cache_dir);
@@ -44,20 +143,29 @@ class template
         $this->addBlock('Block', [$this, 'blockSection']);
     }
 
-    public function includeFile($attr)
+    /**
+     * Node value "include" callback
+     *
+     * Syntax: {tpl:include src="filename"}
+     *
+     * @param      array|ArrayObject  $attr   The attribute
+     *
+     * @return     string
+     */
+    public function includeFile($attr): string
     {
         if (!isset($attr['src'])) {
-            return;
+            return '';
         }
 
         $src = path::clean($attr['src']);
 
         $tpl_file = $this->getFilePath($src);
         if (!$tpl_file) {
-            return;
+            return '';
         }
         if (in_array($tpl_file, $this->compile_stack)) {
-            return;
+            return '';
         }
 
         return
@@ -66,11 +174,27 @@ class template
             '} catch (Exception $e) {} ?>' . "\n";
     }
 
+    /**
+     * Node block "Block" callback
+     *
+     * Syntax: <tpl:Block name="name-of-block">[content]</tpl:Block>
+     *
+     * @param      array|ArrayObject    $attr     The attribute
+     * @param      string               $content  The content
+     *
+     * @return     string
+     */
     public function blockSection($attr, string $content)
     {
+        // Ignore attributes and return block content only
         return $content;
     }
 
+    /**
+     * Sets the template path(s).
+     *
+     * Arguments may be a string or an array of string
+     */
     public function setPath()
     {
         $path = [];
@@ -92,12 +216,24 @@ class template
         $this->tpl_path = array_unique($path);
     }
 
+    /**
+     * Gets the template paths.
+     *
+     * @return     array
+     */
     public function getPath(): array
     {
         return $this->tpl_path;
     }
 
-    public function setCacheDir(string $dir)
+    /**
+     * Sets the cache dir.
+     *
+     * @param      string     $dir    The dir
+     *
+     * @throws     Exception
+     */
+    public function setCacheDir(string $dir): void
     {
         if (!is_dir($dir)) {
             throw new Exception($dir . ' is not a valid directory.');
@@ -110,7 +246,17 @@ class template
         $this->cache_dir = path::real($dir) . '/';
     }
 
-    public function addBlock(string $name, $callback)
+    /**
+     * Adds a node block callback.
+     *
+     * The callback signature must be: callback(array $attr, string &$content)
+     *
+     * @param      string               $name      The name
+     * @param      callable|array|null  $callback  The callback
+     *
+     * @throws     Exception
+     */
+    public function addBlock(string $name, $callback): void
     {
         if (!is_callable($callback)) {
             throw new Exception('No valid callback for ' . $name);
@@ -119,7 +265,17 @@ class template
         $this->blocks[$name] = $callback;
     }
 
-    public function addValue(string $name, $callback)
+    /**
+     * Adds a node value callback.
+     *
+     * The callback signature must be: callback(array $attr [, string $str_attr])
+     *
+     * @param      string               $name      The name
+     * @param      callable|array|null  $callback  The callback
+     *
+     * @throws     Exception
+     */
+    public function addValue(string $name, $callback): void
     {
         if (!is_callable($callback)) {
             throw new Exception('No valid callback for ' . $name);
@@ -128,21 +284,49 @@ class template
         $this->values[$name] = $callback;
     }
 
+    /**
+     * Determines if node block exists.
+     *
+     * @param      string  $name   The name
+     *
+     * @return     bool    True if block exists, False otherwise.
+     */
     public function blockExists(string $name): bool
     {
         return isset($this->blocks[$name]);
     }
 
+    /**
+     * Determines if node value exists.
+     *
+     * @param      string  $name   The name
+     *
+     * @return     bool    True if value exists, False otherwise.
+     */
     public function valueExists(string $name): bool
     {
         return isset($this->values[$name]);
     }
 
+    /**
+     * Determines if ndoe tag (value or block) exists.
+     *
+     * @param      string  $name   The name
+     *
+     * @return     bool    True if tag exists, False otherwise.
+     */
     public function tagExists(string $name): bool
     {
         return $this->blockExists($name) || $this->valueExists($name);
     }
 
+    /**
+     * Gets the node value callback.
+     *
+     * @param      string  $name   The value name
+     *
+     * @return     callable|array|false    The block callback.
+     */
     public function getValueCallback(string $name)
     {
         if ($this->valueExists($name)) {
@@ -152,6 +336,13 @@ class template
         return false;
     }
 
+    /**
+     * Gets the node block callback.
+     *
+     * @param      string  $name   The block name
+     *
+     * @return     callable|array|false    The block callback.
+     */
     public function getBlockCallback(string $name)
     {
         if ($this->blockExists($name)) {
@@ -161,17 +352,36 @@ class template
         return false;
     }
 
+    /**
+     * Gets the node blocks list.
+     *
+     * @return     array  The blocks list.
+     */
     public function getBlocksList(): array
     {
         return array_keys($this->blocks);
     }
 
+    /**
+     * Gets the node values list.
+     *
+     * @return     array  The values list.
+     */
     public function getValuesList(): array
     {
         return array_keys($this->values);
     }
 
-    public function getFile(string $file)
+    /**
+     * Gets the template file fullpath, creating it if not exist or not in cache and recent enough.
+     *
+     * @param      string     $file   The file
+     *
+     * @throws     Exception
+     *
+     * @return     string
+     */
+    public function getFile(string $file): string
     {
         $tpl_file = $this->getFilePath($file);
 
@@ -217,6 +427,13 @@ class template
         return $dest_file;
     }
 
+    /**
+     * Gets the file path.
+     *
+     * @param      string       $file   The file
+     *
+     * @return     bool|string  The file path.
+     */
     public function getFilePath(string $file)
     {
         foreach ($this->tpl_path as $p) {
@@ -228,6 +445,14 @@ class template
         return false;
     }
 
+    /**
+     * Gets the parent file path.
+     *
+     * @param      string       $previous_path  The previous path
+     * @param      string       $file           The file
+     *
+     * @return     bool|string  The parent file path.
+     */
     public function getParentFilePath(string $previous_path, string $file)
     {
         $check_file = false;
@@ -243,6 +468,13 @@ class template
         return false;
     }
 
+    /**
+     * Gets the template file content.
+     *
+     * @param      string  $________    The template filename
+     *
+     * @return     string  The data.
+     */
     public function getData(string $________): string
     {
         self::$_k = array_keys($GLOBALS);
@@ -265,29 +497,37 @@ class template
         return self::$_r;
     }
 
-    protected function getCompiledTree(string $file, &$err)
+    /**
+     * Gets the compiled tree.
+     *
+     * @param      string   $file   The file
+     * @param      string   $err    The error
+     *
+     * @return     tplNode  The compiled tree.
+     */
+    protected function getCompiledTree(string $file, string &$err): tplNode
     {
         $fc = file_get_contents($file);
 
         $this->compile_stack[] = $file;
 
-        # Remove every PHP tags
+        // Remove every PHP tags
         if ($this->remove_php) {
             $fc = preg_replace('/<\?(?=php|=|\s).*?\?>/ms', '', $fc);
         }
 
-        # Transform what could be considered as PHP short tags
+        // Transform what could be considered as PHP short tags
         $fc = preg_replace(
             '/(<\?(?!php|=|\s))(.*?)(\?>)/ms',
             '<?php echo "$1"; ?>$2<?php echo "$3"; ?>',
             $fc
         );
 
-        # Remove template comments <!-- #... -->
+        // Remove template comments <!-- #... -->
         $fc = preg_replace('/(^\s*)?<!-- #(.*?)-->/ms', '', $fc);
 
-        # Lexer part : split file into small pieces
-        # each array entry will be either a tag or plain text
+        // Lexer part : split file into small pieces
+        // each array entry will be either a tag or plain text
         $blocks = preg_split(
             '#(<tpl:\w+[^>]*>)|(</tpl:\w+>)|({{tpl:\w+[^}]*}})#msu',
             $fc,
@@ -295,7 +535,7 @@ class template
             PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY
         );
 
-        # Next : build semantic tree from tokens.
+        // Next : build semantic tree from tokens.
         $rootNode          = new tplNode();
         $node              = $rootNode;
         $errors            = [];
@@ -384,7 +624,16 @@ class template
         return $rootNode;
     }
 
-    protected function compileFile(string $file)
+    /**
+     * Compile a template file
+     *
+     * @param      string     $file   The file
+     *
+     * @throws     Exception
+     *
+     * @return     string
+     */
+    protected function compileFile(string $file): string
     {
         $tree = null;
         $err  = '';
@@ -418,31 +667,56 @@ class template
         }
     }
 
-    public function compileBlockNode(string $tag, $attr, string $content)
+    /**
+     * Compile block node
+     *
+     * @param      string               $tag      The tag
+     * @param      array|ArrayObject    $attr     The attribute
+     * @param      string               $content  The content
+     *
+     * @return     string
+     */
+    public function compileBlockNode(string $tag, $attr, string $content): string
     {
         $res = '';
         if (isset($this->blocks[$tag])) {
             $res .= call_user_func($this->blocks[$tag], $attr, $content);
-        } elseif ($this->unknown_block_handler != null) {
+        } elseif (is_callable($this->unknown_block_handler)) {
             $res .= call_user_func($this->unknown_block_handler, $tag, $attr, $content);
         }
 
         return $res;
     }
 
-    public function compileValueNode(string $tag, $attr, string $str_attr)
+    /**
+     * Compile value node
+     *
+     * @param      string               $tag       The tag
+     * @param      array|ArrayObject    $attr      The attribute
+     * @param      string               $str_attr  The string attribute
+     *
+     * @return     string
+     */
+    public function compileValueNode(string $tag, $attr, string $str_attr): string
     {
         $res = '';
         if (isset($this->values[$tag])) {
             $res .= call_user_func($this->values[$tag], $attr, ltrim((string) $str_attr));
-        } elseif ($this->unknown_value_handler != null) {
+        } elseif (is_callable($this->unknown_value_handler)) {
             $res .= call_user_func($this->unknown_value_handler, $tag, $attr, $str_attr);
         }
 
         return $res;
     }
 
-    protected function compileValue(array $match)
+    /**
+     * Compile value
+     *
+     * @param      array   $match  The match
+     *
+     * @return     string
+     */
+    protected function compileValue(array $match): string
     {
         $v        = $match[1];
         $attr     = isset($match[2]) ? $this->getAttrs($match[2]) : [];
@@ -451,20 +725,33 @@ class template
         return call_user_func($this->values[$v], $attr, ltrim((string) $str_attr));
     }
 
-    public function setUnknownValueHandler($callback)
+    /**
+     * Sets the unknown value handler.
+     *
+     * @param      callable|array|null  $callback  The callback
+     */
+    public function setUnknownValueHandler($callback): void
     {
-        if (is_callable($callback)) {
-            $this->unknown_value_handler = $callback;
-        }
+        $this->unknown_value_handler = $callback;
     }
 
-    public function setUnknownBlockHandler($callback)
+    /**
+     * Sets the unknown block handler.
+     *
+     * @param      callable|array|null  $callback  The callback
+     */
+    public function setUnknownBlockHandler($callback): void
     {
-        if (is_callable($callback)) {
-            $this->unknown_block_handler = $callback;
-        }
+        $this->unknown_block_handler = $callback;
     }
 
+    /**
+     * Gets the attributes.
+     *
+     * @param      string  $str    The string
+     *
+     * @return     array   The attributes.
+     */
     protected function getAttrs(string $str): array
     {
         $res = [];

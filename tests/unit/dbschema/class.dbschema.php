@@ -1,4 +1,5 @@
 <?php
+
 # ***** BEGIN LICENSE BLOCK *****
 # This file is part of Clearbricks.
 # Copyright (c) 2003-2013 Olivier Meunier & Association Dotclear
@@ -82,15 +83,13 @@ class dbSchema extends atoum
 
         $rs_controller              = new \atoum\atoum\mock\controller();
         $rs_controller->__construct = function () {
-            $this->__fetch = false;
+            $this->__fetch          = false;
         };
 
-        $rs                          = new \mock\record(true, ['con' => $con], $rs_controller);
-        $this->calling($con)->select = function () use ($rs) {
-            return $rs;
-        };
+        $rs = new \mock\record(true, ['con' => $con], $rs_controller);
 
-        $this->calling($rs)->fetch = function () use ($row) {
+        $this->calling($con)->select = fn () => $rs;
+        $this->calling($rs)->fetch   = function () use ($row) {
             // need to deal with several rows
             if (!$this->__fetch) {
                 $this->__fetch = true;
@@ -100,13 +99,8 @@ class dbSchema extends atoum
 
             return false;
         };
-
-        $this->calling($rs)->__get = function ($n) use ($row) {
-            return $row[$n];
-        };
-        $this->calling($rs)->f = function ($n) use ($row) {
-            return $row[$n];
-        };
+        $this->calling($rs)->__get = fn ($n) => (string) $row[$n];
+        $this->calling($rs)->f     = fn ($n) => (string) $row[$n];
 
         $table_name = $this->prefix . 'blog';
 
@@ -130,15 +124,13 @@ class dbSchema extends atoum
 
         $rs_controller              = new \atoum\atoum\mock\controller();
         $rs_controller->__construct = function () {
-            $this->__fetch = false;
+            $this->__fetch          = false;
         };
 
-        $rs                          = new \mock\record(true, ['con' => $con], $rs_controller);
-        $this->calling($con)->select = function () use ($rs) {
-            return $rs;
-        };
+        $rs = new \mock\record(true, ['con' => $con], $rs_controller);
 
-        $this->calling($rs)->fetch = function () use ($row) {
+        $this->calling($con)->select = fn () => $rs;
+        $this->calling($rs)->fetch   = function () use ($row) {
             // need to deal with several rows
             if (!$this->__fetch) {
                 $this->__fetch = true;
@@ -148,13 +140,8 @@ class dbSchema extends atoum
 
             return false;
         };
-
-        $this->calling($rs)->__get = function ($n) use ($row) {
-            return $row[$n];
-        };
-        $this->calling($rs)->f = function ($n) use ($row) {
-            return $row[$n];
-        };
+        $this->calling($rs)->__get = fn ($n) => (string) $row[$n];
+        $this->calling($rs)->f     = fn ($n) => (string) $row[$n];
 
         $table_name = $this->prefix . 'blog';
 

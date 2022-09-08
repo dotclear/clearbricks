@@ -15,15 +15,33 @@
  */
 class htmlFilter
 {
+    /**
+     * Parser handle
+     *
+     * @var XMLParser
+     */
     private $parser;
+
+    /**
+     * HTML content
+     *
+     * @var string
+     */
     public $content;
 
+    /**
+     * Current tag
+     *
+     * @var string
+     */
     private $tag;
 
     /**
-     * Constructor
+     * Constructs a new instance.
      *
-     * Creates a new instance of the class.
+     * @param      bool  $keep_aria  Keep aria attributes
+     * @param      bool  $keep_data  Keep data elements
+     * @param      bool  $keep_js    Keep javascript elements
      */
     public function __construct(bool $keep_aria = false, bool $keep_data = false, bool $keep_js = false)
     {
@@ -84,10 +102,12 @@ class htmlFilter
      * $filter->removeHosts('javascript');
      * ?>
      * </code>
+     *
+     * @param      mixed  ...$args  The arguments
      */
-    public function removeHosts()
+    public function removeHosts(...$args): void
     {
-        foreach ($this->argsArray(func_get_args()) as $host) {
+        foreach ($this->argsArray([...$args]) as $host) {
             $this->removed_hosts[] = $host;
         }
     }
@@ -103,10 +123,12 @@ class htmlFilter
      * $filter->removeTags('frame','script');
      * ?>
      * </code>
+     *
+     * @param      mixed  ...$args  The arguments
      */
-    public function removeTags()
+    public function removeTags(...$args): void
     {
-        foreach ($this->argsArray(func_get_args()) as $tag) {
+        foreach ($this->argsArray([...$args]) as $tag) {
             $this->removed_tags[] = $tag;
         }
     }
@@ -122,10 +144,12 @@ class htmlFilter
      * $filter->removeAttributes('onclick','onunload');
      * ?>
      * </code>
+     *
+     * @param      mixed  ...$args  The arguments
      */
-    public function removeAttributes()
+    public function removeAttributes(...$args): void
     {
-        foreach ($this->argsArray(func_get_args()) as $a) {
+        foreach ($this->argsArray([...$args]) as $a) {
             $this->removed_attrs[] = $a;
         }
     }
@@ -141,8 +165,10 @@ class htmlFilter
      * $filter->removeAttributes(['onload','onerror']);
      * ?>
      * </code>
+     *
+     * @param      array  $attrs  The attributes
      */
-    public function removeArrayAttributes($attrs)
+    public function removeArrayAttributes(array $attrs): void
     {
         foreach ($attrs as $a) {
             $this->removed_attrs[] = $a;
@@ -160,10 +186,12 @@ class htmlFilter
      * $filter->removeAttributes('data-.*');
      * ?>
      * </code>
+     *
+     * @param      mixed  ...$args  The arguments
      */
-    public function removePatternAttributes()
+    public function removePatternAttributes(...$args): void
     {
-        foreach ($this->argsArray(func_get_args()) as $a) {
+        foreach ($this->argsArray([...$args]) as $a) {
             $this->removed_pattern_attrs[] = $a;
         }
     }
@@ -180,13 +208,13 @@ class htmlFilter
      * $filter->removeTagAttributes(['a' => ['src','title']]);
      * ?>
      * </code>
+     *
+     * @param      string  $tag         The tag
+     * @param      mixed   ...$args     The arguments
      */
-    public function removeTagAttributes($tag)
+    public function removeTagAttributes(string $tag, ...$args): void
     {
-        $args = $this->argsArray(func_get_args());
-        array_shift($args);
-
-        foreach ($args as $a) {
+        foreach ($this->argsArray([...$args]) as $a) {
             $this->removed_tag_attrs[$tag][] = $a;
         }
     }
@@ -196,12 +224,12 @@ class htmlFilter
      *
      * Creates a list of known tags.
      *
-     * @param array        $t        Tags array
+     * @param array        $tags        Tags array
      */
-    public function setTags(array $t)
+    public function setTags(array $tags): void
     {
-        if (is_array($t)) {
-            $this->tags = $t;
+        if (is_array($tags)) {
+            $this->tags = $tags;
         }
     }
 
@@ -216,7 +244,7 @@ class htmlFilter
      *
      * @return string               Filtered string
      */
-    public function apply(string $str, bool $tidy = true)
+    public function apply(string $str, bool $tidy = true): string
     {
         if ($tidy && extension_loaded('tidy') && class_exists('tidy')) {
             $config = [
@@ -264,40 +292,73 @@ class htmlFilter
         return $this->content;
     }
 
+    /**
+     * Mini Tidy, used if tidy extension is not loaded (see above)
+     *
+     * @param      string  $str    The string
+     *
+     * @return     mixed
+     */
     private function miniTidy(string $str)
     {
-        $str = preg_replace_callback('%(<(?!(\s*?/|!)).*?>)%msu', [$this, 'miniTidyFixTag'], $str);
-
-        return $str;
+        return preg_replace_callback('%(<(?!(\s*?/|!)).*?>)%msu', [$this, 'miniTidyFixTag'], $str);
     }
 
-    private function miniTidyFixTag(array $m)
+    /**
+     * Tag (with its attributes) helper for miniTidy(), see above
+     *
+     * @param      array   $match  The match
+     *
+     * @return     mixed
+     */
+    private function miniTidyFixTag(array $match)
     {
-        # Non quoted attributes
-        return preg_replace_callback('%(=")(.*?)(")%msu', [$this, 'miniTidyFixAttr'], $m[1]);
+        return preg_replace_callback('%(=")(.*?)(")%msu', [$this, 'miniTidyFixAttr'], $match[1]);
     }
 
-    private function miniTidyFixAttr(array $m)
+    /**
+     * Attribute (with its value) helper for miniTidyFixTag(), see above
+     *
+     * Escape entities in attributes value
+     *
+     * @param      array   $match  The match
+     *
+     * @return     string
+     */
+    private function miniTidyFixAttr(array $match): string
     {
-        # Escape entities in attributes value
-        return $m[1] . html::escapeHTML(html::decodeEntities($m[2])) . $m[3];
+        return $match[1] . html::escapeHTML(html::decodeEntities($match[2])) . $match[3];
     }
 
-    private function argsArray($args)
+    /**
+     * Return a (almost) flatten and cleaned array
+     *
+     * @param      array  $args   The arguments
+     *
+     * @return     array
+     */
+    private function argsArray(array $args): array
     {
-        $A = [];
-        foreach ($args as $v) {
-            if (is_array($v)) {
-                $A = array_merge($A, $v);
+        $result = [];
+        foreach ($args as $arg) {
+            if (is_array($arg)) {
+                $result = array_merge($result, $arg);
             } else {
-                $A[] = (string) $v;
+                $result[] = (string) $arg;
             }
         }
 
-        return array_unique($A);
+        return array_unique($result);
     }
 
-    private function tag_open($parser, $tag, $attrs)
+    /**
+     * xml_set_element_handler() open tag handler
+     *
+     * @param      XMLParser  $parser  The parser
+     * @param      string     $tag     The tag
+     * @param      array      $attrs   The attributes
+     */
+    private function tag_open(XMLParser $parser, string $tag, array $attrs): void
     {
         $this->tag = strtolower($tag);
 
@@ -316,19 +377,39 @@ class htmlFilter
         }
     }
 
-    private function tag_close($parser, $tag)
+    /**
+     * xml_set_element_handler() close tag handler
+     *
+     * @param      XMLParser  $parser  The parser
+     * @param      string     $tag     The tag
+     */
+    private function tag_close(XMLParser $parser, string $tag): void
     {
         if (!in_array($tag, $this->single_tags) && $this->allowedTag($tag)) {
             $this->content .= '</' . $tag . '>';
         }
     }
 
-    private function cdata($parser, $cdata)
+    /**
+     * xml_set_character_data_handler() data handler
+     *
+     * @param      XMLParser  $parser  The parser
+     * @param      string     $cdata   The cdata
+     */
+    private function cdata(XMLParser $parser, string $cdata): void
     {
         $this->content .= html::escapeHTML($cdata);
     }
 
-    private function getAttrs($tag, $attrs)
+    /**
+     * Gets the allowed attributes.
+     *
+     * @param      string  $tag    The tag
+     * @param      array   $attrs  The attributes
+     *
+     * @return     string  The attributes.
+     */
+    private function getAttrs(string $tag, array $attrs): string
     {
         $res = '';
         foreach ($attrs as $n => $v) {
@@ -340,7 +421,15 @@ class htmlFilter
         return $res;
     }
 
-    private function getAttr($attr, $value)
+    /**
+     * Gets the attribute with its value.
+     *
+     * @param      string  $attr   The attribute
+     * @param      string  $value  The value
+     *
+     * @return     string  The attribute.
+     */
+    private function getAttr(string $attr, string $value): string
     {
         $value = preg_replace('/\xad+/', '', $value);
 
@@ -351,10 +440,17 @@ class htmlFilter
         return ' ' . $attr . '="' . html::escapeHTML($value) . '"';
     }
 
-    private function getURI($uri)
+    /**
+     * Sanitize an URI value
+     *
+     * @param      string  $uri    The uri
+     *
+     * @return     string  The uri.
+     */
+    private function getURI(string $uri): string
     {
         // Trim URI
-        $uri = trim((string) $uri);
+        $uri = trim($uri);
         // Remove escaped Unicode characters
         $uri = preg_replace('/\\\u[a-fA-F0-9]{4}/', '', $uri);
         // Sanitize and parse URL
@@ -370,14 +466,27 @@ class htmlFilter
         return '#';
     }
 
-    private function allowedTag($tag)
+    /**
+     * Check if a tag is allowed
+     *
+     * @param      string  $tag    The tag
+     *
+     * @return     bool
+     */
+    private function allowedTag(string $tag): bool
     {
-        return
-        !in_array($tag, $this->removed_tags)
-        && isset($this->tags[$tag]);
+        return !in_array($tag, $this->removed_tags) && isset($this->tags[$tag]);
     }
 
-    private function allowedAttr($tag, $attr)
+    /**
+     * Check if a tag's attribute is allowed
+     *
+     * @param      string  $tag    The tag
+     * @param      string  $attr   The attribute
+     *
+     * @return     bool    ( description_of_the_return_value )
+     */
+    private function allowedAttr(string $tag, string $attr): bool
     {
         if (in_array($attr, $this->removed_attrs)) {
             return false;
@@ -387,17 +496,25 @@ class htmlFilter
             return false;
         }
 
-        if (!isset($this->tags[$tag]) || (!in_array($attr, $this->tags[$tag]) && // Not in tag allowed attributes
-                !in_array($attr, $this->gen_attrs) && // Not in allowed generic attributes
-                !in_array($attr, $this->event_attrs) && // Not in allowed event attributes
-                !$this->allowedPatternAttr($attr))) {     // Not in allowed grep attributes
+        if (!isset($this->tags[$tag]) || (!in_array($attr, $this->tags[$tag]) && !in_array($attr, $this->gen_attrs) && !in_array($attr, $this->event_attrs) && !$this->allowedPatternAttr($attr))) {
+            // Not in tag allowed attributes and
+            // Not in allowed generic attributes and
+            // Not in allowed event attributes and
+            // Not in allowed grep attributes
             return false;
         }
 
         return true;
     }
 
-    private function allowedPatternAttr($attr)
+    /**
+     * Check if a tag's attribute is in allowed grep attributes
+     *
+     * @param      string  $attr   The attribute
+     *
+     * @return     bool
+     */
+    private function allowedPatternAttr(string $attr): bool
     {
         foreach ($this->removed_pattern_attrs as $pattern) {
             if (preg_match('/' . $pattern . '/u', $attr)) {
@@ -416,12 +533,47 @@ class htmlFilter
     /* Tags and attributes definitions
      * Source: https://developer.mozilla.org/fr/docs/Web/HTML/
     ------------------------------------------------------- */
-    private $removed_tags          = [];
-    private $removed_attrs         = [];
-    private $removed_pattern_attrs = [];
-    private $removed_tag_attrs     = [];
-    private $removed_hosts         = [];
 
+    /**
+     * Stack of removed tags
+     *
+     * @var        array
+     */
+    private $removed_tags = [];
+
+    /**
+     * Stack of removed attributes
+     *
+     * @var        array
+     */
+    private $removed_attrs = [];
+
+    /**
+     * Stack of removed attibutes (via pattern)
+     *
+     * @var        array
+     */
+    private $removed_pattern_attrs = [];
+
+    /**
+     * Stack of removed tags' attributes
+     *
+     * @var        array
+     */
+    private $removed_tag_attrs = [];
+
+    /**
+     * Stack of removed hosts
+     *
+     * @var        array
+     */
+    private $removed_hosts = [];
+
+    /**
+     * List of allowed schemes (URI)
+     *
+     * @var        array
+     */
     private $allowed_schemes = [
         'data',
         'http',
@@ -431,7 +583,11 @@ class htmlFilter
         'news',
     ];
 
-    // List of attributes which allow URL value
+    /**
+     * List of attributes which allow URI value
+     *
+     * @var        array
+     */
     private $uri_attrs = [
         'action',
         'background',
@@ -449,7 +605,11 @@ class htmlFilter
         'usemap',
     ];
 
-    // List of generic attributes
+    /**
+     * List of generic attributes
+     *
+     * @var        array
+     */
     private $gen_attrs = [
         'accesskey',
         'class',
@@ -476,7 +636,11 @@ class htmlFilter
         'xml:base',
         'xml:lang', ];
 
-    // List of events attributes
+    /**
+     * List of events attributes
+     *
+     * @var        array
+     */
     private $event_attrs = [
         'onabort',
         'onafterprint',
@@ -556,13 +720,21 @@ class htmlFilter
         'onwaiting',
     ];
 
-    // List of pattern'ed attributes
+    /**
+     * List of pattern'ed attributes
+     *
+     * @var        array
+     */
     private $grep_attrs = [
         '^aria-[\-\w]+$',
         '^data-[\-\w].*$',
     ];
 
-    // List of single tags
+    /**
+     * List of single tags
+     *
+     * @var        array
+     */
     private $single_tags = [
         'area',
         'base',
@@ -584,6 +756,11 @@ class htmlFilter
         'wbr',
     ];
 
+    /**
+     * List of tags and their attributes
+     *
+     * @var        array
+     */
     private $tags = [
         // A
         'a' => ['charset', 'coords', 'download', 'href', 'hreflang', 'name', 'ping', 'referrerpolicy',

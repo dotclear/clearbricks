@@ -82,7 +82,7 @@ class formLabel extends formComponent
             '<%1$s>%2$s %3$s</%4$s>', // Component inside label with label text before it
             '<%1$s>%3$s %2$s</%4$s>', // Component inside label with label text after it
             '<%1$s>%2$s</%4$s> %3$s', // Component after label (for attribute will be used)
-            '%3$s <%1$s>%2$s</%4$s>',  // Component before label (for attribute will be used)
+            '%3$s <%1$s>%2$s</%4$s>', // Component before label (for attribute will be used)
         ];
 
         if ($this->_position < 0 || $this->_position > count($formats)) {

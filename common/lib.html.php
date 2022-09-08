@@ -11,9 +11,13 @@
  */
 class html
 {
-    public static $url_root;
-    public static $absolute_regs = [     ///< Array of regular expression for {@link absoluteURLs()}
-        '/((?:action|background|cite|classid|code|codebase|data|download|formaction|href|longdesc|profile|src|usemap)=")(.*?)(")/msu',
+    /**
+     * Array of regular expression for {@link absoluteURLs()}
+     *
+     * @var        array
+     */
+    public static $absolute_regs = [
+        '/((?:action|cite|data|download|formaction|href|imagesrcset|itemid|itemprop|itemtype|ping|poster|src|srcset)=")(.*?)(")/msu',
     ];
 
     /**
@@ -22,6 +26,7 @@ class html
      * Replaces HTML special characters by entities.
      *
      * @param     string $str    String to escape
+     *
      * @return    string
      */
     public static function escapeHTML(?string $str): string
@@ -36,6 +41,7 @@ class html
      *
      * @param string        $str            String to protect
      * @param string|bool   $keep_special   Keep special characters: &gt; &lt; &amp;
+     *
      * @return    string
      */
     public static function decodeEntities(?string $str, $keep_special = false): string
@@ -64,6 +70,7 @@ class html
      * Removes every tags, comments, cdata from string
      *
      * @param string    $str        String to clean
+     *
      * @return    string
      */
     public static function clean(?string $str): string
@@ -79,6 +86,7 @@ class html
      * Returns a protected JavaScript string
      *
      * @param string    $str        String to protect
+     *
      * @return    string
      */
     public static function escapeJS(?string $str): string
@@ -96,6 +104,7 @@ class html
      * Returns an escaped URL string for HTML content
      *
      * @param string    $str        String to escape
+     *
      * @return    string
      */
     public static function escapeURL(?string $str): string
@@ -108,7 +117,8 @@ class html
      *
      * Encode every parts between / in url
      *
-     * @param string    $str        String to satinyze
+     * @param string    $str        String to satinize
+     *
      * @return    string
      */
     public static function sanitizeURL(?string $str): string
@@ -122,6 +132,7 @@ class html
      * Removes host part in URL
      *
      * @param string    $url        URL to transform
+     *
      * @return    string
      */
     public static function stripHostURL(?string $url): string
@@ -135,23 +146,22 @@ class html
      * Appends $root URL to URIs attributes in $str.
      *
      * @param string    $str        HTML to transform
-     * @param string    $root    Base URL
+     * @param string    $root       Base URL
+     *
      * @return    string
      */
     public static function absoluteURLs(?string $str, ?string $root): string
     {
-        self::$url_root = $root;
-
-        foreach (self::$absolute_regs as $r) {
+        foreach (self::$absolute_regs as $pattern) {
             $str = preg_replace_callback(
-                $r,
-                function (array $m) {
-                    $url = $m[2];
+                $pattern,
+                function (array $matches) use ($root) {
+                    $url = $matches[2];
 
-                    $link = str_replace('%', '%%', $m[1]) . '%s' . str_replace('%', '%%', $m[3]);
-                    $host = preg_replace('|^([a-z]{3,}://)(.*?)/(.*)$|', '$1$2', self::$url_root);
+                    $link = str_replace('%', '%%', $matches[1]) . '%s' . str_replace('%', '%%', $matches[3]);
+                    $host = preg_replace('|^([a-z]{3,}://)(.*?)/(.*)$|', '$1$2', $root);
 
-                    $parse = parse_url($m[2]);
+                    $parse = parse_url($matches[2]);
                     if (empty($parse['scheme'])) {
                         if (strpos($url, '//') === 0) {
                             // Nothing to do. Already an absolute URL.
@@ -160,12 +170,12 @@ class html
                             $url = $host . $url;
                         } elseif (strpos($url, '#') === 0) {
                             // Beginning by a # return root + hash
-                            $url = self::$url_root . $url;
-                        } elseif (preg_match('|/$|', self::$url_root)) {
+                            $url = $root . $url;
+                        } elseif (preg_match('|/$|', $root)) {
                             // Root is ending by / return root + url
-                            $url = self::$url_root . $url;
+                            $url = $root . $url;
                         } else {
-                            $url = dirname(self::$url_root) . '/' . $url;
+                            $url = dirname($root) . '/' . $url;
                         }
                     }
 
@@ -174,8 +184,6 @@ class html
                 $str
             );
         }
-
-        self::$url_root = null;
 
         return $str;
     }

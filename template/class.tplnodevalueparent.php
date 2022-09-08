@@ -11,6 +11,13 @@
  */
 class tplNodeValueParent extends tplNodeValue
 {
+    /**
+     * Compile node value parent
+     *
+     * @param  template     $tpl    The current template engine instance
+     *
+     * @return     string
+     */
     public function compile(template $tpl): string
     {
         // simply ask currently being displayed to display itself!

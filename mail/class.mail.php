@@ -18,33 +18,35 @@ class mail
      * be used instead of PHP mail() function. _mail() function should have the
      * same signature. Headers could be provided as a string or an array.
      *
-     * @param string        $to            Email destination
-     * @param string        $subject        Email subject
-     * @param string        $message        Email message
-     * @param string|array    $headers        Email headers
-     * @param string        $p            UNIX mail additionnal parameters
-     * @return boolean                    true on success
+     * @param string            $to           Email destination
+     * @param string            $subject      Email subject
+     * @param string            $message      Email message
+     * @param string|array      $headers      Email headers
+     * @param string            $params       UNIX mail additionnal parameters
+     *
+     * @return boolean                        true on success
      */
-    public static function sendMail($to, $subject, $message, $headers = null, $p = null)
+    public static function sendMail(string $to, string $subject, string $message, $headers = null, ?string $params = null): bool
     {
         /**
          * User defined mail function
          *
-         * @var        callable $f
+         * @var callable  $user_defined_mail
          */
-        $f   = function_exists('_mail') ? '_mail' : null;
+        $user_defined_mail = function_exists('_mail') ? '_mail' : null;
+
         $eol = trim((string) ini_get('sendmail_path')) ? "\n" : "\r\n";
 
         if (is_array($headers)) {
             $headers = implode($eol, $headers);
         }
 
-        if ($f == null) {
-            if (!@mail($to, $subject, $message, $headers, $p)) {
+        if ($user_defined_mail == null) {
+            if (!@mail($to, $subject, $message, $headers, $params)) {
                 throw new Exception('Unable to send email');
             }
         } else {
-            call_user_func($f, $to, $subject, $message, $headers, $p);
+            $user_defined_mail($to, $subject, $message, $headers, $params);
         }
 
         return true;
@@ -56,41 +58,19 @@ class mail
      * Returns MX records sorted by weight for a given host.
      *
      * @param string    $host        Hostname
+     *
      * @return array|false
      */
-    public static function getMX($host)
+    public static function getMX(string $host)
     {
-        if (!getmxrr($host, $mx_h, $mx_w) || count($mx_h)) {
+        if (!getmxrr($host, $mx_hosts, $mx_weights) || count($mx_hosts)) {
             return false;
         }
 
-        $res = [];
-
-        for ($i = 0; $i < count($mx_h); $i++) {
-            $res[$mx_h[$i]] = $mx_w[$i];
-        }
-
+        $res = array_combine($mx_hosts, $mx_weights);
         asort($res);
 
         return $res;
-    }
-
-    /**
-     * Quoted printable header
-     *
-     * Encodes given string as a quoted printable mail header.
-     *
-     * @param      string $str String to encode
-     * @param      string $charset Charset (default UTF-8)
-     * @return     string
-     */
-    public static function QPHeader($str, $charset = 'UTF-8')
-    {
-        if (!preg_match('/[^\x00-\x3C\x3E-\x7E]/', $str)) {
-            return $str;
-        }
-
-        return '=?' . $charset . '?Q?' . text::QPEncode($str) . '?=';
     }
 
     /**
@@ -98,11 +78,12 @@ class mail
      *
      * Encodes given string as a base64 mail header.
      *
-     * @param      string $str String to encode
-     * @param      string $charset Charset (default UTF-8)
+     * @param string   $str     String to encode
+     * @param string   $charset Charset (default UTF-8)
+     *
      * @return string
      */
-    public static function B64Header($str, $charset = 'UTF-8')
+    public static function B64Header(string $str, string $charset = 'UTF-8'): string
     {
         if (!preg_match('/[^\x00-\x3C\x3E-\x7E]/', $str)) {
             return $str;

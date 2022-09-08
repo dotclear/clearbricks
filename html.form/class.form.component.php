@@ -30,14 +30,16 @@ abstract class formComponent
     /**
      * Call statically new instance
      *
+     * Use formXxx::init(...$args) to statically create a new instance
+     *
      * @return object New formXxx instance
      */
-    public static function init()
+    public static function init(...$args)
     {
-        $c = get_called_class();
+        $class = get_called_class();
 
         /* @phpstan-ignore-next-line */
-        return new $c(...func_get_args());
+        return new $class(...$args);
     }
 
     /**
@@ -49,11 +51,7 @@ abstract class formComponent
      */
     public function __get(string $property)
     {
-        if (array_key_exists($property, $this->_data)) {
-            return $this->_data[$property];
-        }
-
-        return null;
+        return array_key_exists($property, $this->_data) ? $this->_data[$property] : null;
     }
 
     /**
@@ -88,7 +86,7 @@ abstract class formComponent
      *
      * @param      string  $property  The property
      */
-    public function __unset(string $property)
+    public function __unset(string $property): void
     {
         unset($this->_data[$property]);
     }
