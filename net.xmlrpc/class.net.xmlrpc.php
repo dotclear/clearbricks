@@ -265,7 +265,7 @@ class xmlrpcMessage
     /**
      * The XML parser
      *
-     * @var XMLParser
+     * @var XMLParser|resource
      */
     protected $_parser;
 
@@ -349,11 +349,11 @@ class xmlrpcMessage
     /**
      * xml_set_element_handler() start handler
      *
-     * @param      XMLParser    $parser  The parser
-     * @param      string       $tag     The tag
-     * @param      array        $attr    The attribute
+     * @param      XMLParser|resource   $parser  The parser
+     * @param      string               $tag     The tag
+     * @param      array                $attr    The attribute
      */
-    protected function tag_open(XMLParser $parser, string $tag, array $attr): void
+    protected function tag_open($parser, string $tag, array $attr): void
     {
         $this->_currentTag = $tag;
 
@@ -381,10 +381,10 @@ class xmlrpcMessage
     /**
      * xml_set_character_data_handler() data handler
      *
-     * @param      XMLParser  $parser  The parser
-     * @param      string     $cdata   The cdata
+     * @param      XMLParser|resource   $parser  The parser
+     * @param      string               $cdata   The cdata
      */
-    protected function cdata(XMLParser $parser, string $cdata): void
+    protected function cdata($parser, string $cdata): void
     {
         $this->_currentTagContents .= $cdata;
     }
@@ -392,10 +392,10 @@ class xmlrpcMessage
     /**
      * xml_set_element_handler() start handler
      *
-     * @param      XMLParser  $parser  The parser
-     * @param      string     $tag     The tag
+     * @param      XMLParser|resource   $parser  The parser
+     * @param      string               $tag     The tag
      */
-    protected function tag_close(XMLParser $parser, string $tag): void
+    protected function tag_close($parser, string $tag): void
     {
         $valueFlag = false;
         $value     = null;

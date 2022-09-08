@@ -18,7 +18,7 @@ class htmlFilter
     /**
      * Parser handle
      *
-     * @var XMLParser
+     * @var XMLParser|resource
      */
     private $parser;
 
