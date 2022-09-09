@@ -18,7 +18,7 @@ class htmlFilter
     /**
      * Parser handle
      *
-     * @var XMLParser|resource
+     * @var mixed   resource|XMLParser
      */
     private $parser;
 
@@ -354,7 +354,7 @@ class htmlFilter
     /**
      * xml_set_element_handler() open tag handler
      *
-     * @param      XMLParser|resource   $parser  The parser
+     * @param      mixed                $parser  The parser (resource|XMLParser)
      * @param      string               $tag     The tag
      * @param      array                $attrs   The attributes
      */
@@ -380,7 +380,7 @@ class htmlFilter
     /**
      * xml_set_element_handler() close tag handler
      *
-     * @param      XMLParser|resource   $parser  The parser
+     * @param      mixed                $parser  The parser (resource|XMLParser)
      * @param      string               $tag     The tag
      */
     private function tag_close($parser, string $tag): void
@@ -393,7 +393,7 @@ class htmlFilter
     /**
      * xml_set_character_data_handler() data handler
      *
-     * @param      XMLParser|resource   $parser  The parser
+     * @param      mixed                $parser  The parser (resource|XMLParser)
      * @param      string               $cdata   The cdata
      */
     private function cdata($parser, string $cdata): void

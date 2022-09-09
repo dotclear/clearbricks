@@ -265,7 +265,7 @@ class xmlrpcMessage
     /**
      * The XML parser
      *
-     * @var XMLParser|resource
+     * @var mixed   resource|XMLParser
      */
     protected $_parser;
 
@@ -349,7 +349,7 @@ class xmlrpcMessage
     /**
      * xml_set_element_handler() start handler
      *
-     * @param      XMLParser|resource   $parser  The parser
+     * @param      mixed                $parser  The parser (resource|XMLParser)
      * @param      string               $tag     The tag
      * @param      array                $attr    The attribute
      */
@@ -381,7 +381,7 @@ class xmlrpcMessage
     /**
      * xml_set_character_data_handler() data handler
      *
-     * @param      XMLParser|resource   $parser  The parser
+     * @param      mixed                $parser  The parser (resource|XMLParser)
      * @param      string               $cdata   The cdata
      */
     protected function cdata($parser, string $cdata): void
@@ -392,7 +392,7 @@ class xmlrpcMessage
     /**
      * xml_set_element_handler() start handler
      *
-     * @param      XMLParser|resource   $parser  The parser
+     * @param      mixed                $parser  The parser (resource|XMLParser)
      * @param      string               $tag     The tag
      */
     protected function tag_close($parser, string $tag): void
