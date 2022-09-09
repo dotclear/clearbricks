@@ -981,6 +981,7 @@ class netHttp extends netSocket
      */
     public static function quickGet(string $url, ?string $output = null)
     {
+        $path = '';
         if (($client = self::initClient($url, $path)) === false) {
             return false;
         }
@@ -1004,6 +1005,7 @@ class netHttp extends netSocket
      */
     public static function quickPost(string $url, array $data, ?string $output = null)
     {
+        $path = '';
         if (($client = self::initClient($url, $path)) === false) {
             return false;
         }
@@ -1025,6 +1027,12 @@ class netHttp extends netSocket
      */
     public static function initClient(string $url, string &$path)
     {
+        $ssl  = false;
+        $host = '';
+        $port = 0;
+        $user = '';
+        $pass = '';
+
         if (!self::readUrl($url, $ssl, $host, $port, $path, $user, $pass)) {
             return false;
         }

@@ -172,6 +172,13 @@ class feedReader extends netHttp
      */
     protected function getFeed(string $url)
     {
+        $ssl  = false;
+        $host = '';
+        $port = 0;
+        $path = '';
+        $user = '';
+        $pass = '';
+
         if (!self::readURL($url, $ssl, $host, $port, $path, $user, $pass)) {
             return false;
         }
