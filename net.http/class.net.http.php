@@ -1075,7 +1075,7 @@ class netHttp extends netSocket
 
         $scheme = $bits['scheme'];
         $host   = $bits['host'];
-        $port   = $bits['port'] ? (int) $bits['host'] : 0;
+        $port   = isset($bits['port']) ? (int) $bits['host'] : 0;
         $path   = $bits['path'] ?? '/';
         $user   = $bits['user'] ?? null;
         $pass   = $bits['pass'] ?? null;
