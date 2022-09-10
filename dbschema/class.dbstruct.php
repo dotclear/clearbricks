@@ -127,7 +127,7 @@ class dbStruct
             # Get indexes
             $indexes = $schema->getIndexes($table_name);
             foreach ($indexes as $index) {
-                $index->index($index['name'], $index['type'], ...$index['cols']);
+                $table->index($index['name'], $index['type'], ...$index['cols']);
             }
 
             # Get foreign keys
