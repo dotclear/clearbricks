@@ -389,9 +389,7 @@ class dt
             return;
         }
 
-        if (!ini_get('safe_mode')) {
-            putenv('TZ=' . $timezone);
-        }
+        putenv('TZ=' . $timezone);
     }
 
     /**
