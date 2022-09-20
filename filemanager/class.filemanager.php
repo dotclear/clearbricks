@@ -399,7 +399,7 @@ class filemanager
      *
      * @param string    $name            Directory name
      */
-    public function makeDir($name): void
+    public function makeDir(?string $name): void
     {
         files::makeDir($this->pwd . '/' . path::clean($name));
     }
@@ -412,7 +412,7 @@ class filemanager
      * @param string    $src_path            Source file path
      * @param string    $dst_path            Destination file path
      */
-    public function moveFile($src_path, $dst_path): void
+    public function moveFile(?string $src_path, ?string $dst_path): void
     {
         $src_path = $this->root . '/' . path::clean($src_path);
         $dst_path = $this->root . '/' . path::clean($dst_path);
@@ -446,7 +446,7 @@ class filemanager
      *
      * @param string    $name            Item to remove
      */
-    public function removeItem($name): void
+    public function removeItem(?string $name): void
     {
         $file = (string) path::real($this->pwd . '/' . path::clean($name));
 
@@ -464,7 +464,7 @@ class filemanager
      *
      * @param string    $file            File to remove
      */
-    public function removeFile($file): void
+    public function removeFile(?string $file): void
     {
         $path = (string) path::real($this->pwd . '/' . path::clean($file));
 
@@ -488,7 +488,7 @@ class filemanager
      *
      * @param string    $directory            Directory to remove
      */
-    public function removeDir($directory): void
+    public function removeDir(?string $directory): void
     {
         $path = (string) path::real($this->pwd . '/' . path::clean($directory));
 
