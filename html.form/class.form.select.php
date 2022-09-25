@@ -19,14 +19,23 @@ class formSelect extends formComponent
     private const DEFAULT_ELEMENT = 'select';
 
     /**
+     * Should include the associated label if exist
+     *
+     * @var        bool
+     */
+    private $renderLabel = true;
+
+    /**
      * Constructs a new instance.
      *
      * @param      mixed  $id       The identifier
      * @param      string $element  The element
+     * @param      bool    $renderLabel  Render label if present
      */
-    public function __construct($id = null, ?string $element = null)
+    public function __construct($id = null, ?string $element = null, bool $renderLabel = true)
     {
         parent::__construct(__CLASS__, $element ?? self::DEFAULT_ELEMENT);
+        $this->renderLabel = $renderLabel;
         if ($id !== null) {
             $this->setIdentifier($id);
         }
@@ -63,6 +72,11 @@ class formSelect extends formComponent
         }
 
         $buffer .= '</' . ($this->getElement() ?? self::DEFAULT_ELEMENT) . '>' . "\n";
+
+        if ($this->renderLabel && isset($this->label) && isset($this->id)) {
+            $this->label->for = $this->id;
+            $buffer           = $this->label->render($buffer);
+        }
 
         return $buffer;
     }
