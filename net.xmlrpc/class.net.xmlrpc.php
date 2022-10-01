@@ -760,6 +760,13 @@ class xmlrpcClient extends netHttp
      */
     public function __construct(string $url)
     {
+        $ssl  = false;
+        $host = '';
+        $port = 0;
+        $path = '';
+        $user = '';
+        $pass = '';
+
         if (!$this->readUrl($url, $ssl, $host, $port, $path, $user, $pass)) {
             return;
         }
