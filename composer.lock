@@ -13,12 +13,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/atoum/atoum.git",
-                "reference": "0fe4495643f6a529f9e304ea6933d29733253489"
+                "reference": "0d7f4a1b6c88a9b3f02cb89aedfce61a2b52b88e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atoum/atoum/zipball/0fe4495643f6a529f9e304ea6933d29733253489",
-                "reference": "0fe4495643f6a529f9e304ea6933d29733253489",
+                "url": "https://api.github.com/repos/atoum/atoum/zipball/0d7f4a1b6c88a9b3f02cb89aedfce61a2b52b88e",
+                "reference": "0d7f4a1b6c88a9b3f02cb89aedfce61a2b52b88e",
                 "shasum": ""
             },
             "require": {
@@ -26,7 +26,7 @@
                 "ext-json": "*",
                 "ext-tokenizer": "*",
                 "ext-xml": "*",
-                "php": "^7.2 || ^8.0"
+                "php": "^7.4 || ^8.0"
             },
             "replace": {
                 "mageekguy/atoum": "*"
@@ -91,9 +91,9 @@
             ],
             "support": {
                 "issues": "https://github.com/atoum/atoum/issues",
-                "source": "https://github.com/atoum/atoum/tree/4.0.3"
+                "source": "https://github.com/atoum/atoum/tree/master"
             },
-            "time": "2021-10-22T08:10:33+00:00"
+            "time": "2022-09-01T20:07:09+00:00"
         },
         {
             "name": "atoum/reports-extension",
@@ -216,12 +216,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "3da30d98acc8b8deb19e66fb9560306e97c46dce"
+                "reference": "b136d90704ffb6d52893279893a361fc49faacec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/3da30d98acc8b8deb19e66fb9560306e97c46dce",
-                "reference": "3da30d98acc8b8deb19e66fb9560306e97c46dce",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/b136d90704ffb6d52893279893a361fc49faacec",
+                "reference": "b136d90704ffb6d52893279893a361fc49faacec",
                 "shasum": ""
             },
             "require": {
@@ -264,15 +264,11 @@
                     "type": "github"
                 },
                 {
-                    "url": "https://www.patreon.com/phpstan",
-                    "type": "patreon"
-                },
-                {
                     "url": "https://tidelift.com/funding/github/packagist/phpstan/phpstan",
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-07-29T06:43:11+00:00"
+            "time": "2022-09-28T08:50:54+00:00"
         },
         {
             "name": "symfony/filesystem",
@@ -280,12 +276,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/filesystem.git",
-                "reference": "6699fb0228d1bc35b12aed6dd5e7455457609ddd"
+                "reference": "ac09569844a9109a5966b9438fc29113ce77cf51"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/filesystem/zipball/6699fb0228d1bc35b12aed6dd5e7455457609ddd",
-                "reference": "6699fb0228d1bc35b12aed6dd5e7455457609ddd",
+                "url": "https://api.github.com/repos/symfony/filesystem/zipball/ac09569844a9109a5966b9438fc29113ce77cf51",
+                "reference": "ac09569844a9109a5966b9438fc29113ce77cf51",
                 "shasum": ""
             },
             "require": {
@@ -336,7 +332,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-07-20T13:00:38+00:00"
+            "time": "2022-09-21T19:53:16+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -595,12 +591,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "5b5aea4690f907cc1055bfe5a66e853a3379ceca"
+                "reference": "7a2e23ce17c048d2c393a55d76d72eb0dbbf356b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/5b5aea4690f907cc1055bfe5a66e853a3379ceca",
-                "reference": "5b5aea4690f907cc1055bfe5a66e853a3379ceca",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/7a2e23ce17c048d2c393a55d76d72eb0dbbf356b",
+                "reference": "7a2e23ce17c048d2c393a55d76d72eb0dbbf356b",
                 "shasum": ""
             },
             "require": {
@@ -664,7 +660,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-07-04T19:57:33+00:00"
+            "time": "2022-09-28T08:43:25+00:00"
         }
     ],
     "aliases": [],
