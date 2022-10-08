@@ -334,8 +334,12 @@ abstract class formComponent
             // Common attributes
             (isset($this->accesskey) ?
                 ' accesskey="' . $this->accesskey . '"' : '') .
+            (isset($this->autocapitalize) ?
+                ' autocapitalize="' . $this->autocapitalize . '"' : '') .
             (isset($this->autocomplete) ?
                 ' autocomplete="' . $this->autocomplete . '"' : '') .
+            (isset($this->autocorrect) ?
+                ' autocorrect="' . $this->autocorrect . '"' : '') .
             (isset($this->autofocus) && $this->autofocus ?
                 ' autofocus' : '') .
             (isset($this->class) ?
