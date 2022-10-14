@@ -10,6 +10,10 @@
  */
 class template
 {
+    // Constants
+
+    public const CACHE_FOLDER = 'cbtpl';
+
     /**
      * Instance self name
      *
@@ -393,7 +397,7 @@ class template
         $dest_file = sprintf(
             '%s/%s/%s/%s/%s.php',
             $this->cache_dir,
-            'cbtpl',
+            self::CACHE_FOLDER,
             substr($file_md5, 0, 2),
             substr($file_md5, 2, 2),
             $file_md5
