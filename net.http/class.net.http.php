@@ -510,8 +510,14 @@ class netHttp extends netSocket
                 throw new Exception('Number of redirects exceeded maximum (' . $this->max_redirects . ')');
             }
 
-            $location = $this->headers['location'] ?? '';
-            $uri      = $this->headers['uri']      ?? '';
+            $location   = $this->headers['location'] ?? '';
+            $uri        = $this->headers['uri']      ?? '';
+            $redir_ssl  = false;
+            $redir_host = '';
+            $redir_port = 0;
+            $redir_path = '';
+            $redir_user = '';
+            $redir_pass = '';
             if ($location || $uri) {
                 if (self::readUrl($location . $uri, $redir_ssl, $redir_host, $redir_port, $redir_path, $redir_user, $redir_pass)) {
                     // If we try to move on another host, remove cookies, user and pass
