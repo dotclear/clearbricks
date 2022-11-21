@@ -652,7 +652,7 @@ class template
                         throw new Exception('No template found for ' . basename($file));
                     }
                     $file = $newfile;
-                } elseif ($this->parent_file != '') {
+                } elseif ($this->parent_file != '') {   // @phpstan-ignore-line
                     $this->parent_stack[] = $file;
                     $file                 = $this->getFilePath($this->parent_file);
                     if (!$file) {

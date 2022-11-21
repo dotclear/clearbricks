@@ -84,7 +84,7 @@ class diff
             $y++;
 
             while ($x < $cx && $y < $cy
-                && isset($src[$x]) && isset($dst[$y]) && $src[$x] == $dst[$y]) {
+                            && isset($src[$x]) && isset($dst[$y]) && $src[$x] == $dst[$y]) {
                 $x++;
                 $y++;
             }
@@ -248,7 +248,7 @@ class diff
                     throw new Exception(__('Invalid line number'));
                 }
 
-                if ($old_length || $new_length) {
+                if ($old_length || $new_length) {   // @phpstan-ignore-line
                     throw new Exception(__('Chunk is out of range'));
                 }
 

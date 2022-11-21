@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ade1d46b80f1fc2c1aca509493f74d8a",
+    "content-hash": "0e817027313bf2eb6c48de287207a158",
     "packages": [],
     "packages-dev": [
         {
@@ -212,16 +212,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.8.x-dev",
+            "version": "1.9.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "b20042710baa0d9c07636cc66d4c400f03f1477a"
+                "reference": "b4842699db16a8ca64e0ac87c054bcca3cb99407"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/b20042710baa0d9c07636cc66d4c400f03f1477a",
-                "reference": "b20042710baa0d9c07636cc66d4c400f03f1477a",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/b4842699db16a8ca64e0ac87c054bcca3cb99407",
+                "reference": "b4842699db16a8ca64e0ac87c054bcca3cb99407",
                 "shasum": ""
             },
             "require": {
@@ -230,6 +230,7 @@
             "conflict": {
                 "phpstan/phpstan-shim": "*"
             },
+            "default-branch": true,
             "bin": [
                 "phpstan",
                 "phpstan.phar"
@@ -251,7 +252,7 @@
             ],
             "support": {
                 "issues": "https://github.com/phpstan/phpstan/issues",
-                "source": "https://github.com/phpstan/phpstan/tree/1.8.x"
+                "source": "https://github.com/phpstan/phpstan/tree/1.9.x"
             },
             "funding": [
                 {
@@ -267,7 +268,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-10-29T12:56:57+00:00"
+            "time": "2022-11-20T09:46:42+00:00"
         },
         {
             "name": "symfony/filesystem",
