@@ -789,10 +789,8 @@ class xmlrpcClient extends netHttp
      *
      * Example:
      * <code>
-     * <?php
      * $o = new xmlrpcClient('http://example.com/xmlrpc');
      * $r = $o->query('method1','hello','world');
-     * ?>
      * </code>
      *
      * @param string    $method
@@ -874,12 +872,10 @@ class xmlrpcClientMulticall extends xmlrpcClient
      *
      * Example:
      * <code>
-     * <?php
      * $o = new xmlrpcClient('http://example.com/xmlrpc');
      * $o->addCall('method1','hello','world');
      * $o->addCall('method2','foo','bar');
      * $r = $o->query();
-     * ?>
      * </code>
      *
      * @param string    $method
@@ -901,7 +897,7 @@ class xmlrpcClientMulticall extends xmlrpcClient
      * XML-RPC Query
      *
      * This method sends calls stack to XML-RPC system.multicall method.
-     * See {@link xmlrpcServer::multiCall()} for details and links about it.
+     * See {@link xmlrpcBasicServer::multiCall()} for details and links about it.
      *
      * @param string    $method (not used, use ::addCall() before invoking ::query())
      * @param mixed     $args
@@ -916,7 +912,7 @@ class xmlrpcClientMulticall extends xmlrpcClient
 }
 
 /**
- * @class xmlrpcServer
+ * @class xmlrpcBasicServer
  * @brief Basic XML-RPC Server
  *
  * XML-RPC Server
@@ -929,7 +925,7 @@ class xmlrpcClientMulticall extends xmlrpcClient
  * - system.listMethods
  * - system.multicall
  */
-class xmlrpcServer
+class xmlrpcBasicServer
 {
     /**
      * Server methods
@@ -1318,7 +1314,7 @@ class xmlrpcServer
  * - system.multicall
  */
 
-class xmlrpcIntrospectionServer extends xmlrpcServer
+class xmlrpcIntrospectionServer extends xmlrpcBasicServer
 {
     /**
      * Methods signature

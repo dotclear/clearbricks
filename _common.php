@@ -178,7 +178,7 @@ class Clearbricks
             'xmlrpcBase64'              => __DIR__ . '/net.xmlrpc/class.net.xmlrpc.php',
             'xmlrpcClient'              => __DIR__ . '/net.xmlrpc/class.net.xmlrpc.php',
             'xmlrpcClientMulticall'     => __DIR__ . '/net.xmlrpc/class.net.xmlrpc.php',
-            'xmlrpcServer'              => __DIR__ . '/net.xmlrpc/class.net.xmlrpc.php',
+            'xmlrpcBasicServer'         => __DIR__ . '/net.xmlrpc/class.net.xmlrpc.php',
             'xmlrpcIntrospectionServer' => __DIR__ . '/net.xmlrpc/class.net.xmlrpc.php',
 
             // Zip tools
