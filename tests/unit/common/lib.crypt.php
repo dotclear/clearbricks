@@ -1,4 +1,5 @@
 <?php
+
 # -- BEGIN LICENSE BLOCK ---------------------------------------
 #
 # This file is part of Dotclear 2.
@@ -24,8 +25,8 @@ use Faker;
  */
 class crypt extends atoum
 {
-    const BIG_KEY_SIZE = 200;
-    const DATA_SIZE    = 50;
+    public const BIG_KEY_SIZE = 200;
+    public const DATA_SIZE    = 50;
 
     private $big_key;
     private $data;
