@@ -316,7 +316,7 @@ class http
 
         $since = null;
         if (!empty($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
-            $since = $_SERVER['HTTP_IF_MODIFIED_SINCE'];
+            $since = (string) $_SERVER['HTTP_IF_MODIFIED_SINCE'];
             $since = preg_replace('/^(.*)(Mon|Tue|Wed|Thu|Fri|Sat|Sun)(.*)(GMT)(.*)/', '$2$3 GMT', $since);
             $since = strtotime($since);
             $since = ($since <= $now) ? $since : null;
