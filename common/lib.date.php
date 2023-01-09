@@ -208,7 +208,7 @@ class dt
             if (is_string($replace)) {
                 $result = $timestamp->format($replace);
             } else {
-                $result = $replace($timestamp);
+                $result = $replace($timestamp, $pattern);
             }
 
             switch ($prefix) {
